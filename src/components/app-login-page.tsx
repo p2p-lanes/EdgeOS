@@ -56,7 +56,7 @@ export function BlockPage() {
       if (result.success) {
         router.push('/dashboard') // Redirect to dashboard on successful login
       } else {
-        setMessage('Invalid OTP. Please try again.')
+        setMessage('Invalid OTP. Please try again..')
       }
     } catch (error) {
       setMessage('Error verifying OTP. Please try again.')
