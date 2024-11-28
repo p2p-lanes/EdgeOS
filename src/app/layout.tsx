@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import { GeistSans } from 'geist/font/sans';
+import Authentication from "./Authentication";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -14,17 +15,14 @@ export const metadata: Metadata = {
   description: "Citizen Portal",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({children }: Readonly<{ children: React.ReactNode }>) {
+
   return (
     <html lang="en">
-      <body
-        className={`${GeistSans.className} antialiased`}
-      >
-        {children}
+      <body className={`${GeistSans.className} antialiased`}>
+        <Authentication>
+          {children}
+        </Authentication>
       </body>
     </html>
   );

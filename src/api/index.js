@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 export const instance = axios.create({
-  baseURL: 'http://citizen-portal.us-east-2.elasticbeanstalk.com/',
+  baseURL: 'https://api-citizen-portal.simplefi.tech/',
   timeout: 30000,
 });
 
