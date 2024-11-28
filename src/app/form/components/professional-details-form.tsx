@@ -1,7 +1,7 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RequiredFieldIndicator } from "@/components/required-field-indicator"
-import { FormInputWrapper } from "@/components/form-input-wrapper"
+import { RequiredFieldIndicator } from "@/app/form/components/required-field-indicator"
+import { FormInputWrapper } from "@/app/form/components/form-input-wrapper"
 
 interface ProfessionalDetailsFormProps {
   formData: any;

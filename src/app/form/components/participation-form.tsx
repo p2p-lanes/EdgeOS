@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
-import { RequiredFieldIndicator } from "@/components/required-field-indicator"
-import { FormInputWrapper } from "@/components/form-input-wrapper"
+import { RequiredFieldIndicator } from "@/app/form/components/required-field-indicator"
+import { FormInputWrapper } from "@/app/form/components/form-input-wrapper"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 
@@ -117,19 +117,6 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           {errors.duration && <p className="text-red-500 text-sm">{errors.duration}</p>}
         </FormInputWrapper>
 
-        <FormInputWrapper>
-          <Label htmlFor="referral">Did anyone refer you?</Label>
-          <p className="text-sm text-muted-foreground mb-2">
-            List everyone who encouraged you to apply
-          </p>
-          <Textarea 
-            id="referral"
-            value={formData.referral}
-            onChange={(e) => handleChange('referral', e.target.value)}
-            className="min-h-[100px]"
-          />
-        </FormInputWrapper>
-
         <div className="grid gap-4 sm:grid-cols-2">
           <FormInputWrapper>
             <Label htmlFor="check-in">
@@ -160,33 +147,6 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             {errors.checkOut && <p className="text-red-500 text-sm">{errors.checkOut}</p>}
           </FormInputWrapper>
         </div>
-
-        <FormInputWrapper>
-          <Label htmlFor="hostSession">If you were to host a session on any topic for/with Edge Esmeraldans, what would that session be?</Label>
-          <p className="text-sm text-muted-foreground mb-2">
-            This is just to get a sense of the topics you&apos;re interested in, not a commitment to host this particular session. You&apos;re welcome to change your plans as we get closer to June.
-          </p>
-          <Textarea 
-            id="hostSession"
-            value={formData.hostSession}
-            onChange={(e) => handleChange('hostSession', e.target.value)}
-            className="min-h-[100px]"
-          />
-        </FormInputWrapper>
-
-        <FormInputWrapper>
-          <Label htmlFor="goals">Elaborate on your goals in attending Edge Esmeralda</Label>
-          <p className="text-sm text-muted-foreground mb-2">
-            You can elaborate on how you want to contribute to the collective experience as well.
-            See <Link href="#" className="text-primary hover:underline">here</Link> for ideas on ways to contribute.
-          </p>
-          <Textarea 
-            id="goals"
-            value={formData.goals}
-            onChange={(e) => handleChange('goals', e.target.value)}
-            className="min-h-[100px]"
-          />
-        </FormInputWrapper>
 
         <FormInputWrapper>
           <div className="grid gap-4 sm:grid-cols-2">
@@ -243,21 +203,23 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
 
         <FormInputWrapper>
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="hackathon"
-                checked={formData.participateHackathon || false}
-                onCheckedChange={(checked) => handleChange('participateHackathon', checked === true)}
-              />
-              <Label htmlFor="hackathon">Do you want to participate in the hackathon?</Label>
-            </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="gitcoin"
-                checked={formData.gitcoinOSS || false}
-                onCheckedChange={(checked) => handleChange('gitcoinOSS', checked === true)}
-              />
-              <Label htmlFor="gitcoin">Are you applying as part of the Gitcoin OSS program?</Label>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="hackathon"
+                  checked={formData.participateHackathon || false}
+                  onCheckedChange={(checked) => handleChange('participateHackathon', checked === true)}
+                />
+                <Label htmlFor="hackathon">Do you want to participate in the hackathon?</Label>
+              </div>
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="gitcoin"
+                  checked={formData.gitcoinOSS || false}
+                  onCheckedChange={(checked) => handleChange('gitcoinOSS', checked === true)}
+                />
+                <Label htmlFor="gitcoin">Are you applying as part of the Gitcoin OSS program?</Label>
+              </div>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox 
@@ -299,56 +261,103 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           </FormInputWrapper>
 
           <FormInputWrapper>
-            <Label>
-              Top 1-3 topic tracks
-              <RequiredFieldIndicator />
-            </Label>
-            <p className="text-sm text-muted-foreground">Select 1-3 tracks you are most excited to dive into intellectually while in Healdsburg.</p>
-            <div className="space-y-2">
-              {topicTracks.map((track) => (
-                <Label key={track.id} className="flex items-center gap-2">
-                  <Checkbox 
-                    id={track.id}
-                    checked={(formData.topicTracks as string[]).includes(track.id)}
-                    onCheckedChange={(checked) => {
-                      const currentTracks = formData.topicTracks as string[]
-                      if (checked) {
-                        handleChange('topicTracks', [...currentTracks, track.id])
-                      } else {
-                        handleChange('topicTracks', currentTracks.filter(id => id !== track.id))
-                      }
-                    }}
-                  />
-                  {track.label}
-                </Label>
-              ))}
-            </div>
-            {errors.topicTracks && <p className="text-red-500 text-sm">{errors.topicTracks}</p>}
+            <Label htmlFor="goals">Elaborate on your goals in attending Edge Esmeralda</Label>
+            <p className="text-sm text-muted-foreground mb-2">
+              You can elaborate on how you want to contribute to the collective experience as well.
+              See <Link href="#" className="text-primary hover:underline">here</Link> for ideas on ways to contribute.
+            </p>
+            <Textarea 
+              id="goals"
+              value={formData.goals}
+              onChange={(e) => handleChange('goals', e.target.value)}
+              className="min-h-[100px]"
+            />
           </FormInputWrapper>
         </div>
 
-        <FormInputWrapper>
-          <Label>
-            Info I&apos;m willing to share with other attendees
-          </Label>
-          <p className="text-sm text-muted-foreground mb-2">
-            We will make a directory to make it easier for attendees to coordinate
-          </p>
-          <div className="space-y-2">
-            {shareableInfo.map((info) => (
-              <Label key={info.id} className="flex items-center gap-2">
-                <Checkbox 
-                  id={info.id}
-                  checked={formData[info.id] || false}
-                  onCheckedChange={(checked) => {
-                    handleChange(info.id, checked === true)
-                  }}
-                />
-                {info.label}
+        <div className="grid gap-4 sm:grid-cols-2">
+          <FormInputWrapper>
+            <Label htmlFor="hostSession">If you were to host a session on any topic for/with Edge Esmeraldans, what would that session be?</Label>
+            <RequiredFieldIndicator />
+            <p className="text-sm text-muted-foreground mb-2">
+              This is just to get a sense of the topics you&apos;re interested in, not a commitment to host this particular session. You&apos;re welcome to change your plans as we get closer to June.
+            </p>
+            <Textarea 
+              id="hostSession"
+              value={formData.hostSession}
+              onChange={(e) => handleChange('hostSession', e.target.value)}
+              className="min-h-[100px]"
+            />
+          </FormInputWrapper>
+
+          <FormInputWrapper>
+              <Label>
+                Top 1-3 topic tracks
+                <RequiredFieldIndicator />
               </Label>
-            ))}
-          </div>
-        </FormInputWrapper>
+              <p className="text-sm text-muted-foreground">Select 1-3 tracks you are most excited to dive into intellectually while in Healdsburg.</p>
+              <div className="space-y-2">
+                {topicTracks.map((track) => (
+                  <Label key={track.id} className="flex items-center gap-2">
+                    <Checkbox 
+                      id={track.id}
+                      checked={(formData.topicTracks as string[]).includes(track.id)}
+                      onCheckedChange={(checked) => {
+                        const currentTracks = formData.topicTracks as string[]
+                        if (checked) {
+                          handleChange('topicTracks', [...currentTracks, track.id])
+                        } else {
+                          handleChange('topicTracks', currentTracks.filter(id => id !== track.id))
+                        }
+                      }}
+                    />
+                    {track.label}
+                  </Label>
+                ))}
+              </div>
+              {errors.topicTracks && <p className="text-red-500 text-sm">{errors.topicTracks}</p>}
+          </FormInputWrapper>
+        </div>
+
+        <div className="grid gap-8 lg:grid-cols-2">
+          <FormInputWrapper>
+            <Label htmlFor="referral">Did anyone refer you?</Label>
+            <p className="text-sm text-muted-foreground mb-2">
+              List everyone who encouraged you to apply
+            </p>
+            <Textarea 
+              id="referral"
+              value={formData.referral}
+              onChange={(e) => handleChange('referral', e.target.value)}
+              className="min-h-[100px]"
+            />
+          </FormInputWrapper>
+
+          <FormInputWrapper>
+            <Label>
+              Info I&apos;m willing to share with other attendees
+            </Label>
+            <p className="text-sm text-muted-foreground mb-2">
+              We will make a directory to make it easier for attendees to coordinate
+            </p>
+            <div className="space-y-2">
+              {shareableInfo.map((info) => (
+                <Label key={info.id} className="flex items-center gap-2">
+                  <Checkbox 
+                    id={info.id}
+                    checked={formData[info.id] || false}
+                    onCheckedChange={(checked) => {
+                      handleChange(info.id, checked === true)
+                    }}
+                  />
+                  {info.label}
+                </Label>
+              ))}
+            </div>
+          </FormInputWrapper>
+        </div>
+
+
       </FormInputWrapper>
     </div>
   )

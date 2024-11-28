@@ -1,69 +1,32 @@
 "use client"
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { PersonalInformationForm } from "@/components/personal-information-form"
-import { ProfessionalDetailsForm } from "@/components/professional-details-form"
-import { ParticipationForm } from "@/components/participation-form"
-import { ChildrenPlusOnesForm } from "@/components/children-plus-ones-form"
-import { ScholarshipForm } from "@/components/scholarship-form"
-import { SectionSeparator } from "@/components/section-separator"
-import { FormHeader } from "@/components/form-header"
+import { PersonalInformationForm } from "@/app/form/components/personal-information-form"
+import { ProfessionalDetailsForm } from "@/app/form/components/professional-details-form"
+import { ParticipationForm } from "@/app/form/components/participation-form"
+import { ChildrenPlusOnesForm } from "@/app/form/components/children-plus-ones-form"
+import { ScholarshipForm } from "@/app/form/components/scholarship-form"
+import { SectionSeparator } from "@/app/form/components/section-separator"
+import { FormHeader } from "@/app/form/components/form-header"
 import { Button } from "@/components/ui/button"
 import { useFormValidation } from "@/hooks/useFormValidation"
 import { Toaster, toast } from "sonner"
-import { ExistingApplicationCard } from "@/components/existing-application-card"
-import { ProgressBar } from "@/components/progress-bar"
-import { FormLoader } from "@/components/form-loader"
-
-// Simulated function to check if user exists
-const checkUserExists = async (email: string): Promise<boolean> => {
-  // This is a mock implementation. In a real scenario, this would be an API call.
-  await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
-  return email === "existing@example.com"; // For demonstration, assume this email has an existing application
-}
-
-// Simulated function to fetch existing application data
-const fetchExistingApplication = async (email: string): Promise<any> => {
-  // This is a mock implementation. In a real scenario, this would be an API call.
-  await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
-  return {
-    firstName: 'John',
-    lastName: 'Doe',
-    email: 'existing@example.com',
-    applicationDate: '2023-11-15',
-    event: 'Edge Esmeralda 2024',
-    // ... other fields
-  };
-}
-
-// New function to check for draft
-const checkForDraft = async (): Promise<any> => {
-  // This is a placeholder function. You will implement the actual API call later.
-  // For now, we'll simulate an API call that returns a draft.
-  await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate API delay
-  return {
-    firstName: 'Jane',
-    lastName: 'Smith',
-    email: 'jane.smith@example.com',
-    telegram: '@janesmith',
-    organization: 'Tech Innovators',
-    role: 'Software Engineer',
-    // ... other fields as needed
-  };
-}
+import { ExistingApplicationCard } from "@/app/form/components/existing-application-card"
+import { ProgressBar } from "@/app/form/components/progress-bar"
+import { FormLoader } from "@/app/form/components/form-loader"
+import { checkForDraft, getUser, fetchExistingApplication } from './helpers/getData'
+import { api } from '../../api/index.js'
 
 export default function FormPage() {
-  const router = useRouter()
   const [showExistingCard, setShowExistingCard] = useState(false)
   const [existingApplication, setExistingApplication] = useState<any>(null)
   const [isLoading, setIsLoading] = useState(true)
   const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation({
     // Initialize with empty values for all required fields
-    firstName: '', lastName: '', email: '', telegram: '',
+    first_name: '', last_name: '', email: '', telegram_username: '',
     organization: '', gender: '', age: '', socialMedia: '',
     duration: '', checkIn: '', checkOut: '', isBuilder: false, builderRole: '', successLookLike: [], topicTracks: [],
-    hasSpouse: false, spouseName: '', spouseEmail: '', hasKids: false, kidsInfo: '',
+    hasSpouse: false, spouseName: '', spouseEmail: '', hasKids: false, kidsInfo: '', hostSession: '',
     isScholarshipInterested: false, scholarshipType: [], scholarshipReason: ''
   })
 
@@ -73,13 +36,12 @@ export default function FormPage() {
     const initializeForm = async () => {
       setIsLoading(true)
       try {
-        const userEmail = "existing@example.com"; // This would normally come from your authentication system
-        const [exists, draft] = await Promise.all([
-          checkUserExists(userEmail),
+        const [userEmail, draft] = await Promise.all([
+          getUser(),
           checkForDraft()
         ]);
 
-        if (exists) {
+        if (userEmail) {
           const existingData = await fetchExistingApplication(userEmail);
           setExistingApplication(existingData);
           const hasSeenModal = localStorage.getItem('hasSeenExistingApplicationModal');
@@ -115,17 +77,17 @@ export default function FormPage() {
     const sections = [
       {
         name: 'personalInformation',
-        fields: ['firstName', 'lastName', 'email', 'telegram'],
+        fields: ['first_name', 'last_name', 'email', 'telegram_username', 'gender', 'age'],
         required: true
       },
       {
         name: 'professionalDetails',
-        fields: ['organization', 'gender', 'age', 'socialMedia'],
+        fields: ['organization', 'socialMedia'],
         required: true
       },
       {
         name: 'participation',
-        fields: ['duration', 'checkIn', 'checkOut', 'successLookLike', 'topicTracks'],
+        fields: ['duration', 'checkIn', 'checkOut', 'successLookLike', 'topicTracks', 'hostSession'],
         required: true
       },
       {
@@ -180,10 +142,12 @@ export default function FormPage() {
     const validationResult = validateForm()
     if (validationResult.isValid) {
       // Form is valid, proceed with submission
-      console.log('Form submitted:', formData)
-      toast.success("Application Submitted", {
-        description: "Your application has been successfully submitted.",
+      api.post('applications', formData).then(() => {
+        toast.success("Application Submitted", {
+          description: "Your application has been successfully submitted.",
+        })
       })
+      console.log('Form submitted:', formData)
     } else {
       // Form is invalid, show error message
       const missingFields = validationResult.errors.map(error => error.field).join(', ')
@@ -191,6 +155,11 @@ export default function FormPage() {
         description: `Please fill in the following required field: ${missingFields}`,
       })
     }
+  }
+
+  const handleSaveDraft = () => {
+    console.log('formData', formData)
+    api.post('applications', formData).then(d => console.log('ddd', d))
   }
 
   if (isLoading) {
@@ -223,7 +192,7 @@ export default function FormPage() {
         <ScholarshipForm formData={formData} errors={errors} handleChange={handleChange} />
         <SectionSeparator />
         <div className="flex justify-between items-center pt-6">
-          <Button variant="outline" type="button">Save as draft</Button>
+          <Button variant="outline" type="button" onClick={handleSaveDraft}>Save as draft</Button>
           <Button type="submit">Submit application</Button>
         </div>
       </form>

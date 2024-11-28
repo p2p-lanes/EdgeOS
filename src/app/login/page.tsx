@@ -26,7 +26,7 @@ export async function verifyOTP(email: string, otp: string) {
 }
 
 
-export function BlockPage() {
+export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [otp, setOTP] = useState('')
   const [step, setStep] = useState('email') // 'email' or 'otp'

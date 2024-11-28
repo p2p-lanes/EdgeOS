@@ -1,8 +1,8 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { RequiredFieldIndicator } from "@/components/required-field-indicator"
-import { FormInputWrapper } from "@/components/form-input-wrapper"
+import { RequiredFieldIndicator } from "@/app/form/components/required-field-indicator"
+import { FormInputWrapper } from "@/app/form/components/form-input-wrapper"
 
 interface PersonalInformationFormProps {
   formData: any;
@@ -22,33 +22,33 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
       <FormInputWrapper>
         <div className="grid gap-4 sm:grid-cols-2">
           <FormInputWrapper>
-            <Label htmlFor="firstName">
+            <Label htmlFor="first_name">
               First name
               <RequiredFieldIndicator />
             </Label>
             <Input 
-              id="firstName" 
-              value={formData.firstName}
-              onChange={(e) => handleChange('firstName', e.target.value)}
-              className={errors.firstName ? 'border-red-500' : ''}
+              id="first_name" 
+              value={formData.first_name}
+              onChange={(e) => handleChange('first_name', e.target.value)}
+              className={errors.first_name ? 'border-red-500' : ''}
             />
-            {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
+            {errors.first_name && <p className="text-red-500 text-sm">{errors.first_name}</p>}
           </FormInputWrapper>
           <FormInputWrapper>
-            <Label htmlFor="lastName">
+            <Label htmlFor="last_name">
               Last name
               <RequiredFieldIndicator />
             </Label>
             <Input 
-              id="lastName" 
-              value={formData.lastName}
-              onChange={(e) => handleChange('lastName', e.target.value)}
-              className={errors.lastName ? 'border-red-500' : ''}
+              id="last_name" 
+              value={formData.last_name}
+              onChange={(e) => handleChange('last_name', e.target.value)}
+              className={errors.last_name ? 'border-red-500' : ''}
             />
-            {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
+            {errors.last_name && <p className="text-red-500 text-sm">{errors.last_name}</p>}
           </FormInputWrapper>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 mt-4">
+        <div className="grid gap-4 sm:grid-cols-2">
           <FormInputWrapper>
             <div className="h-full flex flex-col">
               <Label htmlFor="email">
@@ -70,7 +70,7 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
           </FormInputWrapper>
           <FormInputWrapper>
             <div className="h-full flex flex-col">
-              <Label htmlFor="telegram">
+              <Label htmlFor="telegram_username">
                 Telegram username
                 <RequiredFieldIndicator />
               </Label>
@@ -78,12 +78,12 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
                 The primary form of communication during Edge Esmeralda will be a Telegram group, so create an account if you don&apos;t already have one
               </p>
               <Input 
-                id="telegram" 
-                value={formData.telegram}
-                onChange={(e) => handleChange('telegram', e.target.value)}
-                className={`mt-auto ${errors.telegram ? 'border-red-500' : ''}`}
+                id="telegram_username" 
+                value={formData.telegram_username}
+                onChange={(e) => handleChange('telegram_username', e.target.value)}
+                className={`mt-auto ${errors.telegram_username ? 'border-red-500' : ''}`}
               />
-              {errors.telegram && <p className="text-red-500 text-sm mt-1">{errors.telegram}</p>}
+              {errors.telegram_username && <p className="text-red-500 text-sm mt-1">{errors.telegram_username}</p>}
             </div>
           </FormInputWrapper>
         </div>
