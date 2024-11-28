@@ -4,10 +4,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
-import { RequiredFieldIndicator } from "@/app/form/components/required-field-indicator"
-import { FormInputWrapper } from "@/app/form/components/form-input-wrapper"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
+import { RequiredFieldIndicator } from "./required-field-indicator"
+import { FormInputWrapper } from "./form-input-wrapper"
+import SectionWrapper from "./SectionWrapper"
 
 interface ParticipationFormProps {
   formData: any;
@@ -59,7 +60,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
   };
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[320px,1fr]">
+    <SectionWrapper>
       <div className="space-y-2">
         <h2 className="text-2xl font-semibold tracking-tight">Your participation</h2>
         <p className="text-muted-foreground">
@@ -359,7 +360,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
 
 
       </FormInputWrapper>
-    </div>
+    </SectionWrapper>
   )
 }
 

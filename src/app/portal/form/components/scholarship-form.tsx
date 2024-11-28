@@ -2,10 +2,11 @@ import { useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
-import { RequiredFieldIndicator } from "@/app/form/components/required-field-indicator"
-import { FormInputWrapper } from "@/app/form/components/form-input-wrapper"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
+import { FormInputWrapper } from "./form-input-wrapper"
+import { RequiredFieldIndicator } from "./required-field-indicator"
+import SectionWrapper from "./SectionWrapper"
 
 interface ScholarshipFormProps {
   formData: any;
@@ -30,7 +31,7 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
   };
 
   return (
-    <div className="grid gap-8 lg:grid-cols-[320px,1fr]">
+    <SectionWrapper>  
       <div className="space-y-2">
         <h2 className="text-2xl font-semibold tracking-tight">Edge Esmeralda scholarship</h2>
         <p className="text-sm text-muted-foreground">
@@ -110,7 +111,7 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
           </AnimatePresence>
         </FormInputWrapper>
       </FormInputWrapper>
-    </div>
+    </SectionWrapper>
   )
 }
 

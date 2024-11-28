@@ -1,7 +1,8 @@
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { RequiredFieldIndicator } from "@/app/form/components/required-field-indicator"
-import { FormInputWrapper } from "@/app/form/components/form-input-wrapper"
+import { FormInputWrapper } from "./form-input-wrapper";
+import { RequiredFieldIndicator } from "./required-field-indicator";
+import SectionWrapper from "./SectionWrapper";
 
 interface ProfessionalDetailsFormProps {
   formData: any;
@@ -11,7 +12,7 @@ interface ProfessionalDetailsFormProps {
 
 export function ProfessionalDetailsForm({ formData, errors, handleChange }: ProfessionalDetailsFormProps) {
   return (
-    <div className="grid gap-8 lg:grid-cols-[320px,1fr]">
+    <SectionWrapper>
       <div className="space-y-2">
         <h2 className="text-2xl font-semibold tracking-tight">Professional Details</h2>
         <p className="text-muted-foreground">
@@ -72,7 +73,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange }: Prof
           </div>
         </FormInputWrapper>
       </FormInputWrapper>
-    </div>
+    </SectionWrapper>
   )
 }
 

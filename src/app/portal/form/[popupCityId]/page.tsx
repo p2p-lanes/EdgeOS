@@ -1,21 +1,22 @@
 "use client"
 
+
 import { useState, useEffect } from 'react'
-import { PersonalInformationForm } from "@/app/form/components/personal-information-form"
-import { ProfessionalDetailsForm } from "@/app/form/components/professional-details-form"
-import { ParticipationForm } from "@/app/form/components/participation-form"
-import { ChildrenPlusOnesForm } from "@/app/form/components/children-plus-ones-form"
-import { ScholarshipForm } from "@/app/form/components/scholarship-form"
-import { SectionSeparator } from "@/app/form/components/section-separator"
-import { FormHeader } from "@/app/form/components/form-header"
 import { Button } from "@/components/ui/button"
 import { useFormValidation } from "@/hooks/useFormValidation"
 import { Toaster, toast } from "sonner"
-import { ExistingApplicationCard } from "@/app/form/components/existing-application-card"
-import { ProgressBar } from "@/app/form/components/progress-bar"
-import { FormLoader } from "@/app/form/components/form-loader"
-import { checkForDraft, getUser, fetchExistingApplication } from './helpers/getData'
-import { api } from '../../api/index.js'
+import { checkForDraft, getUser, fetchExistingApplication } from '../helpers/getData'
+import { api } from '@/api'
+import { FormLoader } from '../components/form-loader'
+import { ExistingApplicationCard } from '../components/existing-application-card'
+import { FormHeader } from '../components/form-header'
+import { SectionSeparator } from '../components/section-separator'
+import { PersonalInformationForm } from '../components/personal-information-form'
+import { ProfessionalDetailsForm } from '../components/professional-details-form'
+import { ParticipationForm } from '../components/participation-form'
+import { ChildrenPlusOnesForm } from '../components/children-plus-ones-form'
+import { ScholarshipForm } from '../components/scholarship-form'
+import { ProgressBar } from '../components/progress-bar'
 
 export default function FormPage() {
   const [showExistingCard, setShowExistingCard] = useState(false)
@@ -170,7 +171,7 @@ export default function FormPage() {
     <main className="container py-6 md:py-12 mb-8">
       <Toaster />
       {showExistingCard && existingApplication && (
-        <ExistingApplicationCard 
+        <ExistingApplicationCard
           onImport={handleImport}
           onCancel={handleCancelImport}
           name={`${existingApplication.firstName} ${existingApplication.lastName}`}
