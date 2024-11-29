@@ -1,3 +1,5 @@
+'use client'
+
 import AuthForm from '@/app/auth/AuthForm'
 import Quote from '@/app/auth/Quote'
 

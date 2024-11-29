@@ -1,12 +1,15 @@
-import useGetTokenAuth from "@/hooks/useGetTokenAuth"
+'use client'
+
 import { User } from "@/types/User"
 import { jwtDecode } from "jwt-decode"
 import { useRouter } from "next/navigation"
 import { ReactNode } from "react"
 
 const Authentication = ({children}: {children: ReactNode}) => {
-  const token = localStorage.getItem('token')
+  
   const router = useRouter()
+  if(typeof window === 'undefined') return;
+  const token = window?.localStorage?.getItem('token')
   
   if(!token) {
     router.push('/auth')
@@ -16,7 +19,7 @@ const Authentication = ({children}: {children: ReactNode}) => {
   if(token) {
     const user = jwtDecode(token) as User;
     if(!user.email || !user.citizen_id) {
-      localStorage.removeItem('token')
+      window?.localStorage?.removeItem('token')
       router.push('/auth')
       return;
     }

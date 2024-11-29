@@ -1,11 +1,8 @@
 'use client'
 
-import { api } from "@/api"
 import { EventCard } from "@/components/EventCard"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
-import { getUser } from "./form/helpers/getData"
-import { useEffect, useState } from "react"
 
 
 export default function Home() {

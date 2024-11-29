@@ -44,7 +44,7 @@ export default function AuthForm() {
       try {
         const decoded = jwtDecode(token) as User;
         if (decoded.email && decoded.citizen_id) {
-          localStorage.setItem('token', token)
+          window?.localStorage?.setItem('token', token)
           router.push('/portal')
         }
       } catch (error) {

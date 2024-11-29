@@ -60,7 +60,8 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
   const token = getToken()
 
   const handleLogout = () => {
-    localStorage.removeItem('token')
+    if(typeof window === 'undefined') return;
+    window?.localStorage?.removeItem('token')
     router.push('/auth')
   }
 

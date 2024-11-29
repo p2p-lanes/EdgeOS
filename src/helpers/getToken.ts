@@ -1,7 +1,10 @@
+'use client'
+
 import { jwtDecode } from "jwt-decode"
 
 export const getToken = () => {
-  const token = localStorage.getItem('token')
+  if(typeof window === 'undefined') return;
+  const token = window?.localStorage?.getItem('token')
   if(token) { 
     const decoded = jwtDecode(token) as any
     return decoded

@@ -46,7 +46,8 @@ export default function FormPage() {
         if (userEmail) {
           const existingData = await fetchExistingApplication(userEmail);
           setExistingApplication(existingData);
-          const hasSeenModal = localStorage.getItem('hasSeenExistingApplicationModal');
+          if(typeof window === 'undefined') return;
+          const hasSeenModal = window?.localStorage?.getItem('hasSeenExistingApplicationModal');
           if (!hasSeenModal) {
             setShowExistingCard(true);
           }
@@ -128,14 +129,16 @@ export default function FormPage() {
     if (existingApplication) {
       setFormData(existingApplication);
       setShowExistingCard(false);
-      localStorage.setItem('hasSeenExistingApplicationModal', 'true');
+      if(typeof window === 'undefined') return;
+      window?.localStorage?.setItem('hasSeenExistingApplicationModal', 'true');
       toast.success("Previous application data imported successfully");
     }
   }
 
   const handleCancelImport = () => {
     setShowExistingCard(false);
-    localStorage.setItem('hasSeenExistingApplicationModal', 'true');
+    if(typeof window === 'undefined') return;
+    window?.localStorage?.setItem('hasSeenExistingApplicationModal', 'true');
   }
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -145,7 +148,6 @@ export default function FormPage() {
     if (validationResult.isValid) {
       // Form is valid, proceed with submission
       handleSaveForm(formData)
-      console.log('Form submitted:', formData)
     } else {
       // Form is invalid, show error message
       const missingFields = validationResult.errors.map(error => error.field).join(', ')
@@ -156,15 +158,12 @@ export default function FormPage() {
   }
 
   const handleDraft = () => {
-    console.log('formData', formData)
     handleSaveDraft(formData)
   }
 
   if (isLoading) {
     return <FormLoader />
   }
-
-  console.log('form data', formData)
 
   return (
     <main className="container py-6 md:py-12 mb-8">

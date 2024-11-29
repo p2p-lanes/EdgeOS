@@ -11,12 +11,11 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
+import { SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { BackofficeSidebar } from "@/components/backoffice-sidebar"
 import Authentication from "../Authentication"
-import CityProvider, { useCityProvider } from "@/providers/cityProvider"
+import { useCityProvider } from "@/providers/cityProvider"
 import { api } from "@/api"
-import { useState } from "react"
 import { useEffect } from "react"
 import { getUser } from "./form/helpers/getData"
 
