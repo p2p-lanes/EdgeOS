@@ -36,6 +36,7 @@ import useGetPopups from "@/app/portal/hooks/useGetPopups"
 import { useEffect, useState } from "react"
 import { getUser } from "@/app/portal/form/helpers/getData"
 import { api } from "@/api"
+import { getToken } from "@/helpers/getToken"
 
 const projects = [
   {
@@ -56,6 +57,7 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
   const router = useRouter()
   const city = getCity()
   const application = getApplication()
+  const token = getToken()
 
   const handleLogout = () => {
     localStorage.removeItem('token')
@@ -181,8 +183,8 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
                     <AvatarFallback className="rounded-lg">CP</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col gap-0.5 text-sm">
-                    <span className="font-semibold">admin</span>
-                    <span className="text-xs text-muted-foreground">admin@example.com</span>
+                    {/* <span className="font-semibold">admin</span> */}
+                    <span className="text-xs font-semibold">{token?.email}</span>
                   </div>
                   <ChevronDown className="ml-auto size-4 opacity-50" />
                 </SidebarMenuButton>

@@ -14,7 +14,7 @@ import { PersonalInformationForm } from '../components/personal-information-form
 import { ProfessionalDetailsForm } from '../components/professional-details-form'
 import { ParticipationForm } from '../components/participation-form'
 import { ChildrenPlusOnesForm } from '../components/children-plus-ones-form'
-import { ScholarshipForm } from '../components/scholarship-form'
+import { ScholarshipForm } from '../components/scolarship-form'
 import { ProgressBar } from '../components/progress-bar'
 import useSavesForm from '../hooks/useSavesForm'
 
@@ -26,7 +26,7 @@ export default function FormPage() {
     // Initialize with empty values for all required fields
     first_name: '', last_name: '', telegram: '',
     organization: '', gender: '', age: '', social_media: '',
-    duration: '', check_in: '', check_out: '', builder_boolean: false, builder_description: '', success_definition: [], top_tracks: [],
+    duration: '', check_in: null, check_out: null, builder_boolean: false, builder_description: '', success_definition: [], top_tracks: [],
     brings_spouse: false, spouse_info: '', spouse_email: '', brings_kids: false, kids_info: '', host_session: '',
     scolarship_request: false, scolarship_categories: [], scolarship_details: ''
   })

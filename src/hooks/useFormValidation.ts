@@ -1,7 +1,7 @@
 import { useState, useCallback } from 'react'
 
 type FieldName = string
-type FieldValue = string | boolean | string[] | string[][]
+type FieldValue = string | boolean | string[] | string[][] | null
 type FormData = Record<FieldName, FieldValue>
 
 const requiredFields = {

@@ -288,6 +288,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
               onChange={(e) => handleChange('host_session', e.target.value)}
               className="min-h-[100px]"
             />
+            {errors.host_session && <p className="text-red-500 text-sm">{errors.host_session}</p>}
           </FormInputWrapper>
 
           <FormInputWrapper>
@@ -345,9 +346,14 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                 <Label key={info.id} className="flex items-center gap-2">
                   <Checkbox 
                     id={info.id}
-                    checked={formData[info.id] || false}
+                    checked={(formData.info_to_share as string[])?.includes(info.id)}
                     onCheckedChange={(checked) => {
-                      handleChange(info.id, checked === true)
+                      const currentInfo = formData.info_to_share as string[] ?? []
+                      if (checked) {
+                        handleChange('info_to_share', [...currentInfo, info.id])
+                      } else {
+                        handleChange('info_to_share', currentInfo.filter(id => id !== info.id))
+                      }
                     }}
                   />
                   {info.label}

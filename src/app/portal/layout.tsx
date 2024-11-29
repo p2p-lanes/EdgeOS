@@ -30,7 +30,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
     const result = await api.get(`applications?email=${email}`)
     
     if(result.status === 200) {
-      return result.data?.[0]
+      return result.data?.[result.data.length - 1]
     }
 
     return null
