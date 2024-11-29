@@ -14,9 +14,9 @@ export default function Quote() {
       </div>
       <div className="absolute bottom-8 left-8 text-left pr-8">
         <blockquote className="text-white text-lg font-light italic mb-2">
-          "The Network State: Where digital communities transcend borders and redefine governance."
+          "This is a super inspiring quote"
         </blockquote>
-        <p className="text-white text-sm">- Balaji Srinivasan</p>
+        <p className="text-white text-sm">- Tule</p>
       </div>
     </div>
   )
