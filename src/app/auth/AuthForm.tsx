@@ -1,14 +1,19 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import { api } from '@/api'
+import { useRouter } from 'next/navigation'
+import { jwtDecode } from 'jwt-decode'
+import { User } from '@/types/User'
 
 export default function AuthForm() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [isValidEmail, setIsValidEmail] = useState(true)
+  const router = useRouter()
 
   const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -25,11 +30,28 @@ export default function AuthForm() {
     setIsLoading(true)
     
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
-    
+    const response = await api.post(`citizens/authenticate`, {email})
+    console.log(response)
     setIsLoading(false)
     setMessage('Check your email inbox for the log in link')
   }
+
+  useEffect(() => {
+    const paramssearch = new URLSearchParams(window.location.search)
+    const token = paramssearch.get('token_url')
+
+    if (token) {
+      try {
+        const decoded = jwtDecode(token) as User;
+        if (decoded.email && decoded.citizen_id) {
+          localStorage.setItem('token', token)
+          router.push('/portal')
+        }
+      } catch (error) {
+        return
+      }
+    }
+  }, [])
 
   return (
     <div className="flex flex-col justify-center w-full md:w-1/2 p-8">

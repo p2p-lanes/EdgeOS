@@ -49,45 +49,6 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
             {errors.last_name && <p className="text-red-500 text-sm">{errors.last_name}</p>}
           </FormInputWrapper>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormInputWrapper>
-            <div className="h-full flex flex-col">
-              <Label htmlFor="email">
-                Email
-                <RequiredFieldIndicator />
-              </Label>
-              <p className="text-sm text-muted-foreground mb-2">
-                Remember which email you&apos;re sharing here, because you will need it to sign in to our ticketing platform, Lemonade!
-              </p>
-              <Input 
-                id="email" 
-                type="email" 
-                value={formData.email}
-                onChange={(e) => handleChange('email', e.target.value)}
-                className={`mt-auto ${errors.email ? 'border-red-500' : ''}`}
-              />
-              {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
-            </div>
-          </FormInputWrapper>
-          <FormInputWrapper>
-            <div className="h-full flex flex-col">
-              <Label htmlFor="telegram_username">
-                Telegram username
-                <RequiredFieldIndicator />
-              </Label>
-              <p className="text-sm text-muted-foreground mb-2">
-                The primary form of communication during Edge Esmeralda will be a Telegram group, so create an account if you don&apos;t already have one
-              </p>
-              <Input 
-                id="telegram_username" 
-                value={formData.telegram_username}
-                onChange={(e) => handleChange('telegram_username', e.target.value)}
-                className={`mt-auto ${errors.telegram_username ? 'border-red-500' : ''}`}
-              />
-              {errors.telegram_username && <p className="text-red-500 text-sm mt-1">{errors.telegram_username}</p>}
-            </div>
-          </FormInputWrapper>
-        </div>
         <div className="grid gap-4 sm:grid-cols-2 mt-4">
           <FormInputWrapper>
             <Label htmlFor="gender">
@@ -102,11 +63,11 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
                 <SelectValue placeholder="Select gender" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
-                <SelectItem value="non-binary">Non-binary</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-                <SelectItem value="prefer-not-to-say">Prefer not to say</SelectItem>
+                <SelectItem value="Male">Male</SelectItem>
+                <SelectItem value="Female">Female</SelectItem>
+                <SelectItem value="Non-binary">Non-binary</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+                <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
               </SelectContent>
             </Select>
             {errors.gender && <p className="text-red-500 text-sm mt-1">{errors.gender}</p>}
@@ -134,31 +95,51 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
             {errors.age && <p className="text-red-500 text-sm mt-1">{errors.age}</p>}
           </FormInputWrapper>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 mt-4">
+        <div className="grid gap-4 sm:grid-cols-2">
           <FormInputWrapper>
-            <div className="flex flex-col h-full">
-              <Label htmlFor="location">Usual location of residence</Label>
+            <div className="h-full flex flex-col">
+              <Label htmlFor="telegram">
+                Telegram username
+                <RequiredFieldIndicator />
+              </Label>
               <p className="text-sm text-muted-foreground mb-2">
-                Please format it like [City, State/Region, Country], e.g. &quot;Healdsburg, California, USA&quot;. Feel free to put multiple cities if you live in multiple places.
+                The primary form of communication during Edge Esmeralda will be a Telegram group, so create an account if you don&apos;t already have one
               </p>
               <Input 
-                id="location" 
-                value={formData.location}
-                onChange={(e) => handleChange('location', e.target.value)}
-                className="mt-auto"
+                id="telegram" 
+                value={formData.telegram}
+                onChange={(e) => handleChange('telegram', e.target.value)}
+                className={`mt-auto ${errors.telegram ? 'border-red-500' : ''}`}
               />
+              {errors.telegram && <p className="text-red-500 text-sm mt-1">{errors.telegram}</p>}
             </div>
           </FormInputWrapper>
           <FormInputWrapper>
             <div className="flex flex-col h-full">
-              <Label htmlFor="eth">ETH address</Label>
+              <Label htmlFor="residence">Usual location of residence</Label>
+              <p className="text-sm text-muted-foreground mb-2">
+                Please format it like [City, State/Region, Country], e.g. &quot;Healdsburg, California, USA&quot;. Feel free to put multiple cities if you live in multiple places.
+              </p>
+              <Input 
+                id="residence" 
+                value={formData.residence}
+                onChange={(e) => handleChange('residence', e.target.value)}
+                className="mt-auto"
+              />
+            </div>
+          </FormInputWrapper>
+        </div>
+        <div className="grid gap-4 sm:grid-cols-2 mt-4">
+          <FormInputWrapper>
+            <div className="flex flex-col h-full">
+              <Label htmlFor="eth_address">ETH address</Label>
               <p className="text-sm text-muted-foreground mb-2">
                 For POAPs, NFTs, allowlists.
               </p>
-              <Input 
-                id="eth" 
-                value={formData.ethAddress}
-                onChange={(e) => handleChange('ethAddress', e.target.value)}
+              <Input
+                id="eth_address" 
+                value={formData.eth_address ?? ''}
+                onChange={(e) => handleChange('eth_address', e.target.value)}
                 className="mt-auto"
               />
             </div>

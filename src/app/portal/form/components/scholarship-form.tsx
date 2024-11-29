@@ -11,17 +11,17 @@ import SectionWrapper from "./SectionWrapper"
 interface ScholarshipFormProps {
   formData: any;
   errors: Record<string, string>;
-  handleChange: (name: string, value: string | string[]) => void;
+  handleChange: (name: string, value: string | string[] | boolean) => void;
 }
 
 const scholarshipTypes = [
-  { id: "young-builder", label: "Young builder (< 21 years old)" },
-  { id: "academic", label: "Academic/researcher" },
-  { id: "volunteer", label: "Month-long volunteer" },
+  { id: "Young builder (< 21 years old)", label: "Young builder (< 21 years old)" },
+  { id: "Academic/researcher", label: "Academic/researcher" },
+  { id: "Month-long volunteer", label: "Month-long volunteer" },
 ]
 
 export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipFormProps) {
-  const [isInterested, setIsInterested] = useState(formData.isScholarshipInterested || false)
+  const [isInterested, setIsInterested] = useState(formData.scolarship_request || false)
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -46,18 +46,18 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
         <FormInputWrapper>
           <div className="flex items-center space-x-2">
             <Checkbox 
-              id="scholarship-interest" 
+              id="scolarship_request" 
               checked={isInterested}
               onCheckedChange={(checked) => {
                 setIsInterested(checked === true)
-                handleChange('isScholarshipInterested', checked === true)
+                handleChange('scolarship_request', checked === true)
                 if (checked === false) {
-                  handleChange('scholarshipType', [])
-                  handleChange('scholarshipReason', '')
+                  handleChange('scholarship_categories', [])
+                  handleChange('scholarship_details', '')
                 }
               }}
             />
-            <Label htmlFor="scholarship-interest">
+            <Label htmlFor="scolarship_request">
               Are you interested in applying for a scholarship?
             </Label>
           </div>
@@ -76,13 +76,13 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                         <Label key={type.id} className="flex items-center gap-2">
                           <Checkbox 
                             id={type.id}
-                            checked={(formData.scholarshipType as string[]).includes(type.id)}
+                            checked={(formData.scholarship_categories as string[])?.includes(type.id) ?? false}
                             onCheckedChange={(checked) => {
-                              const currentTypes = formData.scholarshipType as string[]
+                              const currentTypes = formData.scholarship_categories as string[] ?? []
                               if (checked) {
-                                handleChange('scholarshipType', [...currentTypes, type.id])
+                                handleChange('scolarship_categories', [...currentTypes, type.id])
                               } else {
-                                handleChange('scholarshipType', currentTypes.filter(id => id !== type.id))
+                                handleChange('scolarship_categories', currentTypes.filter(id => id !== type.id))
                               }
                             }}
                           />
@@ -90,7 +90,7 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                         </Label>
                       ))}
                     </div>
-                    {errors.scholarshipType && <p className="text-red-500 text-sm">{errors.scholarshipType}</p>}
+                    {errors.scholarship_categories && <p className="text-red-500 text-sm">{errors.scholarship_categories}</p>}
                   </FormInputWrapper>
                   <FormInputWrapper>
                     <Label htmlFor="scholarship-reason">
@@ -99,11 +99,11 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                     </Label>
                     <Textarea 
                       id="scholarship-reason" 
-                      className={`min-h-[100px] ${errors.scholarshipReason ? 'border-red-500' : ''}`}
-                      value={formData.scholarshipReason}
-                      onChange={(e) => handleChange('scholarshipReason', e.target.value)}
+                      className={`min-h-[100px] ${errors.scholarship_details ? 'border-red-500' : ''}`}
+                      value={formData.scholarship_details ?? ''}
+                      onChange={(e) => handleChange('scholarship_details', e.target.value)}
                     />
-                    {errors.scholarshipReason && <p className="text-red-500 text-sm">{errors.scholarshipReason}</p>}
+                    {errors.scholarship_details && <p className="text-red-500 text-sm">{errors.scholarship_details}</p>}
                   </FormInputWrapper>
                 </FormInputWrapper>
               </motion.div>

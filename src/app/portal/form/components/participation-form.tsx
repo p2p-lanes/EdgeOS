@@ -15,42 +15,41 @@ interface ParticipationFormProps {
   errors: Record<string, string>;
   handleChange: (name: string, value: string | string[] | boolean) => void;
 }
-
 const successOptions = [
-  { id: "build-software", label: "Build open source software for public good" },
-  { id: "find-project", label: "Find a project to invest in" },
-  { id: "get-healthier", label: "Get healthier" },
-  { id: "get-hired", label: "Get hired" },
-  { id: "have-fun", label: "Have fun + make friends" },
-  { id: "learn-topics", label: "Learn about frontier topics" },
-  { id: "startup-progress", label: "Make progress on my startup" },
-  { id: "meet-collaborators", label: "Meet collaborators / new hires" },
-  { id: "pilot-solution", label: "Pilot / test a real world solution" },
-  { id: "raise-funding", label: "Raise funding for my project" },
-  { id: "major-contributor", label: "Become a major contributor to Edge City" },
-  { id: "other", label: "Other" },
+  { id: "Build open source software for public good", label: "Build open source software for public good" },
+  { id: "Find a project to invest in", label: "Find a project to invest in" },
+  { id: "Get healthier", label: "Get healthier" },
+  { id: "Get hired", label: "Get hired" },
+  { id: "Have fun + make friends", label: "Have fun + make friends" },
+  { id: "Learn about frontier topics", label: "Learn about frontier topics" },
+  { id: "Make progress on my startup", label: "Make progress on my startup" },
+  { id: "Meet collaborators / new hires", label: "Meet collaborators / new hires" },
+  { id: "Pilot / test a real world solution", label: "Pilot / test a real world solution" },
+  { id: "Raise funding for my project", label: "Raise funding for my project" },
+  { id: "Become a major contributor to Edge City", label: "Become a major contributor to Edge City" },
+  { id: "Other", label: "Other" },
 ]
 
 const topicTracks = [
-  { id: "human-org", label: "Human organization" },
-  { id: "ai", label: "Artificial intelligence" },
-  { id: "crypto", label: "Real-world crypto" },
-  { id: "health", label: "Health, longevity, & bio" },
-  { id: "hard-tech", label: "Hard tech" },
+  { id: "Human organization", label: "Human organization" },
+  { id: "Artificial intelligence", label: "Artificial intelligence" },
+  { id: "Real-world crypto", label: "Real-world crypto" },
+  { id: "Health, longevity, & bio", label: "Health, longevity, & bio" },
+  { id: "Hard tech", label: "Hard tech" },
 ]
 
 const shareableInfo = [
-  { id: "shareFirstName", label: "First name" },
-  { id: "shareLastName", label: "Last name" },
-  { id: "shareEmail", label: "Email address" },
-  { id: "shareTelegram", label: "Telegram username" },
-  { id: "shareCheckIn", label: "Check-in date" },
-  { id: "shareCheckOut", label: "Check-out date" },
-  { id: "shareKids", label: "Whether or not I'm bringing kids" },
+  { id: "First name", label: "First name" },
+  { id: "Last name", label: "Last name" },
+  { id: "Email address", label: "Email address" },
+  { id: "Telegram username", label: "Telegram username" },
+  { id: "Check-in date", label: "Check-in date" },
+  { id: "Check-out date", label: "Check-out date" },
+  { id: "Whether or not I'm bringing kids", label: "Whether or not I'm bringing kids" },
 ]
 
 export function ParticipationForm({ formData, errors, handleChange }: ParticipationFormProps) {
-  const [isBuilder, setIsBuilder] = useState(formData.isBuilder || false)
+  const [isBuilder, setIsBuilder] = useState(formData.builder_boolean || false)
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -95,23 +94,23 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             className="grid gap-2 mt-2"
           >
             <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted">
-              <RadioGroupItem value="weekend" id="weekend" />
+              <RadioGroupItem value="1 weekend" id="1 weekend" />
               1 weekend
             </Label>
             <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted">
-              <RadioGroupItem value="week" id="week" />
+              <RadioGroupItem value="1 week" id="1 week" />
               1 week
             </Label>
             <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted">
-              <RadioGroupItem value="2weeks" id="2weeks" />
+              <RadioGroupItem value="2 weeks" id="2 weeks" />
               2 weeks
             </Label>
             <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted">
-              <RadioGroupItem value="full" id="full" />
+              <RadioGroupItem value="full length" id="full length" />
               The full time (June 2nd to June 30th, 2024)
             </Label>
             <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted">
-              <RadioGroupItem value="weekends" id="weekends" />
+              <RadioGroupItem value="all weekends" id="all weekends" />
               All Weekends
             </Label>
           </RadioGroup>
@@ -120,32 +119,32 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
 
         <div className="grid gap-4 sm:grid-cols-2">
           <FormInputWrapper>
-            <Label htmlFor="check-in">
+            <Label htmlFor="check_in">
               Check-in
               <RequiredFieldIndicator />
             </Label>
             <Input 
               type="date" 
-              id="check-in" 
-              value={formData.checkIn}
-              onChange={(e) => handleChange('checkIn', e.target.value)}
-              className={errors.checkIn ? 'border-red-500' : ''}
+              id="check_in" 
+              value={formData.check_in}
+              onChange={(e) => handleChange('check_in', e.target.value)}
+              className={errors.check_in ? 'border-red-500' : ''}
             />
-            {errors.checkIn && <p className="text-red-500 text-sm">{errors.checkIn}</p>}
+            {errors.check_in && <p className="text-red-500 text-sm">{errors.check_in}</p>}
           </FormInputWrapper>
           <FormInputWrapper>
-            <Label htmlFor="check-out">
+            <Label htmlFor="check_out">
               Check-out
               <RequiredFieldIndicator />
             </Label>
             <Input 
               type="date" 
-              id="check-out" 
-              value={formData.checkOut}
-              onChange={(e) => handleChange('checkOut', e.target.value)}
-              className={errors.checkOut ? 'border-red-500' : ''}
+              id="check_out" 
+              value={formData.check_out}
+              onChange={(e) => handleChange('check_out', e.target.value)}
+              className={errors.check_out ? 'border-red-500' : ''}
             />
-            {errors.checkOut && <p className="text-red-500 text-sm">{errors.checkOut}</p>}
+            {errors.check_out && <p className="text-red-500 text-sm">{errors.check_out}</p>}
           </FormInputWrapper>
         </div>
 
@@ -153,23 +152,23 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="flex items-center space-x-2">
               <Checkbox 
-                id="builder-developer" 
+                id="builder_boolean" 
                 checked={isBuilder}
                 onCheckedChange={(checked) => {
                   setIsBuilder(checked === true)
-                  handleChange('isBuilder', checked === true)
+                  handleChange('builder_boolean', checked === true)
                   if (checked === false) {
-                    handleChange('builderRole', '')
+                    handleChange('builder_description', '')
                   }
                 }}
               />
-              <Label htmlFor="builder-developer">
+              <Label htmlFor="builder_boolean">
                 Would you consider yourself a builder/developer looking to build open source software while at Edge Esmeralda?
               </Label>
             </div>
             <div className="flex items-center space-x-2">
-              <Checkbox id="venture-capitalist" />
-              <Label htmlFor="venture-capitalist">
+              <Checkbox id="investor" checked={formData.investor || false} onCheckedChange={(checked) => handleChange('investor', checked === true)}/>
+              <Label htmlFor="investor">
                 Are you a venture capitalist / investor coming to source deals?
               </Label>
             </div>
@@ -177,7 +176,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
               {isBuilder && (
                 <motion.div {...animationProps}>
                   <FormInputWrapper>
-                    <Label htmlFor="builder-role">
+                    <Label htmlFor="builder_description">
                       Elaborate on your role as a builder/developer if you said yes
                       <RequiredFieldIndicator />
                     </Label>
@@ -189,12 +188,12 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                       .
                     </p>
                     <Textarea 
-                      id="builder-role" 
-                      className={`min-h-[100px] mt-2 ${errors.builderRole ? 'border-red-500' : ''}`}
-                      value={formData.builderRole}
-                      onChange={(e) => handleChange('builderRole', e.target.value)}
+                      id="builder_description" 
+                      className={`min-h-[100px] mt-2 ${errors.builder_description ? 'border-red-500' : ''}`}
+                      value={formData.builder_description}
+                      onChange={(e) => handleChange('builder_description', e.target.value)}
                     />
-                    {errors.builderRole && <p className="text-red-500 text-sm">{errors.builderRole}</p>}
+                    {errors.builder_description && <p className="text-red-500 text-sm">{errors.builder_description}</p>}
                   </FormInputWrapper>
                 </motion.div>
               )}
@@ -208,16 +207,16 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
               <div className="flex items-center space-x-2">
                 <Checkbox 
                   id="hackathon"
-                  checked={formData.participateHackathon || false}
-                  onCheckedChange={(checked) => handleChange('participateHackathon', checked === true)}
+                  checked={formData.hackathon_interest || false}
+                  onCheckedChange={(checked) => handleChange('hackathon_interest', checked === true)}
                 />
                 <Label htmlFor="hackathon">Do you want to participate in the hackathon?</Label>
               </div>
               <div className="flex items-center space-x-2">
                 <Checkbox 
                   id="gitcoin"
-                  checked={formData.gitcoinOSS || false}
-                  onCheckedChange={(checked) => handleChange('gitcoinOSS', checked === true)}
+                  checked={formData.gitcoin_oss || false}
+                  onCheckedChange={(checked) => handleChange('gitcoin_oss', checked === true)}
                 />
                 <Label htmlFor="gitcoin">Are you applying as part of the Gitcoin OSS program?</Label>
               </div>
@@ -225,8 +224,8 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             <div className="flex items-center space-x-2">
               <Checkbox 
                 id="draftsAndDemos"
-                checked={formData.participateDraftsAndDemos || false}
-                onCheckedChange={(checked) => handleChange('participateDraftsAndDemos', checked === true)}
+                checked={formData.draft_and_demos || false}
+                onCheckedChange={(checked) => handleChange('draft_and_demos', checked === true)}
               />
               <Label htmlFor="draftsAndDemos">Do you want to participate in Drafts&Demos (weekend 2 hack)?</Label>
             </div>
@@ -244,13 +243,13 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                 <Label key={option.id} className="flex items-center gap-2">
                   <Checkbox 
                     id={option.id}
-                    checked={(formData.successLookLike as string[])?.includes(option.id)}
+                    checked={(formData.success_definition as string[])?.includes(option.id)}
                     onCheckedChange={(checked) => {
-                      const currentSuccess = formData.successLookLike as string[] || []
+                      const currentSuccess = formData.success_definition as string[] || []
                       if (checked) {
-                        handleChange('successLookLike', [...currentSuccess, option.id])
+                        handleChange('success_definition', [...currentSuccess, option.id])
                       } else {
-                        handleChange('successLookLike', currentSuccess.filter(id => id !== option.id))
+                        handleChange('success_definition', currentSuccess.filter(id => id !== option.id))
                       }
                     }}
                   />
@@ -258,7 +257,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                 </Label>
               ))}
             </div>
-            {errors.successLookLike && <p className="text-red-500 text-sm">{errors.successLookLike}</p>}
+            {errors.success_definition && <p className="text-red-500 text-sm">{errors.success_definition}</p>}
           </FormInputWrapper>
 
           <FormInputWrapper>
@@ -269,8 +268,8 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             </p>
             <Textarea 
               id="goals"
-              value={formData.goals}
-              onChange={(e) => handleChange('goals', e.target.value)}
+              value={formData.personal_goals}
+              onChange={(e) => handleChange('personal_goals', e.target.value)}
               className="min-h-[100px]"
             />
           </FormInputWrapper>
@@ -278,15 +277,15 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
 
         <div className="grid gap-4 sm:grid-cols-2">
           <FormInputWrapper>
-            <Label htmlFor="hostSession">If you were to host a session on any topic for/with Edge Esmeraldans, what would that session be?</Label>
+            <Label htmlFor="host_session">If you were to host a session on any topic for/with Edge Esmeraldans, what would that session be?</Label>
             <RequiredFieldIndicator />
             <p className="text-sm text-muted-foreground mb-2">
               This is just to get a sense of the topics you&apos;re interested in, not a commitment to host this particular session. You&apos;re welcome to change your plans as we get closer to June.
             </p>
             <Textarea 
-              id="hostSession"
-              value={formData.hostSession}
-              onChange={(e) => handleChange('hostSession', e.target.value)}
+              id="host_session"
+              value={formData.host_session}
+              onChange={(e) => handleChange('host_session', e.target.value)}
               className="min-h-[100px]"
             />
           </FormInputWrapper>
@@ -302,13 +301,13 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                   <Label key={track.id} className="flex items-center gap-2">
                     <Checkbox 
                       id={track.id}
-                      checked={(formData.topicTracks as string[]).includes(track.id)}
+                      checked={(formData.top_tracks as string[])?.includes(track.id)}
                       onCheckedChange={(checked) => {
-                        const currentTracks = formData.topicTracks as string[]
+                        const currentTracks = formData.top_tracks as string[]
                         if (checked) {
-                          handleChange('topicTracks', [...currentTracks, track.id])
+                          handleChange('top_tracks', [...currentTracks, track.id])
                         } else {
-                          handleChange('topicTracks', currentTracks.filter(id => id !== track.id))
+                          handleChange('top_tracks', currentTracks.filter(id => id !== track.id))
                         }
                       }}
                     />
@@ -316,7 +315,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                   </Label>
                 ))}
               </div>
-              {errors.topicTracks && <p className="text-red-500 text-sm">{errors.topicTracks}</p>}
+              {errors.top_tracks && <p className="text-red-500 text-sm">{errors.top_tracks}</p>}
           </FormInputWrapper>
         </div>
 

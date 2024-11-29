@@ -31,6 +31,11 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { useRouter } from "next/navigation"
+import { useCityProvider } from "@/providers/cityProvider"
+import useGetPopups from "@/app/portal/hooks/useGetPopups"
+import { useEffect, useState } from "react"
+import { getUser } from "@/app/portal/form/helpers/getData"
+import { api } from "@/api"
 
 const projects = [
   {
@@ -46,13 +51,29 @@ const projects = [
 ]
 
 export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  const {popups} = useGetPopups()
+  const { getCity, setCity, getApplication } = useCityProvider()
   const router = useRouter()
-  const [activeProject, setActiveProject] = React.useState(projects[0])
+  const city = getCity()
+  const application = getApplication()
 
   const handleLogout = () => {
-    // Implement logout logic here
-    console.log("Logging out...")
+    localStorage.removeItem('token')
+    router.push('/auth')
   }
+
+  useEffect(() => {
+    if(popups.length > 0) {
+      setCity(popups[0])
+    }
+  }, [popups])
+
+  const statusColor = (status: string) => {
+    if(status === 'pending') return 'bg-yellow-100 text-yellow-800'
+    if(status === 'approved') return 'bg-green-100 text-green-800'
+    return 'bg-gray-100 text-gray-800'
+  }
+
 
   return (
     <Sidebar {...props}>
@@ -62,23 +83,34 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton size="lg" className="w-full justify-between">
-                  <div className="flex items-center gap-3">
-                    <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                      <activeProject.logo className="size-4" />
+                  {!popups.length || !city ? (
+                    <div className="flex items-center gap-3">
+                      <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gray-200 animate-pulse" />
+                      <div className="flex flex-col gap-0.5">
+                        <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
+                      </div>
                     </div>
-                    <div className="flex flex-col gap-0.5 text-sm">
-                      <span className="font-semibold">{activeProject.name}</span>
-                      <span className="text-xs text-muted-foreground">{activeProject.plan}</span>
+                  ) : (
+                    <div className="flex items-center gap-3">
+                      <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
+                        {/* <activeProject.logo className="size-4" /> */}
+                      </div>
+                      <div className="flex flex-col gap-0.5 text-sm">
+                        <span className="font-semibold">{city.name}</span>
+                        <span className="text-xs text-muted-foreground">{city.location}</span>
+                        <span className="text-xs text-muted-foreground">{new Date(city.start_date)?.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+
+                      </div>
                     </div>
-                  </div>
+                  )}
                   <ChevronsUpDown className="size-4 opacity-50" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-[--radix-dropdown-menu-trigger-width]">
-                {projects.map((project) => (
-                  <DropdownMenuItem key={project.name} onClick={() => setActiveProject(project)}>
-                    <project.logo className="mr-2 size-4" />
-                    <span>{project.name}</span>
+                {popups.map((city) => (
+                  <DropdownMenuItem key={city.name} onClick={() => setCity(city)}>
+                    {/* <project.logo className="mr-2 size-4" /> */}
+                    <span>{city.name}</span>
                   </DropdownMenuItem>
                 ))}
               </DropdownMenuContent>
@@ -88,17 +120,13 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenuButton onClick={() => router.push('/portal')}>
-            <Home className="size-4 mr-2 my-2" />
-            <span>Portal</span>
-          </SidebarMenuButton>
           <SidebarGroupLabel>Your Participation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <SidebarMenuButton>
+                    <SidebarMenuButton onClick={() => router.push('/portal')}>
                       <FileText className="size-4 mr-2" />
                       <span className="group-data-[collapsible=icon]:hidden">Application</span>
                     </SidebarMenuButton>
@@ -107,8 +135,9 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
                 </Tooltip>
                 <SidebarMenuSub>
                   <SidebarMenuSubItem>
-                    <div className="flex items-center py-2 pl-8 text-sm text-muted-foreground cursor-default">
-                      Status
+                    <div className="flex items-center justify-between py-2 pl-6 text-sm text-muted-foreground cursor-default w-full">
+                      <span>Status</span>
+                      <span className={`text-xs ${statusColor(application?.status ?? 'not_started')} px-2 py-1 rounded-full`}>{application?.status ?? 'not started'}</span>
                     </div>
                   </SidebarMenuSubItem>
                 </SidebarMenuSub>
@@ -116,9 +145,10 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
               <SidebarMenuItem>
                 <Tooltip>
                   <TooltipTrigger asChild>
-                    <SidebarMenuButton>
+                    <SidebarMenuButton disabled className="opacity-50 cursor-not-allowed">
                       <Ticket className="size-4 mr-2" />
                       <span className="group-data-[collapsible=icon]:hidden">Passes</span>
+                      <span className="ml-auto text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-md group-data-[collapsible=icon]:hidden">Soon</span>
                     </SidebarMenuButton>
                   </TooltipTrigger>
                   <TooltipContent side="right" className="hidden group-data-[collapsible=icon]:block">Passes</TooltipContent>

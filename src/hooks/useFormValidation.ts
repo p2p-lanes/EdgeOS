@@ -5,9 +5,9 @@ type FieldValue = string | boolean | string[] | string[][]
 type FormData = Record<FieldName, FieldValue>
 
 const requiredFields = {
-  personalInformation: ['first_name', 'last_name', 'email', 'telegram_username', 'gender', 'age'],
-  professionalDetails: ['organization', 'socialMedia'],
-  participation: ['duration', 'checkIn', 'checkOut', 'successLookLike', 'topicTracks', 'hostSession'],
+  personalInformation: ['first_name', 'last_name', 'email', 'telegram', 'gender', 'age'],
+  professionalDetails: ['organization', 'social_media'],
+  participation: ['duration', 'check_in', 'check_out', 'success_definition', 'top_tracks', 'host_session'],
   childrenPlusOnes: [],
   scholarship: []
 }
@@ -19,17 +19,17 @@ export const useFormValidation = (initialData: FormData) => {
   const validateField = useCallback((name: FieldName, value: FieldValue, formData: FormData) => {
     if (Object.values(requiredFields).flat().includes(name)) {
       // Check conditional fields
-      if (name === 'spouseName' || name === 'spouseEmail') {
-        if (!formData.hasSpouse) return '';
+      if (name === 'spouse_info' || name === 'spouse_email') {
+        if (!formData.brings_spouse) return '';
       }
-      if (name === 'kidsInfo') {
-        if (!formData.hasKids) return '';
+      if (name === 'kids_info') {
+        if (!formData.brings_kids) return '';
       }
-      if (name === 'scholarshipType' || name === 'scholarshipReason') {
-        if (!formData.isScholarshipInterested) return '';
+      if (name === 'scholarship_categories' || name === 'scholarship_details') {
+        if (!formData.scolarship_request) return '';
       }
-      if (name === 'builderRole') {
-        if (!formData.isBuilder) return '';
+      if (name === 'builder_boolean') {
+        if (!formData.builder_boolean) return '';
       }
 
       if (Array.isArray(value)) {

@@ -1,24 +1,30 @@
+import { useCityProvider } from "@/providers/cityProvider"
 import Image from "next/image"
+import SectionWrapper from "./SectionWrapper"
 
 export function FormHeader() {
+  const { getCity } = useCityProvider()
+  const city = getCity()
+
+  if(!city) return null
+
   return (
-    <div className="space-y-6">
+    <SectionWrapper>
       <div className="flex items-center">
-        <Image
-          src="/placeholder.svg"
-          alt="Edge Esmeralda"
-          width={150}
-          height={40}
+        <img
+          src={city.image_url}
+          alt={city.name}
+          style={{ width: '20vw', height: 'auto', maxWidth: '240px', borderRadius: '14px' }}
           className="dark:invert"
         />
       </div>
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">Edge Esmeralda application</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{city.name} application</h1>
         <p className="text-sm text-primary">
           OUR APPLICATIONS ARE NOW CLOSED. 2025 APPLICATIONS WILL OPEN SOON.
         </p>
       </div>
-    </div>
+    </SectionWrapper>
   )
 }
 

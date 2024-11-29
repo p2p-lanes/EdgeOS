@@ -1,27 +1,30 @@
 'use client'
 
+import { api } from "@/api"
 import { EventCard } from "@/components/EventCard"
-import useGetPopups from "./hooks/useGetPopups"
+import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
+import { getUser } from "./form/helpers/getData"
+import { useEffect, useState } from "react"
 
 
 export default function Home() {
+  const { getCity, getApplication } = useCityProvider()
   const router = useRouter()
-  const {popups} = useGetPopups()
+  const city = getCity()
+  const application = getApplication()
 
-  if(!popups) return null
+  if(!city && !application) return null
 
   return (
     <main className="container mx-auto px-4 py-8">
       <section>
         <div className="space-y-6">
-          {popups.map((event, index) => (
-            <EventCard
-              key={index}
-              {...event}
-              onApply={() => router.push(`/portal/form/${event.id}`)}
-            />
-          ))}
+          <EventCard
+            {...city}
+            onApply={() => router.push(`/portal/form/${city.id}`)}
+            status={application?.status}
+          />
         </div>
       </section>
     </main>

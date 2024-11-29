@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button"
 import { useFormValidation } from "@/hooks/useFormValidation"
 import { Toaster, toast } from "sonner"
 import { checkForDraft, getUser, fetchExistingApplication } from '../helpers/getData'
-import { api } from '@/api'
 import { FormLoader } from '../components/form-loader'
 import { ExistingApplicationCard } from '../components/existing-application-card'
 import { FormHeader } from '../components/form-header'
@@ -17,6 +16,7 @@ import { ParticipationForm } from '../components/participation-form'
 import { ChildrenPlusOnesForm } from '../components/children-plus-ones-form'
 import { ScholarshipForm } from '../components/scholarship-form'
 import { ProgressBar } from '../components/progress-bar'
+import useSavesForm from '../hooks/useSavesForm'
 
 export default function FormPage() {
   const [showExistingCard, setShowExistingCard] = useState(false)
@@ -24,12 +24,13 @@ export default function FormPage() {
   const [isLoading, setIsLoading] = useState(true)
   const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation({
     // Initialize with empty values for all required fields
-    first_name: '', last_name: '', email: '', telegram_username: '',
-    organization: '', gender: '', age: '', socialMedia: '',
-    duration: '', checkIn: '', checkOut: '', isBuilder: false, builderRole: '', successLookLike: [], topicTracks: [],
-    hasSpouse: false, spouseName: '', spouseEmail: '', hasKids: false, kidsInfo: '', hostSession: '',
-    isScholarshipInterested: false, scholarshipType: [], scholarshipReason: ''
+    first_name: '', last_name: '', telegram: '',
+    organization: '', gender: '', age: '', social_media: '',
+    duration: '', check_in: '', check_out: '', builder_boolean: false, builder_description: '', success_definition: [], top_tracks: [],
+    brings_spouse: false, spouse_info: '', spouse_email: '', brings_kids: false, kids_info: '', host_session: '',
+    scolarship_request: false, scolarship_categories: [], scolarship_details: ''
   })
+  const { handleSaveForm, handleSaveDraft } = useSavesForm()
 
   const [progress, setProgress] = useState(0)
 
@@ -78,38 +79,38 @@ export default function FormPage() {
     const sections = [
       {
         name: 'personalInformation',
-        fields: ['first_name', 'last_name', 'email', 'telegram_username', 'gender', 'age'],
+        fields: ['first_name', 'last_name', 'telegram', 'gender', 'age'],
         required: true
       },
       {
         name: 'professionalDetails',
-        fields: ['organization', 'socialMedia'],
+        fields: ['organization', 'social_media'],
         required: true
       },
       {
         name: 'participation',
-        fields: ['duration', 'checkIn', 'checkOut', 'successLookLike', 'topicTracks', 'hostSession'],
+        fields: ['duration', 'check_in', 'check_out', 'success_definition', 'top_tracks', 'host_session'],
         required: true
       },
       {
-        name: 'builderRole',
-        fields: ['builderRole'],
-        required: formData.isBuilder
+        name: 'builder_description',
+        fields: ['builder_description'],
+        required: formData.builder_boolean
       },
       {
         name: 'spouse',
-        fields: ['spouseName', 'spouseEmail'],
-        required: formData.hasSpouse
+        fields: ['spouse_info', 'spouse_email'],
+        required: formData.brings_spouse
       },
       {
         name: 'kids',
-        fields: ['kidsInfo'],
-        required: formData.hasKids
+        fields: ['kids_info'],
+        required: formData.brings_kids
       },
       {
-        name: 'scholarship',
-        fields: ['scholarshipType', 'scholarshipReason'],
-        required: formData.isScholarshipInterested
+        name: 'scolarship_request',
+        fields: ['scolarship_categories', 'scolarship_details'],
+        required: formData.scolarship_request
       }
     ]
 
@@ -143,11 +144,7 @@ export default function FormPage() {
     const validationResult = validateForm()
     if (validationResult.isValid) {
       // Form is valid, proceed with submission
-      api.post('applications', formData).then(() => {
-        toast.success("Application Submitted", {
-          description: "Your application has been successfully submitted.",
-        })
-      })
+      handleSaveForm(formData)
       console.log('Form submitted:', formData)
     } else {
       // Form is invalid, show error message
@@ -158,14 +155,16 @@ export default function FormPage() {
     }
   }
 
-  const handleSaveDraft = () => {
+  const handleDraft = () => {
     console.log('formData', formData)
-    api.post('applications', formData).then(d => console.log('ddd', d))
+    handleSaveDraft(formData)
   }
 
   if (isLoading) {
     return <FormLoader />
   }
+
+  console.log('form data', formData)
 
   return (
     <main className="container py-6 md:py-12 mb-8">
@@ -193,7 +192,7 @@ export default function FormPage() {
         <ScholarshipForm formData={formData} errors={errors} handleChange={handleChange} />
         <SectionSeparator />
         <div className="flex justify-between items-center pt-6">
-          <Button variant="outline" type="button" onClick={handleSaveDraft}>Save as draft</Button>
+          <Button variant="outline" type="button" onClick={handleDraft}>Save as draft</Button>
           <Button type="submit">Submit application</Button>
         </div>
       </form>

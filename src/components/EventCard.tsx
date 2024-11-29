@@ -19,7 +19,7 @@ export function EventCard({ id, name, tagline, location, start_date, end_date, i
           <img
             src={image_url ?? "https://pbs.twimg.com/profile_images/1804985211740205056/iIJQisAK_400x400.png"}
             alt={name}
-            style={{ objectFit: 'contain', width: '100%', height: 'auto'}}
+            className="object-cover h-full w-full"
           />
         </div>
         <CardContent className="flex-1 p-6 mr-10">
@@ -47,8 +47,9 @@ export function EventCard({ id, name, tagline, location, start_date, end_date, i
           <div className="flex justify-center sm:justify-start">
             <Button onClick={onApply}>
               {status === 'not_started' ? 'Apply' : 
-               status === 'application_submitted' ? 'View Application' :
-               status === 'application_accepted' ? 'Purchase Ticket' : 'Modify Ticket'}
+               status === 'draft' ? 'Continue Application' :
+               status === 'in review' ? 'View Application' :
+               status === 'accepted' ? 'Purchase Ticket' : 'Modify Ticket'}
             </Button>
           </div>
         </CardContent>

@@ -32,7 +32,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange }: Prof
               </p>
               <Input 
                 id="organization" 
-                value={formData.organization}
+                value={formData.organization ?? ''}
                 onChange={(e) => handleChange('organization', e.target.value)}
                 className={`mt-auto ${errors.organization ? 'border-red-500' : ''}`}
               />
@@ -47,7 +47,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange }: Prof
               </p>
               <Input 
                 id="role" 
-                value={formData.role}
+                value={formData.role ?? ''}
                 onChange={(e) => handleChange('role', e.target.value)}
                 className="mt-auto"
               />
@@ -56,7 +56,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange }: Prof
         </div>
         <FormInputWrapper>
           <div className="h-full flex flex-col">
-            <Label htmlFor="social">
+            <Label htmlFor="social_media">
               Your active social media accounts
               <RequiredFieldIndicator />
             </Label>
@@ -64,12 +64,12 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange }: Prof
               e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Provide actual links, e.g. twitter.com/devonzuegel or linkedin.com/in/garysheng
             </p>
             <Input 
-              id="social" 
-              value={formData.socialMedia}
-              onChange={(e) => handleChange('socialMedia', e.target.value)}
-              className={`mt-auto ${errors.socialMedia ? 'border-red-500' : ''}`}
+              id="social_media" 
+              value={formData.social_media ?? ''}
+              onChange={(e) => handleChange('social_media', e.target.value)}
+              className={`mt-auto ${errors.social_media ? 'border-red-500' : ''}`}
             />
-            {errors.socialMedia && <p className="text-red-500 text-sm mt-1">{errors.socialMedia}</p>}
+            {errors.social_media && <p className="text-red-500 text-sm mt-1">{errors.social_media}</p>}
           </div>
         </FormInputWrapper>
       </FormInputWrapper>

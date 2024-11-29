@@ -1,21 +1,22 @@
 import * as React from "react"
 import { Progress } from "@/components/ui/progress"
 
-export type EventStatus = 'not_started' | 'application_submitted' | 'application_accepted' | 'ticket_purchased'
+export type EventStatus = 'not_started' | 'draft' | 'in review' | 'accepted' | 'ticket_purchased'
 
 interface EventProgressBarProps {
   status: EventStatus
 }
 
 export function EventProgressBar({ status }: EventProgressBarProps) {
-  const stages: EventStatus[] = ['not_started', 'application_submitted', 'application_accepted', 'ticket_purchased']
+  const stages: EventStatus[] = ['not_started', 'draft', 'in review', 'accepted', 'ticket_purchased']
   const currentStageIndex = stages.indexOf(status)
   const progress = (currentStageIndex / (stages.length - 1)) * 100
 
   const stageLabels = {
     'not_started': '',
-    'application_submitted': 'Application submitted',
-    'application_accepted': 'Application accepted',
+    'draft': 'Draft',
+    'in review': 'Application submitted',
+    'accepted': 'Application accepted',
     'ticket_purchased': 'Ticket Purchased'
   }
 
