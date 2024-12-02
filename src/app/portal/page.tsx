@@ -17,6 +17,10 @@ export default function Home() {
   if(!city && !relevantApplication) return null
 
   const onClickApply = () => {
+    if(relevantApplication?.status === 'accepted') {
+      window.open('https://www.pagar.simplefi.tech/edge-city', '_blank')
+      return;
+    }
     setIsLoading(true)
     router.push(`/portal/${city.slug}/application`)
   }
