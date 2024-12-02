@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { AudioWaveform, ChevronDown, ChevronsUpDown, Command, FileText, Home, LayoutDashboard, LogOut, Settings2, Ticket, User } from 'lucide-react'
+import { ChevronDown, ChevronsUpDown, FileText, Home,LogOut, Ticket } from 'lucide-react'
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -22,7 +22,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from "@/components/ui/sidebar"
 import {
@@ -32,33 +31,18 @@ import {
 } from "@/components/ui/tooltip"
 import { useRouter } from "next/navigation"
 import { useCityProvider } from "@/providers/cityProvider"
-import useGetPopups from "@/app/portal/hooks/useGetPopups"
-import { useEffect, useState } from "react"
-import { getUser } from "@/app/portal/[popupSlug]/helpers/getData"
-import { api } from "@/api"
 import { getToken } from "@/helpers/getToken"
+import { PopupsProps } from "@/types/Popups"
 
-const projects = [
-  {
-    name: "Edge Esmeralda",
-    logo: Command,
-    plan: "Enterprise",
-  },
-  {
-    name: "Edge Aria",
-    logo: AudioWaveform,
-    plan: "Pro",
-  },
-]
 
 export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { popups } = useGetPopups()
-  const { getCity, setCity, getRelevantApplication } = useCityProvider()
+  const { getCity, setCity, getRelevantApplication, getPopups } = useCityProvider()
   const router = useRouter()
 
   const city = getCity()
-  const application = getRelevantApplication()
   const token = getToken()
+  const popups = getPopups()
+  const application = getRelevantApplication()
 
   const handleLogout = () => {
     if(typeof window === 'undefined') return;
@@ -66,21 +50,18 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
     router.push('/auth')
   }
 
-  useEffect(() => {
-    if(popups.length > 0) {
-      setCity(popups[0])
-    }
-  }, [popups])
-
   const statusColor = (status: string) => {
     if(status === 'pending') return 'bg-yellow-100 text-yellow-800'
     if(status === 'approved') return 'bg-green-100 text-green-800'
     return 'bg-gray-100 text-gray-800'
   }
+
   const handleClickCity = (city: any) => {
     setCity(city)
     router.push('/portal')
   }
+
+  if(!popups) return null
 
   return (
     <Sidebar {...props}>
@@ -113,12 +94,20 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-[--radix-dropdown-menu-trigger-width]">
-                {popups.map((city) => (
-                  <DropdownMenuItem key={city.name} onClick={() => handleClickCity(city)}>
-                    {/* <project.logo className="mr-2 size-4" /> */}
-                    <span>{city.name}</span>
-                  </DropdownMenuItem>
-                ))}
+                {popups.map((popup: PopupsProps) => {
+                  if(!popup.visible_in_portal) return null
+
+                  return (
+                    <DropdownMenuItem key={popup.name} disabled={!popup.clickable_in_portal} onClick={() => handleClickCity(popup)}>
+                      <span>{popup.name}</span>
+                      {
+                        !popup.clickable_in_portal && (
+                          <span className="ml-auto text-xs bg-muted text-muted-foreground px-1.5 py-0.5 rounded-md">Soon</span>
+                        )
+                      }
+                    </DropdownMenuItem>
+                  )
+                })}
               </DropdownMenuContent>
             </DropdownMenu>
           </SidebarMenuItem>

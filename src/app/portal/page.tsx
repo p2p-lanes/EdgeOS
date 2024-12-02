@@ -4,7 +4,7 @@ import { EventCard } from "@/components/EventCard"
 import { Loader } from "@/components/ui/Loader"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 
 export default function Home() {
@@ -13,7 +13,7 @@ export default function Home() {
   const router = useRouter()
   const city = getCity()
   const relevantApplication = getRelevantApplication()
-
+  
   if(!city && !relevantApplication) return null
 
   const onClickApply = () => {

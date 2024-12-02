@@ -130,8 +130,8 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
               type="date" 
               id="check_in" 
               value={formData.check_in || ''}
-              min={city.start_date ? new Date(city.start_date).toISOString().split('T')[0] : ''}
-              max={city.end_date ? new Date(city.end_date).toISOString().split('T')[0] : ''}
+              min={city?.start_date ? new Date(city.start_date).toISOString().split('T')[0] : ''}
+              max={city?.end_date ? new Date(city.end_date).toISOString().split('T')[0] : ''}
               onChange={(e) => handleChange('check_in', e.target.value)}
               className={errors.check_in ? 'border-red-500' : ''}
             />
@@ -146,8 +146,8 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
               type="date" 
               id="check_out" 
               value={formData.check_out || ''}
-              min={city.start_date ? new Date(city.start_date).toISOString().split('T')[0] : ''}
-              max={city.end_date ? new Date(city.end_date).toISOString().split('T')[0] : ''}
+              min={city?.start_date ? new Date(city.start_date).toISOString().split('T')[0] : ''}
+              max={city?.end_date ? new Date(city.end_date).toISOString().split('T')[0] : ''}
               onChange={(e) => handleChange('check_out', e.target.value)}
               className={errors.check_out ? 'border-red-500' : ''}
             />

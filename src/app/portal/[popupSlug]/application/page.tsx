@@ -17,12 +17,15 @@ import useSavesForm from '../hooks/useSavesForm'
 import useProgress from '../hooks/useProgress'
 import { initial_data } from '../helpers/constants'
 import useInitForm from '../hooks/useInitForm'
+import { useCityProvider } from "@/providers/cityProvider"
 
 export default function FormPage() {
   const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation(initial_data)
   const { isLoading, showExistingCard, existingApplication, setShowExistingCard } = useInitForm(setFormData)
   const { handleSaveForm, handleSaveDraft } = useSavesForm()
   const progress = useProgress(formData)
+  const { getCity } = useCityProvider()
+  const city = getCity()
 
   const handleImport = async () => {
     if (existingApplication) {
@@ -60,7 +63,7 @@ export default function FormPage() {
     handleSaveDraft(formData)
   }
 
-  if (isLoading) {
+  if (isLoading || !city) {
     return <Loader />
   }
 

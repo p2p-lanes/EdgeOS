@@ -15,32 +15,15 @@ import { SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { BackofficeSidebar } from "@/components/backoffice-sidebar"
 import Authentication from "../Authentication"
 import { useCityProvider } from "@/providers/cityProvider"
-import { api } from "@/api"
-import { useEffect } from "react"
-import { getUser } from "./[popupSlug]/helpers/getData"
+import useGetPopups from "./hooks/useGetPopups"
+import useGetApplications from "./hooks/useGetApplications"
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
-  const { getCity, setApplications, getApplications } = useCityProvider()
+  const { getCity } = useCityProvider()
   const city = getCity()  
-  const applications = getApplications()
 
-  const getApplicationsApi = async () => {
-    const email = getUser()
-    if(applications) return applications
-    
-    if(!email) return null
-    const result = await api.get(`applications?email=${email}`)
-    
-    if(result.status === 200) {
-      return result.data
-    }
-
-    return null
-  }
-
-  useEffect(() => {
-    getApplicationsApi().then(setApplications)
-  }, [])
+  useGetPopups()
+  useGetApplications()
 
   return (
     <Authentication>

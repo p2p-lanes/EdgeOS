@@ -8,5 +8,7 @@ export type PopupsProps = {
   start_date?: string
   end_date?: string
   image_url?: string
-  status?: EventStatus 
+  status?: EventStatus,
+  visible_in_portal?: boolean;
+  clickable_in_portal?: boolean;
 }

@@ -7,6 +7,8 @@ interface CityContext_interface {
   getApplications: () => any;
   setApplications: (application: any) => void;
   getRelevantApplication: () => any;
+  getPopups: () => any;
+  setPopups: (popups: any) => void;
 }
 
 export const CityContext = createContext<CityContext_interface | null>(null);
@@ -15,6 +17,7 @@ export const CityContext = createContext<CityContext_interface | null>(null);
 const CityProvider = ({ children }: {children: ReactNode}) => {
   const [city, setCityState] = useState<any>(null);
   const [applications, setApplicationsState] = useState<any>(null);
+  const [popups, setPopupsState] = useState<any>(null);
 
   const getApplications = (): any => {
     return applications
@@ -36,13 +39,23 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
     return applications?.filter((app: any) => app.popup_city_id === city?.id)?.slice(-1)[0]
   }
 
+  const getPopups = (): any => {
+    return popups
+  }
+
+  const setPopups = (popups: any): void => {
+    setPopupsState(popups);
+  }
+
   return (
     <CityContext.Provider value={{
       getCity,
       setCity,
       getApplications,
       setApplications,
-      getRelevantApplication
+      getRelevantApplication,
+      getPopups,
+      setPopups
     }}>
       {children}
     </CityContext.Provider>

@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import {  getUser } from "../helpers/getData";
 import { toast } from "sonner";
 import useGetData from "./useGetData";
+import { useCityProvider } from "@/providers/cityProvider";
 
 const useInitForm = (setFormData: any) => {
   const [isLoading, setIsLoading] = useState(true)
   const [showExistingCard, setShowExistingCard] = useState(false)
   const [existingApplication, setExistingApplication] = useState<any>(null)
   const { getDataApplicationForm } = useGetData()
+  const { getCity, getPopups } = useCityProvider()
+  const city = getCity()
+  const popups = getPopups()
 
   useEffect(() => {
     const initializeForm = async () => {
@@ -45,7 +49,7 @@ const useInitForm = (setFormData: any) => {
     }
 
     initializeForm();
-  }, [setFormData]);
+  }, [city, popups]);
 
   return { isLoading, showExistingCard, existingApplication, setShowExistingCard }
 }
