@@ -8,14 +8,14 @@ import { useState } from "react"
 
 
 export default function Home() {
-  const { getCity, getApplications } = useCityProvider()
+  const { getCity, getRelevantApplication } = useCityProvider()
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const city = getCity()
-  const applications = getApplications()
-  const relevantApplication = applications?.filter((app: any) => app.popup_city_id == city?.id)?.slice(-1)[0]
-  if(!city && !applications) return null
-  console.log('relevant ' , relevantApplication)
+  const relevantApplication = getRelevantApplication()
+
+  if(!city && !relevantApplication) return null
+
   const onClickApply = () => {
     setIsLoading(true)
     router.push(`/portal/${city.slug}/application`)
