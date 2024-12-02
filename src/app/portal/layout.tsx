@@ -20,11 +20,14 @@ import { useEffect } from "react"
 import { getUser } from "./[popupSlug]/helpers/getData"
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
-  const { getCity, setApplications } = useCityProvider()
+  const { getCity, setApplications, getApplications } = useCityProvider()
   const city = getCity()  
+  const applications = getApplications()
 
-  const getApplications = async () => {
+  const getApplicationsApi = async () => {
     const email = getUser()
+    if(applications) return applications
+    
     if(!email) return null
     const result = await api.get(`applications?email=${email}`)
     
@@ -36,7 +39,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   }
 
   useEffect(() => {
-    getApplications().then(setApplications)
+    getApplicationsApi().then(setApplications)
   }, [])
 
   return (

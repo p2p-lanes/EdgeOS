@@ -1,7 +1,9 @@
 import { api } from "@/api"
 import { getUser } from "../helpers/getData"
 import { useCityProvider } from "@/providers/cityProvider"
-import { filterApplications } from "../helpers/filters"
+import { filterAcceptedApplications, filterApplications } from "../helpers/filters"
+
+type Status = 'draft' | 'import' | null
 
 const useGetData = () => {
   const { getCity } = useCityProvider()
@@ -16,35 +18,26 @@ const useGetData = () => {
     return null
   }
 
-  const getDataDraft = async () => {
+  const getDataApplicationForm = async () => {
     const result = await getData();
 
     if(result?.status === 200) {
       const relevantApplication = filterApplications(result.data, city)
-      if(relevantApplication && (relevantApplication.status === 'draft' || relevantApplication.status === 'in review')) {
-        return relevantApplication
+      if(relevantApplication) {
+        return { application: relevantApplication, status: 'draft' }
+      }
+
+      const acceptedApplication = filterAcceptedApplications(result.data)
+      if(acceptedApplication) {
+        return { application: acceptedApplication, status: 'import' }
       }
     }
 
-    return null
-  }
-
-  const getDataExisting = async () => {
-    const result = await getData();
-
-    if(result?.status === 200) {
-      const relevantApplication = filterApplications(result.data, city)
-      if(relevantApplication && relevantApplication.status === 'accepted') {
-        return relevantApplication
-      }
-    }
-
-    return null
+    return { application: null, status: null }
   }
 
   return ({
-    getDataDraft,
-    getDataExisting
+    getDataApplicationForm
   })
 }
 export default useGetData

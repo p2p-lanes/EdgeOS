@@ -7,28 +7,28 @@ const useInitForm = (setFormData: any) => {
   const [isLoading, setIsLoading] = useState(true)
   const [showExistingCard, setShowExistingCard] = useState(false)
   const [existingApplication, setExistingApplication] = useState<any>(null)
-  const { getDataDraft, getDataExisting } = useGetData()
+  const { getDataApplicationForm } = useGetData()
 
   useEffect(() => {
     const initializeForm = async () => {
       setIsLoading(true)
       try {
-        const draft = await getDataDraft()
+        const { application, status } = await getDataApplicationForm()
 
-        if (!draft) {
-          const existingData = await getDataExisting();
-          setExistingApplication(existingData);
-          if(typeof window === 'undefined') return;
+        if(!application || !status) return
+
+        if (status === 'import') {
+          setExistingApplication(application);
           const hasSeenModal = window?.localStorage?.getItem('hasSeenExistingApplicationModal');
           if (!hasSeenModal) {
             setShowExistingCard(true);
           }
         }
 
-        if (draft && !showExistingCard) {
+        if (status === 'draft') {
           setFormData((prevData: any) => ({
             ...prevData,
-            ...draft
+            ...application
           }));
           toast.success("Draft loaded successfully", {
             description: "Your previously saved draft has been loaded.",
