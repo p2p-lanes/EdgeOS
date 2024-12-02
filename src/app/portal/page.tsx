@@ -19,7 +19,7 @@ export default function Home() {
         <div className="space-y-6">
           <EventCard
             {...city}
-            onApply={() => router.push(`/portal/form/${city.id}`)}
+            onApply={() => router.push(`/portal/${city.slug}/application`)}
             status={application?.status}
           />
         </div>

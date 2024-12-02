@@ -34,7 +34,7 @@ import { useRouter } from "next/navigation"
 import { useCityProvider } from "@/providers/cityProvider"
 import useGetPopups from "@/app/portal/hooks/useGetPopups"
 import { useEffect, useState } from "react"
-import { getUser } from "@/app/portal/form/helpers/getData"
+import { getUser } from "@/app/portal/[popupSlug]/helpers/getData"
 import { api } from "@/api"
 import { getToken } from "@/helpers/getToken"
 

@@ -17,7 +17,7 @@ import Authentication from "../Authentication"
 import { useCityProvider } from "@/providers/cityProvider"
 import { api } from "@/api"
 import { useEffect } from "react"
-import { getUser } from "./form/helpers/getData"
+import { getUser } from "./[popupSlug]/helpers/getData"
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   const { getCity, setApplication } = useCityProvider()
