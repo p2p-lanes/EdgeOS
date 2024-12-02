@@ -1,6 +1,6 @@
 import { Loader2 } from 'lucide-react'
 
-export function FormLoader() {
+export function Loader() {
   return (
     <div className="fixed m-auto inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="text-center">

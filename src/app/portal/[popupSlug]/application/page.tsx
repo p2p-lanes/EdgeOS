@@ -3,7 +3,7 @@
 import { Button } from "@/components/ui/button"
 import { useFormValidation } from "@/hooks/useFormValidation"
 import { Toaster, toast } from "sonner"
-import { FormLoader } from '../components/form-loader'
+import { Loader } from '../../../../components/ui/Loader'
 import { ExistingApplicationCard } from '../components/existing-application-card'
 import { FormHeader } from '../components/form-header'
 import { SectionSeparator } from '../components/section-separator'
@@ -59,9 +59,10 @@ export default function FormPage() {
   const handleDraft = () => {
     handleSaveDraft(formData)
   }
+  console.log('status', isLoading)
 
   if (isLoading) {
-    return <FormLoader />
+    return <Loader />
   }
 
   return (

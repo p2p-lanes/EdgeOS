@@ -1,17 +1,27 @@
 'use client'
 
 import { EventCard } from "@/components/EventCard"
+import { Loader } from "@/components/ui/Loader"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
 
 
 export default function Home() {
   const { getCity, getApplication } = useCityProvider()
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const city = getCity()
   const application = getApplication()
 
   if(!city && !application) return null
+
+  const onClickApply = () => {
+    setIsLoading(true)
+    router.push(`/portal/${city.slug}/application`)
+  }
+
+  if(isLoading) return <Loader />
 
   return (
     <main className="container mx-auto px-4 py-8">
@@ -19,7 +29,7 @@ export default function Home() {
         <div className="space-y-6">
           <EventCard
             {...city}
-            onApply={() => router.push(`/portal/${city.slug}/application`)}
+            onApply={onClickApply}
             status={application?.status}
           />
         </div>
