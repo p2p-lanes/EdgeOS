@@ -1,11 +1,8 @@
 "use client"
 
-
-import { useState, useEffect } from 'react'
 import { Button } from "@/components/ui/button"
 import { useFormValidation } from "@/hooks/useFormValidation"
 import { Toaster, toast } from "sonner"
-import { checkForDraft, getUser, fetchExistingApplication } from '../helpers/getData'
 import { FormLoader } from '../components/form-loader'
 import { ExistingApplicationCard } from '../components/existing-application-card'
 import { FormHeader } from '../components/form-header'

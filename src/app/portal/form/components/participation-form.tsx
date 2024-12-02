@@ -9,6 +9,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { RequiredFieldIndicator } from "./required-field-indicator"
 import { FormInputWrapper } from "./form-input-wrapper"
 import SectionWrapper from "./SectionWrapper"
+import { useCityProvider } from "@/providers/cityProvider"
 
 interface ParticipationFormProps {
   formData: any;
@@ -50,7 +51,9 @@ const shareableInfo = [
 
 export function ParticipationForm({ formData, errors, handleChange }: ParticipationFormProps) {
   const [isBuilder, setIsBuilder] = useState(formData.builder_boolean || false)
-
+  const { getCity } = useCityProvider()
+  const city = getCity()
+  
   const animationProps = {
     initial: { opacity: 0, height: 0 },
     animate: { opacity: 1, height: "auto" },
@@ -126,7 +129,9 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             <Input 
               type="date" 
               id="check_in" 
-              value={formData.check_in}
+              value={formData.check_in || ''}
+              min={city.start_date ? new Date(city.start_date).toISOString().split('T')[0] : ''}
+              max={city.end_date ? new Date(city.end_date).toISOString().split('T')[0] : ''}
               onChange={(e) => handleChange('check_in', e.target.value)}
               className={errors.check_in ? 'border-red-500' : ''}
             />
@@ -140,7 +145,9 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             <Input 
               type="date" 
               id="check_out" 
-              value={formData.check_out}
+              value={formData.check_out || ''}
+              min={city.start_date ? new Date(city.start_date).toISOString().split('T')[0] : ''}
+              max={city.end_date ? new Date(city.end_date).toISOString().split('T')[0] : ''}
               onChange={(e) => handleChange('check_out', e.target.value)}
               className={errors.check_out ? 'border-red-500' : ''}
             />
