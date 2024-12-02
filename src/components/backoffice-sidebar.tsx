@@ -85,7 +85,7 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="lg" className="w-full justify-between">
+                <SidebarMenuButton size="lg" className="w-full h-full justify-between">
                   {!popups.length || !city ? (
                     <div className="flex items-center gap-3">
                       <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gray-200 animate-pulse" />
@@ -102,7 +102,6 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
                         <span className="font-semibold">{city.name}</span>
                         <span className="text-xs text-muted-foreground">{city.location}</span>
                         <span className="text-xs text-muted-foreground">{new Date(city.start_date)?.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-
                       </div>
                     </div>
                   )}

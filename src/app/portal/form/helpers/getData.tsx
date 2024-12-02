@@ -19,7 +19,8 @@ export const fetchExistingApplication = async (email: string): Promise<any> => {
 
   const result = await api.get(`applications?email=${email}`)
 
-  if(result.status === 200 && result.data?.[result.data.length - 1]?.status !== 'draft') {
+  const status = result.data?.[result.data.length - 1]?.status
+  if(result.status === 200 && status === 'accepted' ) {
     return result.data?.[result.data.length - 1]
   }
 
@@ -32,7 +33,8 @@ export const checkForDraft = async (): Promise<any> => {
   if(email) {
     const result = await api.get(`applications?email=${email}`)
 
-    if(result.status === 200 && (result.data?.[result.data.length - 1]?.status === 'draft' || result.data?.[result.data.length - 1]?.status === 'in review')) {
+    const status = result.data?.[result.data.length - 1]?.status
+    if(result.status === 200 && (status === 'draft' || status === 'in review')) {
       return result.data?.[result.data.length - 1]
     }
   }

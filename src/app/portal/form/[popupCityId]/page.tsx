@@ -53,7 +53,7 @@ export default function FormPage() {
           }
         }
 
-        if (draft) {
+        if (draft && !showExistingCard) {
           setFormData(prevData => ({
             ...prevData,
             ...draft
@@ -172,9 +172,8 @@ export default function FormPage() {
         <ExistingApplicationCard
           onImport={handleImport}
           onCancel={handleCancelImport}
-          name={`${existingApplication.firstName} ${existingApplication.lastName}`}
-          applicationDate={existingApplication.applicationDate}
-          event={existingApplication.event}
+          name={`${existingApplication.first_name} ${existingApplication.last_name}`}
+          email={existingApplication.email}
         />
       )}
       <form onSubmit={handleSubmit} className="space-y-8 px-8 md:px-12">

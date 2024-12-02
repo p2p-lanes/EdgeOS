@@ -5,7 +5,7 @@ type FieldValue = string | boolean | string[] | string[][] | null
 type FormData = Record<FieldName, FieldValue>
 
 const requiredFields = {
-  personalInformation: ['first_name', 'last_name', 'email', 'telegram', 'gender', 'age'],
+  personalInformation: ['first_name', 'last_name', 'telegram', 'gender', 'age'],
   professionalDetails: ['organization', 'social_media'],
   participation: ['duration', 'check_in', 'check_out', 'success_definition', 'top_tracks', 'host_session'],
   childrenPlusOnes: [],

@@ -2,20 +2,24 @@ import { api } from "@/api"
 import { toast } from "sonner"
 import { getToken } from "@/helpers/getToken"
 import { useCityProvider } from "@/providers/cityProvider"
+import { useRouter } from "next/navigation"
 
 const useSavesForm = () => {
   const token = getToken()
   const { getCity, setApplication, getApplication } = useCityProvider()
   const application = getApplication()
   const city = getCity()
+  const router = useRouter()
 
   const handleSaveForm = async (formData: Record<string, unknown>) => {
     if(!city || !token) return
     return api.post('applications', { ...formData, citizen_id: token?.citizen_id, popup_city_id: city?.id, status: 'in review' }).then((data) => {
       setApplication(data.data)
+      //todo: no se muestra el toast
       toast.success("Application Submitted", {
         description: "Your application has been successfully submitted.",
       })
+      router.push('/portal')
     }).catch(() => {
       toast.error("Error Submitting Application", {
         description: "There was an error submitting your application. Please try again.",
