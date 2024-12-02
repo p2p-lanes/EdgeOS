@@ -5,12 +5,10 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 interface ExistingApplicationCardProps {
   onImport: () => void;
   onCancel: () => void;
-  name: string;
-  applicationDate: string;
-  event: string;
+  data: any;
 }
 
-export function ExistingApplicationCard({ onImport, onCancel, name, applicationDate, event }: ExistingApplicationCardProps) {
+export function ExistingApplicationCard({ onImport, onCancel, data }: ExistingApplicationCardProps) {
   const [isOpen, setIsOpen] = useState(true)
 
   const handleImport = () => {
@@ -24,16 +22,15 @@ export function ExistingApplicationCard({ onImport, onCancel, name, applicationD
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={() => {}}>
+    <Dialog open={isOpen}>
       <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>Existing Application Found</DialogTitle>
           <DialogDescription>We've found a previous application associated with your email.</DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
-          <p><strong>Applicant:</strong> {name}</p>
-          <p><strong>Application Date:</strong> {applicationDate}</p>
-          <p><strong>Event:</strong> {event}</p>
+          <p><strong>Applicant:</strong> {data.first_name} {data.last_name}</p>
+          <p><strong>Email:</strong> {data.email}</p>
         </div>
         <p className="mt-4">Would you like to import your previous application data? This will save you time by pre-filling the form with your existing information.</p>
         <DialogFooter>

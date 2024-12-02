@@ -15,14 +15,14 @@ export function EventCard({ id, name, tagline, location, start_date, end_date, i
   return (
     <Card className="w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row">
-        <div className="relative h-48 sm:h-auto sm:w-1/3">
+        <div className="relative sm:h-auto sm:w-1/3">
           <img
             src={image_url ?? "https://pbs.twimg.com/profile_images/1804985211740205056/iIJQisAK_400x400.png"}
             alt={name}
             className="object-cover h-full w-full"
           />
         </div>
-        <CardContent className="flex-1 p-6 mr-10">
+        <CardContent className="flex flex-col w-full p-6 mr-10">
           <h3 className="text-2xl font-bold mb-2">{name}</h3>
           <p className="text-sm text-muted-foreground mb-4">{tagline}</p>
           <div className="flex items-center text-sm text-muted-foreground mb-2">
@@ -41,11 +41,11 @@ export function EventCard({ id, name, tagline, location, start_date, end_date, i
               year: 'numeric'
             }) : '')}
           </div>
-          <div className="mb-4">
+          <div className="my-6">
             <EventProgressBar status={status} />
           </div>
-          <div className="flex justify-center sm:justify-start">
-            <Button onClick={onApply}>
+          <div className="flex items-end justify-end sm:justify-end">
+            <Button onClick={onApply} className='w-auto px-9'>
               {status === 'not_started' ? 'Apply' : 
                status === 'draft' ? 'Continue Application' :
                status === 'in review' ? 'View Application' :

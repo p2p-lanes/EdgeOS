@@ -21,7 +21,7 @@ export function EventProgressBar({ status }: EventProgressBarProps) {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto space-y-2">
+    <div className="w-full max-w-3xl mx-auto space-y-2">
       <div className="relative">
         <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
           <div 

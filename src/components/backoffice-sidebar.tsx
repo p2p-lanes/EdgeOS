@@ -34,7 +34,7 @@ import { useRouter } from "next/navigation"
 import { useCityProvider } from "@/providers/cityProvider"
 import useGetPopups from "@/app/portal/hooks/useGetPopups"
 import { useEffect, useState } from "react"
-import { getUser } from "@/app/portal/form/helpers/getData"
+import { getUser } from "@/app/portal/[popupSlug]/helpers/getData"
 import { api } from "@/api"
 import { getToken } from "@/helpers/getToken"
 
@@ -85,7 +85,7 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="lg" className="w-full justify-between">
+                <SidebarMenuButton size="lg" className="w-full h-full justify-between">
                   {!popups.length || !city ? (
                     <div className="flex items-center gap-3">
                       <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gray-200 animate-pulse" />
@@ -102,7 +102,6 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
                         <span className="font-semibold">{city.name}</span>
                         <span className="text-xs text-muted-foreground">{city.location}</span>
                         <span className="text-xs text-muted-foreground">{new Date(city.start_date)?.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
-
                       </div>
                     </div>
                   )}
