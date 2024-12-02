@@ -11,9 +11,27 @@ const useSavesForm = () => {
   const city = getCity()
   const router = useRouter()
 
+  const createApplication = async (formData: Record<string, unknown>) => {
+    return api.post('applications', formData)
+  }
+
+  const updateApplication = async (id: string, formData: Record<string, unknown>) => {
+    return api.put(`applications/${id}`, formData)
+  }
+
   const handleSaveForm = async (formData: Record<string, unknown>) => {
     if(!city || !token) return
-    return api.post('applications', { ...formData, citizen_id: token?.citizen_id, popup_city_id: city?.id, status: 'in review' }).then((data) => {
+
+    const data = {
+      ...formData,
+      citizen_id: token?.citizen_id,
+      popup_city_id: city?.id,
+      status: 'in review'
+    }
+
+    const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
+      
+    response.then((data) => {
       setApplications((prev: any) => [...prev, data.data])
       toast.success("Application Submitted", {
         description: "Your application has been successfully submitted.",
@@ -29,32 +47,25 @@ const useSavesForm = () => {
   const handleSaveDraft = async (formData: Record<string, unknown>) => {
     if(!city || !token) return
 
-    if(!application?.id) {
-      return api.post('applications', { ...formData, citizen_id: token?.citizen_id, popup_city_id: city?.id, status: 'draft' }).then((data) => {
-        setApplications((prev: any) => [...prev, data.data])
-        toast.success("Draft Saved", {
-          description: "Your draft has been successfully saved.",
-        })
-      })
-      .catch(() => {
-        toast.error("Error Saving Draft", {
-          description: "There was an error saving your draft. Please try again.",
-        })
-      })
+    const data = {
+      ...formData,
+      citizen_id: token?.citizen_id,
+      popup_city_id: city?.id,
+      status: 'draft'
     }
 
-    return api.put(`applications/${application.id}`, { ...formData, citizen_id: token?.citizen_id, popup_city_id: city?.id, status: 'draft' })
-      .then((data) => {
-        setApplications((prev: any) => [...prev, data.data])
-        toast.success("Draft Saved", {
-          description: "Your draft has been successfully saved.",
-        })
+    const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
+
+    response.then((data) => {
+      setApplications((prev: any) => [...prev, data.data])
+      toast.success("Draft Saved", {
+        description: "Your draft has been successfully saved.",
       })
-      .catch(() => {
-        toast.error("Error Saving Draft", {
+    }).catch(() => {
+      toast.error("Error Saving Draft", {
           description: "There was an error saving your draft. Please try again.",
         })
-      })
+    })
   }
 
   return ({
