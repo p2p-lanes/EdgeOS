@@ -122,7 +122,7 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
               </p>
               <Input 
                 id="residence" 
-                value={formData.residence}
+                value={formData.residence ?? ''}
                 onChange={(e) => handleChange('residence', e.target.value)}
                 className="mt-auto"
               />

@@ -197,7 +197,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                     <Textarea 
                       id="builder_description" 
                       className={`min-h-[100px] mt-2 ${errors.builder_description ? 'border-red-500' : ''}`}
-                      value={formData.builder_description}
+                      value={formData.builder_description ?? ''}
                       onChange={(e) => handleChange('builder_description', e.target.value)}
                     />
                     {errors.builder_description && <p className="text-red-500 text-sm">{errors.builder_description}</p>}
@@ -275,7 +275,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             </p>
             <Textarea 
               id="goals"
-              value={formData.personal_goals}
+              value={formData.personal_goals ?? ''}
               onChange={(e) => handleChange('personal_goals', e.target.value)}
               className="min-h-[100px]"
             />
@@ -291,7 +291,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             </p>
             <Textarea 
               id="host_session"
-              value={formData.host_session}
+              value={formData.host_session ?? ''}
               onChange={(e) => handleChange('host_session', e.target.value)}
               className="min-h-[100px]"
             />
@@ -335,7 +335,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             </p>
             <Textarea 
               id="referral"
-              value={formData.referral}
+              value={formData.referral ?? ''}
               onChange={(e) => handleChange('referral', e.target.value)}
               className="min-h-[100px]"
             />
