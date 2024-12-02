@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation"
 
 const useSavesForm = () => {
   const token = getToken()
-  const { getCity, setApplications, getApplications } = useCityProvider()
-  const application = getApplications()
+  const { getCity, setApplications, getRelevantApplication } = useCityProvider()
+  const application = getRelevantApplication()
   const city = getCity()
   const router = useRouter()
 

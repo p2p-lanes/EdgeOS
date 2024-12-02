@@ -59,7 +59,6 @@ export default function FormPage() {
   const handleDraft = () => {
     handleSaveDraft(formData)
   }
-  console.log('status', isLoading)
 
   if (isLoading) {
     return <Loader />

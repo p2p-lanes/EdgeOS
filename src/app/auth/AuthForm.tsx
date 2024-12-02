@@ -7,8 +7,11 @@ import { api } from '@/api'
 import { useRouter } from 'next/navigation'
 import { jwtDecode } from 'jwt-decode'
 import { User } from '@/types/User'
+import { Loader } from '@/components/ui/Loader'
 
 export default function AuthForm() {
+  const paramssearch = new URLSearchParams(window.location.search)
+  const token = paramssearch.get('token_url')
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
@@ -29,17 +32,12 @@ export default function AuthForm() {
     setIsValidEmail(true)
     setIsLoading(true)
     
-    // Simulate API call
-    const response = await api.post(`citizens/authenticate`, {email})
-    console.log(response)
+    await api.post(`citizens/authenticate`, {email})
     setIsLoading(false)
     setMessage('Check your email inbox for the log in link')
   }
 
   useEffect(() => {
-    const paramssearch = new URLSearchParams(window.location.search)
-    const token = paramssearch.get('token_url')
-
     if (token) {
       try {
         const decoded = jwtDecode(token) as User;
@@ -52,6 +50,8 @@ export default function AuthForm() {
       }
     }
   }, [])
+
+  if(token) return <Loader />
 
   return (
     <div className="flex flex-col justify-center w-full md:w-1/2 p-8">

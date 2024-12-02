@@ -76,7 +76,10 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
     if(status === 'approved') return 'bg-green-100 text-green-800'
     return 'bg-gray-100 text-gray-800'
   }
-
+  const handleClickCity = (city: any) => {
+    setCity(city)
+    router.push('/portal')
+  }
 
   return (
     <Sidebar {...props}>
@@ -110,7 +113,7 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-[--radix-dropdown-menu-trigger-width]">
                 {popups.map((city) => (
-                  <DropdownMenuItem key={city.name} onClick={() => setCity(city)}>
+                  <DropdownMenuItem key={city.name} onClick={() => handleClickCity(city)}>
                     {/* <project.logo className="mr-2 size-4" /> */}
                     <span>{city.name}</span>
                   </DropdownMenuItem>

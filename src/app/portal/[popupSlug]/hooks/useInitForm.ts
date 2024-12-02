@@ -1,23 +1,22 @@
 import { useEffect, useState } from "react";
-import { checkForDraft, fetchExistingApplication, getUser } from "../helpers/getData";
+import {  getUser } from "../helpers/getData";
 import { toast } from "sonner";
+import useGetData from "./useGetData";
 
 const useInitForm = (setFormData: any) => {
   const [isLoading, setIsLoading] = useState(true)
   const [showExistingCard, setShowExistingCard] = useState(false)
   const [existingApplication, setExistingApplication] = useState<any>(null)
+  const { getDataDraft, getDataExisting } = useGetData()
 
   useEffect(() => {
     const initializeForm = async () => {
       setIsLoading(true)
       try {
-        const [userEmail, draft] = await Promise.all([
-          getUser(),
-          checkForDraft()
-        ]);
+        const draft = await getDataDraft()
 
-        if (userEmail) {
-          const existingData = await fetchExistingApplication(userEmail);
+        if (!draft) {
+          const existingData = await getDataExisting();
           setExistingApplication(existingData);
           if(typeof window === 'undefined') return;
           const hasSeenModal = window?.localStorage?.getItem('hasSeenExistingApplicationModal');
