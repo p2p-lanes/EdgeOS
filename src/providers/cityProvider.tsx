@@ -4,8 +4,8 @@ import { createContext, ReactNode, useContext, useState } from 'react';
 interface CityContext_interface {
   getCity: () => any;
   setCity: (city: any) => void;
-  getApplication: () => any;
-  setApplication: (application: any) => void;
+  getApplications: () => any;
+  setApplications: (application: any) => void;
 }
 
 export const CityContext = createContext<CityContext_interface | null>(null);
@@ -13,14 +13,14 @@ export const CityContext = createContext<CityContext_interface | null>(null);
 
 const CityProvider = ({ children }: {children: ReactNode}) => {
   const [city, setCityState] = useState<any>(null);
-  const [application, setApplicationState] = useState<any>(null);
+  const [applications, setApplicationsState] = useState<any>(null);
 
-  const getApplication = (): any => {
-    return application;
+  const getApplications = (): any => {
+    return applications
   }
 
-  const setApplication = (application: any): void => {
-    setApplicationState(application);
+  const setApplications = (applications: any): void => {
+    setApplicationsState(applications);
   }
 
   const getCity = (): any => {
@@ -37,8 +37,8 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
     <CityContext.Provider value={{
       getCity,
       setCity,
-      getApplication,
-      setApplication
+      getApplications,
+      setApplications
     }}>
       {children}
     </CityContext.Provider>

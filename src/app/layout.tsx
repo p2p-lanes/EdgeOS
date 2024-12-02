@@ -5,8 +5,8 @@ import { GeistSans } from 'geist/font/sans';
 import Providers from "./Providers";
 
 export const metadata: Metadata = {
-  title: "Citizen Portal",
-  description: "Citizen Portal",
+  title: "Resident Portal",
+  description: "Your gateway to EdgeCity",
 };
 
 export default function RootLayout({children }: Readonly<{ children: React.ReactNode }>) {

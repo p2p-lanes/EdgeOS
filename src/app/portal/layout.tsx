@@ -20,23 +20,23 @@ import { useEffect } from "react"
 import { getUser } from "./form/helpers/getData"
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
-  const { getCity, setApplication } = useCityProvider()
+  const { getCity, setApplications } = useCityProvider()
   const city = getCity()  
 
-  const getApplication = async () => {
+  const getApplications = async () => {
     const email = getUser()
     if(!email) return null
     const result = await api.get(`applications?email=${email}`)
     
     if(result.status === 200) {
-      return result.data?.[result.data.length - 1]
+      return result.data
     }
 
     return null
   }
 
   useEffect(() => {
-    getApplication().then(setApplication)
+    getApplications().then(setApplications)
   }, [])
 
   return (

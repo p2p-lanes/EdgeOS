@@ -5,14 +5,14 @@ import { useCityProvider } from "@/providers/cityProvider"
 
 const useSavesForm = () => {
   const token = getToken()
-  const { getCity, setApplication, getApplication } = useCityProvider()
-  const application = getApplication()
+  const { getCity, setApplications, getApplications } = useCityProvider()
+  const application = getApplications()
   const city = getCity()
 
   const handleSaveForm = async (formData: Record<string, unknown>) => {
     if(!city || !token) return
     return api.post('applications', { ...formData, citizen_id: token?.citizen_id, popup_city_id: city?.id, status: 'in review' }).then((data) => {
-      setApplication(data.data)
+      setApplications(data.data)
       toast.success("Application Submitted", {
         description: "Your application has been successfully submitted.",
       })
@@ -28,7 +28,7 @@ const useSavesForm = () => {
 
     if(!application?.id) {
       return api.post('applications', { ...formData, citizen_id: token?.citizen_id, popup_city_id: city?.id, status: 'draft' }).then((data) => {
-        setApplication(data.data)
+        setApplications(data.data)
         toast.success("Draft Saved", {
           description: "Your draft has been successfully saved.",
         })
@@ -42,7 +42,7 @@ const useSavesForm = () => {
 
     return api.put(`applications/${application.id}`, { ...formData, citizen_id: token?.citizen_id, popup_city_id: city?.id, status: 'draft' })
       .then((data) => {
-        setApplication(data.data)
+        setApplications(data.data)
         toast.success("Draft Saved", {
           description: "Your draft has been successfully saved.",
         })

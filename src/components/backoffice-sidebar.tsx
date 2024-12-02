@@ -53,10 +53,10 @@ const projects = [
 
 export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const {popups} = useGetPopups()
-  const { getCity, setCity, getApplication } = useCityProvider()
+  const { getCity, setCity, getApplications } = useCityProvider()
   const router = useRouter()
   const city = getCity()
-  const application = getApplication()
+  const application = getApplications()
   const token = getToken()
 
   const handleLogout = () => {

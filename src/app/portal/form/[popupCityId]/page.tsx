@@ -24,7 +24,7 @@ export default function FormPage() {
   const [isLoading, setIsLoading] = useState(true)
   const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation({
     // Initialize with empty values for all required fields
-    first_name: '', last_name: '', telegram: '',
+    first_name: '', last_name: '', telegram: '', email: '',
     organization: '', gender: '', age: '', social_media: '',
     duration: '', check_in: null, check_out: null, builder_boolean: false, builder_description: '', success_definition: [], top_tracks: [],
     brings_spouse: false, spouse_info: '', spouse_email: '', brings_kids: false, kids_info: '', host_session: '',

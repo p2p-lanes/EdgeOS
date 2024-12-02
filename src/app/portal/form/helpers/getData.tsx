@@ -31,6 +31,7 @@ export const checkForDraft = async (): Promise<any> => {
   const email = getUser()
   if(email) {
     const result = await api.get(`applications?email=${email}`)
+    console.log(result.data)  
 
     if(result.status === 200 && (result.data?.[result.data.length - 1]?.status === 'draft' || result.data?.[result.data.length - 1]?.status === 'in review')) {
       return result.data?.[result.data.length - 1]
