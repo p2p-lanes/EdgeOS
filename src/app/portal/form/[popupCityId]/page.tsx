@@ -17,113 +17,15 @@ import { ChildrenPlusOnesForm } from '../components/children-plus-ones-form'
 import { ScholarshipForm } from '../components/scolarship-form'
 import { ProgressBar } from '../components/progress-bar'
 import useSavesForm from '../hooks/useSavesForm'
+import useProgress from '../hooks/useProgress'
+import { initial_data } from '../helpers/constants'
+import useInitForm from '../hooks/useInitForm'
 
 export default function FormPage() {
-  const [showExistingCard, setShowExistingCard] = useState(false)
-  const [existingApplication, setExistingApplication] = useState<any>(null)
-  const [isLoading, setIsLoading] = useState(true)
-  const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation({
-    // Initialize with empty values for all required fields
-    first_name: '', last_name: '', telegram: '',
-    organization: '', gender: '', age: '', social_media: '',
-    duration: '', check_in: null, check_out: null, builder_boolean: false, builder_description: '', success_definition: [], top_tracks: [],
-    brings_spouse: false, spouse_info: '', spouse_email: '', brings_kids: false, kids_info: '', host_session: '',
-    scolarship_request: false, scolarship_categories: [], scolarship_details: ''
-  })
+  const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation(initial_data)
+  const { isLoading, showExistingCard, existingApplication, setShowExistingCard } = useInitForm(setFormData)
   const { handleSaveForm, handleSaveDraft } = useSavesForm()
-
-  const [progress, setProgress] = useState(0)
-
-  useEffect(() => {
-    const initializeForm = async () => {
-      setIsLoading(true)
-      try {
-        const [userEmail, draft] = await Promise.all([
-          getUser(),
-          checkForDraft()
-        ]);
-
-        if (userEmail) {
-          const existingData = await fetchExistingApplication(userEmail);
-          setExistingApplication(existingData);
-          if(typeof window === 'undefined') return;
-          const hasSeenModal = window?.localStorage?.getItem('hasSeenExistingApplicationModal');
-          if (!hasSeenModal) {
-            setShowExistingCard(true);
-          }
-        }
-
-        if (draft && !showExistingCard) {
-          setFormData(prevData => ({
-            ...prevData,
-            ...draft
-          }));
-          toast.success("Draft loaded successfully", {
-            description: "Your previously saved draft has been loaded.",
-          });
-        }
-      } catch (error) {
-        console.error("Error initializing form:", error);
-        toast.error("Error", {
-          description: "There was an error loading your application data. Please try again.",
-        });
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    initializeForm();
-  }, [setFormData]);
-
-  useEffect(() => {
-    // Calculate progress based on filled sections
-    const sections = [
-      {
-        name: 'personalInformation',
-        fields: ['first_name', 'last_name', 'telegram', 'gender', 'age'],
-        required: true
-      },
-      {
-        name: 'professionalDetails',
-        fields: ['organization', 'social_media'],
-        required: true
-      },
-      {
-        name: 'participation',
-        fields: ['duration', 'check_in', 'check_out', 'success_definition', 'top_tracks', 'host_session'],
-        required: true
-      },
-      {
-        name: 'builder_description',
-        fields: ['builder_description'],
-        required: formData.builder_boolean
-      },
-      {
-        name: 'spouse',
-        fields: ['spouse_info', 'spouse_email'],
-        required: formData.brings_spouse
-      },
-      {
-        name: 'kids',
-        fields: ['kids_info'],
-        required: formData.brings_kids
-      },
-      {
-        name: 'scolarship_request',
-        fields: ['scolarship_categories', 'scolarship_details'],
-        required: formData.scolarship_request
-      }
-    ]
-
-    const totalSections = sections.filter(section => section.required).length
-    const filledSections = sections.filter(section => 
-      section.required && section.fields.every(field => 
-        Array.isArray(formData[field]) ? formData[field].length > 0 : Boolean(formData[field])
-      )
-    ).length
-
-    setProgress((filledSections / totalSections) * 100)
-  }, [formData])
+  const progress = useProgress(formData)
 
   const handleImport = async () => {
     if (existingApplication) {
@@ -169,12 +71,7 @@ export default function FormPage() {
     <main className="container py-6 md:py-12 mb-8">
       <Toaster />
       {showExistingCard && existingApplication && (
-        <ExistingApplicationCard
-          onImport={handleImport}
-          onCancel={handleCancelImport}
-          name={`${existingApplication.first_name} ${existingApplication.last_name}`}
-          email={existingApplication.email}
-        />
+        <ExistingApplicationCard onImport={handleImport} onCancel={handleCancelImport} data={existingApplication} />
       )}
       <form onSubmit={handleSubmit} className="space-y-8 px-8 md:px-12">
         <FormHeader />
