@@ -10,13 +10,30 @@ import { User } from '@/types/User'
 import { Loader } from '@/components/ui/Loader'
 
 export default function AuthForm() {
-  const paramssearch = new URLSearchParams(window.location.search)
-  const token = paramssearch.get('token_url')
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [isValidEmail, setIsValidEmail] = useState(true)
+  const [token, setToken] = useState<string | null>(null)
   const router = useRouter()
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const tokenUrl = params.get('token_url')
+    setToken(tokenUrl)
+
+    if (tokenUrl) {
+      try {
+        const decoded = jwtDecode(tokenUrl) as User;
+        if (decoded.email && decoded.citizen_id) {
+          window.localStorage.setItem('token', tokenUrl)
+          router.push('/portal')
+        }
+      } catch (error) {
+        return
+      }
+    }
+  }, [router])
 
   const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -36,20 +53,6 @@ export default function AuthForm() {
     setIsLoading(false)
     setMessage('Check your email inbox for the log in link')
   }
-
-  useEffect(() => {
-    if (token) {
-      try {
-        const decoded = jwtDecode(token) as User;
-        if (decoded.email && decoded.citizen_id) {
-          window?.localStorage?.setItem('token', token)
-          router.push('/portal')
-        }
-      } catch (error) {
-        return
-      }
-    }
-  }, [])
 
   if(token) return <Loader />
 
