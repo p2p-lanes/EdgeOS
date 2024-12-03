@@ -48,10 +48,8 @@ export default function FormPage() {
 
     const validationResult = validateForm()
     if (validationResult.isValid) {
-      // Form is valid, proceed with submission
       handleSaveForm(formData)
     } else {
-      // Form is invalid, show error message
       const missingFields = validationResult.errors.map(error => error.field).join(', ')
       toast.error("Error", {
         description: `Please fill in the following required field: ${missingFields}`,

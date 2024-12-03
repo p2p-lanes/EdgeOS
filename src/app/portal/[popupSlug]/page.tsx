@@ -4,8 +4,7 @@ import { EventCard } from "@/components/EventCard"
 import { Loader } from "@/components/ui/Loader"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
-import { useEffect, useState } from "react"
-
+import { useState } from "react"
 
 export default function Home() {
   const { getCity, getRelevantApplication } = useCityProvider()
@@ -22,7 +21,7 @@ export default function Home() {
       return;
     }
     setIsLoading(true)
-    router.push(`/portal/${city.slug}/application`)
+    router.push(`/portal/${city?.slug}/application`)
   }
 
   if(isLoading) return <Loader />

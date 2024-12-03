@@ -11,4 +11,5 @@ export type PopupsProps = {
   status?: EventStatus,
   visible_in_portal?: boolean;
   clickable_in_portal?: boolean;
+  slug?: string;
 }

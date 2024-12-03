@@ -13,10 +13,10 @@ import {
 } from "@/components/ui/breadcrumb"
 import { SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
 import { BackofficeSidebar } from "@/components/backoffice-sidebar"
-import Authentication from "../Authentication"
 import { useCityProvider } from "@/providers/cityProvider"
-import useGetPopups from "./hooks/useGetPopups"
-import useGetApplications from "./hooks/useGetApplications"
+import Authentication from "@/app/Authentication"
+import useGetPopups from "@/hooks/useGetPopups"
+import useGetApplications from "@/hooks/useGetApplications"
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   const { getCity } = useCityProvider()
@@ -46,7 +46,9 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
               </BreadcrumbList>
             </Breadcrumb>
           </header>
-          <main className="flex-1 p-6 w-[100%]">{children}</main>
+          <main className="flex-1 p-6 w-[100%]">
+            {children}
+          </main>
         </SidebarInset>
       </div>
     </Authentication>

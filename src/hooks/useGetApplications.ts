@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { useCityProvider } from "@/providers/cityProvider"
 import { api } from "@/api"
-import { getUser } from "../[popupSlug]/helpers/getData"
+import { getUser } from "@/app/portal/[popupSlug]/helpers/getData"
 
 const useGetApplications = () => {
   const { setApplications, getApplications } = useCityProvider()

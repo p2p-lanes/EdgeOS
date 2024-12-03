@@ -58,7 +58,7 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
 
   const handleClickCity = (city: any) => {
     setCity(city)
-    router.push('/portal')
+    router.push(`/portal/${city.slug}`)
   }
 
   if(!popups) return null
