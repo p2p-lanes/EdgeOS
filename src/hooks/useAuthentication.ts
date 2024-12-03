@@ -1,5 +1,6 @@
 'use client'
 
+import { api, instance } from "@/api"
 import { User } from "@/types/User"
 import { jwtDecode } from "jwt-decode"
 import { useRouter } from "next/navigation"
@@ -9,7 +10,7 @@ interface UseAuthenticationReturn {
   user: User | null
   isLoading: boolean
   isAuthenticated: boolean
-  login: () => boolean
+  login: () => Promise<boolean>
   logout: () => void
   validateToken: (token: string) => boolean;
   token: string | null
@@ -33,21 +34,30 @@ const useAuthentication = (): UseAuthenticationReturn => {
     }
   }
 
-  const _authenticate = (): boolean => {
+  const _authenticate = async (): Promise<boolean> => {
     if (!token) return false;
 
-    const decoded = jwtDecode(token)
+    const tokenAuthenticate = jwtDecode(token) as any
+
+    if(tokenAuthenticate && tokenAuthenticate.url) {
+      const response = await api.post(tokenAuthenticate.url)
+      if(response.status === 200 && response.data?.access_token) {
+        window?.localStorage?.setItem('token', response.data.access_token)
+        instance.defaults.headers.common['Authorization'] = `Bearer ${response.data.access_token}`
+        const decoded = jwtDecode(response.data.access_token) as User
+        setUser(decoded)
+        return true
+      }
+    }
 
     return false;
   }
 
-  const login = (): boolean => {
+  const login = async (): Promise<boolean> => {
     if (!token) return false
+    const isAuthenticated = await _authenticate()
 
-    if (validateToken(token)) {
-      window?.localStorage?.setItem('token', token)
-      const decoded = jwtDecode(token) as User
-      setUser(decoded)
+    if (isAuthenticated) {
       setIsAuthenticated(true)
       return true
     }

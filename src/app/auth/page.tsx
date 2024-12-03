@@ -11,10 +11,14 @@ export default function AuthPage() {
   const { login, token } = useAuthentication()
   const router = useRouter()
 
-  useEffect(() => {
-    if (login()) {
+  const handleLogin = async () => {
+    if(await login()) {
       router.push('/portal')
     }
+  }
+
+  useEffect(() => {
+    handleLogin()
   }, [])
 
   if(token) {
