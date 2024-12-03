@@ -5,8 +5,8 @@ export type PopupsProps = {
   name: string
   tagline?: string
   location?: string
-  start_date?: string
-  end_date?: string
+  start_date?: Date
+  end_date?: Date
   image_url?: string
   status?: EventStatus,
   visible_in_portal?: boolean;

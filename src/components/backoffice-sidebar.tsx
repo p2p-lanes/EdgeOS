@@ -32,12 +32,14 @@ import {
 import { useRouter } from "next/navigation"
 import { useCityProvider } from "@/providers/cityProvider"
 import { getToken } from "@/helpers/getToken"
-import { PopupsProps } from "@/types/Popups"
+import { PopupsProps } from "@/types/Popup"
+import useAuthentication from "@/hooks/useAuthentication"
 
 
 export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { getCity, setCity, getRelevantApplication, getPopups } = useCityProvider()
   const router = useRouter()
+  const { logout } = useAuthentication()
 
   const city = getCity()
   const token = getToken()
@@ -45,9 +47,7 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
   const application = getRelevantApplication()
 
   const handleLogout = () => {
-    if(typeof window === 'undefined') return;
-    window?.localStorage?.removeItem('token')
-    router.push('/auth')
+    logout()
   }
 
   const statusColor = (status: string) => {
@@ -86,7 +86,7 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
                       <div className="flex flex-col gap-0.5 text-sm">
                         <span className="font-semibold">{city.name}</span>
                         <span className="text-xs text-muted-foreground">{city.location}</span>
-                        <span className="text-xs text-muted-foreground">{new Date(city.start_date)?.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                        <span className="text-xs text-muted-foreground">{city.start_date ? new Date(city.start_date)?.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ''}</span>
                       </div>
                     </div>
                   )}

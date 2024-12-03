@@ -1,34 +1,20 @@
 'use client'
 
-import { User } from "@/types/User"
-import { jwtDecode } from "jwt-decode"
-import { useRouter } from "next/navigation"
 import { ReactNode } from "react"
+import useAuthentication from "@/hooks/useAuthentication"
+import { Loader } from "@/components/ui/Loader"
 
 const Authentication = ({children}: {children: ReactNode}) => {
+  const { isLoading, isAuthenticated } = useAuthentication()
   
-  const router = useRouter()
-  if(typeof window === 'undefined') return;
-  const token = window?.localStorage?.getItem('token')
+  if (isLoading) return <Loader />
   
-  if(!token) {
-    router.push('/auth')
-    return;
+  if (!isAuthenticated) {
+    window.location.href = '/auth'
+    return null
   }
 
-  if(token) {
-    const user = jwtDecode(token) as User;
-    if(!user.email || !user.citizen_id) {
-      window?.localStorage?.removeItem('token')
-      router.push('/auth')
-      return;
-    }
-  }
-
-  return (
-    <div>
-      {children}
-    </div>
-  )
+  return <>{children}</>
 }
+
 export default Authentication

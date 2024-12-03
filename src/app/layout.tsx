@@ -13,7 +13,7 @@ export default function RootLayout({children }: Readonly<{ children: React.React
 
   return (
     <html lang="en">
-      <body >
+      <body>
         <Providers>
           <div className={`${GeistSans.className} antialiased w-[100%]`}>
             {children}
