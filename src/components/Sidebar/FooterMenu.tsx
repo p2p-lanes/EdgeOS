@@ -16,7 +16,7 @@ const FooterMenu = ({handleLogout, token}: {handleLogout: () => void, token: Use
                 <SidebarMenuButton size="lg">
                   <Avatar className="size-8 rounded-lg">
                     <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                    <AvatarFallback className="rounded-lg">CP</AvatarFallback>
+                    <AvatarFallback className="rounded-lg">{token?.email?.[0].toUpperCase()}</AvatarFallback>
                   </Avatar>
                   <div className="flex flex-col gap-0.5 text-sm">
                     <span className="text-xs font-semibold">{token?.email}</span>

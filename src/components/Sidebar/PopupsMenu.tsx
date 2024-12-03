@@ -6,12 +6,16 @@ import { useCityProvider } from "@/providers/cityProvider"
 import { PopupsProps } from "@/types/Popup"
 import { ChevronsUpDown } from 'lucide-react'
 import { DropdownMenuContent, DropdownMenuItem } from "./DropdownMenu"
+import { Avatar, AvatarFallback } from "../ui/avatar"
 
 const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) => void }) => {
   const { getCity, getPopups } = useCityProvider()
   const city = getCity()
   const popups = getPopups()
 
+  const cityName = `${city?.name?.split(' ')?.[0]?.[0].toUpperCase()}${city?.name?.split(' ')?.[1]?.[0].toUpperCase()}`
+
+  console.log('cityName', cityName)
   return (
     <SidebarHeader>
         <SidebarMenu>
@@ -28,9 +32,10 @@ const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) 
                     </div>
                   ) : (
                     <div className="flex items-center gap-3">
-                      <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-primary text-primary-foreground">
-                        {/* <activeProject.logo className="size-4" /> */}
-                      </div>
+                      
+                        <Avatar className="size-10 rounded-xl" >
+                          <AvatarFallback className='rounded-xl bg-slate-400 text-white font-semibold'>{cityName}</AvatarFallback>
+                        </Avatar>
                       <div className="flex flex-col gap-0.5 text-sm">
                         <span className="font-semibold">{city.name}</span>
                         <span className="text-xs text-muted-foreground">{city.location}</span>
