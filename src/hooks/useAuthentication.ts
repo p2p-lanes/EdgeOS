@@ -81,6 +81,7 @@ const useAuthentication = (): UseAuthenticationReturn => {
     }
 
     if (validateToken(token)) {
+      instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
       const decoded = jwtDecode(token) as User
       setUser(decoded)
       setIsAuthenticated(true)
