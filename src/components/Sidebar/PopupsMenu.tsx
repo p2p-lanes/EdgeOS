@@ -15,7 +15,6 @@ const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) 
 
   const cityName = `${city?.name?.split(' ')?.[0]?.[0].toUpperCase()}${city?.name?.split(' ')?.[1]?.[0].toUpperCase()}`
 
-  console.log('cityName', cityName)
   return (
     <SidebarHeader>
         <SidebarMenu>
@@ -32,7 +31,6 @@ const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) 
                     </div>
                   ) : (
                     <div className="flex items-center gap-3">
-                      
                         <Avatar className="size-10 rounded-xl" >
                           <AvatarFallback className='rounded-xl bg-slate-400 text-white font-semibold'>{cityName}</AvatarFallback>
                         </Avatar>

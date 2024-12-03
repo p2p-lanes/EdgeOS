@@ -9,6 +9,7 @@ import PopupsMenu from "./PopupsMenu"
 import FooterMenu from "./FooterMenu"
 import ResourcesMenu from "./ResourcesMenu"
 import { Sidebar } from "./SidebarComponents"
+import { Loader } from "../ui/Loader"
 
 
 export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -22,6 +23,8 @@ export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Side
     setCity(city)
     router.push(`/portal/${city.slug}`)
   }
+
+  if(!token) return <Loader />
 
   return (
     <Sidebar {...props}>
