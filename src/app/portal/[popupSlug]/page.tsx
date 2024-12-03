@@ -1,6 +1,7 @@
 'use client'
 
 import { EventCard } from "@/components/EventCard"
+import { EventStatus } from "@/components/EventProgressBar"
 import { Loader } from "@/components/ui/Loader"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
@@ -31,9 +32,9 @@ export default function Home() {
       <section>
         <div className="space-y-6">
           <EventCard
-            {...city}
+            {...city!}
             onApply={onClickApply}
-            status={relevantApplication?.status}
+            status={relevantApplication?.status as EventStatus}
           />
         </div>
       </section>

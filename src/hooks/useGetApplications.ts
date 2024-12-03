@@ -10,7 +10,7 @@ const useGetApplications = () => {
   const getApplicationsApi = async () => {
     const email = getUser()
 
-    if(applications) return applications
+    if(applications && applications.length > 0) return applications
     
     if(!email) return null
     const result = await api.get(`applications?email=${email}`)

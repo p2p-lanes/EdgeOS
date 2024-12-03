@@ -45,7 +45,15 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
   }
 
   const setPopups = (popups: PopupsProps[]): void => {
-    setPopupsState(popups);
+    const sortedPopups = popups.filter(popup => popup.visible_in_portal || popup.clickable_in_portal) 
+      .sort((a, b) => {
+        if (a.visible_in_portal && a.clickable_in_portal) return -1;
+        if (b.visible_in_portal && b.clickable_in_portal) return 1;
+        if (a.clickable_in_portal) return -1;
+        if (b.clickable_in_portal) return 1;
+        return 0;
+      });
+    setPopupsState(sortedPopups);
   }
 
   return (

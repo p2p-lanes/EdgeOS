@@ -10,7 +10,6 @@ const Page = () => {
   const city = getCity()
   const router = useRouter()
 
-
   useEffect(() => {
     if(city){
       router.push(`/portal/${city.slug}`)

@@ -2,7 +2,7 @@ import { AgeRangeProps, GenderProps } from "./User";
 
 type DurationProps = "1 weekend" | "1 week" | "2 weeks" | "full length" | "all weekends"
 
-type ApplicationStatusProps = "draft" | "in review" | "approved" | "rejected"
+type ApplicationStatusProps = "draft" | "in review" | "accepted" | "rejected"
 
 export interface ApplicationProps {
   first_name?: string;

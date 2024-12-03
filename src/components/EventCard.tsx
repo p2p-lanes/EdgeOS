@@ -4,7 +4,7 @@ import { CalendarDays, MapPin } from 'lucide-react'
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { EventProgressBar, EventStatus } from './EventProgressBar'
-import { PopupsProps } from '@/types/Popups'
+import { PopupsProps } from '@/types/Popup'
 
 interface EventCardProps extends PopupsProps {
   status?: EventStatus

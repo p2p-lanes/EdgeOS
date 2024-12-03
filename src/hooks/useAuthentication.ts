@@ -20,8 +20,9 @@ const useAuthentication = (): UseAuthenticationReturn => {
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const router = useRouter()
-  const paramssearch = new URLSearchParams(window.location.search)
-  const token = paramssearch.get('token_url')
+
+  const searchParams = new URLSearchParams(window.location.search)
+  const token = searchParams.get('token_url')
 
   const validateToken = (token: string): boolean => {
     try {
@@ -30,6 +31,14 @@ const useAuthentication = (): UseAuthenticationReturn => {
     } catch {
       return false
     }
+  }
+
+  const _authenticate = (): boolean => {
+    if (!token) return false;
+
+    const decoded = jwtDecode(token)
+
+    return false;
   }
 
   const login = (): boolean => {
@@ -78,7 +87,7 @@ const useAuthentication = (): UseAuthenticationReturn => {
     login,
     logout,
     validateToken, 
-    token
+    token,
   }
 }
 

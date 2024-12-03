@@ -22,8 +22,8 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
   const { getCity } = useCityProvider()
   const city = getCity()
 
-  useGetPopups()
   useGetApplications()
+  useGetPopups()
 
   return (
     <Authentication>
