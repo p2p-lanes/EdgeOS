@@ -3,19 +3,21 @@ import { toast } from "sonner"
 import { getToken } from "@/helpers/getToken"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
+import { ApplicationProps } from "@/types/Application"
 
 const useSavesForm = () => {
   const token = getToken()
-  const { getCity, setApplications, getRelevantApplication } = useCityProvider()
+  const { getCity, setApplications, getRelevantApplication, getApplications } = useCityProvider()
   const application = getRelevantApplication()
   const city = getCity()
   const router = useRouter()
+  const applications = getApplications()
 
   const createApplication = async (formData: Record<string, unknown>) => {
     return api.post('applications', formData)
   }
 
-  const updateApplication = async (id: string, formData: Record<string, unknown>) => {
+  const updateApplication = async (id: number, formData: Record<string, unknown>) => {
     return api.put(`applications/${id}`, formData)
   }
 
@@ -32,7 +34,8 @@ const useSavesForm = () => {
     const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
       
     response.then((data) => {
-      setApplications((prev: any) => [...prev, data.data])
+      const newApplication = data.data as ApplicationProps
+      setApplications([...applications, newApplication])
       toast.success("Application Submitted", {
         description: "Your application has been successfully submitted.",
       })
@@ -57,7 +60,7 @@ const useSavesForm = () => {
     const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
 
     response.then((data) => {
-      setApplications((prev: any) => [...prev, data.data])
+      setApplications([...applications, data.data])
       toast.success("Draft Saved", {
         description: "Your draft has been successfully saved.",
       })

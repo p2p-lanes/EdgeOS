@@ -22,8 +22,8 @@ const useAuthentication = (): UseAuthenticationReturn => {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const router = useRouter()
 
-  const searchParams = new URLSearchParams(window.location.search)
-  const token = searchParams.get('token_url')
+  const searchParams = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search)
+  const token = searchParams?.get('token_url') ?? null
 
   const validateToken = (token: string): boolean => {
     try {

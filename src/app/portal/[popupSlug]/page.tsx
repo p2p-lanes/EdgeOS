@@ -18,6 +18,7 @@ export default function Home() {
 
   const onClickApply = () => {
     if(relevantApplication?.status === 'accepted') {
+      if(typeof window === 'undefined') return
       window.open('https://www.pagar.simplefi.tech/edge-city', '_blank')
       return;
     }
