@@ -1,6 +1,6 @@
 'use client'
 
-import { SidebarProvider } from "@/components/ui/sidebar"
+import { SidebarProvider } from "@/components/Sidebar/SidebarComponents"
 import CityProvider from "@/providers/cityProvider"
 
 const Providers = ({children}: {children: React.ReactNode}) => {

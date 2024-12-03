@@ -11,12 +11,12 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb"
-import { SidebarTrigger, SidebarInset } from "@/components/ui/sidebar"
-import { BackofficeSidebar } from "@/components/backoffice-sidebar"
+import { SidebarTrigger, SidebarInset } from "@/components/Sidebar/SidebarComponents"
 import { useCityProvider } from "@/providers/cityProvider"
 import Authentication from "@/app/Authentication"
 import useGetPopups from "@/hooks/useGetPopups"
 import useGetApplications from "@/hooks/useGetApplications"
+import { BackofficeSidebar } from "@/components/Sidebar/Sidebar"
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   const { getCity } = useCityProvider()
