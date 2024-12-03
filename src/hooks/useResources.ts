@@ -3,15 +3,16 @@ import { Resource } from "@/types/resources"
 import { CircleDot, FileText, Home, Tag, Ticket, User } from "lucide-react"
 
 const useResources = () => {
-  const { getRelevantApplication } = useCityProvider()
+  const { getRelevantApplication, getCity } = useCityProvider()
   const application = getRelevantApplication()
+  const city = getCity()
 
   const resources: Resource[] = [
   {
     name: 'Application',
     icon: FileText,
     status: 'active',
-    path: '/portal',
+    path: `/portal/${city?.slug}`,
     children: [
       {
         name: 'Status',
