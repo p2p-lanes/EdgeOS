@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
-First, run the development server:
+The resident portal is a product being developed by SimpleFi (aka p2planes) and (hopefully) you!
 
 ```bash
 npm run dev
