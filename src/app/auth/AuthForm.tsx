@@ -4,15 +4,12 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { api } from '@/api'
-import { Loader } from '@/components/ui/Loader'
 
 export default function AuthForm() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [isValidEmail, setIsValidEmail] = useState(true)
-  const [token, setToken] = useState<string | null>(null)
-  
 
   const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -33,8 +30,6 @@ export default function AuthForm() {
       setMessage('Check your email inbox for the log in link')
     })
   }
-
-  if(token) return <Loader />
 
   return (
     <div className="flex flex-col justify-center w-full md:w-1/2 p-8">
