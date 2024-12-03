@@ -1,12 +1,13 @@
+import { ApplicationProps } from '@/types/Application';
 import { PopupsProps } from '@/types/Popup';
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 interface CityContext_interface {
   getCity: () => PopupsProps | null;
   setCity: (city: PopupsProps) => void;
-  getApplications: () => any;
-  setApplications: (application: any) => void;
-  getRelevantApplication: () => any;
+  getApplications: () => ApplicationProps[];
+  setApplications: (application: ApplicationProps[]) => void;
+  getRelevantApplication: () => ApplicationProps;
   getPopups: () => PopupsProps[];
   setPopups: (popups: PopupsProps[]) => void;
 }
@@ -16,14 +17,14 @@ export const CityContext = createContext<CityContext_interface | null>(null);
 
 const CityProvider = ({ children }: {children: ReactNode}) => {
   const [city, setCityState] = useState<PopupsProps | null>(null);
-  const [applications, setApplicationsState] = useState<any>(null);
+  const [applications, setApplicationsState] = useState<ApplicationProps[]>([]);
   const [popups, setPopupsState] = useState<PopupsProps[]>([]);
 
-  const getApplications = (): any => {
+  const getApplications = (): ApplicationProps[] => {
     return applications
   }
 
-  const setApplications = (applications: any): void => {
+  const setApplications = (applications: ApplicationProps[]): void => {
     setApplicationsState(applications);
   }
 
@@ -35,8 +36,8 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
     setCityState(city);
   };
 
-  const getRelevantApplication = (): any => {
-    return applications?.filter((app: any) => app.popup_city_id === city?.id)?.slice(-1)[0]
+  const getRelevantApplication = (): ApplicationProps => {
+    return applications?.filter((app: ApplicationProps) => app.popup_city_id === city?.id)?.slice(-1)[0]
   }
 
   const getPopups = (): PopupsProps[] => {
