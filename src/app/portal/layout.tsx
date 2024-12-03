@@ -20,7 +20,7 @@ import useGetApplications from "@/hooks/useGetApplications"
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
   const { getCity } = useCityProvider()
-  const city = getCity()  
+  const city = getCity()
 
   useGetPopups()
   useGetApplications()

@@ -1,20 +1,16 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { api } from '@/api'
-import { useRouter } from 'next/navigation'
 import { Loader } from '@/components/ui/Loader'
-import useAuthentication from "@/hooks/useAuthentication"
 
 export default function AuthForm() {
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [isValidEmail, setIsValidEmail] = useState(true)
-  const router = useRouter()
-  const { login, isLoading: authLoading } = useAuthentication()
 
   const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -35,14 +31,6 @@ export default function AuthForm() {
       setMessage('Check your email inbox for the log in link')
     })
   }
-
-  useEffect(() => {
-    if (login()) {
-      router.push('/portal')
-    }
-  }, [])
-
-  if(authLoading) return <Loader />
 
   return (
     <div className="flex flex-col justify-center w-full md:w-1/2 p-8">

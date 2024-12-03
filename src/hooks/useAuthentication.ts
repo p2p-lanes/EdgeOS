@@ -11,7 +11,8 @@ interface UseAuthenticationReturn {
   isAuthenticated: boolean
   login: () => boolean
   logout: () => void
-  validateToken: (token: string) => boolean
+  validateToken: (token: string) => boolean;
+  token: string | null
 }
 
 const useAuthentication = (): UseAuthenticationReturn => {
@@ -76,7 +77,8 @@ const useAuthentication = (): UseAuthenticationReturn => {
     isAuthenticated,
     login,
     logout,
-    validateToken
+    validateToken, 
+    token
   }
 }
 
