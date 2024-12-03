@@ -18,7 +18,7 @@ const useProgress = (formData: any) => {
       },
       {
         name: 'participation',
-        fields: ['duration', 'check_in', 'check_out', 'success_definition', 'top_tracks', 'host_session'],
+        fields: ['duration', 'success_definition', 'top_tracks', 'host_session'],
         required: true
       },
       {

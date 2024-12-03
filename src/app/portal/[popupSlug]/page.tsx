@@ -1,7 +1,7 @@
 'use client'
 
-import { EventCard } from "@/components/EventCard"
-import { EventStatus } from "@/components/EventProgressBar"
+import { EventCard } from "@/components/Card/EventCard"
+import { EventStatus } from "@/components/Card/EventProgressBar"
 import { Loader } from "@/components/ui/Loader"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"

@@ -120,43 +120,8 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           {errors.duration && <p className="text-red-500 text-sm">{errors.duration}</p>}
         </FormInputWrapper>
 
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormInputWrapper>
-            <Label htmlFor="check_in">
-              Check-in
-              <RequiredFieldIndicator />
-            </Label>
-            <Input 
-              type="date" 
-              id="check_in" 
-              value={formData.check_in || ''}
-              min={city?.start_date ? new Date(city.start_date).toISOString().split('T')[0] : ''}
-              max={city?.end_date ? new Date(city.end_date).toISOString().split('T')[0] : ''}
-              onChange={(e) => handleChange('check_in', e.target.value)}
-              className={errors.check_in ? 'border-red-500' : ''}
-            />
-            {errors.check_in && <p className="text-red-500 text-sm">{errors.check_in}</p>}
-          </FormInputWrapper>
-          <FormInputWrapper>
-            <Label htmlFor="check_out">
-              Check-out
-              <RequiredFieldIndicator />
-            </Label>
-            <Input 
-              type="date" 
-              id="check_out" 
-              value={formData.check_out || ''}
-              min={city?.start_date ? new Date(city.start_date).toISOString().split('T')[0] : ''}
-              max={city?.end_date ? new Date(city.end_date).toISOString().split('T')[0] : ''}
-              onChange={(e) => handleChange('check_out', e.target.value)}
-              className={errors.check_out ? 'border-red-500' : ''}
-            />
-            {errors.check_out && <p className="text-red-500 text-sm">{errors.check_out}</p>}
-          </FormInputWrapper>
-        </div>
-
         <FormInputWrapper>
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-4 gap-y-6 sm:grid-cols-2 my-4">
             <div className="flex items-center space-x-2">
               <Checkbox 
                 id="builder_boolean" 
@@ -228,25 +193,17 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                 <Label htmlFor="gitcoin">Are you applying as part of the Gitcoin OSS program?</Label>
               </div>
             </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="draftsAndDemos"
-                checked={formData.draft_and_demos || false}
-                onCheckedChange={(checked) => handleChange('draft_and_demos', checked === true)}
-              />
-              <Label htmlFor="draftsAndDemos">Do you want to participate in Drafts&Demos (weekend 2 hack)?</Label>
-            </div>
           </div>
         </FormInputWrapper>
 
-        <div className="grid gap-8 lg:grid-cols-2">
+        <div className="grid gap-8">
           <FormInputWrapper>
             <Label>
               What would success look like for you by the end of Edge Esmeralda?
               <RequiredFieldIndicator />
             </Label>
-            <div className="space-y-2">
-              {successOptions.map((option) => (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              {successOptions.map((option, index) => (
                 <Label key={option.id} className="flex items-center gap-2">
                   <Checkbox 
                     id={option.id}
@@ -266,7 +223,9 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             </div>
             {errors.success_definition && <p className="text-red-500 text-sm">{errors.success_definition}</p>}
           </FormInputWrapper>
+        </div>
 
+        <div className="grid gap-4 sm:grid-cols-2">
           <FormInputWrapper>
             <Label htmlFor="goals">Elaborate on your goals in attending Edge Esmeralda</Label>
             <p className="text-sm text-muted-foreground mb-2">

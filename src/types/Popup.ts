@@ -1,4 +1,4 @@
-import { EventStatus } from "@/components/EventProgressBar"
+import { EventStatus } from "@/components/Card/EventProgressBar"
 
 export type PopupsProps = {
   id: string;
