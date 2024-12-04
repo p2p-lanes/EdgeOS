@@ -46,17 +46,17 @@ export default function AuthForm() {
       <div className="max-w-sm w-full mx-auto space-y-8 my-12">
         <div className="relative aspect-square w-24 mx-auto mb-8">
           <img
-            src="https://sjc.microlink.io/W16KL5ygz5qRkKvnitli2zGNAZQlZEye8Vcq7r1fYLzdHRsyrS2H49OQ9VMfHiCJsYlxM53pi6Zkuw9QOfgvDQ.jpeg"
+            src="https://pbs.twimg.com/profile_images/1804985211740205056/iIJQisAK_400x400.png"
             alt="EdgeCity illustration"
             style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0.5rem'}}
           />
         </div>
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Sign into the Edge Esmeralda portal
+            Sign into the EdgeCity portal
           </h2>
           <p className="mt-2 text-sm text-gray-600">
-            Enter your email below and receive a link to log into the portal
+            Enter your email below and receive a magic link in your inbox to log in
           </p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

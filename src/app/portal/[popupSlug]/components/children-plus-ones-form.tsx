@@ -31,10 +31,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange }: Childre
       <div className="space-y-2">
         <h2 className="text-2xl font-semibold tracking-tight">Children and +1s</h2>
         <p className="text-sm text-muted-foreground">
-          Learn more about our ticketing pricing and philosophy{" "}
-          <Link href="#" className="text-primary hover:underline">
-            here
-          </Link>
+          
           .
         </p>
       </div>

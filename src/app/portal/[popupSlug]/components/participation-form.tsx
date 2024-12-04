@@ -177,7 +177,6 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
         <div className="grid gap-4 sm:grid-cols-2">
           <FormInputWrapper>
             <Label htmlFor="host_session">If you were to host a session on any topic for/with Edge Esmeraldans, what would that session be?</Label>
-            <RequiredFieldIndicator />
             <p className="text-sm text-muted-foreground mb-2">
               This is just to get a sense of the topics you&apos;re interested in, not a commitment to host this particular session. You&apos;re welcome to change your plans as we get closer to May.
             </p>
@@ -191,7 +190,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           </FormInputWrapper>
            <FormInputWrapper>
             <Label>
-              Info I&apos;m willing to share with other attendees
+              Info I&apos;m not willing to share with other attendees
               <RequiredFieldIndicator />
             </Label>
             <p className="text-sm text-muted-foreground mb-2">

@@ -54,7 +54,7 @@ export function EventCard({ id, name, tagline, location, start_date, end_date, i
             <Button onClick={onApply} className='w-auto px-9'>
               {status === 'not_started' ? 'Apply' : 
                status === 'draft' ? 'Continue Application' :
-               status === 'in review' ? 'View Application' :
+               status === 'in review' ? 'Edit Application' :
                status === 'accepted' ? 'Purchase Ticket' : 'Modify Ticket'}
             </Button>
           </div>
