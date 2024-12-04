@@ -10,11 +10,12 @@ const useGetTokenAuth = () => {
 
   useEffect(() => {
     const token = window?.localStorage?.getItem('token')
+    console.log('token', token)
     if(token) {
       const user = jwtDecode(token) as User
       setUser(user)
     }
-  }, [])
+  }, [window?.localStorage])
 
   return ({user})
 }

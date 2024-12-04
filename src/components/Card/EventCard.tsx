@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { EventProgressBar, EventStatus } from './EventProgressBar'
 import { PopupsProps } from '@/types/Popup'
 import useWindow from '@/hooks/useWindow'
+import { useEffect, useState } from 'react'
 
 interface EventCardProps extends PopupsProps {
   status?: EventStatus
@@ -14,10 +15,16 @@ interface EventCardProps extends PopupsProps {
 
 export function EventCard({ id, name, tagline, location, start_date, end_date, image_url, status = 'not_started', onApply }: EventCardProps) {
   const { isClient } = useWindow()
+  const [calendarDays, setCalendarDays] = useState('')
 
-  const startDate = (start_date && isClient) ? new Date(start_date).toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'}) : ''
-  const endDate = (end_date && isClient) ? new Date(end_date).toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'}) : ''
-  const calendarDays = startDate + ' - ' + endDate
+  useEffect(() => {
+    if(!isClient || !start_date || !end_date) return
+
+    const startDate = new Date(start_date).toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
+    const endDate = new Date(end_date).toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
+    const calendarDays = startDate + ' - ' + endDate
+    setCalendarDays(calendarDays)
+  }, [start_date, end_date, isClient])
 
   return (
     <Card className="w-full overflow-hidden">
