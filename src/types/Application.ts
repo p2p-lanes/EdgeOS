@@ -43,5 +43,6 @@ export interface ApplicationProps {
   popup_city_id?: number;
   email?: string;
   id?: number;
+  local_resident?: boolean;
   citizen?: string | null;
 }

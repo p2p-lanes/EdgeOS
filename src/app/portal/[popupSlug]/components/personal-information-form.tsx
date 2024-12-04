@@ -4,11 +4,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FormInputWrapper } from "./form-input-wrapper";
 import { RequiredFieldIndicator } from "./required-field-indicator";
 import SectionWrapper from "./SectionWrapper";
+import { Checkbox } from "@/components/ui/checkbox";
+import { AddonInput } from "@/components/ui/addon-input";
 
 interface PersonalInformationFormProps {
   formData: any;
   errors: Record<string, string>;
-  handleChange: (name: string, value: string) => void;
+  handleChange: (name: string, value: string | boolean) => void;
 }
 
 export function PersonalInformationForm({ formData, errors, handleChange }: PersonalInformationFormProps) {
@@ -104,11 +106,12 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
               <p className="text-sm text-muted-foreground mb-2">
                 The primary form of communication during Edge Esmeralda will be a Telegram group, so create an account if you don&apos;t already have one
               </p>
-              <Input 
-                id="telegram" 
-                value={formData.telegram}
+              <AddonInput
+                id="telegram"
+                addon="@"
+                placeholder="username"
+                defaultValue={formData.telegram}
                 onChange={(e) => handleChange('telegram', e.target.value)}
-                className={`mt-auto ${errors.telegram ? 'border-red-500' : ''}`}
               />
               {errors.telegram && <p className="text-red-500 text-sm mt-1">{errors.telegram}</p>}
             </div>
@@ -158,6 +161,18 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
             </div>
           </FormInputWrapper>
         </div>
+        <FormInputWrapper>
+          <div className="space-y-6 mt-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="local_resident"
+                  checked={formData.local_resident || false}
+                  onCheckedChange={(checked: boolean) => handleChange('local_resident', checked === true)}
+                />
+                <Label htmlFor="local_resident">Are you a Sonoma County local?</Label>
+              </div>
+          </div>
+        </FormInputWrapper>
       </FormInputWrapper>
     </SectionWrapper>
   )

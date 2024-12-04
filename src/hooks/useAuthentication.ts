@@ -21,9 +21,7 @@ const useAuthentication = (): UseAuthenticationReturn => {
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const router = useRouter()
-
-  const searchParams = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search)
-  const token = searchParams?.get('token_url') ?? null
+  const token = window?.localStorage?.getItem('token')
 
   const validateToken = (token: string): boolean => {
     try {
@@ -35,9 +33,12 @@ const useAuthentication = (): UseAuthenticationReturn => {
   }
 
   const _authenticate = async (): Promise<boolean> => {
-    if (!token) return false;
+    const searchParams = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search)
+    const tokenUrl = searchParams?.get('token_url') ?? null;
 
-    const tokenAuthenticate = jwtDecode(token) as any
+    if (!tokenUrl) return false;
+
+    const tokenAuthenticate = jwtDecode(tokenUrl) as any
 
     if(tokenAuthenticate && tokenAuthenticate.url) {
       const response = await api.post(tokenAuthenticate.url)
@@ -54,7 +55,6 @@ const useAuthentication = (): UseAuthenticationReturn => {
   }
 
   const login = async (): Promise<boolean> => {
-    if (!token) return false
     const isAuthenticated = await _authenticate()
 
     if (isAuthenticated) {
@@ -74,12 +74,11 @@ const useAuthentication = (): UseAuthenticationReturn => {
   useEffect(() => {
     if (typeof window === 'undefined') return
 
-    const token = window?.localStorage?.getItem('token')
     if (!token) {
       setIsLoading(false)
       return
     }
-
+    
     if (validateToken(token)) {
       instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
       const decoded = jwtDecode(token) as User

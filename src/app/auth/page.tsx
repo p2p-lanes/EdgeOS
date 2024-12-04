@@ -13,7 +13,7 @@ const AuthForm = dynamic(() => import('@/app/auth/AuthForm'), {
 })
 
 export default function AuthPage() {
-  const { login, token } = useAuthentication()
+  const { login, token, isLoading, isAuthenticated } = useAuthentication()
   const router = useRouter()
 
   const handleLogin = async () => {
@@ -23,10 +23,15 @@ export default function AuthPage() {
   }
 
   useEffect(() => {
-    handleLogin()
-  }, [])
+    if(isAuthenticated && !isLoading) {
+      router.push('/portal')
+      return
+    }
 
-  if(token) {
+    handleLogin()
+  }, [isAuthenticated, isLoading])
+
+  if(isLoading || isAuthenticated || token) {
     return (
       <div className="w-full h-full">
         <Loader/>

@@ -14,7 +14,7 @@ export default function RootLayout({children }: Readonly<{ children: React.React
 
   return (
     <html lang="en">
-      <body>
+      <body suppressHydrationWarning>
         <div className={`${GeistSans.className} antialiased w-[100%]`}>
           {children}
         </div>
