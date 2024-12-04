@@ -4,11 +4,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { FormInputWrapper } from "./form-input-wrapper";
 import { RequiredFieldIndicator } from "./required-field-indicator";
 import SectionWrapper from "./SectionWrapper";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface PersonalInformationFormProps {
   formData: any;
   errors: Record<string, string>;
-  handleChange: (name: string, value: string) => void;
+  handleChange: (name: string, value: string | boolean) => void;
 }
 
 export function PersonalInformationForm({ formData, errors, handleChange }: PersonalInformationFormProps) {
@@ -158,6 +159,18 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
             </div>
           </FormInputWrapper>
         </div>
+        <FormInputWrapper>
+          <div className="space-y-6 mt-4">
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="local_resident"
+                  checked={formData.local_resident || false}
+                  onCheckedChange={(checked: boolean) => handleChange('local_resident', checked === true)}
+                />
+                <Label htmlFor="local_resident">Are you a Sonoma County local?</Label>
+              </div>
+          </div>
+        </FormInputWrapper>
       </FormInputWrapper>
     </SectionWrapper>
   )
