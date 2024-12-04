@@ -21,7 +21,7 @@ const useAuthentication = (): UseAuthenticationReturn => {
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const router = useRouter()
-  const token = window?.localStorage?.getItem('token')
+  const token = typeof window === 'undefined' ? null :window?.localStorage?.getItem('token')
 
   const validateToken = (token: string): boolean => {
     try {
