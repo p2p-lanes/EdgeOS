@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 export default function AuthPage() {
-  const { login, token, isLoading } = useAuthentication()
+  const { login, token, isLoading, isAuthenticated } = useAuthentication()
   const router = useRouter()
 
   const handleLogin = async () => {
@@ -18,10 +18,15 @@ export default function AuthPage() {
   }
 
   useEffect(() => {
-    handleLogin()
-  }, [])
+    if(isAuthenticated && !isLoading) {
+      router.push('/portal')
+      return
+    }
 
-  if(token || isLoading) {
+    handleLogin()
+  }, [isAuthenticated, isLoading])
+
+  if(isLoading || isAuthenticated || token) {
     return (
       <div className="w-full h-full">
         <Loader/>

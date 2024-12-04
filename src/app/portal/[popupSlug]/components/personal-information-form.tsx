@@ -5,6 +5,7 @@ import { FormInputWrapper } from "./form-input-wrapper";
 import { RequiredFieldIndicator } from "./required-field-indicator";
 import SectionWrapper from "./SectionWrapper";
 import { Checkbox } from "@/components/ui/checkbox";
+import { AddonInput } from "@/components/ui/addon-input";
 
 interface PersonalInformationFormProps {
   formData: any;
@@ -105,11 +106,12 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
               <p className="text-sm text-muted-foreground mb-2">
                 The primary form of communication during Edge Esmeralda will be a Telegram group, so create an account if you don&apos;t already have one
               </p>
-              <Input 
-                id="telegram" 
-                value={formData.telegram}
+              <AddonInput
+                id="telegram"
+                addon="@"
+                placeholder="username"
+                defaultValue={formData.telegram}
                 onChange={(e) => handleChange('telegram', e.target.value)}
-                className={`mt-auto ${errors.telegram ? 'border-red-500' : ''}`}
               />
               {errors.telegram && <p className="text-red-500 text-sm mt-1">{errors.telegram}</p>}
             </div>
