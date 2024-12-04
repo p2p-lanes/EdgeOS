@@ -3,6 +3,7 @@
 import { EventCard } from "@/components/Card/EventCard"
 import { EventStatus } from "@/components/Card/EventProgressBar"
 import { Loader } from "@/components/ui/Loader"
+import useWindow from "@/hooks/useWindow"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -13,13 +14,13 @@ export default function Home() {
   const router = useRouter()
   const city = getCity()
   const relevantApplication = getRelevantApplication()
+  const { window } = useWindow()
   
   if(!city && !relevantApplication) return null
 
   const onClickApply = () => {
     if(relevantApplication?.status === 'accepted') {
-      if(typeof window === 'undefined') return
-      window.open('https://www.pagar.simplefi.tech/edge-city', '_blank')
+      window?.open('https://www.pagar.simplefi.tech/edge-city', '_blank')
       return;
     }
     setIsLoading(true)

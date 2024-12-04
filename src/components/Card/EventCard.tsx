@@ -5,6 +5,8 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { EventProgressBar, EventStatus } from './EventProgressBar'
 import { PopupsProps } from '@/types/Popup'
+import useWindow from '@/hooks/useWindow'
+import { useEffect, useState } from 'react'
 
 interface EventCardProps extends PopupsProps {
   status?: EventStatus
@@ -12,6 +14,18 @@ interface EventCardProps extends PopupsProps {
 }
 
 export function EventCard({ id, name, tagline, location, start_date, end_date, image_url, status = 'not_started', onApply }: EventCardProps) {
+  const { isClient } = useWindow()
+  const [calendarDays, setCalendarDays] = useState('')
+
+  useEffect(() => {
+    if(!isClient || !start_date || !end_date) return
+
+    const startDate = new Date(start_date).toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
+    const endDate = new Date(end_date).toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
+    const calendarDays = startDate + ' - ' + endDate
+    setCalendarDays(calendarDays)
+  }, [start_date, end_date, isClient])
+
   return (
     <Card className="w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row">
@@ -31,15 +45,7 @@ export function EventCard({ id, name, tagline, location, start_date, end_date, i
           </div>
           <div className="flex items-center text-sm text-muted-foreground mb-4">
             <CalendarDays className="mr-2 h-4 w-4" />
-            {start_date && new Date(start_date).toLocaleDateString('en-EN', {
-              day: 'numeric',
-              month: 'long',
-              year: 'numeric'
-            }) + ' - ' + (end_date ? new Date(end_date).toLocaleDateString('en-EN', {
-              day: 'numeric', 
-              month: 'long',
-              year: 'numeric'
-            }) : '')}
+            {calendarDays}
           </div>
           <div className="my-6">
             <EventProgressBar status={status} />

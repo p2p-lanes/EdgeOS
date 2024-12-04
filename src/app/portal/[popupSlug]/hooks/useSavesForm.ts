@@ -1,12 +1,12 @@
 import { api } from "@/api"
 import { toast } from "sonner"
-import { getToken } from "@/helpers/getToken"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
 import { ApplicationProps } from "@/types/Application"
+import useGetTokenAuth from "@/hooks/useGetTokenAuth"
 
 const useSavesForm = () => {
-  const token = getToken()
+  const { user } = useGetTokenAuth()
   const { getCity, setApplications, getRelevantApplication, getApplications } = useCityProvider()
   const application = getRelevantApplication()
   const city = getCity()
@@ -22,11 +22,11 @@ const useSavesForm = () => {
   }
 
   const handleSaveForm = async (formData: Record<string, unknown>) => {
-    if(!city || !token) return
+    if(!city || !user) return
 
     const data = {
       ...formData,
-      citizen_id: token?.citizen_id,
+      citizen_id: user?.citizen_id,
       popup_city_id: city?.id,
       status: 'in review'
     }
@@ -48,11 +48,11 @@ const useSavesForm = () => {
   }
 
   const handleSaveDraft = async (formData: Record<string, unknown>) => {
-    if(!city || !token) return
+    if(!city || !user) return
 
     const data = {
       ...formData,
-      citizen_id: token?.citizen_id,
+      citizen_id: user?.citizen_id,
       popup_city_id: city?.id,
       status: 'draft'
     }

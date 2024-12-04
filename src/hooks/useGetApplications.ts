@@ -1,15 +1,17 @@
 import { useEffect } from "react"
 import { useCityProvider } from "@/providers/cityProvider"
 import { api } from "@/api"
-import { getUser } from "@/app/portal/[popupSlug]/helpers/getData"
+import useGetTokenAuth from "./useGetTokenAuth"
 
 const useGetApplications = () => {
   const { setApplications, getApplications } = useCityProvider()
   const applications = getApplications()
+  const { user } = useGetTokenAuth()
 
   const getApplicationsApi = async () => {
-    const email = getUser()
+    const email = user?.email
 
+    console.log(applications, user)
     if(applications && applications.length > 0) return applications
     
     if(!email) return null
@@ -24,6 +26,6 @@ const useGetApplications = () => {
 
   useEffect(() => {
     getApplicationsApi().then(setApplications)
-  }, [])
+  }, [user])
 }
 export default useGetApplications

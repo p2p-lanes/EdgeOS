@@ -43,7 +43,7 @@ export default function AuthForm() {
         </div>
         <div className="text-center">
           <h2 className="mt-6 text-3xl font-bold text-gray-900">
-            Sign into the EdgeCity resident portal
+            Sign into the Edge Esmeralda portal
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             Enter your email below and receive a link to log into the portal

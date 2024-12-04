@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import {  getUser } from "../helpers/getData";
 import { toast } from "sonner";
 import useGetData from "./useGetData";
 import { useCityProvider } from "@/providers/cityProvider";
+import useWindow from "@/hooks/useWindow";
 
 const useInitForm = (setFormData: any) => {
   const [isLoading, setIsLoading] = useState(true)
@@ -12,6 +12,7 @@ const useInitForm = (setFormData: any) => {
   const { getCity, getPopups } = useCityProvider()
   const city = getCity()
   const popups = getPopups()
+  const { window } = useWindow()
 
   useEffect(() => {
     const initializeForm = async () => {
