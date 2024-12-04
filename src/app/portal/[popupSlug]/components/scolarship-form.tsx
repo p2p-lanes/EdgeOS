@@ -17,7 +17,7 @@ interface ScholarshipFormProps {
 const scholarshipTypes = [
   { id: "Young builder (< 21 years old)", label: "Young builder (< 21 years old)" },
   { id: "Academic/researcher", label: "Academic/researcher" },
-  { id: "Month-long volunteer", label: "Month-long volunteer" },
+  // { id: "Month-long volunteer", label: "Month-long volunteer" },
 ]
 
 export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipFormProps) {
@@ -35,11 +35,8 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
       <div className="space-y-2">
         <h2 className="text-2xl font-semibold tracking-tight">Edge Esmeralda scholarship</h2>
         <p className="text-sm text-muted-foreground">
-          Fill out this section if you are interested in securing one of a limited number of scholarships for Edge Esmeralda. Learn more about our scholarship program{" "}
-          <Link href="#" className="text-primary hover:underline">
-            here
-          </Link>
-          . We are prioritizing scholars who apply for the full experience (June 2-30, 2024).
+          Fill out this section if you are interested in securing one of a limited number of scholarships for Edge Esmeralda.
+          We are prioritizing scholars who apply for the full experience (May 24 - June 21, 2025).
         </p>
       </div>
       <FormInputWrapper>

@@ -65,7 +65,6 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
               <SelectContent>
                 <SelectItem value="Male">Male</SelectItem>
                 <SelectItem value="Female">Female</SelectItem>
-                <SelectItem value="Non-binary">Non-binary</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
                 <SelectItem value="Prefer not to say">Prefer not to say</SelectItem>
               </SelectContent>
@@ -142,6 +141,20 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
                 onChange={(e) => handleChange('eth_address', e.target.value)}
                 className="mt-auto"
               />
+            </div>
+          </FormInputWrapper>
+          <FormInputWrapper>
+            <div className="flex flex-col h-full">
+            <Label htmlFor="referral">Did anyone refer you?</Label>
+            <p className="text-sm text-muted-foreground mb-2">
+              List everyone who encouraged you to apply
+            </p>
+            <Input
+              id="referral"
+              value={formData.referral ?? ''}
+              onChange={(e) => handleChange('referral', e.target.value)}
+              className="mt-auto"
+            />
             </div>
           </FormInputWrapper>
         </div>

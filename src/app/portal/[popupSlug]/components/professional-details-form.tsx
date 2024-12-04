@@ -61,7 +61,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange }: Prof
               <RequiredFieldIndicator />
             </Label>
             <p className="text-sm text-muted-foreground mb-2">
-              e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Provide actual links, e.g. twitter.com/devonzuegel or linkedin.com/in/garysheng
+              e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Please provide the full link.
             </p>
             <Input 
               id="social_media" 

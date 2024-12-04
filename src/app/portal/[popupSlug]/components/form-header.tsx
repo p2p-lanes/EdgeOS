@@ -1,5 +1,6 @@
+'use client'
+
 import { useCityProvider } from "@/providers/cityProvider"
-import Image from "next/image"
 import SectionWrapper from "./SectionWrapper"
 
 export function FormHeader() {
@@ -19,10 +20,10 @@ export function FormHeader() {
         />
       </div>
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">{city.name} application</h1>
-        <p className="text-sm text-primary">
+        <h1 className="text-3xl font-bold tracking-tight">{city.name} 2025 Application</h1>
+        {/* <p className="text-sm text-primary">
           OUR APPLICATIONS ARE NOW CLOSED. 2025 APPLICATIONS WILL OPEN SOON.
-        </p>
+        </p> */}
       </div>
     </SectionWrapper>
   )
