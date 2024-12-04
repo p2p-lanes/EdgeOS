@@ -11,7 +11,6 @@ const useGetApplications = () => {
   const getApplicationsApi = async () => {
     const email = user?.email
 
-    console.log(applications, user)
     if(applications && applications.length > 0) return applications
     
     if(!email) return null

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 
 export default function AuthPage() {
-  const { login, token } = useAuthentication()
+  const { login, token, isLoading } = useAuthentication()
   const router = useRouter()
 
   const handleLogin = async () => {
@@ -21,7 +21,7 @@ export default function AuthPage() {
     handleLogin()
   }, [])
 
-  if(token) {
+  if(token || isLoading) {
     return (
       <div className="w-full h-full">
         <Loader/>
