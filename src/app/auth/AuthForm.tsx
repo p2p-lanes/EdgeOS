@@ -1,15 +1,25 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { api } from '@/api'
 
 export default function AuthForm() {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    setIsMounted(true)
+  }, [])
+
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [isValidEmail, setIsValidEmail] = useState(true)
+
+  if (!isMounted) {
+    return null
+  }
 
   const validateEmail = (email: string) => {
     const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/
@@ -62,7 +72,7 @@ export default function AuthForm() {
               onChange={(e) => {
                 setEmail(e.target.value)
                 setIsValidEmail(true)
-                setMessage('')  // Clear message when email is changed
+                setMessage('')
               }}
               disabled={isLoading || !!message}
               className={`appearance-none rounded-md relative block w-full px-3 py-2 border ${
