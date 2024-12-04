@@ -2,12 +2,13 @@
 import { User } from "@/types/User"
 import { useEffect, useState } from "react"
 import { jwtDecode } from "jwt-decode";
+import useWindow from "./useWindow";
 
 const useGetTokenAuth = () => {
   const [user, setUser] = useState<User | null>(null)
+  const { window } = useWindow()
 
   useEffect(() => {
-    if(typeof window === 'undefined') return;
     const token = window?.localStorage?.getItem('token')
     if(token) {
       const user = jwtDecode(token) as User

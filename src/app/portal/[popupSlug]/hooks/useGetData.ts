@@ -1,17 +1,18 @@
 import { api } from "@/api"
-import { getUser } from "../helpers/getData"
 import { useCityProvider } from "@/providers/cityProvider"
 import { filterAcceptedApplications, filterApplications } from "../helpers/filters"
+import useGetTokenAuth from "@/hooks/useGetTokenAuth"
 
 const useGetData = () => {
   const { getCity, getApplications } = useCityProvider()
   const city = getCity()
   const applications = getApplications()
-
+  const { user } = useGetTokenAuth()
+  
   const getData = async () => {
     if(applications) return {status: 200, data: applications}
+    const email = user?.email
 
-    const email = getUser()
     if(email) {
       return api.get(`applications?email=${email}`)
     }

@@ -18,6 +18,7 @@ import useProgress from '../hooks/useProgress'
 import { initial_data } from '../helpers/constants'
 import useInitForm from '../hooks/useInitForm'
 import { useCityProvider } from "@/providers/cityProvider"
+import useWindow from "@/hooks/useWindow"
 
 export default function FormPage() {
   const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation(initial_data)
@@ -26,12 +27,12 @@ export default function FormPage() {
   const progress = useProgress(formData)
   const { getCity } = useCityProvider()
   const city = getCity()
+  const { window } = useWindow()
 
   const handleImport = async () => {
     if (existingApplication) {
       setFormData(existingApplication);
       setShowExistingCard(false);
-      if(typeof window === 'undefined') return;
       window?.localStorage?.setItem('hasSeenExistingApplicationModal', 'true');
       toast.success("Previous application data imported successfully");
     }
@@ -39,7 +40,6 @@ export default function FormPage() {
 
   const handleCancelImport = () => {
     setShowExistingCard(false);
-    if(typeof window === 'undefined') return;
     window?.localStorage?.setItem('hasSeenExistingApplicationModal', 'true');
   }
 
