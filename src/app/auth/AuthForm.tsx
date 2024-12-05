@@ -76,7 +76,7 @@ export default function AuthForm() {
         >
           <div className="text-center max-w-xs mx-auto">
             <h2 className="mt-6 text-3xl font-bold text-gray-900" style={{ textWrap: 'balance' }}>
-              Sign into the EdgeCity portal
+              Sign into the Edge Portal
             </h2>
             <p className="mt-2 text-sm text-gray-600" style={{ textWrap: 'balance' }}>
               Enter your email below and receive a magic link in your inbox to log in
