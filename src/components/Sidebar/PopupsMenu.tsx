@@ -41,8 +41,8 @@ const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) 
                     </div>
                   ) : (
                     <div className="flex items-center gap-3">
-                        <Avatar className="size-10 rounded-xl" >
-                          <AvatarFallback className='rounded-xl bg-slate-400 text-white font-semibold'>{cityName}</AvatarFallback>
+                        <Avatar className="size-8 rounded-lg flex items-center justify-center" >
+                          <AvatarFallback className='rounded-lg bg-slate-400 text-white font-semibold text-center'>{cityName}</AvatarFallback>
                         </Avatar>
                       <div className="flex flex-col gap-0.5 text-sm">
                         <span className="font-semibold">{city.name}</span>
