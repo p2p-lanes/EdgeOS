@@ -1,8 +1,8 @@
 'use client'
 
 import { CalendarDays, MapPin } from 'lucide-react'
-import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
+import { Card, CardAnimation, CardContent } from "@/components/ui/card"
+import { ButtonAnimated } from "@/components/ui/button"
 import { EventProgressBar, EventStatus } from './EventProgressBar'
 import { PopupsProps } from '@/types/Popup'
 import useWindow from '@/hooks/useWindow'
@@ -27,7 +27,7 @@ export function EventCard({ id, name, tagline, location, start_date, end_date, i
   }, [start_date, end_date, isClient])
 
   return (
-    <Card className="w-full overflow-hidden">
+    <CardAnimation anim={['entry']} duration={0.6} className="w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row">
         <div className="relative sm:h-auto sm:w-1/3">
           <img
@@ -51,16 +51,16 @@ export function EventCard({ id, name, tagline, location, start_date, end_date, i
             <EventProgressBar status={status} />
           </div>
           <div className="flex items-end justify-end sm:justify-end">
-            <Button onClick={onApply} className='w-auto px-9'>
+            <ButtonAnimated onClick={onApply} className='w-auto px-9'>
               {status === 'not_started' ? 'Apply' : 
                status === 'draft' ? 'Continue Application' :
                status === 'in review' ? 'Edit Application' :
                status === 'accepted' ? 'Purchase Ticket' : 'Modify Ticket'}
-            </Button>
+            </ButtonAnimated>
           </div>
         </CardContent>
       </div>
-    </Card>
+    </CardAnimation>
   )
 }
 

@@ -35,9 +35,6 @@ const useInitForm = (setFormData: any) => {
             ...prevData,
             ...application
           }));
-          toast.success("Draft loaded successfully", {
-            description: "Your previously saved draft has been loaded.",
-          });
         }
       } catch (error) {
         console.error("Error initializing form:", error);

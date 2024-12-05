@@ -33,7 +33,7 @@ const useSavesForm = () => {
 
     const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
       
-    response.then((data) => {
+    await response.then((data) => {
       const newApplication = data.data as ApplicationProps
       setApplications([...applications, newApplication])
       toast.success("Application Submitted", {
@@ -59,7 +59,7 @@ const useSavesForm = () => {
 
     const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
 
-    response.then((data) => {
+    await response.then((data) => {
       setApplications([...applications, data.data])
       toast.success("Draft Saved", {
         description: "Your draft has been successfully saved.",

@@ -1,8 +1,8 @@
 "use client"
 
-import { Button } from "@/components/ui/button"
+import { ButtonAnimated } from "@/components/ui/button"
 import { useFormValidation } from "@/hooks/useFormValidation"
-import { Toaster, toast } from "sonner"
+import { toast } from "sonner"
 import { Loader } from '../../../../components/ui/Loader'
 import { ExistingApplicationCard } from '../components/existing-application-card'
 import { FormHeader } from '../components/form-header'
@@ -19,15 +19,17 @@ import { initial_data } from '../helpers/constants'
 import useInitForm from '../hooks/useInitForm'
 import { useCityProvider } from "@/providers/cityProvider"
 import useWindow from "@/hooks/useWindow"
+import { useState } from "react"
 
 export default function FormPage() {
+  const [statusBtn, setStatusBtn] = useState({loadingDraft: false, loadingSubmit: false})
   const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation(initial_data)
-  const { isLoading, showExistingCard, existingApplication, setShowExistingCard } = useInitForm(setFormData)
+  const { isLoading: isLoadingForm, showExistingCard, existingApplication, setShowExistingCard } = useInitForm(setFormData)
   const { handleSaveForm, handleSaveDraft } = useSavesForm()
-  const progress = useProgress(formData)
   const { getCity } = useCityProvider()
-  const city = getCity()
   const { window } = useWindow()
+  const progress = useProgress(formData)
+  const city = getCity()
 
   const handleImport = async () => {
     if (existingApplication) {
@@ -43,31 +45,33 @@ export default function FormPage() {
     window?.localStorage?.setItem('hasSeenExistingApplicationModal', 'true');
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault()
-
-    const validationResult = validateForm()
-    if (validationResult.isValid) {
-      handleSaveForm(formData)
+    setStatusBtn({loadingDraft: false, loadingSubmit: true})
+    const formValidation = validateForm()
+    if (formValidation.isValid) {
+      await handleSaveForm(formData)
     } else {
-      const missingFields = validationResult.errors.map(error => error.field).join(', ')
+      const missingFields = formValidation.errors.map(error => error.field).join(', ')
       toast.error("Error", {
         description: `Please fill in the following required field: ${missingFields}`,
       })
     }
+    setStatusBtn({loadingDraft: false, loadingSubmit: false})
   }
 
-  const handleDraft = () => {
-    handleSaveDraft(formData)
+  const handleDraft = async() => {
+    setStatusBtn({loadingDraft: true, loadingSubmit: false})
+    await handleSaveDraft(formData)
+    setStatusBtn({loadingDraft: false, loadingSubmit: false})
   }
 
-  if (isLoading || !city) {
+  if (isLoadingForm || !city) {
     return <Loader />
   }
 
   return (
     <main className="container py-6 md:py-12 mb-8">
-      <Toaster />
       {showExistingCard && existingApplication && (
         <ExistingApplicationCard onImport={handleImport} onCancel={handleCancelImport} data={existingApplication} />
       )}
@@ -85,8 +89,8 @@ export default function FormPage() {
         <ScholarshipForm formData={formData} errors={errors} handleChange={handleChange} />
         <SectionSeparator />
         <div className="flex justify-between items-center pt-6">
-          <Button variant="outline" type="button" onClick={handleDraft}>Save as draft</Button>
-          <Button type="submit">Submit application</Button>
+          <ButtonAnimated loading={statusBtn.loadingDraft} disabled={statusBtn.loadingSubmit} variant="outline" type="button" onClick={handleDraft}>Save as draft</ButtonAnimated>
+          <ButtonAnimated loading={statusBtn.loadingSubmit} disabled={statusBtn.loadingDraft} type="submit">Submit application</ButtonAnimated>
         </div>
       </form>
       <ProgressBar progress={progress} />

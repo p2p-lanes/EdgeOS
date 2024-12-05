@@ -1,6 +1,7 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
+import { motion, Transition, Variants } from "framer-motion"
 
 const Card = React.forwardRef<
   HTMLDivElement,
@@ -73,4 +74,60 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+type AnimationType = 'entry' | 'hover' | 'exit'
+
+// Propiedades para nuestro componente CardAnimation
+interface CardAnimationProps extends React.ComponentPropsWithoutRef<typeof Card> {
+  anim?: AnimationType[]
+  duration?: number
+}
+
+// Variantes de animación
+const variants: Record<AnimationType, Variants> = {
+  entry: {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 }
+  },
+  hover: {
+    initial: {},
+    whileHover: { boxShadow: '0 4px 20px rgba(0,0,0,0.1)' }
+  },
+  exit: {
+    exit: { opacity: 0, y: 20 }
+  }
+}
+
+const CardAnimation = React.forwardRef<
+  HTMLDivElement,
+  CardAnimationProps
+>(({ className, anim = [], children, duration = 0.6, ...props }, ref) => {
+  // Combinamos las variantes de animación según los tipos especificados
+  const combinedVariants: Variants = anim.reduce((acc, type) => ({
+    ...acc,
+    ...variants[type]
+  }), {})
+
+  return (
+    <motion.div
+      initial="initial"
+      animate="animate"
+      whileHover="whileHover"
+      exit="exit"
+      variants={combinedVariants}
+      transition={{ duration }}
+      className="rounded-xl"
+    >
+      <Card
+        ref={ref}
+        className={cn("transition-all duration-300", className)}
+        {...props}
+      >
+        {children}
+      </Card>
+    </motion.div>
+  )
+})
+
+CardAnimation.displayName = 'CardAnimation'
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, CardAnimation }
