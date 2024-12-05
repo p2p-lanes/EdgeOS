@@ -1,8 +1,8 @@
 "use client"
 
-import { Button, ButtonAnimated } from "@/components/ui/button"
+import { ButtonAnimated } from "@/components/ui/button"
 import { useFormValidation } from "@/hooks/useFormValidation"
-import { Toaster, toast } from "sonner"
+import { toast } from "sonner"
 import { Loader } from '../../../../components/ui/Loader'
 import { ExistingApplicationCard } from '../components/existing-application-card'
 import { FormHeader } from '../components/form-header'
@@ -72,7 +72,6 @@ export default function FormPage() {
 
   return (
     <main className="container py-6 md:py-12 mb-8">
-      <Toaster />
       {showExistingCard && existingApplication && (
         <ExistingApplicationCard onImport={handleImport} onCancel={handleCancelImport} data={existingApplication} />
       )}
