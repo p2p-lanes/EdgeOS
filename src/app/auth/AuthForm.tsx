@@ -79,7 +79,7 @@ export default function AuthForm() {
               Sign into the Edge Portal
             </h2>
             <p className="mt-2 text-sm text-gray-600" style={{ textWrap: 'balance' }}>
-              Enter your email below and receive a magic link in your inbox to log in
+              Enter your email below and receive a magic link in your inbox to log in. If you attended Edge Lanna 2024, please use the same email that you used for those applications to enable application import.
             </p>
           </div>
           <form className="mt-8 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
