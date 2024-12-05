@@ -191,7 +191,6 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
            <FormInputWrapper>
             <Label>
               Info I&apos;m not willing to share with other attendees
-              <RequiredFieldIndicator />
             </Label>
             <p className="text-sm text-muted-foreground mb-2">
               We will make a directory to make it easier for attendees to coordinate
@@ -201,13 +200,13 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                 <Label key={info.id} className="flex items-center gap-2">
                   <Checkbox 
                     id={info.id}
-                    checked={(formData.info_to_share as string[])?.includes(info.id)}
+                    checked={(formData.info_not_shared as string[])?.includes(info.id)}
                     onCheckedChange={(checked) => {
-                      const currentInfo = formData.info_to_share as string[] ?? []
+                      const currentInfo = formData.info_not_shared as string[] ?? []
                       if (checked) {
-                        handleChange('info_to_share', [...currentInfo, info.id])
+                        handleChange('info_not_shared', [...currentInfo, info.id])
                       } else {
-                        handleChange('info_to_share', currentInfo.filter(id => id !== info.id))
+                        handleChange('info_not_shared', currentInfo.filter(id => id !== info.id))
                       }
                     }}
                   />
