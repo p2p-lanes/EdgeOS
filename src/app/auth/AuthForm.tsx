@@ -46,21 +46,21 @@ export default function AuthForm() {
       <div className="max-w-sm w-full mx-auto space-y-8 my-12">
         <div className="relative aspect-square w-24 mx-auto mb-8">
           <img
-            src="https://pbs.twimg.com/profile_images/1804985211740205056/iIJQisAK_400x400.png"
+            src="https://cdn.prod.website-files.com/67475a01312f8d8225a6b46e/6751bee327618c09459204bb_floatin%20city%20-%20icon-min.png"
             alt="EdgeCity illustration"
             style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0.5rem'}}
           />
         </div>
-        <div className="text-center">
-          <h2 className="mt-6 text-3xl font-bold text-gray-900">
+        <div className="text-center max-w-xs mx-auto">
+          <h2 className="mt-6 text-3xl font-bold text-gray-900" style={{ textWrap: 'balance' }}>
             Sign into the EdgeCity portal
           </h2>
-          <p className="mt-2 text-sm text-gray-600">
+          <p className="mt-2 text-sm text-gray-600" style={{ textWrap: 'balance' }}>
             Enter your email below and receive a magic link in your inbox to log in
           </p>
         </div>
-        <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-          <div className="max-w-xs mx-auto">
+        <form className="mt-8 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
+          <div>
             <Input
               id="email"
               name="email"
@@ -86,7 +86,7 @@ export default function AuthForm() {
           <Button
             type="submit"
             disabled={isLoading || !!message || !email}
-            className="group relative w-full max-w-xs mx-auto flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
           >
             {isLoading ? (
               <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
