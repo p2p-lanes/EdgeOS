@@ -13,8 +13,8 @@ export default function Quote() {
           style={{ filter: 'brightness(0) saturate(100%)' }}
         />
       </div>
-      {/* TODO: Add quote 
-      
+      {/* TODO: Add quot
+
       <div className="absolute bottom-8 left-8 text-left pr-8">
         <blockquote className="text-white text-lg font-light italic mb-2">
           "This is a super inspiring quote"
