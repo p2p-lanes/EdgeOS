@@ -31,9 +31,9 @@ export function EventCard({ id, name, tagline, location, start_date, end_date, i
       <div className="flex flex-col sm:flex-row">
         <div className="relative sm:h-auto sm:w-1/3">
           <img
-            src={image_url ?? "https://pbs.twimg.com/profile_images/1804985211740205056/iIJQisAK_400x400.png"}
+            src={image_url ?? "https://cdn.prod.website-files.com/67475a01312f8d8225a6b46e/6751bf69596d8a1e1a99d291_half-banner-min.jpg"}
             alt={name}
-            className="object-cover h-full w-full"
+            className="object-cover object-left h-full"
           />
         </div>
         <CardContent className="flex flex-col w-full p-6 mr-10">
