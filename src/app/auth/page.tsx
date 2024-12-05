@@ -6,6 +6,7 @@ import useAuthentication from '@/hooks/useAuthentication'
 import { useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import dynamic from 'next/dynamic'
+import { toast } from 'sonner'
 
 // Dynamically import AuthForm with no SSR
 const AuthForm = dynamic(() => import('@/app/auth/AuthForm'), {
@@ -17,7 +18,8 @@ export default function AuthPage() {
   const router = useRouter()
 
   const handleLogin = async () => {
-    if(await login()) {
+    const isLogged = await login()
+    if(isLogged) {
       router.push('/portal')
     }
   }
@@ -27,9 +29,10 @@ export default function AuthPage() {
       router.push('/portal')
       return
     }
-
+    
     handleLogin()
-  }, [isAuthenticated, isLoading])
+
+  }, [isAuthenticated])
 
   if(isLoading || isAuthenticated || token) {
     return (

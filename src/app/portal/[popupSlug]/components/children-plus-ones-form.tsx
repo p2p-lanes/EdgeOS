@@ -108,7 +108,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange }: Childre
                   }
                 }}
               />
-              <Label htmlFor="brings_kids">I am bringing kids</Label>
+              <Label htmlFor="brings_kids">I’m considering bringing kids</Label>
             </div>
             <AnimatePresence>
               {hasKids && (

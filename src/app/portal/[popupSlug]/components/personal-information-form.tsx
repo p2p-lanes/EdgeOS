@@ -112,6 +112,7 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
                 placeholder="username"
                 defaultValue={formData.telegram}
                 onChange={(e) => handleChange('telegram', e.target.value)}
+                className={errors.telegram ? 'border-red-500' : ''}
               />
               {errors.telegram && <p className="text-red-500 text-sm mt-1">{errors.telegram}</p>}
             </div>

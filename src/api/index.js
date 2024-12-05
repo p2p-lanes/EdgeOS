@@ -37,7 +37,7 @@ export const api = {
       .catch(catchError);
   },
   post: (url, ...params) => {
-    return instance.post(url, ...params).then((d) => d);
+    return instance.post(url, ...params).then((d) => d).catch(catchError);
   },
 
   delete: (url, params) => {

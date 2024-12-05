@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/button'
+import { ButtonAnimated } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { api } from '@/api'
 import { motion } from 'framer-motion'
@@ -98,7 +98,7 @@ export default function AuthForm() {
                   setMessage('')
                 }}
                 disabled={isLoading || !!message}
-                className={`appearance-none rounded-md relative block w-full px-3 py-2 border ${
+                className={`appearance-none rounded-md relative block w-full px-3 py-5 border ${
                   isValidEmail ? 'border-gray-300' : 'border-red-500'
                 } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
               />
@@ -106,7 +106,7 @@ export default function AuthForm() {
                 <p className="mt-2 text-sm text-red-600">Please enter a valid email address</p>
               )}
             </div>
-            <Button
+            <ButtonAnimated
               type="submit"
               disabled={isLoading || !!message || !email}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
@@ -117,7 +117,7 @@ export default function AuthForm() {
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
               ) : 'Log in'}
-            </Button>
+            </ButtonAnimated>
           </form>
         </motion.div>
         {message && (

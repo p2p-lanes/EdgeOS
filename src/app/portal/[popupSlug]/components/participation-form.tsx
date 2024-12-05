@@ -9,6 +9,7 @@ import { RequiredFieldIndicator } from "./required-field-indicator"
 import { FormInputWrapper } from "./form-input-wrapper"
 import SectionWrapper from "./SectionWrapper"
 import { useCityProvider } from "@/providers/cityProvider"
+import { cn } from "@/lib/utils"
 
 interface ParticipationFormProps {
   formData: any;
@@ -80,9 +81,9 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           <RadioGroup 
             value={formData.duration}
             onValueChange={(value) => handleChange('duration', value)}
-            className="grid gap-2 mt-2"
+            className={cn("grid gap-2 mt-2", errors.duration ? 'border rounded-md border-red-500' : '')}
           >
-            <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted">
+            <Label className={"flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted"}>
               <RadioGroupItem value="1 weekend" id="1 weekend" />
               1 weekend
             </Label>

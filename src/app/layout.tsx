@@ -3,12 +3,13 @@ import "../styles/globals.css";
 import { GeistSans } from 'geist/font/sans';
 import GoogleAnalytics from "@/components/utils/GoogleAnalytics";
 import { Toaster } from "sonner";
+import icon from '../../public/EdgeCityIcon.png'
 
 export const metadata: Metadata = {
   title: "Resident Portal",
   description: "Your gateway to EdgeCity",
   icons: {
-    icon: '/favicon.ico',
+    icon: icon.src,
   }
 };
 

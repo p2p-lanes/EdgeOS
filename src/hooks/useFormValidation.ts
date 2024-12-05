@@ -7,7 +7,7 @@ type FormData = Record<FieldName, FieldValue>
 const requiredFields = {
   personalInformation: ['first_name', 'last_name', 'telegram', 'gender', 'age'],
   professionalDetails: ['organization', 'social_media'],
-  participation: ['duration'],
+  participation: ['duration', 'builder_description'],
   childrenPlusOnes: ['spouse_info', 'spouse_email', 'kids_info'],
   scholarship: ['scolarship_categories', 'scolarship_details']
 }
@@ -28,7 +28,7 @@ export const useFormValidation = (initialData: FormData) => {
       if (name === 'scolarship_categories' || name === 'scolarship_details') {
         if (!formData.scolarship_request) return '';
       }
-      if (name === 'builder_boolean') {
+      if (name === 'builder_description') {
         if (!formData.builder_boolean) return '';
       }
 

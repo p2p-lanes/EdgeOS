@@ -5,6 +5,7 @@ import { User } from "@/types/User"
 import { jwtDecode } from "jwt-decode"
 import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
+import { toast } from "sonner"
 
 interface UseAuthenticationReturn {
   user: User | null
@@ -35,7 +36,6 @@ const useAuthentication = (): UseAuthenticationReturn => {
   }
 
   const _authenticate = async (): Promise<boolean> => {
-
     if (!tokenUrl) return false;
 
     const tokenAuthenticate = jwtDecode(tokenUrl) as any
@@ -48,6 +48,12 @@ const useAuthentication = (): UseAuthenticationReturn => {
         const decoded = jwtDecode(response.data.access_token) as User
         setUser(decoded)
         return true
+      }
+
+      if(response.status === 401) {
+        logout()
+        toast.error('Invalid token. Please log in again.')
+        return false
       }
     }
 
