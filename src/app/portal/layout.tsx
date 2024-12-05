@@ -7,7 +7,7 @@ import useGetPopups from "@/hooks/useGetPopups"
 import useGetApplications from "@/hooks/useGetApplications"
 import { BackofficeSidebar } from "@/components/Sidebar/Sidebar"
 import HeaderBar from "@/components/Sidebar/HeaderBar"
-import Providers from "../Providers"
+import Providers from "../../components/Providers"
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
 

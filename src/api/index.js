@@ -12,9 +12,9 @@ const catchError = (e) => {
 
 export const api = {
   get: async (url, params = {}) => {
-    return await instance
+    return instance
       .get(url, params)
-      .then((data) => data);
+      .then((data) => data)
   },
 
   get_one: (url, params) => {
