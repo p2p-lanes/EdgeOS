@@ -76,7 +76,7 @@ export default function AuthForm() {
         >
           <div className="text-center max-w-xs mx-auto">
             <h2 className="mt-6 text-3xl font-bold text-gray-900" style={{ textWrap: 'balance' }}>
-              Sign into the Edge Portal
+              Sign into Edge Portal
             </h2>
             <p className="mt-2 text-sm text-gray-600" style={{ textWrap: 'balance' }}>
               Enter your email below and receive a magic link in your inbox to log in. If you attended Edge Lanna 2024, please use the same email that you used for those applications to enable application import.
