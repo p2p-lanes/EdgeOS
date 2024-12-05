@@ -21,7 +21,9 @@ const useAuthentication = (): UseAuthenticationReturn => {
   const [isLoading, setIsLoading] = useState(true)
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const router = useRouter()
-  const token = typeof window === 'undefined' ? null :window?.localStorage?.getItem('token')
+  const token = typeof window === 'undefined' ? null : window?.localStorage?.getItem('token')
+  const searchParams = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search)
+  const tokenUrl = searchParams?.get('token_url') ?? null;
 
   const validateToken = (token: string): boolean => {
     try {
@@ -33,8 +35,6 @@ const useAuthentication = (): UseAuthenticationReturn => {
   }
 
   const _authenticate = async (): Promise<boolean> => {
-    const searchParams = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search)
-    const tokenUrl = searchParams?.get('token_url') ?? null;
 
     if (!tokenUrl) return false;
 
@@ -68,6 +68,7 @@ const useAuthentication = (): UseAuthenticationReturn => {
     window?.localStorage?.removeItem('token')
     setUser(null)
     setIsAuthenticated(false)
+    setIsLoading(false)
     router.push('/auth')
   }
 
@@ -75,7 +76,9 @@ const useAuthentication = (): UseAuthenticationReturn => {
     if (typeof window === 'undefined') return
 
     if (!token) {
-      setIsLoading(false)
+      if(!tokenUrl){
+        setIsLoading(false)
+      }
       return
     }
     
@@ -88,7 +91,7 @@ const useAuthentication = (): UseAuthenticationReturn => {
       logout()
     }
     setIsLoading(false)
-  }, [token])
+  }, [token, tokenUrl])
 
   return {
     user,

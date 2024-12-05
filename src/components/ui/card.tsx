@@ -78,7 +78,7 @@ type AnimationType = 'entry' | 'hover' | 'exit'
 
 // Propiedades para nuestro componente CardAnimation
 interface CardAnimationProps extends React.ComponentPropsWithoutRef<typeof Card> {
-  anim?: AnimationType[]
+  anim?: AnimationType
   duration?: number
 }
 
@@ -100,12 +100,7 @@ const variants: Record<AnimationType, Variants> = {
 const CardAnimation = React.forwardRef<
   HTMLDivElement,
   CardAnimationProps
->(({ className, anim = [], children, duration = 0.6, ...props }, ref) => {
-  // Combinamos las variantes de animación según los tipos especificados
-  const combinedVariants: Variants = anim.reduce((acc, type) => ({
-    ...acc,
-    ...variants[type]
-  }), {})
+>(({ className, anim, children, duration = 0.6, ...props }, ref) => {
 
   return (
     <motion.div
@@ -113,7 +108,7 @@ const CardAnimation = React.forwardRef<
       animate="animate"
       whileHover="whileHover"
       exit="exit"
-      variants={combinedVariants}
+      variants={anim ? variants[anim] : {}}
       transition={{ duration }}
       className="rounded-xl"
     >

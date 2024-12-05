@@ -13,7 +13,7 @@ const AuthForm = dynamic(() => import('@/app/auth/AuthForm'), {
 })
 
 export default function AuthPage() {
-  const { login, token, isLoading, isAuthenticated } = useAuthentication()
+  const { login, token, isLoading, isAuthenticated, user } = useAuthentication()
   const router = useRouter()
 
   const handleLogin = async () => {

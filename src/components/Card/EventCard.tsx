@@ -27,7 +27,7 @@ export function EventCard({ id, name, tagline, location, start_date, end_date, i
   }, [start_date, end_date, isClient])
 
   return (
-    <CardAnimation anim={['entry']} duration={0.6} className="w-full overflow-hidden">
+    <CardAnimation anim={'entry'} duration={0.6} className="w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row">
         <div className="relative sm:h-auto sm:w-1/3">
           <img
