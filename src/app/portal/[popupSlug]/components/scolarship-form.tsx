@@ -87,7 +87,7 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                         </Label>
                       ))}
                     </div>
-                    {errors.scholarship_categories && <p className="text-red-500 text-sm">{errors.scholarship_categories}</p>}
+                    {errors.scolarship_categories && <p className="text-red-500 text-sm">{errors.scolarship_categories}</p>}
                   </FormInputWrapper>
                   <FormInputWrapper>
                     <Label htmlFor="scholarship_details">
