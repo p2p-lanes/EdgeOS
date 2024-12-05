@@ -47,19 +47,13 @@ export default function AuthForm() {
     animate: { opacity: 1, y: 0 }
   }
 
-  const animationImg = {
-    initial: { opacity: 0, y: 40 },
-    animate: { opacity: 1, y: 0 }
-  }
-
   return (
     <div className="flex flex-col justify-center w-full md:w-1/2 p-8">
       <div className="max-w-sm w-full mx-auto space-y-8 my-12">
         <motion.div
-          initial="initial"
-          animate="animate"
-          variants={animationImg}
-          transition={{ duration: 1 }}
+          initial={{ y: 0 }}
+          animate={{ y: [0, 16, 0] }}
+          transition={{ duration: 4, repeat: Infinity, repeatType: 'loop', ease: 'easeIn' }}
           className="relative aspect-square w-24 mx-auto mb-8"
         >
           <img
