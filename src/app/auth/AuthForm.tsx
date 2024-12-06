@@ -73,7 +73,7 @@ export default function AuthForm() {
               Sign into Edge Portal
             </h2>
             <p className="mt-2 text-sm text-gray-600" style={{ textWrap: 'balance' }}>
-              Enter your email below and receive a magic link in your inbox to log in. If you attended Edge Lanna 2024, please use the same email that you used for those applications to enable application import.
+            If you attended Lanna, use the same email to enable application import, saving you some time!
             </p>
           </div>
           <form className="mt-8 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
@@ -112,6 +112,9 @@ export default function AuthForm() {
                 </svg>
               ) : 'Log in'}
             </ButtonAnimated>
+            <p className="mt-2 text-sm text-gray-600" style={{ textAlign: 'center', textWrap: 'balance' }}>
+            You'll receive a magic link in your email inbox to log in
+            </p>
           </form>
         </motion.div>
         {message && (
