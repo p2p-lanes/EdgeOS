@@ -139,13 +139,6 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                       Elaborate on your role as a builder/developer if you said yes
                       <RequiredFieldIndicator />
                     </Label>
-                    <p className="text-sm text-muted-foreground">
-                      Certain builder/developers can qualify for a discounted &quot;Builder Pass&quot; if they meet certain requirements explained{" "}
-                      <Link href="#" className="text-primary hover:underline">
-                        here
-                      </Link>
-                      .
-                    </p>
                     <Textarea 
                       id="builder_description" 
                       className={`min-h-[100px] mt-2 ${errors.builder_description ? 'border-red-500' : ''}`}
