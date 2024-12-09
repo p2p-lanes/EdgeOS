@@ -8,10 +8,9 @@ const useInitForm = (setFormData: any) => {
   const [showExistingCard, setShowExistingCard] = useState(false)
   const [existingApplication, setExistingApplication] = useState<any>(null)
   const { getDataApplicationForm } = useGetData()
-  const { getCity, getPopups, getApplications } = useCityProvider()
+  const { getCity, getPopups } = useCityProvider()
   const city = getCity()
   const popups = getPopups()
-  const applications = getApplications()
 
   useEffect(() => {
     const initializeForm = async () => {

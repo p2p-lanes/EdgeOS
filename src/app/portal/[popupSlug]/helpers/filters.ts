@@ -2,7 +2,7 @@ import { ApplicationProps } from "@/types/Application"
 import { PopupsProps } from "@/types/Popup"
 
 export const filterApplicationDraft = (applications: ApplicationProps[], city: PopupsProps) => {
-  return applications?.filter((app: ApplicationProps) => app.popup_city_id === city?.id)?.slice(-1)[0]
+  return applications?.find((app: ApplicationProps) => app.popup_city_id === city?.id)
 }
 
 export const filterAcceptedApplication = (applications: ApplicationProps[], city: PopupsProps, popups: PopupsProps[]) => {

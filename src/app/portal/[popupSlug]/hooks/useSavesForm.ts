@@ -34,8 +34,14 @@ const useSavesForm = () => {
     const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
       
     await response.then((data) => {
-      const newApplication = data.data as ApplicationProps
-      setApplications([...applications, newApplication])
+      const newApplication = data.data
+      const existingIndex = applications.findIndex((app: ApplicationProps) => app.id === newApplication.id)
+      
+      const updatedApplications = existingIndex >= 0
+        ? applications.map((app: ApplicationProps) => app.id === newApplication.id ? newApplication : app)
+        : [...applications, newApplication]
+      
+      setApplications(updatedApplications)
       toast.success("Application Submitted", {
         description: "Your application has been successfully submitted.",
       })
@@ -60,7 +66,15 @@ const useSavesForm = () => {
     const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
 
     await response.then((data) => {
-      setApplications([...applications, data.data])
+      const newApplication = data.data
+      const existingIndex = applications.findIndex((app: ApplicationProps) => app.id === newApplication.id)
+      
+      const updatedApplications = existingIndex >= 0
+        ? applications.map((app: ApplicationProps) => app.id === newApplication.id ? newApplication : app)
+        : [...applications, newApplication]
+      
+      setApplications(updatedApplications)
+      
       toast.success("Draft Saved", {
         description: "Your draft has been successfully saved.",
       })

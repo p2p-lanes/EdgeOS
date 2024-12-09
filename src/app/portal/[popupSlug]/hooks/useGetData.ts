@@ -11,7 +11,6 @@ const useGetData = () => {
   const { user } = useGetTokenAuth()
   
   const getData = async () => {
-    console.log('applications', applications)
     if(applications) return {status: 200, data: applications}
     const email = user?.email
 
