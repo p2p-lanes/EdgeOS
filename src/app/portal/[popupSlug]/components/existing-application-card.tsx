@@ -22,7 +22,7 @@ export function ExistingApplicationCard({ onImport, onCancel, data }: ExistingAp
   }
 
   return (
-    <Dialog open={isOpen}>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>Existing Application Found</DialogTitle>

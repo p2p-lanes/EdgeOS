@@ -2,23 +2,29 @@ import { ApplicationProps } from "@/types/Application"
 import { PopupsProps } from "@/types/Popup"
 
 export const filterApplicationDraft = (applications: ApplicationProps[], city: PopupsProps) => {
-  return applications?.find((app: ApplicationProps) => app.popup_city_id === city?.id && app.status === 'draft')
+  return applications?.filter((app: ApplicationProps) => app.popup_city_id === city?.id)?.slice(-1)[0]
 }
 
 export const filterAcceptedApplication = (applications: ApplicationProps[], city: PopupsProps, popups: PopupsProps[]) => {
-  // Encontrar la popup más reciente excluyendo la ciudad actual
-  const mostRecentPopup = popups
-    .filter(popup => popup.id !== city.id)
-    .sort((a, b) => new Date(b.end_date).getTime() - new Date(a.end_date).getTime())[0];
+  // Primero filtramos todas las aplicaciones aceptadas
+  const acceptedApplications = applications?.filter(
+    (app: ApplicationProps) => app.status === 'accepted'
+  );
 
-  // Si encontramos una popup, buscar una aplicación aceptada para ella
-  if (mostRecentPopup) {
-    return applications?.find(
-      (app: ApplicationProps) => 
-        app.status === 'accepted' && 
-        app.popup_city_id === mostRecentPopup.id
+  if (!acceptedApplications?.length) return null;
+
+  // Ordenamos las popups por end_date de más reciente a más antiguo
+  const sortedPopups = [...popups].sort((a, b) => 
+    new Date(b.end_date).getTime() - new Date(a.end_date).getTime()
+  );
+
+  // Buscamos la aplicación aceptada que corresponda a la popup más reciente
+  for (const popup of sortedPopups) {
+    const matchingApplication = acceptedApplications.find(
+      app => app.popup_city_id === popup.id
     );
+    if (matchingApplication) return matchingApplication;
   }
 
-  return undefined;
+  return null;
 }

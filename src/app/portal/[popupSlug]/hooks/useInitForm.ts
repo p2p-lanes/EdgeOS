@@ -2,17 +2,16 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import useGetData from "./useGetData";
 import { useCityProvider } from "@/providers/cityProvider";
-import useWindow from "@/hooks/useWindow";
 
 const useInitForm = (setFormData: any) => {
   const [isLoading, setIsLoading] = useState(true)
   const [showExistingCard, setShowExistingCard] = useState(false)
   const [existingApplication, setExistingApplication] = useState<any>(null)
   const { getDataApplicationForm } = useGetData()
-  const { getCity, getPopups } = useCityProvider()
+  const { getCity, getPopups, getApplications } = useCityProvider()
   const city = getCity()
   const popups = getPopups()
-  const { window } = useWindow()
+  const applications = getApplications()
 
   useEffect(() => {
     const initializeForm = async () => {
@@ -24,10 +23,7 @@ const useInitForm = (setFormData: any) => {
 
         if (status === 'import') {
           setExistingApplication(application);
-          const hasSeenModal = window?.localStorage?.getItem('hasSeenExistingApplicationModal');
-          if (!hasSeenModal) {
-            setShowExistingCard(true);
-          }
+          setShowExistingCard(true);
         }
 
         if (status === 'draft') {
