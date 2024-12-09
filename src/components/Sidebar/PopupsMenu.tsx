@@ -56,6 +56,8 @@ const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) 
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-[--radix-dropdown-menu-trigger-width]">
                 {popups.map((popup: PopupsProps) => {
+                  if(!popup.visible_in_portal) return null
+
                   return (
                     <DropdownMenuItem key={popup.name} className="cursor-pointer" disabled={!popup.clickable_in_portal} onClick={() => handleClickCity(popup)}>
                       <span>{popup.name}</span>

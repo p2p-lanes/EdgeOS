@@ -5,8 +5,8 @@ import useGetTokenAuth from "./useGetTokenAuth"
 import useAuthentication from "./useAuthentication"
 
 const useGetApplications = () => {
-  const { setApplications, getApplications } = useCityProvider()
-  // const applications = getApplications()
+  const { setApplications } = useCityProvider()
+
   const { user } = useGetTokenAuth()
   const { logout } = useAuthentication()
 
@@ -15,7 +15,7 @@ const useGetApplications = () => {
 
     try{
       const response = await api.get(`applications?email=${user.email}`)
-      
+
       if(response.status === 200) {
         setApplications(response.data)
       }

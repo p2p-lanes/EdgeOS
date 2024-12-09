@@ -10,8 +10,7 @@ type UseGetPopups = {
 }
 
 const useGetPopups = (): UseGetPopups => {
-  const { setPopups, setCity, getPopups } = useCityProvider()
-  // const popups = getPopups()
+  const { setPopups, setCity } = useCityProvider()
   const { popupSlug } = useParams()
   const { logout } = useAuthentication()
 

@@ -45,4 +45,5 @@ export interface ApplicationProps {
   id?: number;
   local_resident?: boolean;
   citizen?: string | null;
+  updated_at?: string;
 }

@@ -1,12 +1,13 @@
 import { api } from "@/api"
 import { useCityProvider } from "@/providers/cityProvider"
-import { filterAcceptedApplications, filterApplications } from "../helpers/filters"
+import { filterAcceptedApplication, filterApplicationDraft } from "../helpers/filters"
 import useGetTokenAuth from "@/hooks/useGetTokenAuth"
 
 const useGetData = () => {
-  const { getCity, getApplications } = useCityProvider()
+  const { getCity, getApplications, getPopups } = useCityProvider()
   const city = getCity()
   const applications = getApplications()
+  const popups = getPopups()
   const { user } = useGetTokenAuth()
   
   const getData = async () => {
@@ -23,14 +24,16 @@ const useGetData = () => {
   const getDataApplicationForm = async () => {
     const result = await getData();
 
-    if(result?.status === 200) {
-      const relevantApplication = filterApplications(result.data, city)
+    if(!city) return { application: null, status: null }
 
-      if(relevantApplication) {
-        return { application: relevantApplication, status: 'draft' }
+    if(result?.status === 200) {
+      const applicationDraft = filterApplicationDraft(result.data, city)
+
+      if(applicationDraft) {
+        return { application: applicationDraft, status: 'draft' }
       }
 
-      const acceptedApplication = filterAcceptedApplications(result.data)
+      const acceptedApplication = filterAcceptedApplication(result.data, city, popups)
       if(acceptedApplication) {
         return { application: acceptedApplication, status: 'import' }
       }
