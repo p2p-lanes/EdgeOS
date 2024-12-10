@@ -18,7 +18,6 @@ import useProgress from '../hooks/useProgress'
 import { initial_data } from '../helpers/constants'
 import useInitForm from '../hooks/useInitForm'
 import { useCityProvider } from "@/providers/cityProvider"
-import useWindow from "@/hooks/useWindow"
 import { useState } from "react"
 
 export default function FormPage() {
@@ -27,7 +26,6 @@ export default function FormPage() {
   const { isLoading: isLoadingForm, showExistingCard, existingApplication, setShowExistingCard } = useInitForm(setFormData)
   const { handleSaveForm, handleSaveDraft } = useSavesForm()
   const { getCity } = useCityProvider()
-  const { window } = useWindow()
   const progress = useProgress(formData)
   const city = getCity()
 
@@ -35,14 +33,12 @@ export default function FormPage() {
     if (existingApplication) {
       setFormData(existingApplication);
       setShowExistingCard(false);
-      window?.localStorage?.setItem('hasSeenExistingApplicationModal', 'true');
       toast.success("Previous application data imported successfully");
     }
   }
 
   const handleCancelImport = () => {
     setShowExistingCard(false);
-    window?.localStorage?.setItem('hasSeenExistingApplicationModal', 'true');
   }
 
   const handleSubmit = async(e: React.FormEvent) => {
@@ -88,9 +84,9 @@ export default function FormPage() {
         <SectionSeparator />
         <ScholarshipForm formData={formData} errors={errors} handleChange={handleChange} />
         <SectionSeparator />
-        <div className="flex justify-between items-center pt-6">
-          <ButtonAnimated loading={statusBtn.loadingDraft} disabled={statusBtn.loadingSubmit} variant="outline" type="button" onClick={handleDraft}>Save as draft</ButtonAnimated>
-          <ButtonAnimated loading={statusBtn.loadingSubmit} disabled={statusBtn.loadingDraft} type="submit">Submit application</ButtonAnimated>
+        <div className="flex flex-col w-full gap-6 md:flex-row justify-between items-center pt-6">
+          <ButtonAnimated loading={statusBtn.loadingDraft} disabled={statusBtn.loadingSubmit} variant="outline" type="button" onClick={handleDraft} className="w-full md:w-auto">Save as draft</ButtonAnimated>
+          <ButtonAnimated loading={statusBtn.loadingSubmit} disabled={statusBtn.loadingDraft} type="submit" className="w-full md:w-auto">Submit application</ButtonAnimated>
         </div>
       </form>
       <ProgressBar progress={progress} />
