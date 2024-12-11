@@ -3,6 +3,7 @@ import { Label } from "@/components/ui/label"
 import { FormInputWrapper } from "./form-input-wrapper";
 import { RequiredFieldIndicator } from "./required-field-indicator";
 import SectionWrapper from "./SectionWrapper";
+import { validateVideoUrl } from "@/helpers/validate";
 
 interface ProfessionalDetailsFormProps {
   formData: any;
@@ -11,6 +12,8 @@ interface ProfessionalDetailsFormProps {
 }
 
 export function ProfessionalDetailsForm({ formData, errors, handleChange }: ProfessionalDetailsFormProps) {
+  const isVideoValid = validateVideoUrl(formData.video_url)
+
   return (
     <SectionWrapper>
       <div className="space-y-2">
@@ -25,7 +28,9 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange }: Prof
             <div className="h-full flex flex-col">
               <Label htmlFor="organization">
                 Organization you represent
-                <RequiredFieldIndicator />
+                {
+                  !isVideoValid && <RequiredFieldIndicator />
+                }
               </Label>
               <p className="text-sm text-muted-foreground mb-2">
                 If you&apos;re just exploring something independently, note that.
@@ -58,7 +63,9 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange }: Prof
           <div className="h-full flex flex-col">
             <Label htmlFor="social_media">
               Your active social media accounts
-              <RequiredFieldIndicator />
+              {
+                !isVideoValid && <RequiredFieldIndicator />
+              }
             </Label>
             <p className="text-sm text-muted-foreground mb-2">
               e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Please provide the full link.

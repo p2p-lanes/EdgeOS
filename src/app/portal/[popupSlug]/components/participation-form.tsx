@@ -3,13 +3,13 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Label, LabelMuted } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
-import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
 import { RequiredFieldIndicator } from "./required-field-indicator"
 import { FormInputWrapper } from "./form-input-wrapper"
 import SectionWrapper from "./SectionWrapper"
 import { useCityProvider } from "@/providers/cityProvider"
 import { cn } from "@/lib/utils"
+import { validateVideoUrl } from "@/helpers/validate"
 
 interface ParticipationFormProps {
   formData: any;
@@ -52,8 +52,8 @@ const shareableInfo = [
 export function ParticipationForm({ formData, errors, handleChange }: ParticipationFormProps) {
   const [isBuilder, setIsBuilder] = useState(formData.builder_boolean || false)
   const { getCity } = useCityProvider()
-  const city = getCity()
-  
+  const isVideoValid = validateVideoUrl(formData.video_url)
+
   const animationProps = {
     initial: { opacity: 0, height: 0 },
     animate: { opacity: 1, height: "auto" },
@@ -73,7 +73,9 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
         <FormInputWrapper>
           <Label>
             Duration
-            <RequiredFieldIndicator />
+            {
+              !isVideoValid && <RequiredFieldIndicator />
+            }
             <p className="text-sm text-muted-foreground">
               Please share how long you intend to come. You can change this later
             </p>
@@ -132,7 +134,9 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                     <FormInputWrapper>
                       <Label htmlFor="builder_description">
                         Elaborate on your role as a builder/developer if you said yes
-                        <RequiredFieldIndicator />
+                        {
+                          !isVideoValid && <RequiredFieldIndicator />
+                        }
                       </Label>
                       <Textarea 
                         id="builder_description" 

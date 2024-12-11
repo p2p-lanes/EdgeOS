@@ -1,7 +1,9 @@
+import { validateVideoUrl } from "@/helpers/validate"
 import { useEffect, useState } from "react"
 
 const useProgress = (formData: any) => {
   const [progress, setProgress] = useState(0)
+  const isVideoValid = validateVideoUrl(formData.video_url)
 
   useEffect(() => {
     // Calculate progress based on filled sections
@@ -14,17 +16,17 @@ const useProgress = (formData: any) => {
       {
         name: 'professionalDetails',
         fields: ['organization', 'social_media'],
-        required: true
+        required: !isVideoValid
       },
       {
         name: 'participation',
         fields: ['duration'],
-        required: true
+        required: !isVideoValid
       },
       {
         name: 'builder_description',
         fields: ['builder_description'],
-        required: formData.builder_boolean
+        required: formData.builder_boolean && !isVideoValid
       },
       {
         name: 'spouse',
