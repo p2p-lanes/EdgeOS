@@ -83,25 +83,25 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             onValueChange={(value) => handleChange('duration', value)}
             className={cn("grid sm:grid-cols-2 gap-2 mt-2", errors.duration ? 'border rounded-md border-red-500' : '')}
           >
-            <Label className={"flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted"}>
-              <RadioGroupItem value="1 weekend" id="1 weekend" />
-              1 weekend
-            </Label>
             <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted">
               <RadioGroupItem value="1 week" id="1 week" />
               1 week
+            </Label>
+            <Label className={"flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted"}>
+              <RadioGroupItem value="1 weekend" id="1 weekend" />
+              1 weekend
             </Label>
             <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted">
               <RadioGroupItem value="2 weeks" id="2 weeks" />
               2 weeks
             </Label>
             <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted">
-              <RadioGroupItem value="full length" id="full length" />
-              The full time (May 24 - June 21, 2025)
-            </Label>
-            <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted">
               <RadioGroupItem value="a few days" id="a few days" />
               A few days
+            </Label>
+            <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted">
+              <RadioGroupItem value="full length" id="full length" />
+              The full time (May 24 - June 21, 2025)
             </Label>
           </RadioGroup>
           {errors.duration && <p className="text-red-500 text-sm">{errors.duration}</p>}
