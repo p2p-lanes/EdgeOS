@@ -27,9 +27,11 @@ export function EventProgressBar({ status }: EventProgressBarProps) {
     'ticket_purchased': 'Ticket Purchased'
   }
 
+  const statusLabel = status === 'not_started' ? 'Not started' : stageLabels[status]
+
   if(isMobile) return (
     <span className={`ml-auto text-sm ${statusColor(status)} px-3 py-1 font-semibold rounded-full`}>
-      {status}
+      {statusLabel}
     </span>
   )
 

@@ -57,8 +57,8 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
   const animationProps = {
     initial: { opacity: 0, height: 0 },
     animate: { opacity: 1, height: "auto" },
-    exit: { opacity: 0, height: 0 },
-    transition: { duration: 0.3, ease: "easeInOut" }
+    exit: { opacity: 0, height: 0},
+    transition: { duration: 0.2, ease: "easeIn" }
   };
 
   return (
@@ -108,48 +108,50 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
         </FormInputWrapper>
 
         <FormInputWrapper>
-          <div className="grid gap-4 gap-y-6 sm:grid-cols-2 my-4">
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="builder_boolean" 
-                checked={isBuilder}
-                onCheckedChange={(checked) => {
-                  setIsBuilder(checked === true)
-                  handleChange('builder_boolean', checked === true)
-                  if (checked === false) {
-                    handleChange('builder_description', '')
-                  }
-                }}
-              />
-              <LabelMuted  htmlFor="builder_boolean">
-                Are you a builder/developer interested in creating open-source software at Edge Esmeralda?
-              </LabelMuted>
+          <div className="grid gap-4 gap-y-6 sm:grid-cols-2 my-4 items-start">
+            <div className={cn("flex-col items-center space-x-2")}>
+              <div className="flex items-center space-x-2">
+                <Checkbox 
+                  id="builder_boolean" 
+                  checked={isBuilder}
+                  onCheckedChange={(checked) => {
+                    setIsBuilder(checked === true)
+                    handleChange('builder_boolean', checked === true)
+                    if (checked === false) {
+                      handleChange('builder_description', '')
+                    }
+                  }}
+                />
+                <LabelMuted  htmlFor="builder_boolean">
+                  Are you a builder/developer interested in creating open-source software at Edge Esmeralda?
+                </LabelMuted>
+              </div>
+              <AnimatePresence>
+                {isBuilder && (
+                  <motion.div {...animationProps}>
+                    <FormInputWrapper>
+                      <Label htmlFor="builder_description">
+                        Elaborate on your role as a builder/developer if you said yes
+                        <RequiredFieldIndicator />
+                      </Label>
+                      <Textarea 
+                        id="builder_description" 
+                        className={`min-h-[100px] mt-2 ${errors.builder_description ? 'border-red-500' : ''}`}
+                        value={formData.builder_description ?? ''}
+                        onChange={(e) => handleChange('builder_description', e.target.value)}
+                      />
+                      {errors.builder_description && <p className="text-red-500 text-sm">{errors.builder_description}</p>}
+                    </FormInputWrapper>
+                  </motion.div>
+                )}
+              </AnimatePresence>     
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox id="investor" checked={formData.investor || false} onCheckedChange={(checked) => handleChange('investor', checked === true)}/>
               <LabelMuted htmlFor="investor">
                 Are you a venture capitalist / investor coming to source deals?
               </LabelMuted>
-            </div>
-            <AnimatePresence>
-              {isBuilder && (
-                <motion.div {...animationProps}>
-                  <FormInputWrapper>
-                    <Label htmlFor="builder_description">
-                      Elaborate on your role as a builder/developer if you said yes
-                      <RequiredFieldIndicator />
-                    </Label>
-                    <Textarea 
-                      id="builder_description" 
-                      className={`min-h-[100px] mt-2 ${errors.builder_description ? 'border-red-500' : ''}`}
-                      value={formData.builder_description ?? ''}
-                      onChange={(e) => handleChange('builder_description', e.target.value)}
-                    />
-                    {errors.builder_description && <p className="text-red-500 text-sm">{errors.builder_description}</p>}
-                  </FormInputWrapper>
-                </motion.div>
-              )}
-            </AnimatePresence>            
+            </div>       
           </div>
         </FormInputWrapper>
 

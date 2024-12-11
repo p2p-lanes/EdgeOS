@@ -31,8 +31,8 @@ export function FormHeader() {
         <img
           src={city.image_url}
           alt={city.name}
-          style={{ width: '20vw', height: 'auto', maxWidth: '240px', borderRadius: '14px' }}
-          className="dark:invert"
+          style={{height: 'auto' }}
+          className="w-full md:w-[20vw] md:max-w-[240px] dark:invert rounded-2xl"
         />
       </div>
       <div className="space-y-3">

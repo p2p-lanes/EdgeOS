@@ -51,7 +51,7 @@ export function EventCard({ id, name, tagline, location, start_date, end_date, i
             <EventProgressBar status={status} />
           </div>
           <div className="flex items-end justify-end sm:justify-end">
-            <ButtonAnimated onClick={onApply} className='w-auto px-9'>
+            <ButtonAnimated onClick={onApply} className='w-full md:w-auto px-9'>
               {status === 'not_started' ? 'Apply' : 
                status === 'draft' ? 'Continue Application' :
                status === 'in review' ? 'Edit Application' :

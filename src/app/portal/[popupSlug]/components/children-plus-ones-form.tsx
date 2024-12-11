@@ -29,10 +29,6 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange }: Childre
     <SectionWrapper>
       <div className="space-y-2">
         <h2 className="text-2xl font-semibold tracking-tight">Children and +1s</h2>
-        <p className="text-sm text-muted-foreground">
-          
-          .
-        </p>
       </div>
       <FormInputWrapper>
         <div className="grid gap-4 sm:grid-cols-2">
