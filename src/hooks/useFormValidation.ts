@@ -1,3 +1,4 @@
+import { validateVideoUrl } from '@/helpers/validate'
 import { useState, useCallback } from 'react'
 
 type FieldName = string
@@ -17,6 +18,19 @@ export const useFormValidation = (initialData: FormData) => {
   const [errors, setErrors] = useState<Record<FieldName, string>>({})
 
   const validateField = useCallback((name: FieldName, value: FieldValue, formData: FormData) => {
+    const isVideoValid = validateVideoUrl(formData.video_url)
+    
+    // Si el video es válido, solo validar campos específicos
+    if (isVideoValid) {
+      const requiredWithVideo = [
+        ...requiredFields.personalInformation,
+        ...requiredFields.childrenPlusOnes,
+        ...requiredFields.scholarship
+      ]
+      
+      if (!requiredWithVideo.includes(name)) return ''
+    }
+
     if (Object.values(requiredFields).flat().includes(name)) {
       // Check conditional fields
       if (name === 'spouse_info' || name === 'spouse_email') {
@@ -29,7 +43,7 @@ export const useFormValidation = (initialData: FormData) => {
         if (!formData.scolarship_request) return '';
       }
       if (name === 'builder_description') {
-        if (!formData.builder_boolean) return '';
+        if (!formData.builder_boolean || validateVideoUrl(formData.video_url)) return '';
       }
 
       if (Array.isArray(value)) {

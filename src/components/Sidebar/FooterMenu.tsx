@@ -12,8 +12,8 @@ const FooterMenu = ({handleLogout, user}: {handleLogout: () => void, user: User}
         <SidebarMenu>
           <SidebarMenuItem>
             <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="lg">
+              <DropdownMenuTrigger asChild  onClick={() => console.log('handlechang')}>
+                <SidebarMenuButton size="lg" onClick={() => console.log('handlechang1')}>
                   <Avatar className="size-8 rounded-lg">
                     <AvatarImage src="/avatars/01.png" alt="Avatar" />
                     <AvatarFallback className="rounded-lg">{user?.email?.[0].toUpperCase()}</AvatarFallback>
