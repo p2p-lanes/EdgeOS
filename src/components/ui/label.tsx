@@ -23,4 +23,18 @@ const Label = React.forwardRef<
 ))
 Label.displayName = LabelPrimitive.Root.displayName
 
-export { Label }
+
+const LabelMuted = React.forwardRef<  
+  React.ElementRef<typeof LabelPrimitive.Root>,
+  React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
+    VariantProps<typeof labelVariants>
+>(({ className, ...props }, ref) => (
+  <LabelPrimitive.Root
+    ref={ref}
+    className={cn(labelVariants(), "text-gray-700", className)}
+    {...props}
+  />
+))
+LabelMuted.displayName = LabelPrimitive.Root.displayName
+
+export { Label, LabelMuted }

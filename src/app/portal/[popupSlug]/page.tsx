@@ -30,17 +30,15 @@ export default function Home() {
   if(isLoading) return <Loader />
 
   return (
-    <main className="container mx-auto px-4 py-8">
-      <section>
-        <div className="space-y-6">
-          <EventCard
-            {...city!}
-            onApply={onClickApply}
-            status={relevantApplication?.status as EventStatus}
-          />
-        </div>
-      </section>
-    </main>
+    <section className="container mx-auto px-4 py-8">
+      <div className="space-y-6">
+        <EventCard
+          {...city!}
+          onApply={onClickApply}
+          status={relevantApplication?.status as EventStatus}
+        />
+      </div>
+    </section>
   )
 }
 

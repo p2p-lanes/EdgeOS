@@ -1,5 +1,5 @@
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Label, LabelMuted } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { FormInputWrapper } from "./form-input-wrapper";
 import { RequiredFieldIndicator } from "./required-field-indicator";
@@ -121,13 +121,14 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
             <div className="flex flex-col h-full">
               <Label htmlFor="residence">Usual location of residence</Label>
               <p className="text-sm text-muted-foreground mb-2">
-                Please format it like [City, State/Region, Country], e.g. &quot;Healdsburg, California, USA&quot;. Feel free to put multiple cities if you live in multiple places.
+                Please format it like [City, State/Region, Country]. Feel free to put multiple cities if you live in multiple places.
               </p>
               <Input 
                 id="residence" 
                 value={formData.residence ?? ''}
                 onChange={(e) => handleChange('residence', e.target.value)}
                 className="mt-auto"
+                placeholder='Healdsburg, California, USA'
               />
             </div>
           </FormInputWrapper>
@@ -162,6 +163,28 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
             </div>
           </FormInputWrapper>
         </div>
+
+        <div className="grid gap-4 sm:grid-cols-1 mt-6">
+          <FormInputWrapper>
+            <div className="flex flex-col h-full">
+              <Label htmlFor="video_url">[Preferred] Please record a 1-2 minute video sharing your quick response to the following questions (you don’t have to fill them in below if you add the video)</Label>
+              <p className="text-sm text-muted-foreground mt-1">
+                - What are your goals for Edge Esmeralda and why do you want to join?
+              </p>
+              <p className="text-sm text-muted-foreground mb-2">
+                - What is something you could contribute? A workshop, a talk, an area of expertise. Get creative!
+              </p>
+
+              <Input 
+                id="video_url" 
+                value={formData.video_url ?? ''}
+                onChange={(e) => handleChange('video_url', e.target.value)}
+                className="mt-auto"
+                placeholder="Video URL"
+              />
+            </div>
+          </FormInputWrapper>
+        </div>
         <FormInputWrapper>
           <div className="space-y-6 mt-4">
               <div className="flex items-center space-x-2">
@@ -170,7 +193,7 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
                   checked={formData.local_resident || false}
                   onCheckedChange={(checked: boolean) => handleChange('local_resident', checked === true)}
                 />
-                <Label htmlFor="local_resident">Are you a Sonoma County local?</Label>
+                <LabelMuted htmlFor="local_resident">Are you a Sonoma County local?</LabelMuted>
               </div>
           </div>
         </FormInputWrapper>
