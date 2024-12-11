@@ -178,7 +178,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           <FormInputWrapper>
             <Label htmlFor="goals">What are your goals in attending Edge Esmeralda?
               <p className="text-sm text-muted-foreground mb-2">
-                You can elaborate on how you want to contribute to the collective experience as well
+                You can elaborate on how you want to contribute to the collective experience as well.
               </p>
             </Label>
             <Textarea 
