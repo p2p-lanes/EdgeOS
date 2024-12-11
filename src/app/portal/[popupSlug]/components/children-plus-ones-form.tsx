@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+import { Label, LabelMuted } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { motion, AnimatePresence } from "framer-motion"
 import { FormInputWrapper } from "./form-input-wrapper"
@@ -50,7 +50,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange }: Childre
                   }
                 }}
               />
-              <Label htmlFor="brings_spouse">I am bringing a spouse/partner</Label>
+              <LabelMuted htmlFor="brings_spouse">I am bringing a spouse/partner</LabelMuted>
             </div>
             <AnimatePresence>
               {hasSpouse && (
@@ -60,10 +60,10 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange }: Childre
                       <Label htmlFor="spouse_info">
                         Name of spouse/partner + duration of their stay
                         <RequiredFieldIndicator />
+                        <p className="text-sm text-muted-foreground">
+                          We will approve your spouse/partner if we approve you. However please have them fill out this form as well so we have their information in our system.
+                        </p>
                       </Label>
-                      <p className="text-sm text-muted-foreground">
-                        We will approve your spouse/partner if we approve you. However please have them fill out this form as well so we have their information in our system.
-                      </p>
                       <Input 
                         id="spouse_info"
                         value={formData.spouse_info}
@@ -76,10 +76,10 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange }: Childre
                       <Label htmlFor="spouse_email">
                         Spouse/partner email
                         <RequiredFieldIndicator />
+                        <p className="text-sm text-muted-foreground">
+                          Please provide your spouse/partner&apos;s email so we can remind them to apply.
+                        </p>
                       </Label>
-                      <p className="text-sm text-muted-foreground">
-                        Please provide your spouse/partner&apos;s email so we can remind them to apply.
-                      </p>
                       <Input 
                         id="spouse_email" 
                         type="email"
@@ -108,7 +108,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange }: Childre
                   }
                 }}
               />
-              <Label htmlFor="brings_kids">I’m considering bringing kids</Label>
+              <LabelMuted htmlFor="brings_kids">I’m considering bringing kids</LabelMuted>
             </div>
             <AnimatePresence>
               {hasKids && (
@@ -117,10 +117,10 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange }: Childre
                     <Label htmlFor="kids_info">
                       If so, what are their ages? And how long will they stay?
                       <RequiredFieldIndicator />
+                      <p className="text-sm text-muted-foreground">
+                        We will approve your kids if we approve you. Your kids do not need to fill out their own version of this form however.
+                      </p>
                     </Label>
-                    <p className="text-sm text-muted-foreground">
-                      We will approve your kids if we approve you. Your kids do not need to fill out their own version of this form however.
-                    </p>
                     <Textarea 
                       id="kids_info" 
                       className={`min-h-[100px] ${errors.kids_info ? 'border-red-500' : ''}`}

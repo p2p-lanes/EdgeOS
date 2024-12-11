@@ -38,7 +38,7 @@ const useProgress = (formData: any) => {
       },
       {
         name: 'scolarship_request',
-        fields: ['scolarship_categories', 'scolarship_details'],
+        fields: ['scolarship_details'],
         required: formData.scolarship_request
       }
     ]

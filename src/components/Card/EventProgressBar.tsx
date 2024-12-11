@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Progress } from "@/components/ui/progress"
+import { useIsMobile } from "@/hooks/useIsMobile"
 
 export type EventStatus = 'not_started' | 'draft' | 'in review' | 'accepted' | 'ticket_purchased'
 
@@ -7,10 +7,17 @@ interface EventProgressBarProps {
   status: EventStatus
 }
 
+const statusColor = (status: string) => {
+  if(status === 'in review') return 'bg-blue-100 text-blue-800'
+  if(status === 'accepted') return 'bg-green-100 text-green-800'
+  return 'bg-gray-100 text-gray-800'
+}
+
 export function EventProgressBar({ status }: EventProgressBarProps) {
   const stages: EventStatus[] = ['not_started', 'draft', 'in review', 'accepted', 'ticket_purchased']
   const currentStageIndex = stages.indexOf(status)
   const progress = (currentStageIndex / (stages.length - 1)) * 100
+  const isMobile = useIsMobile()
 
   const stageLabels = {
     'not_started': '',
@@ -19,6 +26,12 @@ export function EventProgressBar({ status }: EventProgressBarProps) {
     'accepted': 'Application accepted',
     'ticket_purchased': 'Ticket Purchased'
   }
+
+  if(isMobile) return (
+    <span className={`ml-auto text-sm ${statusColor(status)} px-3 py-1 font-semibold rounded-full`}>
+      {status}
+    </span>
+  )
 
   return (
     <div className="w-full max-w-3xl mx-auto space-y-2">

@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
+import { Label, LabelMuted } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
 import { motion, AnimatePresence } from "framer-motion"
@@ -54,9 +54,9 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                 }
               }}
             />
-            <Label htmlFor="scolarship_request">
+            <LabelMuted htmlFor="scolarship_request">
               Are you interested in applying for a scholarship?
-            </Label>
+            </LabelMuted>
           </div>
           
           <AnimatePresence>
@@ -66,11 +66,10 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                   <FormInputWrapper>
                     <Label>
                       Do any of these apply to you, as a scholarship applicant?
-                      <RequiredFieldIndicator />
                     </Label>
                     <div className="space-y-2">
                       {scholarshipTypes.map((type) => (
-                        <Label key={type.id} className="flex items-center gap-2">
+                        <LabelMuted key={type.id} className="flex items-center gap-2">
                           <Checkbox 
                             id={type.id}
                             checked={(formData.scolarship_categories as string[])?.includes(type.id) ?? false}
@@ -84,7 +83,7 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                             }}
                           />
                           {type.label}
-                        </Label>
+                        </LabelMuted>
                       ))}
                     </div>
                     {errors.scolarship_categories && <p className="text-red-500 text-sm">{errors.scolarship_categories}</p>}

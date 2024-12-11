@@ -1,6 +1,6 @@
 import { useState } from "react"
 import { Checkbox } from "@/components/ui/checkbox"
-import { Label } from "@/components/ui/label"
+import { Label, LabelMuted } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Textarea } from "@/components/ui/textarea"
 import Link from "next/link"
@@ -74,14 +74,14 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           <Label>
             Duration
             <RequiredFieldIndicator />
+            <p className="text-sm text-muted-foreground">
+              Please share how long you intend to come. You can change this later
+            </p>
           </Label>
-          <p className="text-sm text-muted-foreground">
-            Please share how long you intend to come. You can change this later
-          </p>
           <RadioGroup 
             value={formData.duration}
             onValueChange={(value) => handleChange('duration', value)}
-            className={cn("grid gap-2 mt-2", errors.duration ? 'border rounded-md border-red-500' : '')}
+            className={cn("grid sm:grid-cols-2 gap-2 mt-2", errors.duration ? 'border rounded-md border-red-500' : '')}
           >
             <Label className={"flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted"}>
               <RadioGroupItem value="1 weekend" id="1 weekend" />
@@ -121,15 +121,15 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                   }
                 }}
               />
-              <Label htmlFor="builder_boolean">
-                Would you consider yourself a builder/developer looking to build open source software while at Edge Esmeralda?
-              </Label>
+              <LabelMuted  htmlFor="builder_boolean">
+                Are you a builder/developer interested in creating open-source software at Edge Esmeralda?
+              </LabelMuted>
             </div>
             <div className="flex items-center space-x-2">
               <Checkbox id="investor" checked={formData.investor || false} onCheckedChange={(checked) => handleChange('investor', checked === true)}/>
-              <Label htmlFor="investor">
+              <LabelMuted htmlFor="investor">
                 Are you a venture capitalist / investor coming to source deals?
-              </Label>
+              </LabelMuted>
             </div>
             <AnimatePresence>
               {isBuilder && (
@@ -162,18 +162,34 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                   checked={formData.hackathon_interest || false}
                   onCheckedChange={(checked) => handleChange('hackathon_interest', checked === true)}
                 />
-                <Label htmlFor="hackathon">We will have a hackathon at Edge Esmeralda. Do you think you’ll want to take part?</Label>
+                <LabelMuted htmlFor="hackathon" className="">We will have a hackathon at Edge Esmeralda. Do you think you’ll want to take part?</LabelMuted>
               </div>
             </div>
           </div>
         </FormInputWrapper>
 
+        <div className="grid gap-8 lg:grid-cols-1">
+          <FormInputWrapper>
+            <Label htmlFor="goals">What are your goals in attending Edge Esmeralda?
+              <p className="text-sm text-muted-foreground mb-2">
+                You can elaborate on how you want to contribute to the collective experience as well.
+              </p>
+            </Label>
+            <Textarea 
+              id="goals"
+              value={formData.personal_goals ?? ''}
+              onChange={(e) => handleChange('personal_goals', e.target.value)}
+            />
+          </FormInputWrapper>
+        </div>
+
         <div className="grid gap-4 sm:grid-cols-2">
           <FormInputWrapper>
-            <Label htmlFor="host_session">If you were to host a session on any topic for/with Edge Esmeraldans, what would that session be?</Label>
-            <p className="text-sm text-muted-foreground mb-2">
-              This is just to get a sense of the topics you&apos;re interested in, not a commitment to host this particular session. You&apos;re welcome to change your plans as we get closer to May.
-            </p>
+            <Label htmlFor="host_session">What topic would you choose if you were to host a session for Edge Esmeralda?
+              <p className="text-sm text-muted-foreground mb-2">
+                This is just to get a sense of the topics you're interested in
+              </p>
+            </Label>
             <Textarea 
               id="host_session"
               value={formData.host_session ?? ''}
@@ -185,13 +201,13 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
            <FormInputWrapper>
             <Label>
               Info I&apos;m not willing to share with other attendees
+              <p className="text-sm text-muted-foreground mb-2">
+                We will make a directory to make it easier for attendees to coordinate
+              </p>
             </Label>
-            <p className="text-sm text-muted-foreground mb-2">
-              We will make a directory to make it easier for attendees to coordinate
-            </p>
             <div className="space-y-2">
               {shareableInfo.map((info) => (
-                <Label key={info.id} className="flex items-center gap-2">
+                <LabelMuted key={info.id} className="flex items-center gap-2">
                   <Checkbox 
                     id={info.id}
                     checked={(formData.info_not_shared as string[])?.includes(info.id)}
@@ -205,30 +221,11 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                     }}
                   />
                   {info.label}
-                </Label>
+                </LabelMuted>
               ))}
             </div>
           </FormInputWrapper>
         </div>
-
-
-        <div className="grid gap-8 lg:grid-cols-2">
-          <FormInputWrapper>
-            <Label htmlFor="goals">What are your goals in attending Edge Esmeralda?</Label>
-            <p className="text-sm text-muted-foreground mb-2">
-              You can elaborate on how you want to contribute to the collective experience as well.
-              {/* See <Link href="#" className="text-primary hover:underline">here</Link> for ideas on ways to contribute. */}
-            </p>
-            <Textarea 
-              id="goals"
-              value={formData.personal_goals ?? ''}
-              onChange={(e) => handleChange('personal_goals', e.target.value)}
-              className="min-h-[100px]"
-            />
-          </FormInputWrapper>
-        </div>
-
-
       </FormInputWrapper>
     </SectionWrapper>
   )
