@@ -104,7 +104,7 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
                 <RequiredFieldIndicator />
               </Label>
               <p className="text-sm text-muted-foreground mb-2">
-                The primary form of communication during Edge Esmeralda will be a Telegram group, so create an account if you don&apos;t already have one
+                The primary form of communication during Edge Esmeralda will be a Telegram group, so create an account if you don&apos;t already have one.
               </p>
               <AddonInput
                 id="telegram"
