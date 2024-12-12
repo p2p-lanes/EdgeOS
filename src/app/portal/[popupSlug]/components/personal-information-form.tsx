@@ -26,7 +26,7 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
         <div className="grid gap-4 sm:grid-cols-2">
           <FormInputWrapper>
             <Label htmlFor="first_name">
-              First name
+              First name.
               <RequiredFieldIndicator />
             </Label>
             <Input 
