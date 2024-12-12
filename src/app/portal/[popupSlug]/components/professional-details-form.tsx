@@ -60,7 +60,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange }: Prof
           </FormInputWrapper>
         </div>
         <FormInputWrapper>
-          <div className="h-full flex flex-col">
+          <div className="h-full flex flex-col mt-6">
             <Label htmlFor="social_media">
               Your active social media accounts
               {

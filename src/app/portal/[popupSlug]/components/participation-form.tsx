@@ -10,6 +10,7 @@ import SectionWrapper from "./SectionWrapper"
 import { useCityProvider } from "@/providers/cityProvider"
 import { cn } from "@/lib/utils"
 import { validateVideoUrl } from "@/helpers/validate"
+import { Input } from "@/components/ui/input"
 
 interface ParticipationFormProps {
   formData: any;
@@ -39,19 +40,8 @@ const topicTracks = [
   { id: "Hard tech", label: "Hard tech" },
 ]
 
-const shareableInfo = [
-  { id: "First name", label: "First name" },
-  { id: "Last name", label: "Last name" },
-  { id: "Email address", label: "Email address" },
-  { id: "Telegram username", label: "Telegram username" },
-  { id: "Check-in date", label: "Check-in date" },
-  { id: "Check-out date", label: "Check-out date" },
-  { id: "Whether or not I'm bringing kids", label: "Whether or not I'm bringing kids" },
-]
-
 export function ParticipationForm({ formData, errors, handleChange }: ParticipationFormProps) {
   const [isBuilder, setIsBuilder] = useState(formData.builder_boolean || false)
-  const { getCity } = useCityProvider()
   const isVideoValid = validateVideoUrl(formData.video_url)
 
   const animationProps = {
@@ -69,7 +59,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           We understand that your plans may change. We are collecting the following information just to get a sense of capacity of each day/week.
         </p>
       </div>
-      <FormInputWrapper>
+      <div>
         <FormInputWrapper>
           <Label>
             Duration
@@ -110,7 +100,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
         </FormInputWrapper>
 
         <FormInputWrapper>
-          <div className="grid gap-4 gap-y-6 sm:grid-cols-2 my-4 items-start">
+          <div className="grid gap-4 gap-y-6 sm:grid-cols-1 mt-6 mb-3 items-start">
             <div className={cn("flex-col items-center space-x-2")}>
               <div className="flex items-center space-x-2">
                 <Checkbox 
@@ -150,32 +140,53 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                 )}
               </AnimatePresence>     
             </div>
-            <div className="flex items-center space-x-2">
-              <Checkbox id="investor" checked={formData.investor || false} onCheckedChange={(checked) => handleChange('investor', checked === true)}/>
-              <LabelMuted htmlFor="investor">
-                Are you a venture capitalist / investor coming to source deals?
-              </LabelMuted>
-            </div>       
           </div>
-        </FormInputWrapper>
+        </FormInputWrapper>       
 
         <FormInputWrapper>
-          <div className="space-y-4">
-            <div className="grid gap-4 sm:grid-cols-2">
-              <div className="flex items-center space-x-2">
-                <Checkbox 
-                  id="hackathon"
-                  checked={formData.hackathon_interest || false}
-                  onCheckedChange={(checked) => handleChange('hackathon_interest', checked === true)}
-                />
-                <LabelMuted htmlFor="hackathon" className="">We will have a hackathon at Edge Esmeralda. Do you think you’ll want to take part?</LabelMuted>
-              </div>
-            </div>
+          <div className="flex items-center space-x-2 my-4">
+            <Checkbox 
+              id="hackathon"
+              checked={formData.hackathon_interest || false}
+              onCheckedChange={(checked) => handleChange('hackathon_interest', checked === true)}
+            />
+            <LabelMuted htmlFor="hackathon" className="">We will have a hackathon at Edge Esmeralda. Do you think you’ll want to take part?</LabelMuted>
           </div>
         </FormInputWrapper>
 
-        <div className="grid gap-8 lg:grid-cols-1">
+        <div className="flex items-center space-x-2">
+          <Checkbox id="investor" checked={formData.investor || false} onCheckedChange={(checked) => handleChange('investor', checked === true)}/>
+          <LabelMuted htmlFor="investor">
+            Are you a venture capitalist / investor coming to source deals?
+          </LabelMuted>
+        </div>
+
+        <div className="grid gap-4 sm:grid-cols-1 my-6">
           <FormInputWrapper>
+            <div className="flex flex-col h-full my-1">
+              <Label htmlFor="video_url">[Preferred] Please record a 1-2 minute video sharing your quick response to the following questions (you don’t have to fill them in below if you add the video)</Label>
+              <p className="text-sm text-muted-foreground mt-1">
+                - What are your goals for Edge Esmeralda and why do you want to join?
+              </p>
+              <p className="text-sm text-muted-foreground mb-1">
+                - What is something you could contribute? A workshop, a talk, an area of expertise. Get creative!
+              </p>
+              <p className="text-sm text-muted-foreground ">
+                You can upload your video to Dropbox, Google Drive, Youtube, or anywhere where you can make the link public and viewable
+              </p>
+              <Input
+                id="video_url" 
+                value={formData.video_url ?? ''}
+                onChange={(e) => handleChange('video_url', e.target.value)}
+                className="mt-auto"
+                placeholder="Video URL"
+              />
+            </div>
+          </FormInputWrapper>
+        </div>
+
+        <FormInputWrapper>
+          <div className="mt-8 mb-6">
             <Label htmlFor="goals">What are your goals in attending Edge Esmeralda?
               <p className="text-sm text-muted-foreground mb-2">
                 You can elaborate on how you want to contribute to the collective experience as well.
@@ -186,10 +197,10 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
               value={formData.personal_goals ?? ''}
               onChange={(e) => handleChange('personal_goals', e.target.value)}
             />
-          </FormInputWrapper>
-        </div>
+          </div>
+        </FormInputWrapper>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className="grid gap-4 sm:grid-cols-1">
           <FormInputWrapper>
             <Label htmlFor="host_session">What topic would you choose if you were to host a session for Edge Esmeralda?
               <p className="text-sm text-muted-foreground mb-2">
@@ -200,39 +211,11 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
               id="host_session"
               value={formData.host_session ?? ''}
               onChange={(e) => handleChange('host_session', e.target.value)}
-              className="min-h-[100px]"
             />
             {errors.host_session && <p className="text-red-500 text-sm">{errors.host_session}</p>}
           </FormInputWrapper>
-           <FormInputWrapper>
-            <Label>
-              Info I&apos;m not willing to share with other attendees
-              <p className="text-sm text-muted-foreground mb-2">
-                We will make a directory to make it easier for attendees to coordinate
-              </p>
-            </Label>
-            <div className="space-y-2">
-              {shareableInfo.map((info) => (
-                <LabelMuted key={info.id} className="flex items-center gap-2">
-                  <Checkbox 
-                    id={info.id}
-                    checked={(formData.info_not_shared as string[])?.includes(info.id)}
-                    onCheckedChange={(checked) => {
-                      const currentInfo = formData.info_not_shared as string[] ?? []
-                      if (checked) {
-                        handleChange('info_not_shared', [...currentInfo, info.id])
-                      } else {
-                        handleChange('info_not_shared', currentInfo.filter(id => id !== info.id))
-                      }
-                    }}
-                  />
-                  {info.label}
-                </LabelMuted>
-              ))}
-            </div>
-          </FormInputWrapper>
         </div>
-      </FormInputWrapper>
+      </div>
     </SectionWrapper>
   )
 }
