@@ -6,6 +6,7 @@ import useResources from "@/hooks/useResources"
 import ActiveResource from "./StatusResource/ActiveResource"
 import SoonResource from "./StatusResource/SoonResource"
 import InactiveResource from "./StatusResource/InactiveResource"
+import DisabledResource from "./StatusResource/DisabledResource"
 
 const statusColor = (status: string) => {
   if(status === 'pending') return 'bg-yellow-100 text-yellow-800'
@@ -32,6 +33,8 @@ const ResourceMenuItem: React.FC<{ resource: Resource, level?: number }> = ({ re
               <SoonResource resource={resource} level={level} color={statusColor(resource.value as string)} />
             ) : resource.status === 'inactive' ? (
               <InactiveResource resource={resource} level={level} color={statusColor(resource.value as string)} />
+            ) :  resource.status === 'disabled' ? (
+              <DisabledResource resource={resource} level={level} color={statusColor(resource.value as string)}/>
             ) : null
           }
         </TooltipTrigger>
