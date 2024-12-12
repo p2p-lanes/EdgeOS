@@ -202,7 +202,7 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
               We will make a directory to make it easier for attendees to coordinate
             </p>
           </Label>
-          <div className="space-y-2">
+          <div className="space-y-2 ">
             {shareableInfo.map((info) => (
               <LabelMuted key={info.id} className="flex items-center gap-2">
                 <Checkbox 
