@@ -73,7 +73,7 @@ export default function AuthForm() {
               Sign into Edge Portal
             </h2>
             <p className="mt-2 text-sm text-gray-600" style={{ textWrap: 'balance' }}>
-            If you attended Lanna, use the same email to enable application import, saving you some time!
+            If you attended a past event, use the same email to enable application import, saving you some time!
             </p>
           </div>
           <form className="mt-8 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
