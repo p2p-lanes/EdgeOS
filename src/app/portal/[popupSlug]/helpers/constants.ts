@@ -4,6 +4,6 @@ export const initial_data = {
     organization: '', gender: '', age: '', social_media: '',
     duration: '', builder_boolean: false, builder_description: '',
     brings_spouse: false, spouse_info: '', spouse_email: '', brings_kids: false, kids_info: '',
-    scolarship_request: false, scolarship_categories: [], scolarship_details: '',
+    scolarship_request: false, scolarship_categories: [],
     video_url: ''
   }

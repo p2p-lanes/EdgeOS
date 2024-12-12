@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { FormInputWrapper } from "./form-input-wrapper"
 import { RequiredFieldIndicator } from "./required-field-indicator"
 import SectionWrapper from "./SectionWrapper"
+import { Input } from "@/components/ui/input"
 
 interface ScholarshipFormProps {
   formData: any;
@@ -64,38 +65,36 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
               <motion.div {...animationProps}>
                 <FormInputWrapper>
                   <FormInputWrapper>
-                    <Label>
-                      Do any of these apply to you, as a scholarship applicant?
-                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      We understand that some folks will need financial assistance to attend, 
+                      and have other ways to contribute beyond financial support. 
+                      We have limited numbers of discounted tickets to allocate. 
+                      Please elaborate on why you’re applying, and what your contribution might be. 
+                      We estimate roughly a 10 hour/week volunteer effort from folks who gets scholarships. 
+                    </p>
                     <div className="space-y-2">
-                      {scholarshipTypes.map((type) => (
-                        <LabelMuted key={type.id} className="flex items-center gap-2">
-                          <Checkbox 
-                            id={type.id}
-                            checked={(formData.scolarship_categories as string[])?.includes(type.id) ?? false}
-                            onCheckedChange={(checked) => {
-                              const currentTypes = formData.scolarship_categories as string[] ?? []
-                              if (checked) {
-                                handleChange('scolarship_categories', [...currentTypes, type.id])
-                              } else {
-                                handleChange('scolarship_categories', currentTypes.filter(id => id !== type.id))
-                              }
-                            }}
-                          />
-                          {type.label}
-                        </LabelMuted>
-                      ))}
+                      <Label>
+                        [Preferred] Please share a ~60 second video answering the above. 
+                        <p className="text-sm text-muted-foreground">
+                          You can upload your video to Dropbox, Google Drive, Youtube, or anywhere where you can make the link public and viewable
+                        </p>
+                      </Label>
+                      <Input 
+                        id="scholarship_video_url" 
+                        value={formData.scholarship_video_url}
+                        onChange={(e) => handleChange('scholarship_video_url', e.target.value)}
+                        className={errors.scholarship_video_url ? 'border-red-500' : ''}
+                      />
                     </div>
-                    {errors.scolarship_categories && <p className="text-red-500 text-sm">{errors.scolarship_categories}</p>}
+                    {errors.scholarship_video_url && <p className="text-red-500 text-sm">{errors.scholarship_video_url}</p>}
                   </FormInputWrapper>
                   <FormInputWrapper>
                     <Label htmlFor="scholarship_details">
-                      Elaborate on why you&apos;re applying for a scholarship
-                      <RequiredFieldIndicator />
+                      You can also write your answer, although video is preferred.
                     </Label>
                     <Textarea 
                       id="scholarship_details" 
-                      className={`min-h-[100px] ${errors.scolarship_details ? 'border-red-500' : ''}`}
+                      className={`${errors.scolarship_details ? 'border-red-500' : ''}`}
                       value={formData.scolarship_details ?? ''}
                       onChange={(e) => handleChange('scolarship_details', e.target.value)}
                     />

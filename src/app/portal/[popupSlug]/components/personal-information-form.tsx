@@ -6,6 +6,7 @@ import { RequiredFieldIndicator } from "./required-field-indicator";
 import SectionWrapper from "./SectionWrapper";
 import { Checkbox } from "@/components/ui/checkbox";
 import { AddonInput } from "@/components/ui/addon-input";
+import { MultiSelect } from "@/components/ui/MultiSelect";
 
 interface PersonalInformationFormProps {
   formData: any;
@@ -14,16 +15,21 @@ interface PersonalInformationFormProps {
 }
 
 const shareableInfo = [
-  { id: "First name", label: "First name" },
-  { id: "Last name", label: "Last name" },
-  { id: "Email address", label: "Email address" },
-  { id: "Telegram username", label: "Telegram username" },
-  { id: "Check-in date", label: "Check-in date" },
-  { id: "Check-out date", label: "Check-out date" },
-  { id: "Whether or not I'm bringing kids", label: "Whether or not I'm bringing kids" },
+  { value: "First name", label: "First name" },
+  { value: "Last name", label: "Last name" },
+  { value: "Email address", label: "Email address" },
+  { value: "Telegram username", label: "Telegram username" },
+  { value: "Check-in date", label: "Check-in date" },
+  { value: "Check-out date", label: "Check-out date" },
+  { value: "Whether or not I'm bringing kids", label: "Whether or not I'm bringing kids" },
 ]
 
 export function PersonalInformationForm({ formData, errors, handleChange }: PersonalInformationFormProps) {
+
+  const handleChangeShareableInfo = (selected: string[]) => {
+    handleChange('info_not_shared', selected)
+  }
+
   return (
     <SectionWrapper>
       <div className="space-y-1">
@@ -203,23 +209,7 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
             </p>
           </Label>
           <div className="space-y-2 ">
-            {shareableInfo.map((info) => (
-              <LabelMuted key={info.id} className="flex items-center gap-2">
-                <Checkbox 
-                  id={info.id}
-                  checked={(formData.info_not_shared as string[])?.includes(info.id)}
-                  onCheckedChange={(checked) => {
-                    const currentInfo = formData.info_not_shared as string[] ?? []
-                    if (checked) {
-                      handleChange('info_not_shared', [...currentInfo, info.id])
-                    } else {
-                      handleChange('info_not_shared', currentInfo.filter(id => id !== info.id))
-                    }
-                  }}
-                />
-                {info.label}
-              </LabelMuted>
-            ))}
+            <MultiSelect options={shareableInfo} onChange={handleChangeShareableInfo} defaultValue={formData.info_not_shared}/>
           </div>
         </FormInputWrapper>
       </FormInputWrapper>

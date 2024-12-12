@@ -10,7 +10,6 @@ const requiredFields = {
   professionalDetails: ['organization', 'social_media'],
   participation: ['duration', 'builder_description'],
   childrenPlusOnes: ['spouse_info', 'spouse_email', 'kids_info'],
-  scholarship: ['scolarship_details']
 }
 
 export const useFormValidation = (initialData: FormData) => {
@@ -24,8 +23,7 @@ export const useFormValidation = (initialData: FormData) => {
     if (isVideoValid) {
       const requiredWithVideo = [
         ...requiredFields.personalInformation,
-        ...requiredFields.childrenPlusOnes,
-        ...requiredFields.scholarship
+        ...requiredFields.childrenPlusOnes
       ]
       
       if (!requiredWithVideo.includes(name)) return ''
@@ -38,9 +36,6 @@ export const useFormValidation = (initialData: FormData) => {
       }
       if (name === 'kids_info') {
         if (!formData.brings_kids) return '';
-      }
-      if (name === 'scolarship_details') {
-        if (!formData.scolarship_request) return '';
       }
       if (name === 'builder_description') {
         if (!formData.builder_boolean || validateVideoUrl(formData.video_url)) return '';

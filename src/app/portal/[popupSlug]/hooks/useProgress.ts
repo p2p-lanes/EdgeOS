@@ -38,11 +38,6 @@ const useProgress = (formData: any) => {
         fields: ['kids_info'],
         required: formData.brings_kids
       },
-      {
-        name: 'scolarship_request',
-        fields: ['scolarship_details'],
-        required: formData.scolarship_request
-      }
     ]
 
     const totalSections = sections.filter(section => section.required).length
