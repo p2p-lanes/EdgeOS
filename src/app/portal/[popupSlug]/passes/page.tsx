@@ -13,7 +13,7 @@ export default function Home() {
   const { getRelevantApplication } = useCityProvider()
   const application = getRelevantApplication()
   const router = useRouter()
-  const { products } = useGetData()
+  const { products, payments } = useGetData()
   const { purchaseProducts } = usePostData()
 
   useEffect(() => {
@@ -31,20 +31,35 @@ export default function Home() {
 
     if(purchase){
       setLoading(false)
-      window.location.href = purchase.checkout_url
+      window.location.href = `${purchase.checkout_url}?redirect_url=${window.location.href}`
     }
   }
 
-  if(!application || !products) return <Loader/>
+  if(!application || !products || !payments || products.length === 0 || payments.length === 0) return <Loader/>
 
   const name = application.first_name + ' ' + application.last_name
+
+  const productsPayments = () => {
+    const productPatreon = products.find(p => p.category === 'patreon')
+    const paymentAprroved = payments.find(p => p.status === 'approved')
+    if(productPatreon && paymentAprroved && paymentAprroved.products.includes(productPatreon.id)){
+      return products.map((product: any) => ({...product, purchased: true}))
+    }else{
+      return products.map((product: any) => {
+        const payment = payments.find((payment: any) => payment.status === 'approved' && payment.products.includes(product.id));
+        return payment ? { ...product, purchased: true } : product;
+      })
+    }
+  }
+
+    console.log('productsPayments', productsPayments())
 
   return (
     <div className="container mx-auto p-4 lg:flex">
       <div className="flex-grow mb-4 lg:mb-0">
         <div className="space-y-4">
           <TicketBadge 
-            products={products}
+            products={productsPayments()}
             name={name}
             badge="group lead" 
             email={application.email ?? ''}

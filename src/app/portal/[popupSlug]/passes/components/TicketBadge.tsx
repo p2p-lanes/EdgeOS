@@ -29,6 +29,13 @@ export default function TicketBadge({
   const [tickets, setTickets] = useState(products);
 
   const toggleProduct = (product: any) => {
+    if(product.purchased) return;
+
+    const hasPatreon = tickets.find((ticket: any) => ticket.category === 'patreon' && (ticket.enabled || ticket.purchased));
+
+    if(hasPatreon && product.category !== 'patreon'){
+      return;
+    }
     setTickets((prev: any) => 
             prev.map((ticket: any) => 
                 ticket.id === product.id ? { ...ticket, enabled: !ticket.enabled } : ticket
@@ -42,7 +49,40 @@ export default function TicketBadge({
     return <Users className="w-3 h-3 mr-1" />;
   };
 
+  const togglePatreon = (product: any) => {
+     if (product.enabled) {
+      // Si product.enabled es true, deshabilita los tickets no comprados
+      const updatedTickets = tickets.map((ticket: any) => {
+        if (!ticket.purchased) {
+          return { ...ticket, enabled: false };
+        }
+        return ticket;
+      });
+      setTickets(updatedTickets);
+    } else {
+      // Si product.enabled es false, habilita los tickets no comprados
+      const updatedTickets = tickets.map((ticket: any) => {
+        if (!ticket.purchased) {
+          return { ...ticket, enabled: true };
+        }
+        return ticket;
+      });
+      setTickets(updatedTickets);
+    }
+  }
+
   const calculatePrice = useCallback(() => {
+    const hasPatreon = tickets.find((t: any) => t.category === 'patreon' && t.enabled)
+    if(hasPatreon){
+      const purchasedTicketsPrice = tickets.reduce((total: number, ticket: any) => {
+        if (ticket.purchased) {
+          return total + ticket.price;
+        }
+        return total;
+      }, 0);
+      return hasPatreon.price - purchasedTicketsPrice;
+    }
+
     const selectedWeeksCount = tickets.reduce((total: number, ticket: any) => {
         if (ticket.enabled) {
             return total + ticket.price;
@@ -50,6 +90,7 @@ export default function TicketBadge({
         return total;
     }, 0);
     return selectedWeeksCount;
+
   }, [tickets]);
 
   const ticketsEnabled = tickets.filter((ticket: any) => ticket.enabled)
@@ -67,9 +108,9 @@ export default function TicketBadge({
                       key={ticket.name + ticket.id}
                       variant="secondary"
                       className={`self-start mb-1 flex items-center cursor-pointer ${
-                        ticket.enabled ? 'bg-green-600 text-white hover:bg-green-700' : 'hover:bg-gray-100'
+                        (ticket.enabled || ticket.purchased) ? 'bg-green-600 text-white hover:bg-green-700' : 'hover:bg-gray-100'
                       }`}
-                      onClick={() => toggleProduct(ticket)}
+                      onClick={() => togglePatreon(ticket)}
                     >
                       <AwardIcon className="w-3 h-3 mr-1" />
                       {ticket.enabled ? 'Patron' : 'Become Patron'}
@@ -94,9 +135,9 @@ export default function TicketBadge({
                 return(
                   <Badge 
                     key={`week${index}`}
-                    variant={ticket.enabled ? "default" : "outline"}
+                    variant={(ticket.enabled || ticket.purchased)  ? "default" : "outline"}
                     className={`flex items-center text-xs cursor-pointer ${
-                      ticket.enabled
+                      (ticket.enabled || ticket.purchased) 
                         ? "bg-green-600 text-white hover:bg-green-700" 
                         : "hover:bg-gray-100"
                     }`}
