@@ -34,6 +34,10 @@ const useSavesForm = () => {
     const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
       
     await response.then((data) => {
+      if(data.status !== 201){
+        return
+      }
+
       const newApplication = data.data
       const existingIndex = applications.findIndex((app: ApplicationProps) => app.id === newApplication.id)
       

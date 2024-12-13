@@ -5,13 +5,16 @@ import TicketBadge from './components/TicketBadge'
 import { useCityProvider } from '@/providers/cityProvider'
 import { useRouter } from 'next/navigation'
 import { Loader } from '@/components/ui/Loader'
+import useGetData from './hooks/useGetData'
+import usePostData from './hooks/usePostData'
 
 export default function Home() {
-  const [selectedWeeks, setSelectedWeeks] = useState<{ [key: string]: string[] }>({})
-  const [patronStatus, setPatronStatus] = useState<{ [key: string]: boolean }>({})
+  const [loading, setLoading] = useState(false)
   const { getRelevantApplication } = useCityProvider()
   const application = getRelevantApplication()
   const router = useRouter()
+  const { products } = useGetData()
+  const { purchaseProducts } = usePostData()
 
   useEffect(() => {
     if(!application) return;
@@ -22,43 +25,31 @@ export default function Home() {
     }
   }, [application])
 
-  const handleWeekSelect = useCallback((name: string, weeks: string[]) => {
-    setSelectedWeeks(prev => {
-      const newState = { ...prev }
-      if (weeks.length > 0) {
-        newState[name] = weeks
-      } else {
-        delete newState[name]
-      }
-      return newState
-    })
-  }, [])
+  const handleClickAction = async (tickets: any) => {
+    setLoading(true)
+    const purchase = await purchaseProducts(tickets)
 
-  const handlePatronStatusChange = useCallback((name: string, isPatron: boolean) => {
-    setPatronStatus(prev => ({
-      ...prev,
-      [name]: isPatron
-    }))
-  }, [])
-
-  const handleClickAction = () => {
-    console.log('comrpaste', selectedWeeks, patronStatus)
+    if(purchase){
+      setLoading(false)
+      window.location.href = purchase.checkout_url
+    }
   }
 
-  if(!application) return <Loader/>
+  if(!application || !products) return <Loader/>
+
+  const name = application.first_name + ' ' + application.last_name
 
   return (
     <div className="container mx-auto p-4 lg:flex">
       <div className="flex-grow mb-4 lg:mb-0">
         <div className="space-y-4">
           <TicketBadge 
-            name="Alejandro Romeo" 
+            products={products}
+            name={name}
             badge="group lead" 
-            email="alejandro@gmail.com"
-            initialPatronStatus={patronStatus["Alejandro Romeo"]}
-            onWeekSelect={handleWeekSelect}
-            onPatronStatusChange={handlePatronStatusChange}
+            email={application.email ?? ''}
             handleClickAction={handleClickAction}
+            loading={loading}
           />
         </div>
       </div>
