@@ -35,7 +35,7 @@ export default function Home() {
     }
   }
 
-  if(!application || !products || !payments || products.length === 0 || payments.length === 0) return <Loader/>
+  if(!application || !products || !payments || products.length === 0) return <Loader/>
 
   const name = application.first_name + ' ' + application.last_name
 
