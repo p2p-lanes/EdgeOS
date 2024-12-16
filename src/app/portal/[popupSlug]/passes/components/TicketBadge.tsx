@@ -113,7 +113,7 @@ export default function TicketBadge({
           <Badge variant="secondary" className="flex items-center">
             {getBadgeIcon(badge)}
             {badge}
-          </Badge>
+          </Badge> 
         </div>
         <div className="border-t pt-3">
           <h3 className="text-sm font-semibold text-gray-700 mb-2">Tickets</h3>
