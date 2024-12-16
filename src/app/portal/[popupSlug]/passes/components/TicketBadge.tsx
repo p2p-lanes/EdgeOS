@@ -31,16 +31,16 @@ export default function TicketBadge({
   const toggleProduct = (product: any) => {
     if(product.purchased) return;
 
-    const hasPatreon = tickets.find((ticket: any) => ticket.category === 'patreon' && (ticket.enabled || ticket.purchased));
-
-    if(hasPatreon && product.category !== 'patreon'){
-      return;
+    if(product.category !== 'patreon'){
+      const hasPatreon = tickets.find((ticket: any) => ticket.category === 'patreon' && (ticket.enabled || ticket.purchased));
+      if(hasPatreon) return
     }
+
     setTickets((prev: any) => 
-            prev.map((ticket: any) => 
-                ticket.id === product.id ? { ...ticket, enabled: !ticket.enabled } : ticket
-            )
-        );
+      prev.map((ticket: any) => 
+          ticket.id === product.id ? { ...ticket, enabled: !ticket.enabled } : ticket
+      )
+    );
   };
 
   const getBadgeIcon = (badge: string) => {
@@ -50,25 +50,13 @@ export default function TicketBadge({
   };
 
   const togglePatreon = (product: any) => {
-     if (product.enabled) {
-      // Si product.enabled es true, deshabilita los tickets no comprados
-      const updatedTickets = tickets.map((ticket: any) => {
-        if (!ticket.purchased) {
-          return { ...ticket, enabled: false };
-        }
-        return ticket;
-      });
-      setTickets(updatedTickets);
-    } else {
-      // Si product.enabled es false, habilita los tickets no comprados
-      const updatedTickets = tickets.map((ticket: any) => {
-        if (!ticket.purchased) {
-          return { ...ticket, enabled: true };
-        }
-        return ticket;
-      });
-      setTickets(updatedTickets);
-    }
+    const updatedTickets = tickets.map((ticket: any) => {
+      if (!ticket.purchased) {
+        return { ...ticket, enabled: !product.enabled };
+      }
+      return ticket;
+    });
+    setTickets(updatedTickets);
   }
 
   const calculatePrice = useCallback(() => {
@@ -105,7 +93,7 @@ export default function TicketBadge({
                 if(ticket.category === 'patreon'){
                   return(
                     <Badge 
-                      key={ticket.name + ticket.id}
+                      key={`patreon-${ticket.name}`}
                       variant="secondary"
                       className={`self-start mb-1 flex items-center cursor-pointer ${
                         (ticket.enabled || ticket.purchased) ? 'bg-green-600 text-white hover:bg-green-700' : 'hover:bg-gray-100'
@@ -134,7 +122,7 @@ export default function TicketBadge({
               if(ticket.category === 'week'){
                 return(
                   <Badge 
-                    key={`week${index}`}
+                    key={`week-${index}`}
                     variant={(ticket.enabled || ticket.purchased)  ? "default" : "outline"}
                     className={`flex items-center text-xs cursor-pointer ${
                       (ticket.enabled || ticket.purchased) 
@@ -168,7 +156,7 @@ export default function TicketBadge({
                 transition={{ duration: 0.3, ease: 'easeInOut' }}
               >
                 <p className="text-sm text-muted-foreground mb-2 sm:mb-0">
-                  ${calculatePrice().toFixed(2)} total for {ticketsEnabled.length} tickets
+                  ${calculatePrice().toFixed(2)} total for {ticketsEnabled.length} {ticketsEnabled.length > 1 ? 'tickets' : 'ticket'}
                 </p>
                 <ButtonAnimated
                   loading={loading}

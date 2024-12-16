@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import TicketBadge from './components/TicketBadge'
 import { useCityProvider } from '@/providers/cityProvider'
 import { useRouter } from 'next/navigation'
@@ -35,10 +35,6 @@ export default function Home() {
     }
   }
 
-  if(!application || !products || !payments || products.length === 0) return <Loader/>
-
-  const name = application.first_name + ' ' + application.last_name
-
   const productsPayments = () => {
     const productPatreon = products.find(p => p.category === 'patreon')
     const paymentAprroved = payments.find(p => p.status === 'approved')
@@ -52,7 +48,9 @@ export default function Home() {
     }
   }
 
-    console.log('productsPayments', productsPayments())
+  if(!application || !products || !payments || products.length === 0) return <Loader/>
+
+  const name = application.first_name + ' ' + application.last_name
 
   return (
     <div className="container mx-auto p-4 lg:flex">
