@@ -15,9 +15,8 @@ const usePostData = () => {
     
     try{
       const response = await api.post('payments', {application_id: application.id, products: productsPurchase})
-      console.log('response', response)
       if(response.status === 200){
-        // window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
+        window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
         return response.data
       }
     }catch{
