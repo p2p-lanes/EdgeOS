@@ -38,7 +38,7 @@ export default function Home() {
       <div className="grid grid-cols-1 md:grid-cols-[60%,40%] gap-6">
         <ListAttendees attendees={attendees}/>
         
-        <PassesSidebar productsPurchase={products} attendees={attendees}/>
+        <PassesSidebar productsPurchase={products} attendees={attendees} payments={payments}/>
       </div>
     </div>
   )

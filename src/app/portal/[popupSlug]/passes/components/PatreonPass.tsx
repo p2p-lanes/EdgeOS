@@ -34,8 +34,8 @@ export default function PatreonPass({ product, selected, icon: Icon = Gem, onCli
           onClick={() => onClick()}
           variant="outline"
           className={`
-            rounded-full px-6 transition-colors hover:
-            ${selected ? 'bg-[#0F172A] text-white border-[#0F172A] hover:bg-[#0F172A]/90' : ''}
+            rounded-full px-6 transition-colors 
+            ${selected ? 'bg-[#0F172A] text-white border-[#0F172A] hover:bg-[#0F172A]/90 hover:text-white' : ''}
           `}
         >
           {selected ? 'Selected' : 'Select'}

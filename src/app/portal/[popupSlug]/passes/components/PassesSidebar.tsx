@@ -3,14 +3,16 @@ import { ProductsAttendee } from "./ProductsAttendee"
 import { ProductsPass, ProductsProps } from "@/types/Products"
 import { AttendeeProps } from "@/types/Attendee"
 import { useState } from "react"
+import PaymentHistory from "./PaymentHistory"
 
 interface PassesSidebarProps {
   productsPurchase: ProductsProps[], 
   attendees: AttendeeProps[], 
+  payments: any[]
 }
 
 
-const PassesSidebar = ({productsPurchase, attendees}: PassesSidebarProps) => {
+const PassesSidebar = ({productsPurchase, attendees, payments}: PassesSidebarProps) => {
   const [products, setProducts] = useState<ProductsPass[]>(productsPurchase)
 
   const toggleProduct = (attendee_id: number, product_id: number) => {
@@ -32,9 +34,7 @@ const PassesSidebar = ({productsPurchase, attendees}: PassesSidebarProps) => {
         </TabsContent>
 
         <TabsContent value="payment-history">
-          <div className="text-center text-muted-foreground py-8">
-            No payment history available
-          </div>
+          <PaymentHistory payments={payments}/>
         </TabsContent>
       </Tabs>
     </div>
