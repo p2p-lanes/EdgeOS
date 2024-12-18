@@ -10,6 +10,7 @@ interface CityContext_interface {
   getRelevantApplication: () => ApplicationProps;
   getPopups: () => PopupsProps[];
   setPopups: (popups: PopupsProps[]) => void;
+  updateApplication: (application: ApplicationProps) => void
 }
 
 export const CityContext = createContext<CityContext_interface | null>(null);
@@ -55,6 +56,11 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
     setPopupsState(sortedPopups);
   }
 
+  const updateApplication = (application: ApplicationProps) => {
+    const newApps = applications.filter(ap => ap.id !== application.id)
+    setApplications([...newApps, application])
+  }
+
   return (
     <CityContext.Provider value={{
       getCity,
@@ -63,7 +69,8 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
       setApplications,
       getRelevantApplication,
       getPopups,
-      setPopups
+      setPopups,
+      updateApplication
     }}>
       {children}
     </CityContext.Provider>

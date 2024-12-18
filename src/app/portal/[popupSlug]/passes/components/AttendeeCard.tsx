@@ -1,0 +1,75 @@
+import { Card } from "@/components/ui/card"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import { Badge } from "@/components/ui/badge"
+import { Ticket, Trash2, User } from 'lucide-react'
+import { Button } from "@/components/ui/button"
+import { AttendeeProps } from "@/types/Attendee"
+
+interface AttendeeCardProps {
+  attendee: AttendeeProps;
+  onDelete?: () => void
+  loading: boolean;
+}
+
+export function AttendeeCard({loading, attendee, onDelete }: AttendeeCardProps) {
+  const { email, name, category } = attendee
+  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase()
+
+  const isSpouse = category === "spouse";
+  const isGroupLead = category === "main"
+  const hasProducts = attendee.products && attendee.products.length > 0
+
+  return (
+    <Card className="p-4 space-y-3">
+      <div className="flex justify-between items-center mb-3">
+        <Badge variant="secondary" className="w-fit gap-2">
+          { isGroupLead && <User className="h-4 w-4"/> }
+          {category === 'main' ? 'Group lead' : category}
+        </Badge>
+        {(isSpouse && onDelete) && (
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={onDelete}
+            disabled={loading}
+          >
+            <Trash2 className="h-4 w-4" />
+          </Button>
+        )}
+      </div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between w-full">
+        <div className="flex items-center gap-3 mb-2 sm:mb-0">
+          <Avatar className="h-10 w-10 bg-muted">
+            <AvatarFallback className="text-xs">{initials}</AvatarFallback>
+          </Avatar>
+          <div className="space-y-1">
+            <h3 className="text-lg font-bold leading-none">{name}</h3>
+            <p className="text-sm text-muted-foreground">{email}</p>
+          </div>
+        </div>
+        <div className="flex flex-col gap-2">
+
+          {hasProducts ? <>
+            <p className="text-xs font-semibold text-muted-foreground">Purchased tickets</p>
+            <div className="grid grid-cols-4">
+              {attendee.products?.map((p) => (
+                  <Badge
+                    key={p.id}
+                    variant="outline" 
+                    className={'w-fit bg-[#0F172A] text-white gap-2'}
+                  >
+                    <Ticket className="h-4 w-4" />
+                    {p.name}
+                  </Badge>
+              ))}
+            </div>
+          </> : (
+            <p className="text-xs font-semibold text-muted-foreground">No purchased tickets yet</p>
+          )}
+        </div>
+      </div>
+    </Card>
+  )
+}
+

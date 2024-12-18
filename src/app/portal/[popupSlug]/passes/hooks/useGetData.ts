@@ -1,9 +1,10 @@
 import { api } from "@/api"
 import { useCityProvider } from "@/providers/cityProvider"
+import { ProductsProps } from "@/types/Products"
 import { useEffect, useState } from "react"
 
 const useGetData = () => {
-  const [products, setProducts] = useState<any[]>([])
+  const [products, setProducts] = useState<ProductsProps[]>([])
   const [payments, setPayments] = useState<any[]>([])
   const { getCity, getRelevantApplication } = useCityProvider()
   const city = getCity()
@@ -31,8 +32,11 @@ const useGetData = () => {
 
   useEffect(() => {
     getPayments()
+  }, [application])
+
+  useEffect(() => {
     getProducts()
-  }, [city, application])
+  }, [city])
 
   return ({products, payments})
 }
