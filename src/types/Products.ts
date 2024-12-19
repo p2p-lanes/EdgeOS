@@ -15,6 +15,8 @@ export interface ProductsProps {
   updated_at: string | null;
   id: number;
   attendee_category: AttendeeCategory;
+  builder_price: number | null;
+  compare_price: number | null;
 }
 
 export interface ProductsPass extends ProductsProps {

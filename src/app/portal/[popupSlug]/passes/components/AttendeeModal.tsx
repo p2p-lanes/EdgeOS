@@ -17,13 +17,16 @@ import usePostData from "../hooks/usePostData"
 
 interface AttendeeModalProps {
   onAddAttendee: (attendee: any) => void
+  open: boolean
+  setOpen: (open: boolean) => void
+  initialName: string
+  initialEmail: string
 }
 
-export function AttendeeModal({ onAddAttendee }: AttendeeModalProps) {
+export function AttendeeModal({ onAddAttendee, open, setOpen, initialName, initialEmail }: AttendeeModalProps) {
   const [loading, setLoading] = useState(false)
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [open, setOpen] = useState(false)
+  const [name, setName] = useState(initialName)
+  const [email, setEmail] = useState(initialEmail)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -37,26 +40,6 @@ export function AttendeeModal({ onAddAttendee }: AttendeeModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" className="">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            className="mr-2 h-4 w-4"
-          >
-            <line x1="12" y1="5" x2="12" y2="19"></line>
-            <line x1="5" y1="12" x2="19" y2="12"></line>
-          </svg>
-          Add Spouse
-        </Button>
-      </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Add Spouse</DialogTitle>

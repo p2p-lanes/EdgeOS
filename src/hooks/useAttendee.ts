@@ -38,10 +38,26 @@ const useAttendee = () => {
     }
   }
 
+  const editAttendee = async (attendee_id: number, {name, email, category}: CreateAttendee) => {
+    setLoading(true)
+    try{
+      const response = await api.put(`applications/${application.id}/attendees/${attendee_id}`, {name, email, category})
+      if(response.status === 200){
+        updateApplication(response.data)
+        return response.data
+      }
+    }catch{
+      console.log('error create attende')
+    }finally{
+      setLoading(false)
+    }
+  }
+
   return ({
     loading,
     addAttendee,
-    removeAttendee
+    removeAttendee,
+    editAttendee
   })
 }
 export default useAttendee

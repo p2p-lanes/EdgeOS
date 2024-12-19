@@ -1,45 +1,40 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { ProductsProps } from "@/types/Products"
-import { Gem } from 'lucide-react'
+import { Check, Gem, Plus } from 'lucide-react'
 import type { LucideIcon } from "lucide-react"
 
 interface PatreonPassProps {
   product: any;
-  selected: boolean
-  icon: LucideIcon
+  selected?: boolean;
+  disabled?: boolean;
   onClick: () => void
 }
 
-export default function PatreonPass({ product, selected, icon: Icon = Gem, onClick }: PatreonPassProps) {
+export default function PatreonPass({ product, disabled, selected, onClick }: PatreonPassProps) {
   return (
     <div 
+      onClick={!disabled ? onClick : undefined}
       className={`
-        w-full max-w-md rounded-full flex items-center justify-between py-1 px-4
+        w-full rounded-full flex items-center justify-between py-1 px-4
         transition-all duration-300
-        ${selected ? 'border-2 border-[#0F172A]' : 'border-2 border-transparent'}
+        ${selected && 'cursor-pointer'}
+        ${selected || disabled ? 'border-2 border-[#16B74A] bg-[#D5F7CC]' : 'cursor-pointer border-2 border-gray-200 bg-transparent hover:bg-gray-100'}
       `}
-      style={{
-        background: "linear-gradient(to right, #BBFF2C, #EEFF2C)"
-      }}
     >
       <div className="flex items-center gap-2">
-        <Icon className="w-5 h-5" />
-        <span className="font-medium">{product.name}</span>
+        {
+          selected || disabled ? (
+            <Check className="w-4 h-4" color="#005F3A"/>
+          ) : (
+            <Plus className="w-4 h-4" />
+          )
+        }
+        <span className={`font-medium ${selected ? 'text-[#005F3A]' : ''}`}>{product.name}</span>
       </div>
       
       <div className="flex items-center gap-4">
-        <span className="font-medium">${product.price.toLocaleString()}</span>
-        <Button
-          onClick={() => onClick()}
-          variant="outline"
-          className={`
-            rounded-full px-6 transition-colors 
-            ${selected ? 'bg-[#0F172A] text-white border-[#0F172A] hover:bg-[#0F172A]/90 hover:text-white' : ''}
-          `}
-        >
-          {selected ? 'Selected' : 'Select'}
-        </Button>
+        <span className={`font-medium ${selected ? 'text-[#005F3A]' : ''}`}>${product.price.toLocaleString()}</span>
       </div>
     </div>
   )

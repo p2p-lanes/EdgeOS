@@ -2,25 +2,27 @@
 
 import { Check, Plus, LucideIcon, Ban } from 'lucide-react'
 import { cn } from "@/lib/utils"
+import { ProductsPass } from '@/types/Products';
+import { TicketCategoryProps } from '@/types/Application';
 
 interface TicketsBadgeProps {
-  title: string
-  subtitle: string
-  price: number
+  product: ProductsPass;
   iconTitle: LucideIcon
   selected?: boolean
   disabled: boolean;
   onClick?: () => void
+  category: TicketCategoryProps
+  patreonSelected: boolean
 }
 
 export function TicketsBadge({
-  title,
-  subtitle,
-  price,
+  product,
   disabled,
   iconTitle: IconTitle,
   selected = false,
-  onClick
+  onClick,
+  category,
+  patreonSelected
 }: TicketsBadgeProps) {
   return (
     <button
@@ -28,8 +30,8 @@ export function TicketsBadge({
       className={cn(
         "flex items-center justify-between w-auto min-w-[170px] px-3 py-1 transition-colors rounded-full",
         "border border-gray-200 hover:bg-gray-100",
-        disabled && "bg-[#878b94] hover:bg-[#878b94] text-white cursor-default",
-        selected && "bg-[#16a34a] hover:bg-[#16a34a] text-white border-[#16a34a]"
+        disabled && "bg-gray-200 hover:bg-gray-200 text-gray-600 cursor-default border-gray-300",
+        selected && "bg-[#D5F7CC] hover:bg-[#D5F7CC] text-[#005F3A] border-[#16a34a]"
       )}
     >
       <div className="flex items-center">
@@ -43,22 +45,31 @@ export function TicketsBadge({
         <div className="flex flex-col items-start">
           <div className="flex items-center gap-2">
             <IconTitle className="w-4 h-4" />
-            <span className="font-medium text-sm">{title}</span>
+            <span className="font-medium text-sm">{product.name}</span>
           </div>
-          <span className={cn(
-            "text-xs",
-            selected || disabled ? "text-white" : "text-gray-500"
-          )}>{subtitle}</span>
+          {
+            product.start_date && product.end_date && (
+              <span className={cn(
+                "text-xs",
+                selected ? "text-[#005F3A]" : "text-gray-500"
+              )}>{new Date(product.start_date ?? '').toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })} to {new Date(product.end_date ?? '').toLocaleDateString('en-US', { month: 'numeric', day: 'numeric' })}
+            </span>
+          )
+          }
         </div>
       </div>
       {
-        disabled ? <Ban className='w-4 h-4'/> : (
-          <span className="font-medium text-sm">
-            ${price.toLocaleString()}
+        disabled ? (
+          <Ban className="w-4 h-4" />
+        ): (
+          <span className={cn(
+            "font-medium text-sm",
+            selected ? "text-[#005F3A]" : "text-gray-600"
+          )}>
+            ${patreonSelected ? 0 : category === 'Builder' ? product.builder_price?.toLocaleString() : category === 'Scholarship' ? 0 :product.price.toLocaleString()}
           </span>
         )
       }
     </button>
   )
 }
-

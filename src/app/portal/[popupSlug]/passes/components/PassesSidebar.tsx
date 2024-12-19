@@ -4,21 +4,63 @@ import { ProductsPass, ProductsProps } from "@/types/Products"
 import { AttendeeProps } from "@/types/Attendee"
 import { useState } from "react"
 import PaymentHistory from "./PaymentHistory"
+import { TicketCategoryProps } from "@/types/Application"
 
 interface PassesSidebarProps {
   productsPurchase: ProductsProps[], 
   attendees: AttendeeProps[], 
-  payments: any[]
+  payments: any[],
+  category: TicketCategoryProps
 }
 
+const productsInitail = (productsPurchase: ProductsProps[], attendees: AttendeeProps[], category: TicketCategoryProps) => {
+  const mainAttendee = attendees.find(a => a.category === 'main') ?? { id: 0, products: [] }
+  const patreonPurchase = mainAttendee?.products?.some(p => p.category === 'patreon')
+  const initialProducts = productsPurchase.map(p => {
+    if(p.category !== 'patreon'){
+      return {
+        ...p,
+        price: patreonPurchase ? 0 : p.price,
+        builder_price: patreonPurchase ? 0 : p.builder_price,
+        compare_price: patreonPurchase ? 0 : p.compare_price
+      }
+    }
+    return p
+  })
 
-const PassesSidebar = ({productsPurchase, attendees, payments}: PassesSidebarProps) => {
-  const [products, setProducts] = useState<ProductsPass[]>(productsPurchase)
+  return initialProducts
+}
 
-  const toggleProduct = (attendee_id: number, product_id: number) => {
-    setProducts(prev => prev.map(product => 
-      product.id === product_id ? {...product, attendee_id, selected: !product.selected } : product
-    ))
+const PassesSidebar = ({productsPurchase, attendees, payments, category}: PassesSidebarProps) => {
+  const initialProducts = productsInitail(productsPurchase, attendees, category)
+  const [products, setProducts] = useState<ProductsPass[]>(initialProducts)
+
+  const toggleProduct = (attendee_id: number, product?: ProductsPass) => {
+    if (!product) return;
+
+    const isPatreonProduct = product.category === 'patreon';
+    const isNewSelection = !product.selected;
+
+    if (isPatreonProduct) {
+      if (isNewSelection) {
+        setProducts(prev => prev.map(p => ({
+          ...p,
+          attendee_id: p.id === product.id ? attendee_id : p.attendee_id,
+          selected: p.id === product.id ? true : p.selected,
+          price: p.id === product.id ? p.price : 0
+        })));
+        return;
+      }
+      
+      setProducts(productsPurchase);
+      return;
+    }
+
+    setProducts(prev => prev.map(p => ({
+      ...p,
+      attendee_id: p.id === product.id ? attendee_id : p.attendee_id,
+      selected: p.id === product.id ? !p.selected : p.selected
+    })));
   }
 
   return (

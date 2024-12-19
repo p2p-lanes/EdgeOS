@@ -1,5 +1,6 @@
 import { ApplicationProps } from '@/types/Application';
 import { PopupsProps } from '@/types/Popup';
+import { ProductsProps } from '@/types/Products';
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 interface CityContext_interface {
@@ -10,16 +11,27 @@ interface CityContext_interface {
   getRelevantApplication: () => ApplicationProps;
   getPopups: () => PopupsProps[];
   setPopups: (popups: PopupsProps[]) => void;
-  updateApplication: (application: ApplicationProps) => void
+  updateApplication: (application: ApplicationProps) => void;
+  getProducts: () => ProductsProps[]
+  setProducts: (products: ProductsProps[]) => void
 }
 
 export const CityContext = createContext<CityContext_interface | null>(null);
 
 
 const CityProvider = ({ children }: {children: ReactNode}) => {
+  const [products, setProductsState] = useState<ProductsProps[]>([])
   const [city, setCityState] = useState<PopupsProps | null>(null);
   const [applications, setApplicationsState] = useState<ApplicationProps[]>([]);
   const [popups, setPopupsState] = useState<PopupsProps[]>([]);
+
+  const setProducts = (products: ProductsProps[]) => {
+    setProductsState(products)
+  }
+
+  const getProducts = () => {
+    return products
+  }
 
   const getApplications = (): ApplicationProps[] => {
     return applications
@@ -70,7 +82,9 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
       getRelevantApplication,
       getPopups,
       setPopups,
-      updateApplication
+      updateApplication,
+      getProducts,
+      setProducts
     }}>
       {children}
     </CityContext.Provider>

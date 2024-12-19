@@ -4,9 +4,8 @@ import { ProductsProps } from "@/types/Products"
 import { useEffect, useState } from "react"
 
 const useGetData = () => {
-  const [products, setProducts] = useState<ProductsProps[]>([])
   const [payments, setPayments] = useState<any[]>([])
-  const { getCity, getRelevantApplication } = useCityProvider()
+  const { getCity, getRelevantApplication, setProducts } = useCityProvider()
   const city = getCity()
   const application = getRelevantApplication()
 
@@ -38,6 +37,6 @@ const useGetData = () => {
     getProducts()
   }, [city])
 
-  return ({products, payments})
+  return ({payments})
 }
 export default useGetData

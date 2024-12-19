@@ -5,6 +5,8 @@ type DurationProps = "1 weekend" | "1 week" | "2 weeks" | "full length" | "all w
 
 type ApplicationStatusProps = "draft" | "in review" | "accepted" | "rejected"
 
+export type TicketCategoryProps = "Standard" | "Builder" | "Scholarship" 
+
 export interface ApplicationProps {
   attendees: AttendeeProps[];
   first_name?: string;
@@ -48,4 +50,5 @@ export interface ApplicationProps {
   local_resident?: boolean;
   citizen?: string | null;
   updated_at?: string;
+  ticket_category?: TicketCategoryProps;
 }
