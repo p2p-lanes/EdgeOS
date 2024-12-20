@@ -49,7 +49,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
     
     if (patreonSelected?.selected) {
       return {
-        weekTotal,  // Total de las semanas para mostrar tachado
+        weekTotal: weekTotal + patreonSelected.price,  // Total de las semanas para mostrar tachado
         finalTotal: patreonSelected.price  // Precio final del patreon
       }
     }
@@ -174,7 +174,7 @@ const CalculateTotal = ({total, discount, patreonSelected, ticketCategory}: {
   if (patreonSelected) {
     return (
       <div className="flex items-center gap-2">
-        {total.weekTotal > 0 && (
+        {total.weekTotal > 0 && total.weekTotal !== total.finalTotal && (
           <span className="text-xs text-muted-foreground line-through">
             ${total.weekTotal.toFixed(2)}
           </span>
@@ -183,17 +183,15 @@ const CalculateTotal = ({total, discount, patreonSelected, ticketCategory}: {
       </div>
     )
   }
-
-  const totalWithDiscount = total.finalTotal
-
+  
   return (
     <div className="flex items-center gap-2">
-      {total.weekTotal > 0 && (
+      {total.weekTotal > 0 && total.weekTotal !== total.finalTotal && (
         <span className="text-xs text-muted-foreground line-through">
           ${total.weekTotal.toFixed(2)}
         </span>
       )}
-      <span className="font-medium">${totalWithDiscount.toFixed(2)}</span>
+      <span className="font-medium">${total.finalTotal.toFixed(2)}</span>
     </div>
   )
 }
