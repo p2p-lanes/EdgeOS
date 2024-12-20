@@ -67,7 +67,7 @@ export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: Attend
 
           {hasProducts ? <>
             <p className="text-xs font-semibold text-muted-foreground">Purchased tickets</p>
-            <div className="grid grid-cols-3">
+            <div className="grid grid-cols-2">
               {attendee.products?.map((p) => (
                   <Badge
                     key={p.id}
@@ -75,7 +75,10 @@ export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: Attend
                     className={'w-fit bg-[#0F172A] text-white gap-1'}
                   >
                     <Ticket className="h-4 w-4" />
-                    {p.name}
+                    <div className="flex flex-col">
+                      <p className="text-xs font-semibold text-white">{p.name}</p>
+                      <p className="text-xs font-semibold text-white">{p.start_date && p.end_date ? `${new Date(p.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} to ${new Date(p.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}</p>
+                    </div>
                   </Badge>
               ))}
             </div>
