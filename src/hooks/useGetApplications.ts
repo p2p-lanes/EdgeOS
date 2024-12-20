@@ -4,7 +4,7 @@ import { api } from "@/api"
 import useGetTokenAuth from "./useGetTokenAuth"
 import useAuthentication from "./useAuthentication"
 
-const useGetApplications = () => {
+const useGetApplications = (autoFetch = true) => {
   const { setApplications } = useCityProvider()
 
   const { user } = useGetTokenAuth()
@@ -14,7 +14,7 @@ const useGetApplications = () => {
     if(!user || !user.email) return null
 
     try{
-      const response = await api.get(`applications?email=${user.email}`)
+      const response = await api.get(`applications?email=${encodeURIComponent(user.email)}`)
 
       if(response.status === 200) {
         setApplications(response.data)
@@ -28,7 +28,11 @@ const useGetApplications = () => {
   }
 
   useEffect(() => {
-    getApplicationsApi()
-  }, [user])
+    if(autoFetch){
+      getApplicationsApi()
+    }
+  }, [user, autoFetch])
+
+  return getApplicationsApi;
 }
 export default useGetApplications

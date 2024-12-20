@@ -15,7 +15,7 @@ const useGetData = () => {
     const email = user?.email
 
     if(email) {
-      return api.get(`applications?email=${email}`)
+      return api.get(`applications?email=${encodeURIComponent(email)}`)
     }
 
     return null

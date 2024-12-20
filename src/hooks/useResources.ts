@@ -24,7 +24,8 @@ const useResources = () => {
   {
     name: 'Passes',
     icon: Ticket,
-    status: 'soon',
+    status: application?.status === 'accepted' ? 'active' : 'disabled',
+    path: `/portal/${city?.slug}/passes`,
   },
   {
     name: 'Housing',

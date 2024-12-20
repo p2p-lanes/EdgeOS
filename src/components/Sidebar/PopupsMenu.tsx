@@ -16,7 +16,7 @@ const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) 
   const city = getCity()
   const popups = getPopups()
   const { isClient } = useWindow()
-  const cityName = `${city?.name?.split(' ')?.[0]?.[0].toUpperCase()}${city?.name?.split(' ')?.[1]?.[0].toUpperCase()}`
+  const cityName = city?.name ? city.name.split(' ').map(word => word[0].toUpperCase()).join('') : 'C'
 
   useEffect(() => {
     if(!isClient || !city?.start_date) return;

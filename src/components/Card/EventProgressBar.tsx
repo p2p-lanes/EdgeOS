@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useIsMobile } from "@/hooks/useIsMobile"
 
-export type EventStatus = 'not_started' | 'draft' | 'in review' | 'accepted' | 'ticket_purchased'
+export type EventStatus = 'not_started' | 'draft' | 'in review' | 'accepted'
 
 interface EventProgressBarProps {
   status: EventStatus
@@ -14,7 +14,7 @@ const statusColor = (status: string) => {
 }
 
 export function EventProgressBar({ status }: EventProgressBarProps) {
-  const stages: EventStatus[] = ['not_started', 'draft', 'in review', 'accepted', 'ticket_purchased']
+  const stages: EventStatus[] = ['not_started', 'draft', 'in review', 'accepted']
   const currentStageIndex = stages.indexOf(status)
   const progress = (currentStageIndex / (stages.length - 1)) * 100
   const isMobile = useIsMobile()
@@ -24,7 +24,7 @@ export function EventProgressBar({ status }: EventProgressBarProps) {
     'draft': 'Draft',
     'in review': 'Application submitted',
     'accepted': 'Application accepted',
-    'ticket_purchased': 'Ticket Purchased'
+    // 'ticket_purchased': 'Ticket Purchased'
   }
 
   const statusLabel = status === 'not_started' ? 'Not started' : stageLabels[status]

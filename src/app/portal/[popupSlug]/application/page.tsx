@@ -4,19 +4,19 @@ import { ButtonAnimated } from "@/components/ui/button"
 import { useFormValidation } from "@/hooks/useFormValidation"
 import { toast } from "sonner"
 import { Loader } from '../../../../components/ui/Loader'
-import { ExistingApplicationCard } from '../components/existing-application-card'
-import { FormHeader } from '../components/form-header'
-import { SectionSeparator } from '../components/section-separator'
-import { PersonalInformationForm } from '../components/personal-information-form'
-import { ProfessionalDetailsForm } from '../components/professional-details-form'
-import { ParticipationForm } from '../components/participation-form'
-import { ChildrenPlusOnesForm } from '../components/children-plus-ones-form'
-import { ScholarshipForm } from '../components/scolarship-form'
-import { ProgressBar } from '../components/progress-bar'
-import useSavesForm from '../hooks/useSavesForm'
-import useProgress from '../hooks/useProgress'
-import { initial_data } from '../helpers/constants'
-import useInitForm from '../hooks/useInitForm'
+import { ExistingApplicationCard } from './components/existing-application-card'
+import { FormHeader } from './components/form-header'
+import { SectionSeparator } from './components/section-separator'
+import { PersonalInformationForm } from './components/personal-information-form'
+import { ProfessionalDetailsForm } from './components/professional-details-form'
+import { ParticipationForm } from './components/participation-form'
+import { ChildrenPlusOnesForm } from './components/children-plus-ones-form'
+import { ScholarshipForm } from './components/scolarship-form'
+import { ProgressBar } from './components/progress-bar'
+import useSavesForm from './hooks/useSavesForm'
+import useProgress from './hooks/useProgress'
+import { initial_data } from './helpers/constants'
+import useInitForm from './hooks/useInitForm'
 import { useCityProvider } from "@/providers/cityProvider"
 import { useState } from "react"
 

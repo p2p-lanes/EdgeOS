@@ -14,13 +14,12 @@ export default function Home() {
   const router = useRouter()
   const city = getCity()
   const relevantApplication = getRelevantApplication()
-  const { window } = useWindow()
   
   if(!city && !relevantApplication) return null
 
   const onClickApply = () => {
     if(relevantApplication?.status === 'accepted') {
-      window?.open('https://www.pagar.simplefi.tech/edge-city', '_blank')
+      router.push(`/portal/${city?.slug}/passes`)
       return;
     }
     setIsLoading(true)

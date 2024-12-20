@@ -36,7 +36,7 @@ export default function AuthForm() {
     setIsValidEmail(true)
     setIsLoading(true)
     
-    api.post(`citizens/authenticate`, {email}).then(() => {
+    api.post(`citizens/authenticate`, {email: encodeURIComponent(email)}).then(() => {
       setIsLoading(false)
       setMessage('Check your email inbox for the log in link')
     })

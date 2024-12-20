@@ -1,10 +1,14 @@
+import { AttendeeProps } from "./Attendee";
 import { AgeRangeProps, GenderProps } from "./User";
 
 type DurationProps = "1 weekend" | "1 week" | "2 weeks" | "full length" | "all weekends"
 
 type ApplicationStatusProps = "draft" | "in review" | "accepted" | "rejected"
 
+export type TicketCategoryProps = "Standard" | "Builder" | "Scholarship" 
+
 export interface ApplicationProps {
+  attendees: AttendeeProps[];
   first_name?: string;
   last_name?: string;
   telegram?: string;
@@ -42,8 +46,9 @@ export interface ApplicationProps {
   citizen_id?: number;
   popup_city_id?: number;
   email?: string;
-  id?: number;
+  id: number;
   local_resident?: boolean;
   citizen?: string | null;
   updated_at?: string;
+  ticket_category?: TicketCategoryProps;
 }

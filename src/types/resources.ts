@@ -1,6 +1,6 @@
 import { LucideIcon } from 'lucide-react'
 
-type ResourceStatus = 'soon' | 'active' | 'inactive';
+type ResourceStatus = 'soon' | 'active' | 'inactive' | 'disabled';
 
 export interface Resource {
   name: string
