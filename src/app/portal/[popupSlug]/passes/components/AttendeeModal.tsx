@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Button, ButtonAnimated } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -21,12 +21,18 @@ interface AttendeeModalProps {
   setOpen: (open: boolean) => void
   initialName: string
   initialEmail: string
+  isEdit: boolean
 }
 
-export function AttendeeModal({ onAddAttendee, open, setOpen, initialName, initialEmail }: AttendeeModalProps) {
+export function AttendeeModal({ onAddAttendee, open, setOpen, initialName, initialEmail, isEdit }: AttendeeModalProps) {
   const [loading, setLoading] = useState(false)
   const [name, setName] = useState(initialName)
   const [email, setEmail] = useState(initialEmail)
+
+  useEffect(() => {
+    setName(initialName)
+    setEmail(initialEmail)
+  }, [initialName, initialEmail])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -38,11 +44,19 @@ export function AttendeeModal({ onAddAttendee, open, setOpen, initialName, initi
     setLoading(false)
   }
 
+  const handleOpenChange = (newOpen: boolean) => {
+    setOpen(newOpen)
+    if (!newOpen) {
+      setName("")
+      setEmail("")
+    }
+  }
+
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Add Spouse</DialogTitle>
+          <DialogTitle>{isEdit ? 'Edit Spouse' : 'Add Spouse'}</DialogTitle>
           <DialogDescription>
             Enter the details of your spouse here. Click save when you're done.
           </DialogDescription>

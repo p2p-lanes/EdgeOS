@@ -11,6 +11,7 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
   const [open, setOpen] = useState(false)
   const [initialName, setInitialName] = useState("")
   const [initialEmail, setInitialEmail] = useState("")
+  const [isEdit, setIsEdit] = useState(false)
 
   const removeAtt = async (id: number) => {
     return removeAttendee(id)
@@ -26,6 +27,7 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
   }
 
   const onClickEdit = (id: number) => {
+    setIsEdit(true)
     setInitialName(attendees.find(a => a.id === id)?.name ?? "")
     setInitialEmail(attendees.find(a => a.id === id)?.email ?? "")
     setOpen(true)
@@ -34,12 +36,19 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
   const handleModal = ({name, email}: {name: string, email: string}) => {
     const id = attendees.find(a => a.name === initialName)?.id
     if(id){
-      return editAtt(id, {name, email: encodeURIComponent(email), category: 'spouse'})
+      return editAtt(id, {name, email: email, category: 'spouse'})
     }
-    return addAtt({name, email: encodeURIComponent(email), category: 'spouse'})
+    return addAtt({name, email: email, category: 'spouse'})
   }
 
   const showSpouse = attendees.find(a => a.category === 'spouse')
+
+  const handleOpen = () => {
+    setIsEdit(false)
+    setInitialName("")
+    setInitialEmail("")
+    setOpen(true)
+  }
 
   return (
     <div className="space-y-4 md:mt-3">
@@ -59,7 +68,7 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
       })}
       <div className="flex gap-2">
         {!showSpouse && (
-          <Button variant="outline" className="" onClick={() => setOpen(true)}>
+          <Button variant="outline" className="" onClick={handleOpen}>
             <PlusIcon className="h-4 w-4" />
             Add Spouse
           </Button>
@@ -68,7 +77,7 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
           <PlusIcon className="h-4 w-4" />
           Add Kids (soon)
         </Button>
-        <AttendeeModal onAddAttendee={handleModal} open={open} setOpen={setOpen} initialName={initialName} initialEmail={initialEmail}/>
+        <AttendeeModal onAddAttendee={handleModal} open={open} setOpen={setOpen} initialName={initialName} initialEmail={initialEmail} isEdit={isEdit}/>
       </div>
     </div>
   )

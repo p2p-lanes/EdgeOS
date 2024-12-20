@@ -93,7 +93,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
         <div key={attendee.id} className="space-y-4">
           <div className="space-y-2">
             <p className="font-medium">{attendee.name} • <span className="text-sm text-muted-foreground">Attendee {index + 1}</span></p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 2xl:grid-cols-3 gap-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 3xl:grid-cols-3 gap-2">
               {weekProducts?.map((product: ProductsPass) => {
                 if(product.attendee_category === attendee.category){
                   const disabledProduct = attendee.products?.some(p => p.id === product.id) ?? false
