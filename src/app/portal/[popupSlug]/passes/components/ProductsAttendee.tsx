@@ -85,6 +85,9 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
           disabled={patreonPurchase ?? false}
           onClick={() => onToggleProduct(mainAttendee.id, patreonSelected)} 
         />
+        <p className="text-xs text-muted-foreground mt-1">
+          {patreonSelected?.selected ? 'Patron ticket holders get free weekly passes for their whole family group' : ''}
+        </p>
       </div>
       {attendees.map((attendee, index) => (
         <div key={attendee.id} className="space-y-4">
