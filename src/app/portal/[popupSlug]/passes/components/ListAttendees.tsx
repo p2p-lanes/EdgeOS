@@ -32,11 +32,10 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
 
   const handleModal = ({name, email}: {name: string, email: string}) => {
     const id = attendees.find(a => a.name === initialName)?.id
-    console.log('name, email', name, email)
     if(id){
-      return editAtt(id, {name, email, category: 'spouse'})
+      return editAtt(id, {name, email: encodeURIComponent(email), category: 'spouse'})
     }
-    return addAtt({name, email, category: 'spouse'})
+    return addAtt({name, email: encodeURIComponent(email), category: 'spouse'})
   }
 
   const showSpouse = attendees.find(a => a.category === 'spouse')

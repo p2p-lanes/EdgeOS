@@ -31,11 +31,9 @@ export default function Home() {
 
   if(!application || !products || !payments || products.length === 0) return <Loader/>
 
-  console.log('Data:', {application, products, payments})
-
   return (
      <div className="p-4 w-full mx-auto">
-      <div className="grid grid-cols-1 xl:grid-cols-[60%,40%] gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-[50%,50%] gap-6">
         <ListAttendees attendees={attendees}/>
         
         <PassesSidebar productsPurchase={products} attendees={attendees} payments={payments} category={application?.ticket_category ?? 'Standard'}/>

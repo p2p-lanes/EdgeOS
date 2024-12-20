@@ -32,18 +32,22 @@ const useSavesForm = () => {
     }
 
     const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
-      
     await response.then((data) => {
-      if(data.status !== 201){
+      console.log('response', data)
+      if(data.status !== 201 && data.status !== 200){
         return
       }
 
       const newApplication = data.data
       const existingIndex = applications.findIndex((app: ApplicationProps) => app.id === newApplication.id)
+
+      console.log('existingIndex', existingIndex)
       
       const updatedApplications = existingIndex >= 0
         ? applications.map((app: ApplicationProps) => app.id === newApplication.id ? newApplication : app)
         : [...applications, newApplication]
+      
+      console.log('updatedApplications', updatedApplications)
       
       setApplications(updatedApplications)
       toast.success("Application Submitted", {

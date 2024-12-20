@@ -14,7 +14,7 @@ const useGetApplications = (autoFetch = true) => {
     if(!user || !user.email) return null
 
     try{
-      const response = await api.get(`applications?email=${user.email}`)
+      const response = await api.get(`applications?email=${encodeURIComponent(user.email)}`)
 
       if(response.status === 200) {
         setApplications(response.data)
