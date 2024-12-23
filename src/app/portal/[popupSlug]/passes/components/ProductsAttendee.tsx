@@ -70,7 +70,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
 
   const mainAttendee = attendees.find(a => a.category === 'main') ?? { id: 0, products: [] }
   const patreonPurchase = mainAttendee?.products?.some(p => p.category === 'patreon')
-  const labelDiscount = patreonSelected?.selected ? 'in passes for patron ticket holders' : application?.ticket_category === 'Builder' ? 'Builders Discount' : 'Scholar Discount'
+  const labelDiscount = patreonSelected?.selected ? 'in passes for patron ticket holders' : application?.ticket_category === 'Builder' ? 'Builders Discount included' : 'Scholar Discount included'
   const hasDiscount = (application?.ticket_category === 'Builder' || application?.ticket_category === 'Scholarship') && !patreonPurchase
   const productCompare = products.find(p => p.category === 'week' && p.attendee_category === 'main') ?? { price: 0, builder_price: 0, compare_price: 0 }
   const discountPercentage = application.ticket_category === 'Scholarship' ? 100 : ((productCompare.compare_price ?? 0) - (productCompare.builder_price ?? 0)) / (productCompare.compare_price ?? 0 ) * 100;
@@ -78,17 +78,6 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
   return (
     <Card className="p-6 space-y-4">
       <h3 className="font-semibold">Select the weeks you&apos;ll attend!</h3>
-      <div className="p-0 w-full">
-        <PatreonPass
-          product={patreonSelected}
-          selected={patreonSelected?.selected ?? false}
-          disabled={patreonPurchase ?? false}
-          onClick={() => onToggleProduct(mainAttendee.id, patreonSelected)} 
-        />
-        <p className="text-xs text-muted-foreground mt-1">
-          {patreonSelected?.selected ? 'Patron ticket holders get free weekly passes for their whole family group' : ''}
-        </p>
-      </div>
       {attendees.map((attendee, index) => (
         <div key={attendee.id} className="space-y-4">
           <div className="space-y-2">
@@ -115,6 +104,18 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
           </div>
         </div>
       ))}
+
+      <div className="p-0 w-full">
+        <PatreonPass
+          product={patreonSelected}
+          selected={patreonSelected?.selected ?? false}
+          disabled={patreonPurchase ?? false}
+          onClick={() => onToggleProduct(mainAttendee.id, patreonSelected)} 
+        />
+        <p className="text-xs text-muted-foreground mt-1">
+          {patreonSelected?.selected ? 'Patron ticket holders get free weekly passes for their whole family group' : ''}
+        </p>
+      </div>
       
       {
         hasDiscount && (

@@ -176,7 +176,7 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
             <div className="flex flex-col h-full">
             <Label htmlFor="referral">Did anyone refer you?</Label>
             <p className="text-sm text-muted-foreground mb-2">
-              List everyone who encouraged you to apply
+              List everyone who encouraged you to apply.
             </p>
             <Input
               id="referral"

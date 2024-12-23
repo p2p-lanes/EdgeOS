@@ -1,7 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { ProductsProps } from "@/types/Products"
-import { Check, Gem, Plus } from 'lucide-react'
+import { Check, Gem, Info, Plus } from 'lucide-react'
 import type { LucideIcon } from "lucide-react"
 
 interface PatreonPassProps {
@@ -30,7 +31,10 @@ export default function PatreonPass({ product, disabled, selected, onClick }: Pa
             <Plus className="w-4 h-4" />
           )
         }
-        <span className={`font-medium ${selected ? 'text-[#005F3A]' : ''}`}>{product.name}</span>
+        <span className={`font-medium ${selected ? 'text-[#005F3A]' : ''} flex items-center gap-2`}>
+          {product.name}
+          <TooltipPatreon/>
+        </span>
       </div>
       
       <div className="flex items-center gap-4">
@@ -40,3 +44,16 @@ export default function PatreonPass({ product, disabled, selected, onClick }: Pa
   )
 }
 
+const TooltipPatreon = () => {
+  return (
+    <Tooltip>
+      <TooltipTrigger>
+        <Info className="w-4   h-4 text-gray-500" />
+      </TooltipTrigger>
+      <TooltipContent className="bg-white text-black max-w-[420px] border border-gray-200">
+          ⁠A patron pass gives you access to the whole month and supports scholarships for researchers, artists and young builders.
+          Edge Institue is a certified 501c3 and you will receive a written acknowledgement from us for your records.
+      </TooltipContent>
+    </Tooltip>
+  )
+}

@@ -126,7 +126,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                   <motion.div {...animationProps}>
                     <FormInputWrapper>
                       <Label htmlFor="builder_description">
-                        Elaborate on your role as a builder/developer if you said yes
+                        Elaborate on your role as a builder/developer if you said yes.
                         {
                           !isVideoValid && <RequiredFieldIndicator />
                         }
@@ -169,7 +169,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             <FormInputWrapper>
               <div className="flex flex-col h-full my-1 gap-2">
                 <div>
-                  <Badge className="bg-slate-700 text-white">Preferred Option</Badge>
+                  <Badge className="bg-gray-500 text-white">Preferred Option</Badge>
                 </div>
                 <Tooltip>
                   <Label htmlFor="video_url" className="text-white"> Please record a 1-2 minute video sharing your quick response to the {' '}
@@ -222,7 +222,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           <FormInputWrapper>
             <Label htmlFor="host_session">What topic would you choose if you were to host a session for Edge Esmeralda?
               <p className="text-sm text-muted-foreground mb-2">
-                This is just to get a sense of the topics you're interested in
+                This is just to get a sense of the topics you're interested in.
               </p>
             </Label>
             <Textarea 
