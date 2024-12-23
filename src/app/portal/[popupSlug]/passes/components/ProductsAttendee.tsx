@@ -84,11 +84,16 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
       <h3 className="font-semibold">Select the weeks you&apos;ll attend!</h3>
       {attendees.map((attendee, index) => {
         const monthProduct = monthProducts.find(p => p.attendee_category === attendee.category)
+        const purchaseSomeProduct = attendee.products?.length ?? 0 > 0
         return (
           <div key={attendee.id} className="space-y-4">
             <div className="space-y-2">
             <p className="font-medium">{attendee.name} • <span className="text-sm text-muted-foreground">Attendee {index + 1}</span></p>
-            <SelectFullMonth product={monthProduct} onClick={() => onToggleProduct(attendee.id, monthProduct)}/>
+            {
+              !purchaseSomeProduct && (
+                <SelectFullMonth product={monthProduct} onClick={() => onToggleProduct(attendee.id, monthProduct)}/>
+              )
+            }
             <div className="grid grid-cols-1 sm:grid-cols-2 3xl:grid-cols-3 gap-2">
               {weekProducts?.map((product: ProductsPass) => {
                 if(product.attendee_category === attendee.category){

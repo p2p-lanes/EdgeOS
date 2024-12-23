@@ -169,7 +169,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
             <FormInputWrapper>
               <div className="flex flex-col h-full my-1 gap-2">
                 <div>
-                  <Badge className="bg-gray-500 text-white">Preferred Option</Badge>
+                  <Badge className="bg-gray-500 text-white hover:bg-gray-500">Preferred Option</Badge>
                 </div>
                 <Tooltip>
                   <Label htmlFor="video_url" className="text-white"> Please record a 1-2 minute video sharing your quick response to the {' '}

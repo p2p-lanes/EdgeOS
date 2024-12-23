@@ -120,7 +120,7 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
             </div>
           </FormInputWrapper>
         </div>
-        <div className="grid gap-4 sm:grid-cols-2 sm:items-end">
+        <div className="grid gap-4 sm:grid-cols-2 sm:items-stretch">
           <FormInputWrapper>
             <div className="h-full flex flex-col my-1 mb-2">
               <Label htmlFor="telegram">
@@ -151,7 +151,7 @@ export function PersonalInformationForm({ formData, errors, handleChange }: Pers
                 id="residence" 
                 value={formData.residence ?? ''}
                 onChange={(e) => handleChange('residence', e.target.value)}
-                className="mt-auto"
+                className="mt-0"
                 placeholder='Healdsburg, California, USA'
               />
             </div>
