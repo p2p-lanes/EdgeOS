@@ -147,7 +147,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
               {
                 products.filter(p => p.selected).map(product => (
                   <div key={`${product.id}-${product.name}`} className="flex justify-between text-sm text-muted-foreground">
-                    <span>1 x {product.name} ({product.attendee_category === 'main' ? 'Group lead' : product.attendee_category})</span>
+                    <span>1 x {product.name} ({product.attendee_category === 'main' ? 'Primary Ticket Holder' : product.attendee_category})</span>
                     <span>${product.price.toFixed(2)}</span>
                   </div>
                 ))

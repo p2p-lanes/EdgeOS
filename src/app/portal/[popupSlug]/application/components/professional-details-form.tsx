@@ -68,7 +68,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange }: Prof
               }
             </Label>
             <p className="text-sm text-muted-foreground mb-2">
-              e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Please provide the full link.
+              e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Please provide the full link[s].
             </p>
             <Input 
               id="social_media" 
