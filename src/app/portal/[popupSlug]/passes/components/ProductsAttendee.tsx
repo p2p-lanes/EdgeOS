@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils"
 import usePostData from "../hooks/usePostData"
 import { useCityProvider } from "@/providers/cityProvider"
 import BannerDiscount from "./BannerDiscount"
+import SelectFullMonth from "./SelectFullMonth"
 
 interface ProductsAttendeeProps {
   products: ProductsPass[];
@@ -28,14 +29,15 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
   
   const weekProducts = useMemo(() => products.filter((p: ProductsPass) => p.category === 'week'), [products])
   const patreonSelected = products.find(p => p.category === 'patreon')
+  const monthProducts = useMemo(() => products.filter((p: ProductsPass) => p.category === 'month'), [products])
   
   const total = useMemo(() => {
-    const weekTotal = weekProducts.reduce((sum, product) => 
+    const weekTotal = products.reduce((sum, product) => 
       sum + (product.selected ? product.compare_price ?? 0 : 0), 0
     )
 
     const calculateWeekPrice = () => {
-      return weekProducts.reduce((sum, product) => {
+      return products.reduce((sum, product) => {
         if (!product.selected) return sum;
         
         // Si es Builder, usa builder_price, sino usa price
@@ -78,14 +80,17 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
   return (
     <Card className="p-6 space-y-4">
       <h3 className="font-semibold">Select the weeks you&apos;ll attend!</h3>
-      {attendees.map((attendee, index) => (
-        <div key={attendee.id} className="space-y-4">
-          <div className="space-y-2">
+      {attendees.map((attendee, index) => {
+        const monthProduct = monthProducts.find(p => p.attendee_category === attendee.category)
+        return (
+          <div key={attendee.id} className="space-y-4">
+            <div className="space-y-2">
             <p className="font-medium">{attendee.name} • <span className="text-sm text-muted-foreground">Attendee {index + 1}</span></p>
+            <SelectFullMonth product={monthProduct} onClick={() => onToggleProduct(attendee.id, monthProduct)}/>
             <div className="grid grid-cols-1 sm:grid-cols-2 3xl:grid-cols-3 gap-2">
               {weekProducts?.map((product: ProductsPass) => {
                 if(product.attendee_category === attendee.category){
-                  const disabledProduct = attendee.products?.some(p => p.id === product.id) ?? false
+                  const disabledProduct = (attendee.products?.some(p => p.id === product.id) || monthProducts.some(p => (p.attendee_category === attendee.category && p.selected))) ?? false
                   return(
                     <TicketsBadge
                       patreonSelected={patreonSelected?.selected ?? false}
@@ -103,7 +108,8 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
             </div>
           </div>
         </div>
-      ))}
+        )
+      })}
 
       <div className="p-0 w-full">
         <PatreonPass
