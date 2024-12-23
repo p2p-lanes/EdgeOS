@@ -24,7 +24,7 @@ export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: Attend
       <div className="flex justify-between items-center mb-3">
         <Badge variant="secondary" className="w-fit gap-2">
           <User className="h-4 w-4"/>
-          {category === 'main' ? 'Group lead' : category}
+          {category === 'main' ? 'Primary Ticket Holder' : category}
         </Badge>
         <div className="flex items-center gap-2">
           {
