@@ -14,6 +14,7 @@ import usePostData from "../hooks/usePostData"
 import { useCityProvider } from "@/providers/cityProvider"
 import BannerDiscount from "./BannerDiscount"
 import SelectFullMonth from "./SelectFullMonth"
+import { Separator } from "@/components/ui/separator"
 
 interface ProductsAttendeeProps {
   products: ProductsPass[];
@@ -30,14 +31,15 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
   const weekProducts = useMemo(() => products.filter((p: ProductsPass) => p.category === 'week'), [products])
   const patreonSelected = products.find(p => p.category === 'patreon')
   const monthProducts = useMemo(() => products.filter((p: ProductsPass) => p.category === 'month'), [products])
+  const productsList = useMemo(() => products.filter((p: ProductsPass) => p.category !== 'patreon'), [products])
   
   const total = useMemo(() => {
-    const weekTotal = products.reduce((sum, product) => 
+    const weekTotal = productsList.reduce((sum, product) => 
       sum + (product.selected ? product.compare_price ?? 0 : 0), 0
     )
 
     const calculateWeekPrice = () => {
-      return products.reduce((sum, product) => {
+      return productsList.reduce((sum, product) => {
         if (!product.selected) return sum;
         
         // Si es Builder, usa builder_price, sino usa price
@@ -90,7 +92,8 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
             <div className="grid grid-cols-1 sm:grid-cols-2 3xl:grid-cols-3 gap-2">
               {weekProducts?.map((product: ProductsPass) => {
                 if(product.attendee_category === attendee.category){
-                  const disabledProduct = (attendee.products?.some(p => p.id === product.id) || monthProducts.some(p => (p.attendee_category === attendee.category && p.selected))) ?? false
+                  const disabledProduct = attendee.products?.some(p => p.id === product.id) ?? false
+                  const isPreSelected = (monthProducts.some(p => (p.attendee_category === attendee.category && p.selected)) && !disabledProduct)
                   return(
                     <TicketsBadge
                       patreonSelected={patreonSelected?.selected ?? false}
@@ -99,8 +102,8 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
                       iconTitle={Ticket} 
                       product={product}
                       disabled={disabledProduct}
-                      selected={product.selected && product.attendee_id === attendee.id}
-                      onClick={() => onToggleProduct(attendee.id, product)}
+                      selected={(product.selected && product.attendee_id === attendee.id) || isPreSelected}
+                      onClick={!isPreSelected ? () => onToggleProduct(attendee.id, product) : undefined}
                     />
                   )
                 }
@@ -110,6 +113,8 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
         </div>
         )
       })}
+
+      <Separator className="my-12"/>
 
       <div className="p-0 w-full">
         <PatreonPass
@@ -180,20 +185,7 @@ const CalculateTotal = ({total, discount, patreonSelected, ticketCategory}: {
   discount: number, 
   patreonSelected: boolean,
   ticketCategory: string
-}) => {
-  if (patreonSelected) {
-    return (
-      <div className="flex items-center gap-2">
-        {total.weekTotal > 0 && total.weekTotal !== total.finalTotal && (
-          <span className="text-xs text-muted-foreground line-through">
-            ${total.weekTotal.toFixed(2)}
-          </span>
-        )}
-        <span className="font-medium">${total.finalTotal.toFixed(2)}</span>
-      </div>
-    )
-  }
-  
+}) => {  
   return (
     <div className="flex items-center gap-2">
       {total.weekTotal > 0 && total.weekTotal !== total.finalTotal && (
