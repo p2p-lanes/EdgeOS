@@ -11,6 +11,9 @@ import { useCityProvider } from "@/providers/cityProvider"
 import { cn } from "@/lib/utils"
 import { validateVideoUrl } from "@/helpers/validate"
 import { Input } from "@/components/ui/input"
+import { Card } from "@/components/ui/card"
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { Badge } from "@/components/ui/badge"
 
 interface ParticipationFormProps {
   formData: any;
@@ -123,7 +126,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
                   <motion.div {...animationProps}>
                     <FormInputWrapper>
                       <Label htmlFor="builder_description">
-                        Elaborate on your role as a builder/developer if you said yes
+                        Elaborate on your role as a builder/developer if you said yes.
                         {
                           !isVideoValid && <RequiredFieldIndicator />
                         }
@@ -161,29 +164,44 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           </LabelMuted>
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-1 my-6">
-          <FormInputWrapper>
-            <div className="flex flex-col h-full my-1">
-              <Label htmlFor="video_url">[Preferred] Please record a 1-2 minute video sharing your quick response to the following questions (you don’t have to fill them in below if you add the video)</Label>
-              <p className="text-sm text-muted-foreground mt-1">
-                - What are your goals for Edge Esmeralda and why do you want to join?
-              </p>
-              <p className="text-sm text-muted-foreground mb-1">
-                - What is something you could contribute? A workshop, a talk, an area of expertise. Get creative!
-              </p>
-              <p className="text-sm text-muted-foreground ">
-                You can upload your video to Dropbox, Google Drive, Youtube, or anywhere where you can make the link public and viewable
-              </p>
-              <Input
-                id="video_url" 
-                value={formData.video_url ?? ''}
-                onChange={(e) => handleChange('video_url', e.target.value)}
-                className="mt-auto"
-                placeholder="Video URL"
-              />
-            </div>
-          </FormInputWrapper>
-        </div>
+        <Card className="px-6 mt-6 bg-[#29301e]">
+          <div className="grid gap-4 sm:grid-cols-1 my-6">
+            <FormInputWrapper>
+              <div className="flex flex-col h-full my-1 gap-2">
+                <div>
+                  <Badge className="bg-gray-500 text-white hover:bg-gray-500">Preferred Option</Badge>
+                </div>
+                <Tooltip>
+                  <Label htmlFor="video_url" className="text-white"> Please record a 1-2 minute video sharing your quick response to the {' '}
+                    <TooltipTrigger asChild>
+                      <span className="font-bold underline ">following questions</span>
+                    </TooltipTrigger>
+                    {' '}
+                    (you don’t have to fill them in below if you add the video)
+                  </Label>
+                  <TooltipContent className="bg-white shadow-md border border-gray-200">
+                    <p className="text-sm text-muted-foreground mt-1">
+                      - What are your goals for Edge Esmeralda and why do you want to join?
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-1">
+                      - What is something you could contribute? A workshop, a talk, an area of expertise. Get creative!
+                    </p>
+                  </TooltipContent>
+                </Tooltip>
+                  <p className="text-sm text-gray-300">
+                      You can upload your video to Dropbox, Google Drive, Youtube, or anywhere where you can make the link public and viewable
+                    </p>
+                <Input
+                  id="video_url" 
+                  value={formData.video_url ?? ''}
+                  onChange={(e) => handleChange('video_url', e.target.value)}
+                  className="mt-auto text-white"
+                  placeholder="Video URL"
+                  />
+              </div>
+            </FormInputWrapper>
+          </div>
+        </Card>
 
         <FormInputWrapper>
           <div className="mt-8 mb-6">
@@ -204,7 +222,7 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           <FormInputWrapper>
             <Label htmlFor="host_session">What topic would you choose if you were to host a session for Edge Esmeralda?
               <p className="text-sm text-muted-foreground mb-2">
-                This is just to get a sense of the topics you're interested in
+                This is just to get a sense of the topics you're interested in.
               </p>
             </Label>
             <Textarea 
