@@ -14,6 +14,7 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
 import { Badge } from "@/components/ui/badge"
+import { Star } from "lucide-react"
 
 interface ParticipationFormProps {
   formData: any;
@@ -164,38 +165,41 @@ export function ParticipationForm({ formData, errors, handleChange }: Participat
           </LabelMuted>
         </div>
 
-        <Card className="px-6 mt-6 bg-[#29301e]">
-          <div className="grid gap-4 sm:grid-cols-1 my-6">
+        <Card className="px-6 mt-6 bg-slate-50 border-dashed border-2 border-slate-400">
+          <div className="grid gap-4 sm:grid-cols-1 my-4">
             <FormInputWrapper>
               <div className="flex flex-col h-full my-1 gap-2">
                 <div>
-                  <Badge className="bg-gray-500 text-white hover:bg-gray-500">Preferred Option</Badge>
+                  <p className="text-black flex items-center gap-2 font-medium text-sm">
+                    <Star className="w-4 h-4" /> Preferred Option
+                  </p>
                 </div>
                 <Tooltip>
-                  <Label htmlFor="video_url" className="text-white"> Please record a 1-2 minute video sharing your quick response to the {' '}
+                  <Label htmlFor="video_url" className="text-black"> Please record a 1-2 minute video sharing your quick response to the {' '}
                     <TooltipTrigger asChild>
-                      <span className="font-bold underline ">following questions</span>
+                      <span className="font-bold underline">following questions</span>
                     </TooltipTrigger>
                     {' '}
                     (you don’t have to fill them in below if you add the video)
                   </Label>
-                  <TooltipContent className="bg-white shadow-md border border-gray-200">
-                    <p className="text-sm text-muted-foreground mt-1">
+                  <TooltipContent className="bg-white shadow-md border border-gray-200 max-w-sm">
+                    <p className="text-sm text-gray-700 mt-1">
                       - What are your goals for Edge Esmeralda and why do you want to join?
                     </p>
-                    <p className="text-sm text-muted-foreground mb-1">
+                    <p className="text-sm text-gray-700 mb-1">
                       - What is something you could contribute? A workshop, a talk, an area of expertise. Get creative!
                     </p>
                   </TooltipContent>
                 </Tooltip>
-                  <p className="text-sm text-gray-300">
-                      You can upload your video to Dropbox, Google Drive, Youtube, or anywhere where you can make the link public and viewable
-                    </p>
+                  <p className="text-sm text-gray-700 leading-4">
+                    You can upload your video to Dropbox, Google Drive, Youtube, or anywhere where you can make the link public and viewable
+                  </p>
+                <p className="text-sm text-black">Paste link here</p>
                 <Input
                   id="video_url" 
                   value={formData.video_url ?? ''}
                   onChange={(e) => handleChange('video_url', e.target.value)}
-                  className="mt-auto text-white"
+                  className=" text-black border border-slate-400"
                   placeholder="Video URL"
                   />
               </div>
