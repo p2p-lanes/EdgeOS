@@ -33,30 +33,38 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
       const monthProduct = attendeeProducts.find(p => p.category === 'month' && p.selected);
       
       if (monthProduct) {
-        return monthProduct.price ?? 0;
+        return {
+          total: monthProduct.price ?? 0,
+          originalTotal: monthProduct.original_price ?? 0
+        };
       }
 
-      return attendeeProducts
-        .filter(p => p.selected)
-        .reduce((sum, product) => sum + (patreonSelected?.selected ? product.original_price ?? 0 : product.price ?? 0), 0);
+      const selectedProducts = attendeeProducts.filter(p => p.selected);
+      return {
+        total: patreonSelected?.selected 
+          ? 0  // Si hay patreon seleccionado, el total de los productos es 0
+          : selectedProducts.reduce((sum, product) => sum + (product.price ?? 0), 0),
+        originalTotal: selectedProducts.reduce((sum, product) => sum + (product.original_price ?? 0), 0)
+      };
     };
 
-    const productsTotal = attendees.reduce((total, attendee) => {
+    const totals = attendees.reduce((acc, attendee) => {
       const attendeeProducts = products.filter(p => p.attendee_id === attendee.id);
-      return total + calculateAttendeeTotal(attendeeProducts);
-    }, 0);
+      const attendeeTotals = calculateAttendeeTotal(attendeeProducts);
+      return {
+        total: acc.total + attendeeTotals.total,
+        originalTotal: acc.originalTotal + attendeeTotals.originalTotal
+      };
+    }, { total: 0, originalTotal: 0 });
 
     if (patreonSelected?.selected) {
       return {
-        originalTotal: productsTotal + patreonSelected.price,  // Total original sin descuento de patreon
-        total: patreonSelected.price   // Precio final del patreon
+        total: patreonSelected.price ?? 0,
+        originalTotal: totals.originalTotal + (patreonSelected.price ?? 0)
       };
     }
 
-    return {
-      originalTotal: productsTotal,
-      total: productsTotal
-    };
+    return totals;
   }, [products, attendees, patreonSelected]);
 
   const hasSelectedWeeks = products.some(p => p.selected)

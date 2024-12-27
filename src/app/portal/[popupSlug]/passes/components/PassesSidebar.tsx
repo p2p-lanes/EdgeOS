@@ -38,6 +38,7 @@ const PassesSidebar = ({productsPurchase, attendees, payments, category}: Passes
   const [products, setProducts] = useState<ProductsPass[]>(initialProducts)
 
   const toggleProduct = (attendee: AttendeeProps | undefined, product?: ProductsPass) => {
+    console.log('attendee', attendee)
     if (!product || !attendee) return;
 
     setProducts(prev => {
@@ -46,7 +47,7 @@ const PassesSidebar = ({productsPurchase, attendees, payments, category}: Passes
         if (product.selected) {
           return initialProducts;
         }
-        return prev.map(p => ({...p, price: p.category === 'patreon' ? p.price : 0, selected: p.id === product.id}))
+        return prev.map(p => ({...p, price: p.category === 'patreon' ? p.price : 0, selected: p.id === product.id, attendee_id: p.id === product.id ? attendee.id : p.attendee_id}))
       }
 
       // Crear nueva lista de productos con el toggle básico

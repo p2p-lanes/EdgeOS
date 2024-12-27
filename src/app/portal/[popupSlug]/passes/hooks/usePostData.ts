@@ -20,7 +20,7 @@ const usePostData = () => {
       console.log('response', response)
       if(response.status === 200){
         if(response.data.status === 'pending'){
-          window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
+          // window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
         }else if(response.data.status === 'approved'){
           await getApplication()
         }
