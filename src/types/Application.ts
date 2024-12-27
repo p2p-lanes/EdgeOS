@@ -39,9 +39,9 @@ export interface ApplicationProps {
   spouse_email?: string;
   brings_kids?: boolean;
   kids_info?: string;
-  scolarship_request?: boolean;
-  scolarship_categories?: string[];
-  scolarship_details?: string;
+  scholarship_request?: boolean;
+  scholarship_categories?: string[];
+  scholarship_details?: string;
   status?: ApplicationStatusProps;
   citizen_id?: number;
   popup_city_id?: number;
