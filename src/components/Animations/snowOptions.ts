@@ -5,7 +5,7 @@ export const snowOptions = {
     color: "transparent"
   },
    particles: {
-    color: { value: "#e02d2d" },
+    color: { value: "#b1b3b1" },
     move: {
       direction: "bottom",
       enable: true,
