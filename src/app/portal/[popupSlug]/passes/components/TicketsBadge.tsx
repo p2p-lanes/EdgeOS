@@ -11,8 +11,6 @@ interface TicketsBadgeProps {
   selected?: boolean
   disabled: boolean;
   onClick?: () => void
-  category: TicketCategoryProps
-  patreonSelected: boolean
 }
 
 export function TicketsBadge({
@@ -21,8 +19,6 @@ export function TicketsBadge({
   iconTitle: IconTitle,
   selected = false,
   onClick,
-  category,
-  patreonSelected
 }: TicketsBadgeProps) {
   return (
     <button
@@ -63,11 +59,8 @@ export function TicketsBadge({
         disabled ? (
           <Ban className="w-4 h-4" />
         ): (
-          <span className={cn(
-            "font-medium text-sm",
-            selected ? "text-[#005F3A]" : "text-gray-600"
-          )}>
-            ${patreonSelected ? 0 : category === 'Builder' ? product.builder_price?.toLocaleString() : category === 'Scholarship' ? 0 :product.price.toLocaleString()}
+          <span className={cn("font-medium text-sm", selected ? "text-[#005F3A]" : "text-gray-600")}>
+            ${product.price.toLocaleString()}
           </span>
         )
       }

@@ -22,7 +22,7 @@ const scholarshipTypes = [
 ]
 
 export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipFormProps) {
-  const [isInterested, setIsInterested] = useState(formData.scolarship_request || false)
+  const [isInterested, setIsInterested] = useState(formData.scholarship_request || false)
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -44,18 +44,18 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
         <FormInputWrapper>
           <div className="flex items-center space-x-2">
             <Checkbox 
-              id="scolarship_request" 
+              id="scholarship_request" 
               checked={isInterested}
               onCheckedChange={(checked) => {
                 setIsInterested(checked === true)
-                handleChange('scolarship_request', checked === true)
+                handleChange('scholarship_request', checked === true)
                 if (checked === false) {
                   handleChange('scholarship_categories', [])
                   handleChange('scholarship_details', '')
                 }
               }}
             />
-            <LabelMuted htmlFor="scolarship_request">
+            <LabelMuted htmlFor="scholarship_request">
               Are you interested in applying for a scholarship?
             </LabelMuted>
           </div>
@@ -94,11 +94,11 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                     </Label>
                     <Textarea 
                       id="scholarship_details" 
-                      className={`${errors.scolarship_details ? 'border-red-500' : ''}`}
-                      value={formData.scolarship_details ?? ''}
-                      onChange={(e) => handleChange('scolarship_details', e.target.value)}
+                      className={`${errors.scholarship_details ? 'border-red-500' : ''}`}
+                      value={formData.scholarship_details ?? ''}
+                      onChange={(e) => handleChange('scholarship_details', e.target.value)}
                     />
-                    {errors.scolarship_details && <p className="text-red-500 text-sm">{errors.scolarship_details}</p>}
+                    {errors.scholarship_details && <p className="text-red-500 text-sm">{errors.scholarship_details}</p>}
                   </FormInputWrapper>
                 </FormInputWrapper>
               </motion.div>
