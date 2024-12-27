@@ -2,10 +2,10 @@ import { ISourceOptions } from "@tsparticles/engine";
 
 export const snowOptions = {
   background: {
-    color: "transparent"
+    color: "transparent" //transparent
   },
    particles: {
-    color: { value: "#e02d2d" },
+    color: { value: "#b1b3b1" },
     move: {
       direction: "bottom",
       enable: true,
