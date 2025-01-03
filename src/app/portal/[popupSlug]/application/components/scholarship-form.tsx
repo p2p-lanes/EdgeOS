@@ -22,7 +22,7 @@ const scholarshipTypes = [
 ]
 
 export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipFormProps) {
-  const [isInterested, setIsInterested] = useState(formData.scolarship_request || false)
+  const [isInterested, setIsInterested] = useState(formData.scholarship_request || false)
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -44,18 +44,18 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
         <FormInputWrapper>
           <div className="flex items-center space-x-2">
             <Checkbox 
-              id="scolarship_request" 
+              id="scholarship_request" 
               checked={isInterested}
               onCheckedChange={(checked) => {
                 setIsInterested(checked === true)
-                handleChange('scolarship_request', checked === true)
+                handleChange('scholarship_request', checked === true)
                 if (checked === false) {
                   handleChange('scholarship_categories', [])
                   handleChange('scholarship_details', '')
                 }
               }}
             />
-            <LabelMuted htmlFor="scolarship_request">
+            <LabelMuted htmlFor="scholarship_request">
               Are you interested in applying for a scholarship?
             </LabelMuted>
           </div>
@@ -74,14 +74,15 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                     </p>
                     <div className="space-y-2">
                       <Label>
-                        [Preferred] Please share a ~60 second video answering the above. 
+                        [Required] Please share a ~60 second video answering why you’re applying for a scholarship and what your contribution might be. If you are applying for a scholarship and want to receive a ticket discount, this video is mandatory.
+                        <RequiredFieldIndicator />
                         <p className="text-sm text-muted-foreground">
                           You can upload your video to Dropbox, Google Drive, Youtube, or anywhere where you can make the link public and viewable
                         </p>
                       </Label>
                       <Input 
                         id="scholarship_video_url" 
-                        value={formData.scholarship_video_url}
+                        value={formData.scholarship_video_url ?? ''}
                         onChange={(e) => handleChange('scholarship_video_url', e.target.value)}
                         className={errors.scholarship_video_url ? 'border-red-500' : ''}
                       />
@@ -90,15 +91,15 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                   </FormInputWrapper>
                   <FormInputWrapper>
                     <Label htmlFor="scholarship_details">
-                      You can also write your answer, although video is preferred.
+                      If you want to add any more detail in written form, you can use this textbox (you will still need to upload the video above, even if you fill this out).
                     </Label>
                     <Textarea 
                       id="scholarship_details" 
-                      className={`${errors.scolarship_details ? 'border-red-500' : ''}`}
-                      value={formData.scolarship_details ?? ''}
-                      onChange={(e) => handleChange('scolarship_details', e.target.value)}
+                      className={`${errors.scholarship_details ? 'border-red-500' : ''}`}
+                      value={formData.scholarship_details ?? ''}
+                      onChange={(e) => handleChange('scholarship_details', e.target.value)}
                     />
-                    {errors.scolarship_details && <p className="text-red-500 text-sm">{errors.scolarship_details}</p>}
+                    {errors.scholarship_details && <p className="text-red-500 text-sm">{errors.scholarship_details}</p>}
                   </FormInputWrapper>
                 </FormInputWrapper>
               </motion.div>

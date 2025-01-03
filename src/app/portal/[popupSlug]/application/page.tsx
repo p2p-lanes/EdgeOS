@@ -11,7 +11,7 @@ import { PersonalInformationForm } from './components/personal-information-form'
 import { ProfessionalDetailsForm } from './components/professional-details-form'
 import { ParticipationForm } from './components/participation-form'
 import { ChildrenPlusOnesForm } from './components/children-plus-ones-form'
-import { ScholarshipForm } from './components/scolarship-form'
+import { ScholarshipForm } from './components/scholarship-form'
 import { ProgressBar } from './components/progress-bar'
 import useSavesForm from './hooks/useSavesForm'
 import useProgress from './hooks/useProgress'
@@ -36,6 +36,7 @@ export default function FormPage() {
       toast.success("Previous application data imported successfully");
     }
   }
+
 
   const handleCancelImport = () => {
     setShowExistingCard(false);

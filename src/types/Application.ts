@@ -5,7 +5,7 @@ type DurationProps = "1 weekend" | "1 week" | "2 weeks" | "full length" | "all w
 
 type ApplicationStatusProps = "draft" | "in review" | "accepted" | "rejected"
 
-export type TicketCategoryProps = "Standard" | "Builder" | "Scholarship" 
+export type TicketCategoryProps = "standard" | "discounted"
 
 export interface ApplicationProps {
   attendees: AttendeeProps[];
@@ -39,9 +39,9 @@ export interface ApplicationProps {
   spouse_email?: string;
   brings_kids?: boolean;
   kids_info?: string;
-  scolarship_request?: boolean;
-  scolarship_categories?: string[];
-  scolarship_details?: string;
+  scholarship_request?: boolean;
+  scholarship_categories?: string[];
+  scholarship_details?: string;
   status?: ApplicationStatusProps;
   citizen_id?: number;
   popup_city_id?: number;
@@ -51,4 +51,5 @@ export interface ApplicationProps {
   citizen?: string | null;
   updated_at?: string;
   ticket_category?: TicketCategoryProps;
+  discount_assigned?: number;
 }
