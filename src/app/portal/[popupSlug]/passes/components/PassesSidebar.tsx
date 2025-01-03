@@ -4,41 +4,37 @@ import { ProductsPass, ProductsProps } from "@/types/Products"
 import { AttendeeProps } from "@/types/Attendee"
 import { useMemo, useState } from "react"
 import PaymentHistory from "./PaymentHistory"
-import { ApplicationProps, TicketCategoryProps } from "@/types/Application"
 
 interface PassesSidebarProps {
   productsPurchase: ProductsProps[], 
   attendees: AttendeeProps[], 
   payments: any[],
-  category: TicketCategoryProps
+  discount: number
 }
 
-const defaultProducts = (products: ProductsProps[], attendees: AttendeeProps[], category: TicketCategoryProps): ProductsPass[] => {
+const defaultProducts = (products: ProductsProps[], attendees: AttendeeProps[], discount: number): ProductsPass[] => {
   const mainAttendee = attendees.find(a => a.category === 'main') ?? { id: 0, products: [] }
 
-  const isScholarship = category === 'Scholarship'
+  const hasDiscount = discount > 0
   const isPatreon = mainAttendee.products?.some(p => p.category === 'patreon')
-  const isBuilder = category === 'Builder'
 
   return products.map(p => {
     if(p.category !== 'patreon'){
       return {
         ...p,
-        // Si es patreon o scholarship, el precio es 0, si es builder, usa builder_price si está disponible, si no, usa price
-        price: (isPatreon || isScholarship) ? 0 : isBuilder ? p.builder_price ?? p.price : p.price,
-        original_price: p.compare_price, // Precio original para mostrar tachado
+        price: isPatreon ? 0 : hasDiscount ? p.price * (1 - discount/100) : p.price,
+        original_price: hasDiscount ? p.price : p.compare_price, // Precio original para mostrar tachado
       }
     }
     return p
   }) as ProductsPass[]
 }
 
-const PassesSidebar = ({productsPurchase, attendees, payments, category}: PassesSidebarProps) => {
-  const initialProducts = useMemo(() => defaultProducts(productsPurchase, attendees, category), [productsPurchase, attendees, category])
+const PassesSidebar = ({productsPurchase, attendees, payments, discount}: PassesSidebarProps) => {
+  const initialProducts = useMemo(() => defaultProducts(productsPurchase, attendees, discount), [productsPurchase, attendees, discount])
   const [products, setProducts] = useState<ProductsPass[]>(initialProducts)
 
   const toggleProduct = (attendee: AttendeeProps | undefined, product?: ProductsPass) => {
-    console.log('attendee', attendee)
     if (!product || !attendee) return;
 
     setProducts(prev => {
@@ -57,34 +53,39 @@ const PassesSidebar = ({productsPurchase, attendees, payments, category}: Passes
         selected: p.id === product.id ? !p.selected : p.selected
       }));
 
-      // Si es un producto "month" que se está des-seleccionando, des-seleccionar todos los weeks del attendee
-      if (product.category === 'month' && product.selected) {
+      if (product.category === 'month') {
         return newProducts.map(p => ({
           ...p,
-          selected: p.category === 'week' && p.attendee_id === attendee.id ? false : p.selected
+          selected: p.category === 'week' && attendee.category === p.attendee_category ? !product.selected : p.selected
         }));
       }
 
       // Si es un producto "week", verificar si todos los weeks del attendee están seleccionados
       if (product.category === 'week') {
-        const willBeSelected = !product.selected; // El nuevo estado del producto
-        if (willBeSelected) {
-          const allWeeksSelected = newProducts
-            .filter(p => (p.category === 'week' && p.attendee_id === attendee.id && p.selected)).length === 4
+        const monthProduct = newProducts.find(p => p.category === 'month' && p.attendee_category === attendee.category);
 
-          // Si todos los weeks estarán seleccionados, seleccionar el month correspondiente
-          if (allWeeksSelected) {
-            const monthProduct = newProducts.find(p => p.category === 'month' && p.attendee_category === attendee.category);
+        if(!monthProduct) return newProducts
 
-            if (monthProduct) {
-              return newProducts.map(p => ({
-                ...p,
-                selected: p.id === monthProduct.id ? true : p.selected,
-                attendee_id: p.id === monthProduct.id ? attendee.id : p.attendee_id
-              }));
-            }
-          }
+        if(monthProduct.selected) {
+          return newProducts.map(p => ({
+            ...p,
+            selected: p.id === monthProduct.id ? false : // des-seleccionar monthProduct
+                     p.id === product.id ? false : // des-seleccionar producto week clickeado
+                     p.attendee_category === attendee.category && p.category === 'week' ? true : // seleccionar resto de weeks del attendee
+                     p.selected
+          }));
         }
+
+        const allWeeksSelected = newProducts
+          .filter(p => (p.category === 'week' && p.attendee_category === attendee.category && p.selected)).length === 4
+
+        if (allWeeksSelected) {
+            return newProducts.map(p => ({
+              ...p,
+              selected: p.id === monthProduct.id ? true : p.selected,
+              attendee_id: p.id === monthProduct.id ? attendee.id : p.attendee_id
+            }));
+          }
       }
 
       return newProducts;

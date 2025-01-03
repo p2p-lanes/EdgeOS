@@ -10,6 +10,7 @@ const requiredFields = {
   professionalDetails: ['organization', 'social_media'],
   participation: ['duration', 'builder_description'],
   childrenPlusOnes: ['spouse_info', 'spouse_email', 'kids_info'],
+  scholarship: ['scholarship_video_url'],
 }
 
 export const useFormValidation = (initialData: FormData) => {
@@ -19,16 +20,19 @@ export const useFormValidation = (initialData: FormData) => {
   const validateField = useCallback((name: FieldName, value: FieldValue, formData: FormData) => {
     const isVideoValid = validateVideoUrl(formData.video_url)
     
+    console.log('name', name)
     // Si el video es válido, solo validar campos específicos
     if (isVideoValid) {
       const requiredWithVideo = [
         ...requiredFields.personalInformation,
-        ...requiredFields.childrenPlusOnes
+        ...requiredFields.childrenPlusOnes,
+        ...requiredFields.scholarship
       ]
       
       if (!requiredWithVideo.includes(name)) return ''
     }
 
+    console.log('Object.values(requiredFields).flat()', Object.values(requiredFields).flat().includes(name))
     if (Object.values(requiredFields).flat().includes(name)) {
       // Check conditional fields
       if (name === 'spouse_info' || name === 'spouse_email') {
@@ -39,6 +43,10 @@ export const useFormValidation = (initialData: FormData) => {
       }
       if (name === 'builder_description') {
         if (!formData.builder_boolean || validateVideoUrl(formData.video_url)) return '';
+      }
+      if(name === 'scholarship_video_url') {
+        console.log('formData.scholarship_request', formData.scholarship_request)
+        if (!formData.scholarship_request || validateVideoUrl(formData.scholarship_video_url)) return '';
       }
 
       if (Array.isArray(value)) {

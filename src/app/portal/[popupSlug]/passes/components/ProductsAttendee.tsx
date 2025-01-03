@@ -43,13 +43,13 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
       return {
         total: patreonSelected?.selected 
           ? 0  // Si hay patreon seleccionado, el total de los productos es 0
-          : selectedProducts.reduce((sum, product) => sum + (product.price ?? 0), 0),
+          : selectedProducts.reduce((sum, product) => sum + product.price, 0),
         originalTotal: selectedProducts.reduce((sum, product) => sum + (product.original_price ?? 0), 0)
       };
     };
 
     const totals = attendees.reduce((acc, attendee) => {
-      const attendeeProducts = products.filter(p => p.attendee_id === attendee.id);
+      const attendeeProducts = products.filter(p => p.attendee_category === attendee.category);
       const attendeeTotals = calculateAttendeeTotal(attendeeProducts);
       return {
         total: acc.total + attendeeTotals.total,
@@ -75,10 +75,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
 
   const mainAttendee = attendees.find(a => a.category === 'main')
   const patreonPurchase = mainAttendee?.products?.some(p => p.category === 'patreon')
-  const labelDiscount = patreonSelected?.selected ? 'in passes for patron ticket holders' : application?.ticket_category === 'Builder' ? 'Builders Discount included' : 'Scholar Discount included'
-  const hasDiscount = (application?.ticket_category === 'Builder' || application?.ticket_category === 'Scholarship') && !patreonPurchase
-  const productCompare = products.find(p => p.category === 'week' && p.attendee_category === 'main') ?? { price: 0, builder_price: 0, compare_price: 0 }
-  const discountPercentage = application.ticket_category === 'Scholarship' ? 100 : ((productCompare.compare_price ?? 0) - (productCompare.builder_price ?? 0)) / (productCompare.compare_price ?? 0 ) * 100;
+  const discountApplication = application.ticket_category === 'discounted' && application.discount_assigned ? application.discount_assigned : 0
 
   return (
     <Card className="p-6 space-y-4">
@@ -108,8 +105,8 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
       </div>
       
       {
-        hasDiscount && (
-          <BannerDiscount discount={patreonSelected?.selected ? '100' : discountPercentage.toFixed(0)} label={labelDiscount} />
+        discountApplication && (
+          <BannerDiscount discount={patreonSelected?.selected ? 100 : discountApplication} label={''} />
         )
       }
 
@@ -140,15 +137,14 @@ const ProductsWeekAttendee = ({attendee, index, products, onToggleProduct}: {att
         {weekProducts?.map((product: ProductsPass) => {
           if(product.attendee_category === attendee.category){
             const disabledProduct = attendee.products?.some(p => p.id === product.id) ?? false
-            const isPreSelected = monthProduct?.selected && !disabledProduct
             return(
               <TicketsBadge
                 key={product.id} 
                 iconTitle={Ticket} 
                 product={product}
                 disabled={disabledProduct}
-                selected={(product.selected && product.attendee_id === attendee.id) || isPreSelected}
-                onClick={!isPreSelected ? () => onToggleProduct(attendee, product) : undefined}
+                selected={product.selected}
+                onClick={() => onToggleProduct(attendee, product)}
               />
             )
           }

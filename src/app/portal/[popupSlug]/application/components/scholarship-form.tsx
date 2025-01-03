@@ -74,14 +74,15 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                     </p>
                     <div className="space-y-2">
                       <Label>
-                        [Preferred] Please share a ~60 second video answering the above. 
+                        [Required] Please share a ~60 second video answering why you’re applying for a scholarship and what your contribution might be. If you are applying for a scholarship and want to receive a ticket discount, this video is mandatory.
+                        <RequiredFieldIndicator />
                         <p className="text-sm text-muted-foreground">
                           You can upload your video to Dropbox, Google Drive, Youtube, or anywhere where you can make the link public and viewable
                         </p>
                       </Label>
                       <Input 
                         id="scholarship_video_url" 
-                        value={formData.scholarship_video_url}
+                        value={formData.scholarship_video_url ?? ''}
                         onChange={(e) => handleChange('scholarship_video_url', e.target.value)}
                         className={errors.scholarship_video_url ? 'border-red-500' : ''}
                       />
@@ -90,7 +91,7 @@ export function ScholarshipForm({ formData, errors, handleChange }: ScholarshipF
                   </FormInputWrapper>
                   <FormInputWrapper>
                     <Label htmlFor="scholarship_details">
-                      You can also write your answer, although video is preferred.
+                      If you want to add any more detail in written form, you can use this textbox (you will still need to upload the video above, even if you fill this out).
                     </Label>
                     <Textarea 
                       id="scholarship_details" 
