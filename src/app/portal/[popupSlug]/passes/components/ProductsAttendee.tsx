@@ -13,6 +13,7 @@ import BannerDiscount from "./BannerDiscount"
 import SelectFullMonth from "./SelectFullMonth"
 import { Separator } from "@/components/ui/separator"
 import TotalPurchase from "./TotalPurchase"
+import { calculateTotal } from "../helpers/products"
 
 interface ProductsAttendeeProps {
   products: ProductsPass[];
@@ -28,44 +29,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
   
   const patreonSelected = products.find(p => p.category === 'patreon')
   
-  const total = useMemo(() => {
-    const calculateAttendeeTotal = (attendeeProducts: ProductsPass[]) => {
-      const monthProduct = attendeeProducts.find(p => p.category === 'month' && p.selected);
-      
-      if (monthProduct) {
-        return {
-          total: monthProduct.price ?? 0,
-          originalTotal: monthProduct.original_price ?? 0
-        };
-      }
-
-      const selectedProducts = attendeeProducts.filter(p => p.selected);
-      return {
-        total: patreonSelected?.selected 
-          ? 0  // Si hay patreon seleccionado, el total de los productos es 0
-          : selectedProducts.reduce((sum, product) => sum + product.price, 0),
-        originalTotal: selectedProducts.reduce((sum, product) => sum + (product.original_price ?? 0), 0)
-      };
-    };
-
-    const totals = attendees.reduce((acc, attendee) => {
-      const attendeeProducts = products.filter(p => p.attendee_category === attendee.category);
-      const attendeeTotals = calculateAttendeeTotal(attendeeProducts);
-      return {
-        total: acc.total + attendeeTotals.total,
-        originalTotal: acc.originalTotal + attendeeTotals.originalTotal
-      };
-    }, { total: 0, originalTotal: 0 });
-
-    if (patreonSelected?.selected) {
-      return {
-        total: patreonSelected.price ?? 0,
-        originalTotal: totals.originalTotal + (patreonSelected.price ?? 0)
-      };
-    }
-
-    return totals;
-  }, [products, attendees, patreonSelected]);
+  const total = useMemo(() => calculateTotal(attendees, products), [products, attendees]);
 
   const hasSelectedWeeks = products.some(p => p.selected)
   const mainAttendee = attendees.find(a => a.category === 'main')

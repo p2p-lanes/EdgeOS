@@ -10,7 +10,7 @@ const TotalPurchase = ({total, products, hasSelectedWeeks}: {
   hasSelectedWeeks: boolean
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-
+  const productsCart = products.filter(p => p.selected && p.category !== 'month')
 
   return (
     <Collapsible
@@ -45,10 +45,10 @@ const TotalPurchase = ({total, products, hasSelectedWeeks}: {
           {hasSelectedWeeks ? (
             <div className="space-y-2 px-3">
               {
-                products.filter(p => p.selected).map(product => (
+                productsCart.map(product => (
                   <div key={`${product.id}-${product.name}`} className="flex justify-between text-sm text-muted-foreground">
                     <span>1 x {product.name} ({product.attendee_category === 'main' ? 'Primary Ticket Holder' : product.attendee_category})</span>
-                    <span>${product.price.toFixed(2)}</span>
+                    <span>${product.original_price?.toFixed(2)}</span>
                   </div>
                 ))
               }
