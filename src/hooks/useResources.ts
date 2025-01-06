@@ -1,6 +1,6 @@
 import { useCityProvider } from "@/providers/cityProvider"
 import { Resource } from "@/types/resources"
-import { CircleDot, FileText, Home, Tag, Ticket, User } from "lucide-react"
+import { CircleDot, FileText, Home, Tag, Ticket, User, Users } from "lucide-react"
 
 const useResources = () => {
   const { getRelevantApplication, getCity } = useCityProvider()
@@ -26,6 +26,12 @@ const useResources = () => {
     icon: Ticket,
     status: application?.status === 'accepted' ? 'active' : 'disabled',
     path: `/portal/${city?.slug}/passes`,
+  },
+  {
+    name: 'Attendee Directory',
+    icon: Users,
+    status: 'active',
+    path: `/portal/${city?.slug}/attendees`,
   },
   {
     name: 'Housing',

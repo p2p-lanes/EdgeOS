@@ -3,7 +3,6 @@
 import { EventCard } from "@/components/Card/EventCard"
 import { EventStatus } from "@/components/Card/EventProgressBar"
 import { Loader } from "@/components/ui/Loader"
-import useWindow from "@/hooks/useWindow"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
