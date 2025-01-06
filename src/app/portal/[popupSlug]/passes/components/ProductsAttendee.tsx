@@ -68,9 +68,9 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
   }, [products, attendees, patreonSelected]);
 
   const hasSelectedWeeks = products.some(p => p.selected)
-
-
   const mainAttendee = attendees.find(a => a.category === 'main')
+  
+  const disabledPurchase = !hasSelectedWeeks || (patreonSelected?.selected && mainAttendee?.products?.length === 0 && products.filter(p => p.category !== 'patreon' && p.selected).length === 0)
   const patreonPurchase = mainAttendee?.products?.some(p => p.category === 'patreon')
   const discountApplication = application.ticket_category === 'discounted' && application.discount_assigned ? application.discount_assigned : 0
 
@@ -109,7 +109,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
 
       <TotalPurchase total={total} products={products} hasSelectedWeeks={hasSelectedWeeks}/>
 
-      <ButtonAnimated disabled={!hasSelectedWeeks} loading={loadingProduct} className="w-full text-white" onClick={purchaseProducts}>
+      <ButtonAnimated disabled={disabledPurchase} loading={loadingProduct} className="w-full text-white" onClick={purchaseProducts}>
         Complete Purchase
       </ButtonAnimated>
     </Card>
