@@ -32,9 +32,9 @@ const usePostData = () => {
     try{
       const response = await api.post('payments', {application_id: application.id, products: filteredProducts})
       if(response.status === 200){
-        console.log('response', {amount: response.data.amount, products: filteredProducts})
+        // console.log('response', {amount: response.data.amount, products: filteredProducts})
         if(response.data.status === 'pending'){
-          // window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
+          window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
         }else if(response.data.status === 'approved'){
           await getApplication()
         }
