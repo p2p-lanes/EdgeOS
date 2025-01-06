@@ -105,9 +105,9 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
       </div>
       
       {
-        discountApplication && (
+        discountApplication ? (
           <BannerDiscount discount={patreonSelected?.selected ? 100 : discountApplication} label={''} />
-        )
+        ) : null
       }
 
       <TotalPurchase total={total} products={products} hasSelectedWeeks={hasSelectedWeeks}/>

@@ -18,16 +18,25 @@ import useProgress from './hooks/useProgress'
 import { initial_data } from './helpers/constants'
 import useInitForm from './hooks/useInitForm'
 import { useCityProvider } from "@/providers/cityProvider"
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/navigation"
 
 export default function FormPage() {
   const [statusBtn, setStatusBtn] = useState({loadingDraft: false, loadingSubmit: false})
   const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation(initial_data)
   const { isLoading: isLoadingForm, showExistingCard, existingApplication, setShowExistingCard } = useInitForm(setFormData)
   const { handleSaveForm, handleSaveDraft } = useSavesForm()
-  const { getCity } = useCityProvider()
+  const { getCity, getRelevantApplication } = useCityProvider()
   const progress = useProgress(formData)
   const city = getCity()
+  const application = getRelevantApplication()
+  const router = useRouter()
+
+  useEffect(() => {
+    if(application && application.status === 'accepted') {
+      router.push(`/portal/${city?.slug}`)
+    }
+  }, [application, city])
 
   const handleImport = async () => {
     if (existingApplication) {
@@ -36,7 +45,6 @@ export default function FormPage() {
       toast.success("Previous application data imported successfully");
     }
   }
-
 
   const handleCancelImport = () => {
     setShowExistingCard(false);
