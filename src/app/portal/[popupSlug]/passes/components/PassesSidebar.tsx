@@ -56,7 +56,8 @@ const PassesSidebar = ({productsPurchase, attendees, payments, discount}: Passes
       if (product.category === 'month') {
         return newProducts.map(p => ({
           ...p,
-          selected: p.category === 'week' && attendee.category === p.attendee_category ? !product.selected : p.selected
+          selected: (p.category === 'week' && attendee.category === p.attendee_category) ? !product.selected : p.selected,
+          attendee_id: (p.category === 'week' && attendee.category === p.attendee_category) ? attendee.id : p.attendee_id
         }));
       }
 
