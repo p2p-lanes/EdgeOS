@@ -14,12 +14,11 @@ const usePostData = () => {
   const purchaseProducts = async (products: ProductsPass[]) => {
     setLoadingProduct(true)
     const productsPurchase = products.filter(p => p.selected)
+    console.log('productsPurchase', productsPurchase)
     const filteredProducts = productsPurchase.reduce((acc: ProductsPass[], product) => {
-      if (product.category === 'month') {
-        // Si es un producto mensual, lo incluimos y excluimos las semanas del mismo attendee_category
+      if (product.category === 'month' || product.category === 'patreon') {
         return [...acc, product];
       }
-      // Para productos que no son mensuales, verificamos que no haya un producto mensual del mismo attendee_category
       const hasMonthProduct = productsPurchase.some(p => 
         p.category === 'month' && 
         p.attendee_category === product.attendee_category
@@ -33,8 +32,9 @@ const usePostData = () => {
     try{
       const response = await api.post('payments', {application_id: application.id, products: filteredProducts})
       if(response.status === 200){
+        console.log('response', {amount: response.data.amount, products: filteredProducts})
         if(response.data.status === 'pending'){
-          window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
+          // window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
         }else if(response.data.status === 'approved'){
           await getApplication()
         }
