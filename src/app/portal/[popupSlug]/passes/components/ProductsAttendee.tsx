@@ -8,7 +8,6 @@ import { TicketsBadge } from "./TicketsBadge"
 import { Ticket } from "lucide-react"
 import { AttendeeProps } from "@/types/Attendee"
 import PatreonPass from "./PatreonPass"
-import usePostData from "../hooks/usePostData"
 import { useCityProvider } from "@/providers/cityProvider"
 import BannerDiscount from "./BannerDiscount"
 import SelectFullMonth from "./SelectFullMonth"
@@ -19,10 +18,11 @@ interface ProductsAttendeeProps {
   products: ProductsPass[];
   attendees: AttendeeProps[];
   onToggleProduct: (attendee: AttendeeProps | undefined, product?: ProductsPass) => void;
+  purchaseProducts: () => Promise<void>;
+  loadingProduct: boolean;
 }
 
-export function ProductsAttendee({ products, attendees, onToggleProduct }: ProductsAttendeeProps) {
-  const { purchaseProducts, loadingProduct } = usePostData()
+export function ProductsAttendee({ products, attendees, onToggleProduct, purchaseProducts, loadingProduct }: ProductsAttendeeProps) {
   const { getRelevantApplication } = useCityProvider()
   const application = getRelevantApplication()
   
@@ -69,9 +69,6 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
 
   const hasSelectedWeeks = products.some(p => p.selected)
 
-  const handleClickPurchase = async () => {
-    await purchaseProducts(products)
-  }
 
   const mainAttendee = attendees.find(a => a.category === 'main')
   const patreonPurchase = mainAttendee?.products?.some(p => p.category === 'patreon')
@@ -112,7 +109,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct }: Produ
 
       <TotalPurchase total={total} products={products} hasSelectedWeeks={hasSelectedWeeks}/>
 
-      <ButtonAnimated disabled={!hasSelectedWeeks} loading={loadingProduct} className="w-full text-white" onClick={handleClickPurchase}>
+      <ButtonAnimated disabled={!hasSelectedWeeks} loading={loadingProduct} className="w-full text-white" onClick={purchaseProducts}>
         Complete Purchase
       </ButtonAnimated>
     </Card>
@@ -123,6 +120,8 @@ const ProductsWeekAttendee = ({attendee, index, products, onToggleProduct}: {att
   const monthProduct = products.find(p => p.attendee_category === attendee.category && p.category === 'month')
   const purchaseSomeProduct = attendee.products?.length ?? 0 > 0
   const weekProducts = products.filter(p => p.category === 'week')
+
+  const monthProductPurchased = attendee.products?.some(p => p.category === 'month')
 
   return (
     <div key={attendee.id} className="space-y-4">
@@ -142,7 +141,7 @@ const ProductsWeekAttendee = ({attendee, index, products, onToggleProduct}: {att
                 key={product.id} 
                 iconTitle={Ticket} 
                 product={product}
-                disabled={disabledProduct}
+                disabled={disabledProduct || !!monthProductPurchased}
                 selected={product.selected}
                 onClick={() => onToggleProduct(attendee, product)}
               />

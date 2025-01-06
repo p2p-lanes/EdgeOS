@@ -4,6 +4,7 @@ import { ProductsPass, ProductsProps } from "@/types/Products"
 import { AttendeeProps } from "@/types/Attendee"
 import { useMemo, useState } from "react"
 import PaymentHistory from "./PaymentHistory"
+import usePostData from "../hooks/usePostData"
 
 interface PassesSidebarProps {
   productsPurchase: ProductsProps[], 
@@ -33,6 +34,12 @@ const defaultProducts = (products: ProductsProps[], attendees: AttendeeProps[], 
 const PassesSidebar = ({productsPurchase, attendees, payments, discount}: PassesSidebarProps) => {
   const initialProducts = useMemo(() => defaultProducts(productsPurchase, attendees, discount), [productsPurchase, attendees, discount])
   const [products, setProducts] = useState<ProductsPass[]>(initialProducts)
+  const { purchaseProducts, loadingProduct } = usePostData()
+
+  const handleClickPurchase = async () => {
+    await purchaseProducts(products)
+    setProducts(initialProducts)
+  }
 
   const toggleProduct = (attendee: AttendeeProps | undefined, product?: ProductsPass) => {
     if (!product || !attendee) return;
@@ -102,7 +109,7 @@ const PassesSidebar = ({productsPurchase, attendees, payments, discount}: Passes
         </TabsList>
 
         <TabsContent value="passes">
-          <ProductsAttendee products={products} attendees={attendees} onToggleProduct={toggleProduct} />
+          <ProductsAttendee products={products} attendees={attendees} onToggleProduct={toggleProduct} purchaseProducts={handleClickPurchase} loadingProduct={loadingProduct} />
         </TabsContent>
 
         <TabsContent value="payment-history">
