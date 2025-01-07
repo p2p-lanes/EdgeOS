@@ -4,7 +4,6 @@ import { useCityProvider } from "@/providers/cityProvider"
 import { ProductsPass } from "@/types/Products"
 import { useState } from "react"
 
-
 const usePostData = () => {
   const [loadingProduct, setLoadingProduct] = useState<boolean>(false)
   const { getRelevantApplication } = useCityProvider()
@@ -14,7 +13,6 @@ const usePostData = () => {
   const purchaseProducts = async (products: ProductsPass[]) => {
     setLoadingProduct(true)
     const productsPurchase = products.filter(p => p.selected)
-    console.log('productsPurchase', productsPurchase)
     const filteredProducts = productsPurchase.reduce((acc: ProductsPass[], product) => {
       if (product.category === 'month' || product.category === 'patreon') {
         return [...acc, product];
@@ -32,7 +30,6 @@ const usePostData = () => {
     try{
       const response = await api.post('payments', {application_id: application.id, products: filteredProducts})
       if(response.status === 200){
-        // console.log('response', {amount: response.data.amount, products: filteredProducts})
         if(response.data.status === 'pending'){
           window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
         }else if(response.data.status === 'approved'){
