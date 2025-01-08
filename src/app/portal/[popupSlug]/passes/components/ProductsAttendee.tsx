@@ -36,11 +36,15 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
   
   const disabledPurchase = !hasSelectedWeeks || (patreonSelected?.selected && mainAttendee?.products?.length === 0 && products.filter(p => p.category !== 'patreon' && p.selected).length === 0)
   const patreonPurchase = mainAttendee?.products?.some(p => p.category === 'patreon')
-  const discountApplication = application.ticket_category === 'discounted' && application.discount_assigned ? application.discount_assigned : 0
 
   return (
     <Card className="p-6 space-y-4">
-      <h3 className="font-semibold">Select the weeks you&apos;ll attend!</h3>
+      <div>
+        <h3 className="font-semibold">Select the weeks you&apos;ll attend!</h3>
+        <p className="text-sm text-muted-foreground">Not sure which week to pick? You can buy now and switch your week closer to the event.
+          Lock in your spot today!
+        </p>
+      </div>
       {attendees.map((attendee, index) => (
         <ProductsWeekAttendee 
           key={attendee.id} 
@@ -65,11 +69,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
         </p>
       </div>
       
-      {
-        discountApplication ? (
-          <BannerDiscount discount={patreonSelected?.selected ? 100 : discountApplication} label={''} />
-        ) : null
-      }
+      <BannerDiscount isPatreon={patreonSelected?.selected ?? false} application={application} />
 
       <TotalPurchase total={total} products={products} hasSelectedWeeks={hasSelectedWeeks}/>
 
