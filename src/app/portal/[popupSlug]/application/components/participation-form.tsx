@@ -18,6 +18,8 @@ import { Star } from "lucide-react"
 import { SectionProps } from "@/types/Section"
 import RadioGroupForm from "@/components/ui/Form/RadioGroup"
 import CheckboxForm from "@/components/ui/Form/Checkbox"
+import TextArea from "@/components/ui/Form/TextArea"
+import CardVideo from "./CardVideo"
 
 interface ParticipationFormProps {
   formData: any;
@@ -84,25 +86,9 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
         )
       }
 
-      <FormInputWrapper>
-        <div className="grid gap-4 gap-y-6 sm:grid-cols-1 mt-6 mb-3 items-start">
-          <div className={cn("flex-col items-center space-x-2")}>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
-                id="builder_boolean" 
-                checked={isBuilder}
-                onCheckedChange={(checked) => {
-                  setIsBuilder(checked === true)
-                  handleChange('builder_boolean', checked === true)
-                  if (checked === false) {
-                    handleChange('builder_description', '')
-                  }
-                }}
-              />
-              <LabelMuted  htmlFor="builder_boolean">
-                Are you a builder/developer interested in creating open-source software at Edge Esmeralda?
-              </LabelMuted>
-            </div>
+      {
+        fields.has("builder_boolean") && (
+          <>
             <CheckboxForm
               label="Are you a builder/developer interested in creating open-source software at Edge Esmeralda?"
               id="builder_boolean"
@@ -115,118 +101,73 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
             <AnimatePresence>
               {isBuilder && (
                 <motion.div {...animationProps}>
-                  <FormInputWrapper>
-                    <Label htmlFor="builder_description">
-                      Elaborate on your role as a builder/developer if you said yes.
-                      {
-                        !isVideoValid && <RequiredFieldIndicator />
-                      }
-                    </Label>
-                    <Textarea 
-                      id="builder_description" 
-                      className={`min-h-[100px] mt-2 ${errors.builder_description ? 'border-red-500' : ''}`}
-                      value={formData.builder_description ?? ''}
-                      onChange={(e) => handleChange('builder_description', e.target.value)}
-                    />
-                    {errors.builder_description && <p className="text-red-500 text-sm">{errors.builder_description}</p>}
-                  </FormInputWrapper>
+                  <TextArea
+                    label="Elaborate on your role as a builder/developer if you said yes."
+                    id="builder_description"
+                    value={formData.builder_description ?? ''}
+                    error={errors.builder_description}
+                    handleChange={(value) => handleChange('builder_description', value)}
+                    isRequired={!isVideoValid}
+                  />
                 </motion.div>
               )}
-            </AnimatePresence>     
-          </div>
-        </div>
-      </FormInputWrapper>       
+            </AnimatePresence>
+        </>  
+      )}
 
-      <FormInputWrapper>
-        <div className="flex items-center space-x-2 my-4">
-          <Checkbox 
-            id="hackathon"
+      {
+        fields.has("hackathon_interest") && (
+          <CheckboxForm
+            label="We will have a hackathon at Edge Esmeralda. Do you think you’ll want to take part?"
+            id="hackathon_interest"
             checked={formData.hackathon_interest || false}
             onCheckedChange={(checked) => handleChange('hackathon_interest', checked === true)}
           />
-          <LabelMuted htmlFor="hackathon" className="">We will have a hackathon at Edge Esmeralda. Do you think you’ll want to take part?</LabelMuted>
-        </div>
-      </FormInputWrapper>
+        )
+      }
 
-      <div className="flex items-center space-x-2">
-        <Checkbox id="investor" checked={formData.investor || false} onCheckedChange={(checked) => handleChange('investor', checked === true)}/>
-        <LabelMuted htmlFor="investor">
-          Are you a venture capitalist / investor coming to source deals?
-        </LabelMuted>
-      </div>
+      {
+        fields.has("investor") && (
+          <CheckboxForm
+            label="Are you a venture capitalist / investor coming to source deals?"
+            id="investor"
+            checked={formData.investor || false}
+            onCheckedChange={(checked) => handleChange('investor', checked === true)}
+          />
+        )
+      }
 
-      <Card className="px-6 mt-6 bg-slate-50 border-dashed border-2 border-slate-400">
-        <div className="grid gap-4 sm:grid-cols-1 my-4">
-          <FormInputWrapper>
-            <div className="flex flex-col h-full my-1 gap-2">
-              <div>
-                <p className="text-black flex items-center gap-2 font-medium text-sm">
-                  <Star className="w-4 h-4" /> Preferred Option
-                </p>
-              </div>
-              <Tooltip>
-                <Label htmlFor="video_url" className="text-black"> Please record a 1-2 minute video sharing your quick response to the {' '}
-                  <TooltipTrigger asChild>
-                    <span className="font-bold underline">following questions</span>
-                  </TooltipTrigger>
-                  {' '}
-                  (you don’t have to fill them in below if you add the video)
-                </Label>
-                <TooltipContent className="bg-white shadow-md border border-gray-200 max-w-sm">
-                  <p className="text-sm text-gray-700 mt-1">
-                    - What are your goals for Edge Esmeralda and why do you want to join?
-                  </p>
-                  <p className="text-sm text-gray-700 mb-1">
-                    - What is something you could contribute? A workshop, a talk, an area of expertise. Get creative!
-                  </p>
-                </TooltipContent>
-              </Tooltip>
-                <p className="text-sm text-gray-700 leading-4">
-                  You can upload your video to Dropbox, Google Drive, Youtube, or anywhere where you can make the link public and viewable
-                </p>
-              <p className="text-sm text-black">Paste link here</p>
-              <Input
-                id="video_url" 
-                value={formData.video_url ?? ''}
-                onChange={(e) => handleChange('video_url', e.target.value)}
-                className=" text-black border border-slate-400"
-                placeholder="Video URL"
-                />
-            </div>
-          </FormInputWrapper>
-        </div>
-      </Card>
+      {
+        fields.has("video_url") && (
+          <CardVideo videoUrl={formData.video_url} setVideoUrl={(url) => handleChange('video_url', url)} />
+        )
+      }
 
-      <FormInputWrapper>
-        <div className="mt-8 mb-6">
-          <Label htmlFor="goals">What are your goals in attending Edge Esmeralda?
-            <p className="text-sm text-muted-foreground mb-2">
-              You can elaborate on how you want to contribute to the collective experience as well.
-            </p>
-          </Label>
-          <Textarea 
+      {
+        fields.has("personal_goals") && (
+          <TextArea
+            label="What are your goals in attending Edge Esmeralda?"
             id="goals"
             value={formData.personal_goals ?? ''}
-            onChange={(e) => handleChange('personal_goals', e.target.value)}
+            error={errors.personal_goals}
+            handleChange={(value) => handleChange('personal_goals', value)}
           />
-        </div>
-      </FormInputWrapper>
+        )
+      }
 
-      <div className="grid gap-4 sm:grid-cols-1">
-        <FormInputWrapper>
-          <Label htmlFor="host_session">What topic would you choose if you were to host a session for Edge Esmeralda?
-            <p className="text-sm text-muted-foreground mb-2">
-              This is just to get a sense of the topics you're interested in.
-            </p>
-          </Label>
-          <Textarea 
+      {
+        fields.has("host_session") && (
+          <TextArea
+            label="What topic would you choose if you were to host a session for Edge Esmeralda?"
+            subtitle="This is just to get a sense of the topics you're interested in."
             id="host_session"
             value={formData.host_session ?? ''}
-            onChange={(e) => handleChange('host_session', e.target.value)}
+            error={errors.host_session}
+            handleChange={(value) => handleChange('host_session', value)}
           />
-          {errors.host_session && <p className="text-red-500 text-sm">{errors.host_session}</p>}
-        </FormInputWrapper>
-      </div>
+        )
+      }
+      
     </SectionWrapper>
   )
 }

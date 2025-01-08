@@ -12,15 +12,13 @@ type CheckboxFormProps = {
 const CheckboxForm = ({ label, id, checked, onCheckedChange }: CheckboxFormProps) => {
   return (
     <FormInputWrapper>
-      <div className="space-y-6 my-6">
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id={id}
-              checked={checked}
-              onCheckedChange={(checked: boolean) => onCheckedChange(checked)}
-            />
-            <LabelMuted htmlFor={id}>{label}</LabelMuted>
-          </div>
+      <div className="flex items-center space-x-2 my-2">
+        <Checkbox
+          id={id}
+          checked={checked}
+          onCheckedChange={(checked: boolean) => onCheckedChange(checked)}
+        />
+        <LabelMuted htmlFor={id}>{label}</LabelMuted>
       </div>
     </FormInputWrapper>
   )

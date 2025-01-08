@@ -1,7 +1,7 @@
 import { AddonInput } from "../addon-input"
 import { FormInputWrapper } from "../form-input-wrapper"
 import { Input } from "../input"
-import { LabelRequired } from "../label"
+import { LabelMuted, LabelRequired } from "../label"
 
 interface InputFormProps {
   label: string
@@ -17,9 +17,9 @@ interface InputFormProps {
 const InputForm = ({ label, id, value, onChange, error, subtitle, placeholder, isRequired = false }: InputFormProps) => {
   return (
     <FormInputWrapper>
-      <div>
+      <div className="flex flex-col gap-2">
         <LabelRequired htmlFor={id} isRequired={isRequired}>{label}</LabelRequired>
-        {subtitle && <p className="text-sm text-muted-foreground mb-2">{subtitle}</p>}
+        {subtitle && <LabelMuted className="text-sm text-muted-foreground">{subtitle}</LabelMuted>}
       </div>
       <Input 
         id={id} 
@@ -36,9 +36,9 @@ const InputForm = ({ label, id, value, onChange, error, subtitle, placeholder, i
 export const AddonInputForm = ({ label, id, value, onChange, error, isRequired = false, subtitle, addon, placeholder }: InputFormProps & { addon?: string, placeholder?: string }) => {
   return (
     <FormInputWrapper>
-      <div>
+      <div className="flex flex-col gap-2">
         <LabelRequired htmlFor={id} isRequired={isRequired}>{label}</LabelRequired>
-        {subtitle && <p className="text-sm text-muted-foreground mb-2">{subtitle}</p>}
+        {subtitle && <LabelMuted className="text-sm text-muted-foreground">{subtitle}</LabelMuted>}
       </div>
       <AddonInput 
         id={id} 

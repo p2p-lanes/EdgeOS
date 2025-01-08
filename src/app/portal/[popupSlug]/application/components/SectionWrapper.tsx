@@ -30,7 +30,7 @@ const SectionWrapper = ({ children, className = "", title, subtitle }: SectionWr
         <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
         <p className="text-muted-foreground">{subtitle}</p>
       </div>
-      <div className="space-y-3">
+      <div className="space-y-6">
         {children}
       </div>
     </motion.div>

@@ -9,7 +9,7 @@ import { SectionProps } from "@/types/Section";
 
 
 const shareableInfo = [
-  { value: "first_name    ", label: "First name" },
+  { value: "first_name", label: "First name" },
   { value: "last_name", label: "Last name" },
   { value: "email", label: "Email address" },
   { value: "telegram", label: "Telegram username" },
@@ -131,14 +131,16 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
         )}
       </div>
 
-      {fields.has("local_resident") && (
-        <CheckboxForm
-          label="Are you a Sonoma County local?"
-          id="local_resident"
-          checked={formData.local_resident || false}
-          onCheckedChange={(checked: boolean) => handleChange('local_resident', checked === true)}
-        />
-      )}
+      <div style={{ marginTop: '24px' }}>
+        {fields.has("local_resident") && (
+          <CheckboxForm
+            label="Are you a Sonoma County local?"
+            id="local_resident"
+            checked={formData.local_resident || false}
+            onCheckedChange={(checked: boolean) => handleChange('local_resident', checked === true)}
+          />
+        )}
+      </div>
 
       {fields.has("info_not_shared") && (
         <FormInputWrapper>
