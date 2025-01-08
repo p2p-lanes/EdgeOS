@@ -1,53 +1,15 @@
 import { useState } from "react"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Label, LabelMuted } from "@/components/ui/label"
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { Textarea } from "@/components/ui/textarea"
 import { motion, AnimatePresence } from "framer-motion"
-import { RequiredFieldIndicator } from "../../../../../components/ui/required-field-indicator"
-import { FormInputWrapper } from "../../../../../components/ui/form-input-wrapper"
 import SectionWrapper from "./SectionWrapper"
-import { useCityProvider } from "@/providers/cityProvider"
-import { cn } from "@/lib/utils"
 import { validateVideoUrl } from "@/helpers/validate"
-import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { Badge } from "@/components/ui/badge"
-import { Star } from "lucide-react"
 import { SectionProps } from "@/types/Section"
 import RadioGroupForm from "@/components/ui/Form/RadioGroup"
 import CheckboxForm from "@/components/ui/Form/Checkbox"
-import TextArea from "@/components/ui/Form/TextArea"
 import CardVideo from "./CardVideo"
+import TextAreaForm from "@/components/ui/Form/TextArea"
+import { SectionSeparator } from "./section-separator"
 
-interface ParticipationFormProps {
-  formData: any;
-  errors: Record<string, string>;
-  handleChange: (name: string, value: string | string[] | boolean) => void;
-}
-const successOptions = [
-  { id: "Build open source software for public good", label: "Build open source software for public good" },
-  { id: "Find a project to invest in", label: "Find a project to invest in" },
-  { id: "Get healthier", label: "Get healthier" },
-  { id: "Get hired", label: "Get hired" },
-  { id: "Have fun + make friends", label: "Have fun + make friends" },
-  { id: "Learn about frontier topics", label: "Learn about frontier topics" },
-  { id: "Make progress on my startup", label: "Make progress on my startup" },
-  { id: "Meet collaborators / new hires", label: "Meet collaborators / new hires" },
-  { id: "Pilot / test a real world solution", label: "Pilot / test a real world solution" },
-  { id: "Raise funding for my project", label: "Raise funding for my project" },
-  { id: "Become a major contributor to Edge City", label: "Become a major contributor to Edge City" },
-  { id: "Other", label: "Other" },
-]
-
-const topicTracks = [
-  { id: "Human organization", label: "Human organization" },
-  { id: "Artificial intelligence", label: "Artificial intelligence" },
-  { id: "Real-world crypto", label: "Real-world crypto" },
-  { id: "Health, longevity, & bio", label: "Health, longevity, & bio" },
-  { id: "Hard tech", label: "Hard tech" },
-]
+const fieldsParticipation = ["duration", "builder_boolean", "builder_description", "hackathon_interest", "investor", "video_url", "personal_goals", "host_session"]
 
 export function ParticipationForm({ formData, errors, handleChange, fields }: SectionProps) {
   const [isBuilder, setIsBuilder] = useState(formData.builder_boolean || false)
@@ -68,12 +30,13 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
     { value: "full length", label: "The full time (May 24 - June 21, 2025)" },
   ]
 
-  if (!fields) return null;
+  if (!fields || !fields.size || !fieldsParticipation.some(field => fields.has(field))) return null;
 
   return (
-    <SectionWrapper title="Your participation" subtitle="We understand that your plans may change. We are collecting the following information just to get a sense of capacity of each day/week.">
-      {
-        fields.has('duration') && (
+    <>
+      <SectionWrapper title="Your participation" subtitle="We understand that your plans may change. We are collecting the following information just to get a sense of capacity of each day/week.">
+        {
+          fields.has('duration') && (
           <RadioGroupForm
             label="Duration"
             subtitle="Please share how long you intend to come."
@@ -101,7 +64,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
             <AnimatePresence>
               {isBuilder && (
                 <motion.div {...animationProps}>
-                  <TextArea
+                  <TextAreaForm
                     label="Elaborate on your role as a builder/developer if you said yes."
                     id="builder_description"
                     value={formData.builder_description ?? ''}
@@ -145,7 +108,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
 
       {
         fields.has("personal_goals") && (
-          <TextArea
+          <TextAreaForm
             label="What are your goals in attending Edge Esmeralda?"
             id="goals"
             value={formData.personal_goals ?? ''}
@@ -157,7 +120,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
 
       {
         fields.has("host_session") && (
-          <TextArea
+          <TextAreaForm
             label="What topic would you choose if you were to host a session for Edge Esmeralda?"
             subtitle="This is just to get a sense of the topics you're interested in."
             id="host_session"
@@ -168,7 +131,9 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
         )
       }
       
-    </SectionWrapper>
+      </SectionWrapper>
+      <SectionSeparator />
+    </>
   )
 }
 

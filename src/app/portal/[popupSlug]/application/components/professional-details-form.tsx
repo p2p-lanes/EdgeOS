@@ -1,21 +1,20 @@
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { FormInputWrapper } from "../../../../../components/ui/form-input-wrapper";
-import { RequiredFieldIndicator } from "../../../../../components/ui/required-field-indicator";
 import SectionWrapper from "./SectionWrapper";
 import { validateVideoUrl } from "@/helpers/validate";
 import InputForm from "@/components/ui/Form/Input";
 import { SectionProps } from "@/types/Section";
+import { SectionSeparator } from "./section-separator";
 
+const fieldsProfessionalDetails = ["organization", "role", "social_media"]
 
 export function ProfessionalDetailsForm({ formData, errors, handleChange, fields }: SectionProps) {
   const isVideoValid = validateVideoUrl(formData.video_url)
 
-  if (!fields) return null;
+  if (!fields || !fields.size || !fieldsProfessionalDetails.some(field => fields.has(field))) return null;
 
   return (
-    <SectionWrapper title="Professional Details" subtitle="Tell us about your professional background and current role.">
-      <div className="grid gap-4 sm:grid-cols-2 sm:items-end">
+    <>
+      <SectionWrapper title="Professional Details" subtitle="Tell us about your professional background and current role.">
+        <div className="grid gap-4 sm:grid-cols-2 sm:items-end">
         {fields.has("organization") && (
           <InputForm
             label="Organization you represent"
@@ -50,8 +49,10 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
           isRequired={!isVideoValid}
           subtitle="e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Please provide the full link[s]."
         />
-      )}
-    </SectionWrapper>
+        )}
+      </SectionWrapper>
+      <SectionSeparator />
+    </>
   )
 }
 

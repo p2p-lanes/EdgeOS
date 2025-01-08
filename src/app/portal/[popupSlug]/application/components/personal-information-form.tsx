@@ -6,6 +6,7 @@ import SelectForm from "@/components/ui/Form/Select";
 import CheckboxForm from "@/components/ui/Form/Checkbox";
 import { Label } from "@/components/ui/label";
 import { SectionProps } from "@/types/Section";
+import { SectionSeparator } from "./section-separator";
 
 
 const shareableInfo = [
@@ -33,10 +34,13 @@ const genderOptions = [
   { value: "Prefer not to say", label: "Prefer not to say" },
 ]
 
+const fieldsPersonalInformation = ["first_name", "last_name", "email", "gender", "age", "telegram", "residence", "eth_address", "referral", "local_resident", "info_not_shared"]
+
 export function PersonalInformationForm({ formData, errors, handleChange, fields }: SectionProps) {
-  if (!fields) return null;
+  if (!fields || !fields.size || !fieldsPersonalInformation.some(field => fields.has(field))) return null;
 
   return (
+    <>
     <SectionWrapper title="Personal Information" subtitle="Your basic information helps us identify and contact you.">
       <div className="grid gap-4 sm:grid-cols-2 sm:items-end">
         {fields.has("first_name") && (
@@ -59,27 +63,37 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             isRequired={true}
           />
         )}
+        {fields.has("email") && (
+          <InputForm
+            label="Email"
+            id="email"
+            value={formData.email ?? ''}
+            onChange={(value) => handleChange('email', value)}
+            error={errors.email}
+            isRequired={true}
+          />
+        )}
         {fields.has("gender") && (
-        <SelectForm 
-          label="Gender"
-          id="gender"
-          value={formData.gender}
-          onChange={(value) => handleChange('gender', value)}
-          error={errors.gender}
-          isRequired={true}
-          options={genderOptions}
-        />
+          <SelectForm 
+            label="Gender"
+            id="gender"
+            value={formData.gender}
+            onChange={(value) => handleChange('gender', value)}
+            error={errors.gender}
+            isRequired={true}
+            options={genderOptions}
+          />
         )}
         {fields.has("age") && (
-        <SelectForm 
-          label="Age"
-          id="age"
-          value={formData.age}
-          onChange={(value) => handleChange('age', value)}
-          error={errors.age}
-          isRequired={true}
-          options={ageOptions}
-        />
+          <SelectForm 
+            label="Age"
+            id="age"
+            value={formData.age}
+            onChange={(value) => handleChange('age', value)}
+            error={errors.age}
+            isRequired={true}
+            options={ageOptions}
+          />
         )}
         {fields.has("telegram") && (
           <AddonInputForm
@@ -101,7 +115,6 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             value={formData.residence ?? ''}
             onChange={(value) => handleChange('residence', value)}
             error={errors.residence}
-            isRequired={true}
             placeholder="Healdsburg, California, USA"
             subtitle="Please format it like [City, State/Region, Country]. Feel free to put multiple cities if you live in multiple places."
           />
@@ -155,7 +168,9 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
           </div>
         </FormInputWrapper>
       )}
-    </SectionWrapper>
+      </SectionWrapper>
+      <SectionSeparator />
+    </>
   )
 }
 

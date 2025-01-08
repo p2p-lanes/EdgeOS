@@ -1,16 +1,13 @@
 import { useState } from "react"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
-import { Label, LabelMuted } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { motion, AnimatePresence } from "framer-motion"
-import { FormInputWrapper } from "../../../../../components/ui/form-input-wrapper"
-import { RequiredFieldIndicator } from "../../../../../components/ui/required-field-indicator"
 import SectionWrapper from "./SectionWrapper"
 import { SectionProps } from "@/types/Section"
 import CheckboxForm from "@/components/ui/Form/Checkbox"
 import InputForm from "@/components/ui/Form/Input"
+import TextAreaForm from "@/components/ui/Form/TextArea"
+import { SectionSeparator } from "./section-separator"
 
+const fieldsChildrenPlusOnes = ["brings_spouse", "brings_kids"]
 
 export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }: SectionProps) {
   const [hasSpouse, setHasSpouse] = useState(formData.brings_spouse || false);
@@ -23,9 +20,10 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
     transition: { duration: 0.3, ease: "easeInOut" }
   };
 
-  if (!fields) return null;
+  if (!fields || !fields.size || !fieldsChildrenPlusOnes.some(field => fields.has(field))) return null;
 
   return (
+    <>
     <SectionWrapper title="Children and +1s">
       <div className="grid gap-4 sm:grid-cols-2">
 
@@ -75,46 +73,44 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
           )
         }
         
-        <FormInputWrapper>
-          <div className="flex items-center space-x-2">
-            <Checkbox 
-              id="brings_kids"
-              checked={hasKids}
-              onCheckedChange={(checked) => {
-                setHasKids(checked === true);
-                handleChange('brings_kids', checked === true);
-                if (checked === false) {
-                  handleChange('kids_info', '');
-                }
-              }}
-            />
-            <LabelMuted htmlFor="brings_kids">I’m considering bringing kids</LabelMuted>
-          </div>
-          <AnimatePresence>
-            {hasKids && (
-              <motion.div {...animationProps}>
-                <FormInputWrapper>
-                  <Label htmlFor="kids_info">
-                    If so, what are their ages? And how long will they stay?
-                    <RequiredFieldIndicator />
-                    <p className="text-sm text-muted-foreground">
-                      We will approve your kids if we approve you. Your kids do not need to fill out their own version of this form however.
-                    </p>
-                  </Label>
-                  <Textarea 
-                    id="kids_info" 
-                    className={`min-h-[100px] ${errors.kids_info ? 'border-red-500' : ''}`}
-                    value={formData.kids_info}
-                    onChange={(e) => handleChange('kids_info', e.target.value)}
-                  />
-                  {errors.kids_info && <p className="text-red-500 text-sm">{errors.kids_info}</p>}
-                </FormInputWrapper>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </FormInputWrapper>
+        {
+          fields.has('brings_kids') && (
+            <div>
+              <CheckboxForm
+                label="I’m considering bringing kids"
+                id="brings_kids"
+                checked={hasKids}
+                onCheckedChange={(checked) => {
+                  setHasKids(checked === true);
+                  handleChange('brings_kids', checked === true);
+                  if (checked === false) {
+                    handleChange('kids_info', '');
+                  }
+                }}
+              />
+              <AnimatePresence>
+                {hasKids && (
+                  <motion.div {...animationProps}>
+                    <TextAreaForm
+                      label="If so, what are their ages? And how long will they stay?"
+                      id="kids_info"
+                      value={formData.kids_info}
+                      handleChange={(value) => handleChange('kids_info', value)}
+                      error={errors.kids_info}
+                      isRequired={true}
+                      subtitle="We will approve your kids if we approve you. Your kids do not need to fill out their own version of this form however."
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )
+        }
       </div>
     </SectionWrapper>
+    <SectionSeparator />
+    </>
   )
 }
+
 

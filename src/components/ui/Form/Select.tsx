@@ -16,7 +16,7 @@ interface SelectFormProps {
 const SelectForm = ({ label, id, value, onChange, error, isRequired = false, placeholder, options }: SelectFormProps) => {
   return (
     <FormInputWrapper>
-      <div className="my-2 space-y-1">
+      <div className="space-y-1">
         <LabelRequired
           htmlFor={id}
           isRequired={isRequired}

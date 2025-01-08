@@ -12,13 +12,15 @@ type TextAreaProps = {
   subtitle?: string
 }
 
-const TextArea = ({ label, id, value, error, handleChange, isRequired, subtitle }: TextAreaProps) => {
+const TextAreaForm = ({ label, id, value, error, handleChange, isRequired, subtitle }: TextAreaProps) => {
   return (
     <FormInputWrapper>
-      <LabelRequired htmlFor={id} isRequired={isRequired}>
-        {label}
-      </LabelRequired>
-      {subtitle && <LabelMuted htmlFor={id}>{subtitle}</LabelMuted>}
+      <div className="flex flex-col gap-2">
+        <LabelRequired htmlFor={id} isRequired={isRequired}>
+          {label}
+        </LabelRequired>
+        {subtitle && <LabelMuted className="text-sm text-muted-foreground">{subtitle}</LabelMuted>}
+      </div>
       <Textarea 
         id={id} 
         className={`min-h-[72px] mt-2 ${error ? 'border-red-500' : ''}`}
@@ -29,4 +31,4 @@ const TextArea = ({ label, id, value, error, handleChange, isRequired, subtitle 
     </FormInputWrapper>
   )
 }
-export default TextArea
+export default TextAreaForm

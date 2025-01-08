@@ -26,7 +26,7 @@ export function FormHeader() {
   if(!city) return null
 
   return (
-    <SectionWrapper>
+    <div className="flex gap-6 space-y-6">
       <div className="flex items-center">
         <img
           src={city.image_url}
@@ -57,7 +57,7 @@ export function FormHeader() {
           )
         }
       </div>
-    </SectionWrapper>
+    </div>
   )
 }
 
