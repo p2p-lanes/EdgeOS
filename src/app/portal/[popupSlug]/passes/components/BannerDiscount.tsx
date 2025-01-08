@@ -14,9 +14,8 @@ const BannerDiscount = ({isPatreon, application}: {isPatreon: boolean, applicati
     }
 
     if(application.ticket_category === 'standard'){
-      const discount = ((100 * (productCompare.price ?? 0)) / (productCompare.compare_price ?? 0)) - 100
-      console.log(productCompare)
-      return {discount: discount.toFixed(1), label: 'early bird discount'}
+      const discount = 100 - ((productCompare.price ?? 0) / (productCompare.compare_price ?? 0) * 100)
+      return {discount: discount.toFixed(0), label: 'early bird discount'}
     }
 
     return {discount: 0, label: ''}
