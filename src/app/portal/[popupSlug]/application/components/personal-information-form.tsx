@@ -15,13 +15,13 @@ interface PersonalInformationFormProps {
 }
 
 const shareableInfo = [
-  { value: "First name", label: "First name" },
-  { value: "Last name", label: "Last name" },
-  { value: "Email address", label: "Email address" },
-  { value: "Telegram username", label: "Telegram username" },
-  { value: "Check-in date", label: "Check-in date" },
-  { value: "Check-out date", label: "Check-out date" },
-  { value: "Whether or not I'm bringing kids", label: "Whether or not I'm bringing kids" },
+  { value: "first_name", label: "First name" },
+  { value: "last_name", label: "Last name" },
+  { value: "email", label: "Email address" },
+  { value: "telegram", label: "Telegram username" },
+  { value: "check_in_date", label: "Check-in date" },
+  { value: "check_out_date", label: "Check-out date" },
+  { value: "brings_kids", label: "Whether or not I'm bringing kids" },
 ]
 
 export function PersonalInformationForm({ formData, errors, handleChange }: PersonalInformationFormProps) {

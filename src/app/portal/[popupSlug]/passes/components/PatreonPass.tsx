@@ -52,7 +52,7 @@ const TooltipPatreon = () => {
       </TooltipTrigger>
       <TooltipContent className="bg-white text-black max-w-[420px] border border-gray-200">
           ⁠A patron pass gives you access to the whole month and supports scholarships for researchers, artists and young builders.
-          Edge Institue is a certified 501c3 and you will receive a written acknowledgement from us for your records.
+          Edge Institute is a certified 501c3 and you will receive a written acknowledgement from us for your records.
       </TooltipContent>
     </Tooltip>
   )

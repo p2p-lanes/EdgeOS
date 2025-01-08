@@ -16,7 +16,7 @@ const PaymentHistory = ({payments}: {payments: any[]}) => {
     )
   }
 
-  console.log('payments', payments)
+  const approvedPayments = payments.filter(payment => payment.status === 'approved')
 
   return(
     <Card className=" w-full">
@@ -30,7 +30,7 @@ const PaymentHistory = ({payments}: {payments: any[]}) => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {payments.map((payment) => (
+              {approvedPayments.map((payment) => (
                 <TableRow key={payment.id}>
                   <TableCell>{formatDate(payment.created_at)}</TableCell>
                   <TableCell>{payment.status}</TableCell>
