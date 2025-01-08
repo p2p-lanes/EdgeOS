@@ -6,7 +6,7 @@ interface FormInputWrapperProps {
 
 export function FormInputWrapper({ children }: FormInputWrapperProps) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-1">
       {children}
     </div>
   )

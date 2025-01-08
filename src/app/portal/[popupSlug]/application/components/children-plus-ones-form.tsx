@@ -4,8 +4,8 @@ import { Input } from "@/components/ui/input"
 import { Label, LabelMuted } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { motion, AnimatePresence } from "framer-motion"
-import { FormInputWrapper } from "./form-input-wrapper"
-import { RequiredFieldIndicator } from "./required-field-indicator"
+import { FormInputWrapper } from "../../../../../components/ui/form-input-wrapper"
+import { RequiredFieldIndicator } from "../../../../../components/ui/required-field-indicator"
 import SectionWrapper from "./SectionWrapper"
 
 interface ChildrenPlusOnesFormProps {

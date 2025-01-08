@@ -7,9 +7,11 @@ import { useRef } from "react"
 interface SectionWrapperProps {
   children: React.ReactNode
   className?: string
+  title?: string
+  subtitle?: string
 }
 
-const SectionWrapper = ({ children, className = "" }: SectionWrapperProps) => {
+const SectionWrapper = ({ children, className = "", title, subtitle }: SectionWrapperProps) => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-142px" })
 
@@ -24,7 +26,13 @@ const SectionWrapper = ({ children, className = "" }: SectionWrapperProps) => {
       }}
       className={`grid gap-10 lg:grid-cols-[260px,1fr] pb-12 ${className}`}
     >
-      {children}
+      <div className="space-y-1">
+        <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
+        <p className="text-muted-foreground">{subtitle}</p>
+      </div>
+      <div className="space-y-3">
+        {children}
+      </div>
     </motion.div>
   )
 }

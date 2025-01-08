@@ -20,6 +20,7 @@ import useInitForm from './hooks/useInitForm'
 import { useCityProvider } from "@/providers/cityProvider"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
+import { dynamicForm } from "./constants"
 
 export default function FormPage() {
   const [statusBtn, setStatusBtn] = useState({loadingDraft: false, loadingSubmit: false})
@@ -75,6 +76,8 @@ export default function FormPage() {
     return <Loader />
   }
 
+  const fields = city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null
+
   return (
     <main className="container py-6 md:py-12 mb-8">
       {showExistingCard && existingApplication && (
@@ -83,15 +86,15 @@ export default function FormPage() {
       <form onSubmit={handleSubmit} className="space-y-8 px-8 md:px-12">
         <FormHeader />
         <SectionSeparator />
-        <PersonalInformationForm formData={formData} errors={errors} handleChange={handleChange} />
+        <PersonalInformationForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
         <SectionSeparator />
-        <ProfessionalDetailsForm formData={formData} errors={errors} handleChange={handleChange} />
+        <ProfessionalDetailsForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
         <SectionSeparator />
-        <ParticipationForm formData={formData} errors={errors} handleChange={handleChange} />
+        <ParticipationForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
         <SectionSeparator />
-        <ChildrenPlusOnesForm formData={formData} errors={errors} handleChange={handleChange} />
+        <ChildrenPlusOnesForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
         <SectionSeparator />
-        <ScholarshipForm formData={formData} errors={errors} handleChange={handleChange} />
+        <ScholarshipForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
         <SectionSeparator />
         <div className="flex flex-col w-full gap-6 md:flex-row justify-between items-center pt-6">
           <ButtonAnimated loading={statusBtn.loadingDraft} disabled={statusBtn.loadingSubmit} variant="outline" type="button" onClick={handleDraft} className="w-full md:w-auto">Save as draft</ButtonAnimated>

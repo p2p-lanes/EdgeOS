@@ -20,7 +20,6 @@ export const useFormValidation = (initialData: FormData) => {
   const validateField = useCallback((name: FieldName, value: FieldValue, formData: FormData) => {
     const isVideoValid = validateVideoUrl(formData.video_url)
     
-    console.log('name', name)
     // Si el video es válido, solo validar campos específicos
     if (isVideoValid) {
       const requiredWithVideo = [
@@ -32,7 +31,6 @@ export const useFormValidation = (initialData: FormData) => {
       if (!requiredWithVideo.includes(name)) return ''
     }
 
-    console.log('Object.values(requiredFields).flat()', Object.values(requiredFields).flat().includes(name))
     if (Object.values(requiredFields).flat().includes(name)) {
       // Check conditional fields
       if (name === 'spouse_info' || name === 'spouse_email') {
