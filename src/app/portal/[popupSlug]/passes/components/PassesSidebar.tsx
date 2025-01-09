@@ -21,14 +21,14 @@ const defaultProducts = (products: ProductsProps[], attendees: AttendeeProps[], 
   const isPatreon = mainAttendee.products?.some(p => p.category === 'patreon')
 
   return products.map(p => {
-    if(p.category !== 'patreon'){
+    if(p.category !== 'patreon' && p.category !== 'supporter'){
       return {
         ...p,
         price: isPatreon ? 0 : hasDiscount ? p.price * (1 - discount/100) : p.price,
         original_price: hasDiscount ? p.price : p.compare_price, // Precio original para mostrar tachado
       }
     }
-    return p
+    return {...p, original_price: p.price}
   }) as ProductsPass[]
 }
 

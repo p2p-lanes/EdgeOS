@@ -6,7 +6,9 @@ function formatDate(date: string) {
 }
 
 const PaymentHistory = ({payments}: {payments: any[]}) => {
-  if(!payments || payments.length === 0){
+  const approvedPayments = payments?.filter(payment => payment.status === 'approved')
+
+  if(!approvedPayments || approvedPayments.length === 0){
     return (
       <Card className="p-6 space-y-6 w-full">
         <div className="text-center text-muted-foreground py-8">
@@ -16,31 +18,29 @@ const PaymentHistory = ({payments}: {payments: any[]}) => {
     )
   }
 
-  const approvedPayments = payments.filter(payment => payment.status === 'approved')
 
   return(
     <Card className=" w-full">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Date</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Currency</TableHead>
-                <TableHead>Amount</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {approvedPayments.map((payment) => (
-                <TableRow key={payment.id}>
-                  <TableCell>{formatDate(payment.created_at)}</TableCell>
-                  <TableCell>{payment.status}</TableCell>
-                  <TableCell>{payment.currency}</TableCell>
-                  <TableCell>$ {payment.amount}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-          
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead>Date</TableHead>
+            <TableHead>Status</TableHead>
+            <TableHead>Currency</TableHead>
+            <TableHead>Amount</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {approvedPayments.map((payment) => (
+            <TableRow key={payment.id}>
+              <TableCell>{formatDate(payment.created_at)}</TableCell>
+              <TableCell>{payment.status}</TableCell>
+              <TableCell>{payment.currency}</TableCell>
+              <TableCell>$ {payment.amount}</TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </Card>
   )
 

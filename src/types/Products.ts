@@ -1,6 +1,6 @@
 import { AttendeeCategory } from "./Attendee";
 
-type CategoryProducts = 'week' | 'patreon' | 'month'
+type CategoryProducts = 'week' | 'patreon' | 'month' | 'supporter'
 
 export interface ProductsProps {
   name: string;

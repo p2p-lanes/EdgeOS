@@ -87,7 +87,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
 const ProductsWeekAttendee = ({attendee, index, products, onToggleProduct}: {attendee: AttendeeProps, index: number, products: ProductsPass[], onToggleProduct: (attendee: AttendeeProps | undefined, product?: ProductsPass) => void}) => {
   const monthProduct = products.find(p => p.attendee_category === attendee.category && p.category === 'month')
   const purchaseSomeProduct = attendee.products?.length ?? 0 > 0
-  const weekProducts = products.filter(p => p.category === 'week' && p.attendee_category === attendee.category)
+  const weekProducts = products.filter(p => (p.category === 'week' || p.category === 'supporter') && p.attendee_category === attendee.category && p.is_active)
 
   const monthProductPurchased = attendee.products?.some(p => p.category === 'month')
   const hasExclusiveProduct = attendee.products?.some(p => p.exclusive) ?? false
@@ -105,7 +105,6 @@ const ProductsWeekAttendee = ({attendee, index, products, onToggleProduct}: {att
       }
       <div className={cn("grid grid-cols-1 sm:grid-cols-2 3xl:grid-cols-3 gap-2")}>
         {weekProducts?.map((product: ProductsPass) => {
-          if(product.attendee_category === attendee.category){
             const disabledProduct = attendee.products?.some(p => p.id === product.id) ?? false
             const isDisabled = disabledProduct || !!monthProductPurchased || (hasExclusiveProduct && product.exclusive)
             return(
@@ -119,10 +118,9 @@ const ProductsWeekAttendee = ({attendee, index, products, onToggleProduct}: {att
                 onClick={() => onToggleProduct(attendee, product)}
               />
             )
-          }
-        })}
+          })}
+        </div>
       </div>
     </div>
-  </div>
   )
 }
