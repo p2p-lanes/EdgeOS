@@ -11,6 +11,8 @@ import {
 } from "@/components/ui/table"
 import { Ticket } from "lucide-react"
 import { useEffect } from "react"
+import useGetData from "./hooks/useGetData"
+import CellControl from "./components/CellControl"
 
 interface Attendee {
   name: string
@@ -107,14 +109,8 @@ const attendees: Attendee[] = [
 ]
 
 const Page = () => {
-  const getAttendees = async () => {
-    const response = await api.get('applications')
-    console.log(response)
-  }
+  const { attendees } = useGetData()
 
-  useEffect(() => {
-    getAttendees()
-  }, [])
 
   return (
     <div className="px-4 py-6 md:px-6 md:py-8">
@@ -126,45 +122,53 @@ const Page = () => {
           *This directory includes only the information of those who have voluntarily opted in to share their details.
         </p>
         
-        <div className="overflow-y-auto max-h-[calc(92vh-200px)]">
-          <Table>
-            <TableHeader>
-              <TableRow className="border-b border-gray-200">
-                <TableHead className="text-md font-semibold text-gray-900">Attendee</TableHead>
-                <TableHead className="text-md font-semibold text-gray-900">Telegram Username</TableHead>
-                <TableHead className="text-md font-semibold text-gray-900">
-                  <div className="flex items-center gap-2">
-                    <Ticket className="h-5 w-5" />
-                    Participation
-                  </div>
-                </TableHead>
-                <TableHead className="text-md font-semibold text-gray-900">I'm bringing kids</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {attendees.map((attendee, index) => (
-                <TableRow 
-                  key={index}
-                  className="border-b border-gray-100 hover:bg-gray-50"
-                >
-                  <TableCell>
-                    <div>
-                      <div className="font-medium text-gray-900">{attendee.name}</div>
-                      <div className="text-sm text-gray-500">{attendee.email}</div>
+        <div className="overflow-x-auto">
+          <div className="max-w-[920px]">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-b border-gray-200">
+                  <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap">Attendee</TableHead>
+                  <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap">Email</TableHead>
+                  <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap">Telegram Username</TableHead>
+                  <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap">
+                    <div className="flex items-center gap-2">
+                      <Ticket className="h-5 w-5" />
+                      Participation
                     </div>
-                  </TableCell>
-                  <TableCell>{attendee.telegram}</TableCell>
-                  <TableCell>
-                    <div>
-                      <div className="text-gray-900">{attendee.participation.weeks}</div>
-                      <div className="text-sm text-gray-500">{attendee.participation.dates}</div>
-                    </div>
-                  </TableCell>
-                  <TableCell>{attendee.bringingKids ? "Yes" : "No"}</TableCell>
+                  </TableHead>
+                  <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap">I'm bringing kids</TableHead>
+                  <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap">Role</TableHead>
+                  <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap">Organization</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {attendees.map((attendee, index) => (
+                  <TableRow 
+                    key={index}
+                    className="border-b border-gray-100 hover:bg-gray-50"
+                  >
+                    <TableCell>
+                      <div className="flex items-center gap-1">
+                        <CellControl className="font-medium text-gray-900" value={attendee.first_name} />
+                        <CellControl className="font-medium text-gray-900" value={attendee.last_name} />
+                      </div>
+                    </TableCell>
+                    <TableCell><CellControl className="text-gray-900" value={attendee.email} /></TableCell>
+                    <TableCell>{attendee.telegram}</TableCell>
+                    <TableCell>
+                      {/* <div>
+                        <div className="text-gray-900">{attendee.check_in}</div>
+                        <div className="text-sm text-gray-500">{attendee.check_out}</div>
+                      </div> */}
+                    </TableCell>
+                    <TableCell>{attendee.bring_kids ? "Yes" : "No"}</TableCell>
+                    <TableCell>{attendee.role}</TableCell>
+                    <TableCell>{attendee.organization}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </div>
       </div>
     </div>

@@ -11,6 +11,17 @@ export interface AttendeeProps {
   products?: ProductsProps[]
 }
 
+export interface AttendeeDirectory {
+  bring_kids: string | boolean;
+  email: string;
+  first_name: string;
+  last_name: string;
+  telegram: string;
+  participation: string | boolean[];
+  role: string;
+  organization: string;
+}
+
 export interface CreateAttendee {
   name: string, 
   email: string, 
