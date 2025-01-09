@@ -28,7 +28,6 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
   const application = getRelevantApplication()
   
   const patreonSelected = products.find(p => p.category === 'patreon')
-  
   const total = useMemo(() => calculateTotal(attendees, products), [products, attendees]);
 
   const hasSelectedWeeks = products.some(p => p.selected)
@@ -69,7 +68,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
         </p>
       </div>
       
-      <BannerDiscount isPatreon={patreonSelected?.selected ?? false} application={application} />
+      <BannerDiscount isPatreon={patreonSelected?.selected ?? false} application={application} products={products} />
 
       <TotalPurchase total={total} products={products} hasSelectedWeeks={hasSelectedWeeks}/>
 

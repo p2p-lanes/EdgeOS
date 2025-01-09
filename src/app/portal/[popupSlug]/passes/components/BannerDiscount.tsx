@@ -1,10 +1,11 @@
-import { useCityProvider } from "@/providers/cityProvider"
 import { ApplicationProps } from "@/types/Application"
+import { ProductsProps } from "@/types/Products"
 import { useMemo } from "react"
 
-const BannerDiscount = ({isPatreon, application}: {isPatreon: boolean, application: ApplicationProps}) => {
-  const { getProducts } = useCityProvider()
-  const productCompare = useMemo(() => getProducts()?.[0] || {price: 85, compare_price: 100}, [getProducts])
+const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean, application: ApplicationProps, products: ProductsProps[]}) => {
+  const productCompare = useMemo(() => products?.[0] || {price: 100, compare_price: 100}, [products])
+
+  const hasProductsDiscount = products.some(p => p.category === 'week')
 
   const {discount, label} = useMemo(() => {
     if (isPatreon) return {discount: 100, label: 'discount applied'}
@@ -15,13 +16,13 @@ const BannerDiscount = ({isPatreon, application}: {isPatreon: boolean, applicati
 
     if(application.ticket_category === 'standard'){
       const discount = 100 - ((productCompare.price ?? 0) / (productCompare.compare_price ?? 0) * 100)
-      return {discount: discount.toFixed(0), label: 'early bird discount'}
+      return {discount: Math.round(discount), label: 'early bird discount'}
     }
 
     return {discount: 0, label: ''}
   }, [isPatreon, application, productCompare])
 
-  if(discount === 0) return null
+  if(discount === 0 || !hasProductsDiscount) return null
 
   return (
     <div className="w-full bg-gradient-to-r from-[#FF7B7B] to-[#E040FB] py-1 relative top-0 left-0">
