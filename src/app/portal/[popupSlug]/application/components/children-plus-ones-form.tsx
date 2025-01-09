@@ -1,20 +1,15 @@
 import { useState } from "react"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Input } from "@/components/ui/input"
-import { Label, LabelMuted } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { motion, AnimatePresence } from "framer-motion"
-import { FormInputWrapper } from "./form-input-wrapper"
-import { RequiredFieldIndicator } from "./required-field-indicator"
 import SectionWrapper from "./SectionWrapper"
+import { SectionProps } from "@/types/Section"
+import CheckboxForm from "@/components/ui/Form/Checkbox"
+import InputForm from "@/components/ui/Form/Input"
+import TextAreaForm from "@/components/ui/Form/TextArea"
+import { SectionSeparator } from "./section-separator"
 
-interface ChildrenPlusOnesFormProps {
-  formData: any;
-  errors: Record<string, string>;
-  handleChange: (name: string, value: string | boolean) => void;
-}
+const fieldsChildrenPlusOnes = ["brings_spouse", "brings_kids"]
 
-export function ChildrenPlusOnesForm({ formData, errors, handleChange }: ChildrenPlusOnesFormProps) {
+export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }: SectionProps) {
   const [hasSpouse, setHasSpouse] = useState(formData.brings_spouse || false);
   const [hasKids, setHasKids] = useState(formData.brings_kids || false);
 
@@ -25,16 +20,18 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange }: Childre
     transition: { duration: 0.3, ease: "easeInOut" }
   };
 
+  if (!fields || !fields.size || !fieldsChildrenPlusOnes.some(field => fields.has(field))) return null;
+
   return (
-    <SectionWrapper>
-      <div className="space-y-2">
-        <h2 className="text-2xl font-semibold tracking-tight">Children and +1s</h2>
-      </div>
-      <FormInputWrapper>
-        <div className="grid gap-4 sm:grid-cols-2">
-          <FormInputWrapper>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
+    <>
+    <SectionWrapper title="Children and +1s">
+      <div className="grid gap-4 sm:grid-cols-2">
+
+        {
+          fields.has('brings_spouse') && (
+            <div>
+              <CheckboxForm
+                label="I am bringing a spouse/partner"
                 id="brings_spouse"
                 checked={hasSpouse}
                 onCheckedChange={(checked) => {
@@ -46,54 +43,41 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange }: Childre
                   }
                 }}
               />
-              <LabelMuted htmlFor="brings_spouse">I am bringing a spouse/partner</LabelMuted>
-            </div>
-            <AnimatePresence>
-              {hasSpouse && (
-                <motion.div {...animationProps}>
-                  <FormInputWrapper>
-                    <FormInputWrapper>
-                      <Label htmlFor="spouse_info">
-                        Name of spouse/partner + duration of their stay
-                        <RequiredFieldIndicator />
-                        <p className="text-sm text-muted-foreground">
-                          We will approve your spouse/partner if we approve you. However please have them fill out this form as well so we have their information in our system.
-                        </p>
-                      </Label>
-                      <Input 
+              <AnimatePresence>
+                {hasSpouse && (
+                  <motion.div {...animationProps}>
+                    <div className="flex flex-col gap-6 mt-6">
+                      <InputForm
+                        label="Name of spouse/partner + duration of their stay"
                         id="spouse_info"
                         value={formData.spouse_info}
-                        onChange={(e) => handleChange('spouse_info', e.target.value)}
-                        className={errors.spouse_info ? 'border-red-500' : ''}
+                        onChange={(value) => handleChange('spouse_info', value)}
+                        error={errors.spouse_info}
+                        isRequired={true}
+                        subtitle="We will approve your spouse/partner if we approve you. However please have them fill out this form as well so we have their information in our system."
                       />
-                      {errors.spouse_info && <p className="text-red-500 text-sm">{errors.spouse_info}</p>}
-                    </FormInputWrapper>
-                    <FormInputWrapper>
-                      <Label htmlFor="spouse_email">
-                        Spouse/partner email
-                        <RequiredFieldIndicator />
-                        <p className="text-sm text-muted-foreground">
-                          Please provide your spouse/partner&apos;s email so we can remind them to apply.
-                        </p>
-                      </Label>
-                      <Input 
-                        id="spouse_email" 
-                        type="email"
+                      <InputForm
+                        label="Spouse/partner email"
+                        id="spouse_email"
                         value={formData.spouse_email}
-                        onChange={(e) => handleChange('spouse_email', e.target.value)}
-                        className={errors.spouse_email ? 'border-red-500' : ''}
+                        onChange={(value) => handleChange('spouse_email', value)}
+                        error={errors.spouse_email}
+                        isRequired={true}
+                        subtitle="Please provide your spouse/partner&apos;s email so we can remind them to apply."
                       />
-                      {errors.spouse_email && <p className="text-red-500 text-sm">{errors.spouse_email}</p>}
-                    </FormInputWrapper>
-                  </FormInputWrapper>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </FormInputWrapper>
-          
-          <FormInputWrapper>
-            <div className="flex items-center space-x-2">
-              <Checkbox 
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )
+        }
+        
+        {
+          fields.has('brings_kids') && (
+            <div>
+              <CheckboxForm
+                label="I’m considering bringing kids"
                 id="brings_kids"
                 checked={hasKids}
                 onCheckedChange={(checked) => {
@@ -104,34 +88,29 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange }: Childre
                   }
                 }}
               />
-              <LabelMuted htmlFor="brings_kids">I’m considering bringing kids</LabelMuted>
-            </div>
-            <AnimatePresence>
-              {hasKids && (
-                <motion.div {...animationProps}>
-                  <FormInputWrapper>
-                    <Label htmlFor="kids_info">
-                      If so, what are their ages? And how long will they stay?
-                      <RequiredFieldIndicator />
-                      <p className="text-sm text-muted-foreground">
-                        We will approve your kids if we approve you. Your kids do not need to fill out their own version of this form however.
-                      </p>
-                    </Label>
-                    <Textarea 
-                      id="kids_info" 
-                      className={`min-h-[100px] ${errors.kids_info ? 'border-red-500' : ''}`}
+              <AnimatePresence>
+                {hasKids && (
+                  <motion.div {...animationProps}>
+                    <TextAreaForm
+                      label="If so, what are their ages? And how long will they stay?"
+                      id="kids_info"
                       value={formData.kids_info}
-                      onChange={(e) => handleChange('kids_info', e.target.value)}
+                      handleChange={(value) => handleChange('kids_info', value)}
+                      error={errors.kids_info}
+                      isRequired={true}
+                      subtitle="We will approve your kids if we approve you. Your kids do not need to fill out their own version of this form however."
                     />
-                    {errors.kids_info && <p className="text-red-500 text-sm">{errors.kids_info}</p>}
-                  </FormInputWrapper>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </FormInputWrapper>
-        </div>
-      </FormInputWrapper>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          )
+        }
+      </div>
     </SectionWrapper>
+    <SectionSeparator />
+    </>
   )
 }
+
 

@@ -1,21 +1,29 @@
 import { api } from "@/api"
 import { useCityProvider } from "@/providers/cityProvider"
+import { ProductsProps } from "@/types/Products"
 import { useEffect, useState } from "react"
 
 const useGetData = () => {
+  const [loading, setLoading] = useState(false)
   const [payments, setPayments] = useState<any[]>([])
-  const { getCity, getRelevantApplication, setProducts } = useCityProvider()
-  const city = getCity()
+  const [products, setProducts] = useState<ProductsProps[]>([])
+  const { getCity, getRelevantApplication } = useCityProvider()
+  
   const application = getRelevantApplication()
+  const city = getCity()
 
   const getProducts = async () => {
     if(!city) return;
+
+    setLoading(true)
 
     const response = await api.get(`products?popup_city_id=${city.id}`)
 
     if(response.status === 200){
       setProducts(response.data)
     }
+
+    setLoading(false)
   }
 
   const getPayments = async () => {
@@ -36,6 +44,6 @@ const useGetData = () => {
     getProducts()
   }, [city])
 
-  return ({payments})
+  return ({payments, products, loading})
 }
 export default useGetData
