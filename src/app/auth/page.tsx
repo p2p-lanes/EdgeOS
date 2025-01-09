@@ -3,7 +3,7 @@
 import Quote from '@/app/auth/Quote'
 import { Loader } from '@/components/ui/Loader'
 import useAuthentication from '@/hooks/useAuthentication'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { toast } from 'sonner'
@@ -16,11 +16,13 @@ const AuthForm = dynamic(() => import('@/app/auth/AuthForm'), {
 export default function AuthPage() {
   const { login, token, isLoading, isAuthenticated, user } = useAuthentication()
   const router = useRouter()
+  const params = useSearchParams()
+  const popupSlug = params.get('popup')
 
   const handleLogin = async () => {
     const isLogged = await login()
     if(isLogged) {
-      router.push('/portal')
+      router.push(`/portal${popupSlug ? `/${popupSlug}` : ''}`)
     }
   }
 
