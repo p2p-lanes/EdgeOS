@@ -20,7 +20,7 @@ import useInitForm from './hooks/useInitForm'
 import { useCityProvider } from "@/providers/cityProvider"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { dynamicForm } from "./constants"
+import { dynamicForm } from "../../../../constants"
 
 export default function FormPage() {
   const [statusBtn, setStatusBtn] = useState({loadingDraft: false, loadingSubmit: false})
@@ -77,8 +77,6 @@ export default function FormPage() {
   }
 
   const fields = city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null
-
-  console.log('fields', fields)
 
   if(!fields || !fields.size) return null
 

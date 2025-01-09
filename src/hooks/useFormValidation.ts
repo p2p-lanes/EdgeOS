@@ -1,12 +1,14 @@
+import { dynamicForm } from '@/constants'
 import { validateVideoUrl } from '@/helpers/validate'
-import { useState, useCallback } from 'react'
+import { useCityProvider } from '@/providers/cityProvider'
+import { useState, useCallback, useMemo } from 'react'
 
 type FieldName = string
 type FieldValue = string | boolean | string[] | string[][] | null
 type FormData = Record<FieldName, FieldValue>
 
 const requiredFields = {
-  personalInformation: ['first_name', 'last_name', 'telegram', 'gender', 'age'],
+  personalInformation: ['first_name', 'last_name', 'telegram', 'gender', 'age', 'email'],
   professionalDetails: ['organization', 'social_media'],
   participation: ['duration', 'builder_description'],
   childrenPlusOnes: ['spouse_info', 'spouse_email', 'kids_info'],
@@ -16,23 +18,28 @@ const requiredFields = {
 export const useFormValidation = (initialData: FormData) => {
   const [formData, setFormData] = useState<FormData>(initialData)
   const [errors, setErrors] = useState<Record<FieldName, string>>({})
+  const { getCity } = useCityProvider()
+  const city = getCity()
+
+  const fields = useMemo(() => city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null, [city])
 
   const validateField = useCallback((name: FieldName, value: FieldValue, formData: FormData) => {
+    if (!fields?.has(name)) return ''
+
     const isVideoValid = validateVideoUrl(formData.video_url)
     
-    // Si el video es válido, solo validar campos específicos
     if (isVideoValid) {
       const requiredWithVideo = [
         ...requiredFields.personalInformation,
         ...requiredFields.childrenPlusOnes,
         ...requiredFields.scholarship
-      ]
+      ].filter(field => fields.has(field))
       
       if (!requiredWithVideo.includes(name)) return ''
     }
 
-    if (Object.values(requiredFields).flat().includes(name)) {
-      // Check conditional fields
+    const isRequired = Object.values(requiredFields).flat().includes(name) && fields.has(name)
+    if (isRequired) {
       if (name === 'spouse_info' || name === 'spouse_email') {
         if (!formData.brings_spouse) return '';
       }
@@ -53,7 +60,7 @@ export const useFormValidation = (initialData: FormData) => {
       return !value ? 'This field is required' : ''
     }
     return ''
-  }, [])
+  }, [fields])
 
   const handleChange = useCallback((name: FieldName, value: FieldValue) => {
     setFormData(prev => ({ ...prev, [name]: value }))
@@ -64,8 +71,10 @@ export const useFormValidation = (initialData: FormData) => {
     const newErrors: Record<FieldName, string> = {}
     const errorList: { field: string; message: string }[] = []
 
-    Object.entries(requiredFields).forEach(([section, fields]) => {
-      fields.forEach((field) => {
+    Object.entries(requiredFields).forEach(([section, sectionFields]) => {
+      const validFields = sectionFields.filter(field => fields?.has(field))
+      
+      validFields.forEach((field) => {
         const value = formData[field]
         const error = validateField(field, value, formData)
         if (error) {
@@ -80,7 +89,7 @@ export const useFormValidation = (initialData: FormData) => {
       isValid: errorList.length === 0,
       errors: errorList
     }
-  }, [formData, validateField])
+  }, [formData, validateField, fields])
 
   return { formData, errors, handleChange, validateForm, setFormData }
 }
