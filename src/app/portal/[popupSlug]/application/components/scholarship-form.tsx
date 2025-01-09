@@ -6,10 +6,13 @@ import CheckboxForm from "@/components/ui/Form/Checkbox"
 import InputForm from "@/components/ui/Form/Input"
 import TextAreaForm from "@/components/ui/Form/TextArea"
 import { SectionSeparator } from "./section-separator"
+import { useCityProvider } from "@/providers/cityProvider"
 
 
 export function ScholarshipForm({ formData, errors, handleChange, fields }: SectionProps) {
   const [isInterested, setIsInterested] = useState(formData.scholarship_request || false)
+  const { getCity } = useCityProvider()
+  const city = getCity()
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -22,7 +25,7 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
 
   return (
     <>
-      <SectionWrapper title="Edge Esmeralda scholarship" subtitle="Fill out this section if you are interested in securing one of a limited number of scholarships for Edge Esmeralda. We are prioritizing scholars who apply for the full experience (May 24 - June 21, 2025).">  
+      <SectionWrapper title={`${city?.name} scholarship`} subtitle={`Fill out this section if you are interested in securing one of a limited number of scholarships for ${city?.name}. We are prioritizing scholars who apply for the full experience (May 24 - June 21, 2025).`}>  
 
         <CheckboxForm
           label="Are you interested in applying for a scholarship?"

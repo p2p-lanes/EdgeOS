@@ -3,9 +3,13 @@ import { FormInputWrapper } from "@/components/ui/form-input-wrapper"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
+import { useCityProvider } from "@/providers/cityProvider"
 import { Star } from "lucide-react"
 
 const CardVideo = ({ videoUrl, setVideoUrl }: { videoUrl: string, setVideoUrl: (url: string) => void }) => {
+  const { getCity } = useCityProvider()
+  const city = getCity()
+
   return (
     <Card className="px-6 mt-6 bg-slate-50 border-dashed border-2 border-slate-400">
         <div className="grid gap-4 sm:grid-cols-1 my-4">
@@ -26,7 +30,7 @@ const CardVideo = ({ videoUrl, setVideoUrl }: { videoUrl: string, setVideoUrl: (
                 </Label>
                 <TooltipContent className="bg-white shadow-md border border-gray-200 max-w-sm">
                   <p className="text-sm text-gray-700 mt-1">
-                    - What are your goals for Edge Esmeralda and why do you want to join?
+                    - What are your goals for {city?.name} and why do you want to join?
                   </p>
                   <p className="text-sm text-gray-700 mb-1">
                     - What is something you could contribute? A workshop, a talk, an area of expertise. Get creative!

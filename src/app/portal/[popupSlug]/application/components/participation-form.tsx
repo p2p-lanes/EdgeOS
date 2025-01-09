@@ -8,12 +8,16 @@ import CheckboxForm from "@/components/ui/Form/Checkbox"
 import CardVideo from "./CardVideo"
 import TextAreaForm from "@/components/ui/Form/TextArea"
 import { SectionSeparator } from "./section-separator"
+import { useCityProvider } from "@/providers/cityProvider"
 
 const fieldsParticipation = ["duration", "builder_boolean", "builder_description", "hackathon_interest", "investor", "video_url", "personal_goals", "host_session"]
 
 export function ParticipationForm({ formData, errors, handleChange, fields }: SectionProps) {
   const [isBuilder, setIsBuilder] = useState(formData.builder_boolean || false)
   const isVideoValid = validateVideoUrl(formData.video_url)
+  const { getCity } = useCityProvider()
+  const city = getCity()
+
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -53,7 +57,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
         fields.has("builder_boolean") && (
           <>
             <CheckboxForm
-              label="Are you a builder/developer interested in creating open-source software at Edge Esmeralda?"
+              label={`Are you a builder/developer interested in creating open-source software at ${city?.name}?`}
               id="builder_boolean"
               checked={isBuilder}
               onCheckedChange={(checked) => {
@@ -81,7 +85,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
       {
         fields.has("hackathon_interest") && (
           <CheckboxForm
-            label="We will have a hackathon at Edge Esmeralda. Do you think you’ll want to take part?"
+            label={`We will have a hackathon at ${city?.name}. Do you think you’ll want to take part?`}
             id="hackathon_interest"
             checked={formData.hackathon_interest || false}
             onCheckedChange={(checked) => handleChange('hackathon_interest', checked === true)}
@@ -109,7 +113,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
       {
         fields.has("personal_goals") && (
           <TextAreaForm
-            label="What are your goals in attending Edge Esmeralda?"
+            label={`What are your goals in attending ${city?.name}?`}
             id="goals"
             value={formData.personal_goals ?? ''}
             error={errors.personal_goals}
@@ -121,7 +125,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
       {
         fields.has("host_session") && (
           <TextAreaForm
-            label="What topic would you choose if you were to host a session for Edge Esmeralda?"
+            label={`What topic would you choose if you were to host a session for ${city?.name}?`}
             subtitle="This is just to get a sense of the topics you're interested in."
             id="host_session"
             value={formData.host_session ?? ''}

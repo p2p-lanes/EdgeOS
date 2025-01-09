@@ -7,6 +7,7 @@ import CheckboxForm from "@/components/ui/Form/Checkbox";
 import { Label } from "@/components/ui/label";
 import { SectionProps } from "@/types/Section";
 import { SectionSeparator } from "./section-separator";
+import { useCityProvider } from "@/providers/cityProvider";
 
 
 const shareableInfo = [
@@ -37,6 +38,8 @@ const genderOptions = [
 const fieldsPersonalInformation = ["first_name", "last_name", "email", "gender", "age", "telegram", "residence", "eth_address", "referral", "local_resident", "info_not_shared"]
 
 export function PersonalInformationForm({ formData, errors, handleChange, fields }: SectionProps) {
+  const { getCity } = useCityProvider()
+  const city = getCity()
   if (!fields || !fields.size || !fieldsPersonalInformation.some(field => fields.has(field))) return null;
 
   return (
@@ -103,7 +106,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             onChange={(value) => handleChange('telegram', value)}
             error={errors.telegram}
             isRequired={true}
-            subtitle="The primary form of communication during Edge Esmeralda will be a Telegram group, so create an account if you don&apos;t already have one"
+            subtitle={`The primary form of communication during ${city?.name} will be a Telegram group, so create an account if you don&apos;t already have one`}
             addon="@"
               placeholder="username"
             />
