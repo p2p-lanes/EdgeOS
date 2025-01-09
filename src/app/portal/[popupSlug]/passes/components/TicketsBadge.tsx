@@ -30,7 +30,7 @@ export function TicketsBadge({
         "border border-gray-200 hover:bg-gray-100",
         disabled && "bg-gray-200 hover:bg-gray-200 text-gray-600 cursor-default border-gray-300",
         selected && "bg-[#D5F7CC] hover:bg-[#D5F7CC] text-[#005F3A] border-[#16a34a]",
-        purchased && "bg-[#D5F7CC] hover:bg-[#D5F7CC] text-[#005F3A] border-[transparent]",
+        purchased && "bg-[#f1ffed] hover:bg-[#f1ffed] text-[#005F3A] border-[transparent]",
         product.exclusive && "sm:col-span-2 3xl:col-span-3"
       )}
     >
@@ -61,7 +61,7 @@ export function TicketsBadge({
       </div>
       {
         purchased ? (
-          <Check className="w-4 h-4" />
+          <p className="text-xs text-[#005F3A]">Purchased</p>
         ) : (
           disabled ? (
             <Ban className="w-4 h-4" />
