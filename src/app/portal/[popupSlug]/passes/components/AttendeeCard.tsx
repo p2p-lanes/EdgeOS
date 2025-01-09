@@ -14,7 +14,7 @@ interface AttendeeCardProps {
 
 export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: AttendeeCardProps) {
   const { email, name, category } = attendee
-  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase()
+  const initials = name.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase()
 
   const isSpouse = category === "spouse";
   const hasProducts = attendee.products && attendee.products.length > 0

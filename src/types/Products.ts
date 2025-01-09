@@ -17,6 +17,7 @@ export interface ProductsProps {
   attendee_category: AttendeeCategory;
   builder_price: number | null;
   compare_price: number | null;
+  exclusive: boolean;
 }
 
 export interface ProductsPass extends ProductsProps {

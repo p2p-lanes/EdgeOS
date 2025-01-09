@@ -42,6 +42,19 @@ export const calculateTotal = (attendees: AttendeeProps[], products: ProductsPas
 };
 
 export const toggleProducts = (prev: ProductsPass[], product: ProductsPass, attendee: AttendeeProps, initialProducts: ProductsPass[]) => {
+  // Manejo de productos exclusivos
+  if (product.exclusive) {
+    const existingExclusive = prev.find(p => p.exclusive && p.selected && p.attendee_category === attendee.category);
+    if (existingExclusive) {
+      return prev.map(p => ({
+        ...p,
+        selected: p.id === existingExclusive.id ? false : 
+                 p.id === product.id ? true : p.selected,
+        attendee_id: p.id === product.id ? attendee.id : p.attendee_id
+      }));
+    }
+  }
+
   // Manejo de productos Patreon
   if (product.category === 'patreon') {
     if (product.selected) {

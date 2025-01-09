@@ -14,6 +14,7 @@ import SelectFullMonth from "./SelectFullMonth"
 import { Separator } from "@/components/ui/separator"
 import TotalPurchase from "./TotalPurchase"
 import { calculateTotal } from "../helpers/products"
+import { cn } from "@/lib/utils"
 
 interface ProductsAttendeeProps {
   products: ProductsPass[];
@@ -56,17 +57,21 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
 
       <Separator className="my-12"/>
 
-      <div className="p-0 w-full">
-        <PatreonPass
-          product={patreonSelected}
-          selected={patreonSelected?.selected ?? false}
-          disabled={patreonPurchase ?? false}
-          onClick={() => onToggleProduct(mainAttendee, patreonSelected)} 
-        />
-        <p className="text-xs text-muted-foreground mt-1">
-          {patreonSelected?.selected ? 'Patron ticket holders get free weekly passes for their whole family group' : ''}
-        </p>
-      </div>
+      {
+        patreonSelected && (
+          <div className="p-0 w-full">
+            <PatreonPass
+              product={patreonSelected}
+              selected={patreonSelected?.selected ?? false}
+              disabled={patreonPurchase ?? false}
+              onClick={() => onToggleProduct(mainAttendee, patreonSelected)} 
+            />
+            <p className="text-xs text-muted-foreground mt-1">
+              {patreonSelected?.selected ? 'Patron ticket holders get free weekly passes for their whole family group' : ''}
+            </p>
+          </div>
+        )
+      }
       
       <BannerDiscount isPatreon={patreonSelected?.selected ?? false} application={application} products={products} />
 
@@ -82,9 +87,12 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
 const ProductsWeekAttendee = ({attendee, index, products, onToggleProduct}: {attendee: AttendeeProps, index: number, products: ProductsPass[], onToggleProduct: (attendee: AttendeeProps | undefined, product?: ProductsPass) => void}) => {
   const monthProduct = products.find(p => p.attendee_category === attendee.category && p.category === 'month')
   const purchaseSomeProduct = attendee.products?.length ?? 0 > 0
-  const weekProducts = products.filter(p => p.category === 'week')
+  const weekProducts = products.filter(p => p.category === 'week' && p.attendee_category === attendee.category)
 
   const monthProductPurchased = attendee.products?.some(p => p.category === 'month')
+  const hasExclusiveProduct = attendee.products?.some(p => p.exclusive) ?? false
+
+  if(weekProducts.length === 0) return null
 
   return (
     <div key={attendee.id} className="space-y-4">
@@ -95,17 +103,19 @@ const ProductsWeekAttendee = ({attendee, index, products, onToggleProduct}: {att
           <SelectFullMonth product={monthProduct} onClick={() => onToggleProduct(attendee, monthProduct)}/>
         )
       }
-      <div className="grid grid-cols-1 sm:grid-cols-2 3xl:grid-cols-3 gap-2">
+      <div className={cn("grid grid-cols-1 sm:grid-cols-2 3xl:grid-cols-3 gap-2")}>
         {weekProducts?.map((product: ProductsPass) => {
           if(product.attendee_category === attendee.category){
             const disabledProduct = attendee.products?.some(p => p.id === product.id) ?? false
+            const isDisabled = disabledProduct || !!monthProductPurchased || (hasExclusiveProduct && product.exclusive)
             return(
               <TicketsBadge
                 key={product.id} 
                 iconTitle={Ticket} 
                 product={product}
-                disabled={disabledProduct || !!monthProductPurchased}
+                disabled={isDisabled}
                 selected={product.selected}
+                purchased={attendee.products?.some(p => p.id === product.id)}
                 onClick={() => onToggleProduct(attendee, product)}
               />
             )
