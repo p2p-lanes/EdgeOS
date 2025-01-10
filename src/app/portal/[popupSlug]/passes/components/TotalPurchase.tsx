@@ -55,7 +55,7 @@ const TotalPurchase = ({total, products, hasSelectedWeeks}: {
             </div>
           ) : (
             <p className="text-sm text-muted-foreground px-3">
-              No weeks selected
+              No passes selected
             </p>
           )}
         </CollapsibleContent>

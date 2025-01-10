@@ -33,6 +33,8 @@ export default function FormPage() {
   const application = getRelevantApplication()
   const router = useRouter()
 
+  const fields = city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null
+
   useEffect(() => {
     if(application && application.status === 'accepted') {
       router.push(`/portal/${city?.slug}`)
@@ -40,8 +42,11 @@ export default function FormPage() {
   }, [application, city])
 
   const handleImport = async () => {
-    if (existingApplication) {
-      setFormData(existingApplication);
+    if (existingApplication && fields) {
+      const filteredData = Object.fromEntries(
+        Object.entries(existingApplication).filter(([key]) => fields.has(key))
+      );
+      setFormData(filteredData as Record<string, any>);
       setShowExistingCard(false);
       toast.success("Previous application data imported successfully");
     }
@@ -75,8 +80,6 @@ export default function FormPage() {
   if (isLoadingForm || !city) {
     return <Loader />
   }
-
-  const fields = city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null
 
   if(!fields || !fields.size) return null
 
