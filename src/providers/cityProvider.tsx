@@ -1,7 +1,7 @@
 import { ApplicationProps } from '@/types/Application';
 import { PopupsProps } from '@/types/Popup';
 import { ProductsProps } from '@/types/Products';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 interface CityContext_interface {
@@ -25,6 +25,7 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
   const [popups, setPopupsState] = useState<PopupsProps[]>([]);
   const params = useParams()
 
+
   const setProducts = (products: ProductsProps[]) => {
     setProductsState(products)
   }
@@ -42,7 +43,11 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
   }
 
   const getCity = (): PopupsProps | null => {
-    const city = popups.find((popup: PopupsProps) => popup.slug === params.popupSlug)
+    const city = popups.find((popup: PopupsProps) => popup.slug === params.popupSlug && popup.clickable_in_portal && popup.visible_in_portal)
+    if(!city){
+      const selectedCity = popups.find((popup: PopupsProps) => popup.clickable_in_portal && popup.visible_in_portal)
+      if(selectedCity) return selectedCity
+    }
     return city ?? null;
   };
 

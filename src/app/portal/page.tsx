@@ -12,7 +12,6 @@ const Page = () => {
   const params = useSearchParams()
   const popupSlug = params.get('popup')
 
-
   useEffect(() => {
     if(popupSlug){
       router.push(`/portal/${popupSlug}`)

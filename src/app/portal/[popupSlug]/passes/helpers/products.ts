@@ -23,7 +23,7 @@ export const calculateTotal = (attendees: AttendeeProps[], products: ProductsPas
   const patreonSelected = products.find(p => p.category === 'patreon')
 
   const totals = attendees.reduce((acc, attendee) => {
-    const attendeeProducts = products.filter(p => p.attendee_category === attendee.category);
+    const attendeeProducts = products.filter(p => p.attendee_category === attendee.category && p.category !== 'patreon');
     const attendeeTotals = calculateAttendeeTotal(attendeeProducts, patreonSelected?.selected ?? false);
     return {
       total: acc.total + attendeeTotals.total,
@@ -34,7 +34,7 @@ export const calculateTotal = (attendees: AttendeeProps[], products: ProductsPas
   if (patreonSelected?.selected) {
     return {
       total: patreonSelected.price ?? 0,
-      originalTotal: totals.originalTotal + (patreonSelected.price ?? 0)
+      originalTotal: patreonSelected.price + totals.originalTotal
     };
   }
 

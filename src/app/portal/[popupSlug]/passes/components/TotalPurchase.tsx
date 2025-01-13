@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils"
 import { ProductsPass } from "@/types/Products"
 import { ChevronDown } from "lucide-react"
 import { useState } from "react"
+import { badgeName } from "../constants/multiuse"
 
 const TotalPurchase = ({total, products, hasSelectedWeeks}: {
   total: { originalTotal: number, total: number }, 
@@ -47,7 +48,7 @@ const TotalPurchase = ({total, products, hasSelectedWeeks}: {
               {
                 productsCart.map(product => (
                   <div key={`${product.id}-${product.name}`} className="flex justify-between text-sm text-muted-foreground">
-                    <span>1 x {product.name} ({product.attendee_category === 'main' ? 'Primary Ticket Holder' : product.attendee_category})</span>
+                    <span>1 x {product.name} ({badgeName[product.attendee_category] || product.attendee_category})</span>
                     <span>${product.original_price?.toFixed(2)}</span>
                   </div>
                 ))

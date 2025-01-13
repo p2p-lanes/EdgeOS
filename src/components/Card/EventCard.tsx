@@ -5,7 +5,6 @@ import { CardAnimation, CardContent } from "@/components/ui/card"
 import { ButtonAnimated } from "@/components/ui/button"
 import { EventProgressBar, EventStatus } from './EventProgressBar'
 import { PopupsProps } from '@/types/Popup'
-import { useEffect, useState } from 'react'
 
 interface EventCardProps extends PopupsProps {
   status?: EventStatus
@@ -41,20 +40,28 @@ export function EventCard({ name, tagline, location, start_date, end_date, image
             {calendarDays}
           </div>
           {
-            canApply && (
-              <div className="my-6">
-                <EventProgressBar status={status} />
-              </div>
-            )
+            canApply ? (
+              <>
+                <div className="my-6">
+                  <EventProgressBar status={status} />
+                </div>
+                <div className="flex items-end justify-end sm:justify-end">
+                  <ButtonAnimated onClick={onApply} className='w-full md:w-auto px-9'>
+                    {status === 'not_started' ? 'Apply' : 
+                    status === 'draft' ? 'Continue Application' :
+                    status === 'in review' ? 'Edit Application' :
+                    status === 'accepted' ? 'Go to Passes' : 'Modify Ticket'}
+                  </ButtonAnimated>
+                </div>
+              </>
+            ) : status === 'accepted' ? (
+              <div  className="flex items-end justify-end sm:justify-end">
+                  <ButtonAnimated onClick={onApply} className='w-full md:w-auto px-9'>
+                    {status === 'accepted' ? 'Go to Passes' : null}
+                  </ButtonAnimated>
+                </div>
+            ) : null
           }
-          <div className="flex items-end justify-end sm:justify-end">
-            <ButtonAnimated onClick={onApply} className='w-full md:w-auto px-9'>
-              {status === 'not_started' ? 'Apply' : 
-              status === 'draft' ? 'Continue Application' :
-              status === 'in review' ? 'Edit Application' :
-              (status === 'accepted' || canApply) ? 'Go to Passes' : 'Modify Ticket'}
-            </ButtonAnimated>
-          </div>
         </CardContent>
       </div>
     </CardAnimation>

@@ -11,9 +11,9 @@ type UseGetPopups = {
 
 const useGetPopups = (): UseGetPopups => {
   const { setPopups } = useCityProvider()
-  const { popupSlug } = useParams()
   const { logout } = useAuthentication()
   const router = useRouter()
+  const { popupSlug } = useParams()
 
   const findValidCity = (cities: PopupsProps[], slug?: string) => {
     return cities.find(city => 
@@ -30,8 +30,10 @@ const useGetPopups = (): UseGetPopups => {
         const cities = response.data as PopupsProps[]
         setPopups(cities.reverse())
 
-        const selectedCity = findValidCity(cities, popupSlug as string) || findValidCity(cities)
-        if (selectedCity) router.push(`/portal/${selectedCity.slug}`)
+        if(!popupSlug || !findValidCity(cities, popupSlug as string)){
+          const selectedCity = findValidCity(cities)
+          if (selectedCity) router.push(`/portal/${selectedCity.slug}`)
+        }
       }
     } catch(err: any) {
       if(err.response?.status === 401) {

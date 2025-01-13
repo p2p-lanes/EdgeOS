@@ -3,19 +3,14 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Badge } from "@/components/ui/badge"
 import { Pencil, Ticket, Trash2, User } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { AttendeeCategory, AttendeeProps } from "@/types/Attendee"
+import { AttendeeProps } from "@/types/Attendee"
+import { badgeName } from "../constants/multiuse"
 
 interface AttendeeCardProps {
   attendee: AttendeeProps;
   onDelete?: () => void
   onClickEdit?: () => void
   loading: boolean;
-}
-
-const badgeName: Record<AttendeeCategory, string> = {
-  main: 'Primary Ticket Holder',
-  spouse: 'Spouse',
-  kid: 'Child',
 }
 
 export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: AttendeeCardProps) {
