@@ -42,21 +42,19 @@ export function EventCard({ name, tagline, location, start_date, end_date, image
           </div>
           {
             canApply && (
-              <>
-                <div className="my-6">
-                  <EventProgressBar status={status} />
-                </div>
-                <div className="flex items-end justify-end sm:justify-end">
-                  <ButtonAnimated onClick={onApply} className='w-full md:w-auto px-9'>
-                  {status === 'not_started' ? 'Apply' : 
-                  status === 'draft' ? 'Continue Application' :
-                  status === 'in review' ? 'Edit Application' :
-                  status === 'accepted' ? 'Go to Passes' : 'Modify Ticket'}
-                </ButtonAnimated>
-                </div>
-              </>
+              <div className="my-6">
+                <EventProgressBar status={status} />
+              </div>
             )
           }
+          <div className="flex items-end justify-end sm:justify-end">
+            <ButtonAnimated onClick={onApply} className='w-full md:w-auto px-9'>
+              {status === 'not_started' ? 'Apply' : 
+              status === 'draft' ? 'Continue Application' :
+              status === 'in review' ? 'Edit Application' :
+              (status === 'accepted' || canApply) ? 'Go to Passes' : 'Modify Ticket'}
+            </ButtonAnimated>
+          </div>
         </CardContent>
       </div>
     </CardAnimation>
