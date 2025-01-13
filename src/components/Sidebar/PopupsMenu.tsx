@@ -59,7 +59,7 @@ const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) 
                   if(!popup.visible_in_portal) return null
 
                   return (
-                    <DropdownMenuItem key={popup.name} className="cursor-pointer" disabled={!popup.clickable_in_portal} onClick={() => handleClickCity(popup)}>
+                    <DropdownMenuItem key={popup.name} selected={popup.slug === city?.slug} className="cursor-pointer" disabled={!popup.clickable_in_portal} onClick={() => handleClickCity(popup)}>
                       <span>{popup.name}</span>
                       {
                         !popup.clickable_in_portal && (

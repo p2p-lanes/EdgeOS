@@ -7,7 +7,6 @@ import { useMemo } from "react"
 import { TicketsBadge } from "./TicketsBadge"
 import { Ticket } from "lucide-react"
 import { AttendeeProps } from "@/types/Attendee"
-import PatreonPass from "./PatreonPass"
 import { useCityProvider } from "@/providers/cityProvider"
 import BannerDiscount from "./BannerDiscount"
 import SelectFullMonth from "./SelectFullMonth"
@@ -15,6 +14,7 @@ import { Separator } from "@/components/ui/separator"
 import TotalPurchase from "./TotalPurchase"
 import { calculateTotal } from "../helpers/products"
 import { cn } from "@/lib/utils"
+import SpecialProductPass from "./SpecialProductPass"
 
 interface ProductsAttendeeProps {
   products: ProductsPass[];
@@ -27,15 +27,15 @@ interface ProductsAttendeeProps {
 export function ProductsAttendee({ products, attendees, onToggleProduct, purchaseProducts, loadingProduct }: ProductsAttendeeProps) {
   const { getRelevantApplication } = useCityProvider()
   const application = getRelevantApplication()
-  
-  const patreonSelected = products.find(p => p.category === 'patreon')
   const total = useMemo(() => calculateTotal(attendees, products), [products, attendees]);
+  
+  const specialProduct = products.find(p => p.category === 'patreon')
 
   const hasSelectedWeeks = products.some(p => p.selected)
   const mainAttendee = attendees.find(a => a.category === 'main')
   
-  const disabledPurchase = !hasSelectedWeeks || (patreonSelected?.selected && mainAttendee?.products?.length === 0 && products.filter(p => p.category !== 'patreon' && p.selected).length === 0)
-  const patreonPurchase = mainAttendee?.products?.some(p => p.category === 'patreon')
+  const disabledPurchase = !hasSelectedWeeks || (specialProduct?.selected && mainAttendee?.products?.length === 0 && products.filter(p => p.category !== 'patreon' && p.selected).length === 0)
+  const specialPurchase = mainAttendee?.products?.some(p => p.category === 'patreon')
 
   return (
     <Card className="p-6 space-y-4">
@@ -58,26 +58,26 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
       <Separator className="my-12"/>
 
       {
-        patreonSelected && (
+        specialProduct && (
           <div className="p-0 w-full">
-            <PatreonPass
-              product={patreonSelected}
-              selected={patreonSelected?.selected ?? false}
-              disabled={patreonPurchase ?? false}
-              onClick={() => onToggleProduct(mainAttendee, patreonSelected)} 
+            <SpecialProductPass
+              product={specialProduct}
+              selected={specialProduct?.selected ?? false}
+              disabled={specialPurchase ?? false}
+              onClick={() => onToggleProduct(mainAttendee, specialProduct)} 
             />
             <p className="text-xs text-muted-foreground mt-1">
-              {patreonSelected?.selected ? 'Patron ticket holders get free weekly passes for their whole family group' : ''}
+              {specialProduct?.selected && specialProduct?.category === 'patreon' ? 'Patron ticket holders get free weekly passes for their whole family group' : ''}
             </p>
           </div>
         )
       }
       
-      <BannerDiscount isPatreon={patreonSelected?.selected ?? false} application={application} products={products} />
+      <BannerDiscount isPatreon={(specialProduct?.selected && specialProduct?.category === 'patreon') ?? false} application={application} products={products} />
 
       <TotalPurchase total={total} products={products} hasSelectedWeeks={hasSelectedWeeks}/>
 
-      <ButtonAnimated disabled={disabledPurchase} loading={loadingProduct} className="w-full text-white" onClick={purchaseProducts}>
+      <ButtonAnimated disabled={disabledPurchase || loadingProduct} loading={loadingProduct} className="w-full text-white" onClick={purchaseProducts}>
         Complete Purchase
       </ButtonAnimated>
     </Card>
@@ -87,7 +87,7 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
 const ProductsWeekAttendee = ({attendee, index, products, onToggleProduct}: {attendee: AttendeeProps, index: number, products: ProductsPass[], onToggleProduct: (attendee: AttendeeProps | undefined, product?: ProductsPass) => void}) => {
   const monthProduct = products.find(p => p.attendee_category === attendee.category && p.category === 'month')
   const purchaseSomeProduct = attendee.products?.length ?? 0 > 0
-  const weekProducts = products.filter(p => (p.category === 'week' || p.category === 'supporter') && p.attendee_category === attendee.category && p.is_active)
+  const weekProducts = products.filter(p => (p.category === 'week' || p.category === 'supporter') && p.attendee_category === attendee.category)
 
   const monthProductPurchased = attendee.products?.some(p => p.category === 'month')
   const hasExclusiveProduct = attendee.products?.some(p => p.exclusive) ?? false
@@ -116,6 +116,7 @@ const ProductsWeekAttendee = ({attendee, index, products, onToggleProduct}: {att
                 selected={product.selected}
                 purchased={attendee.products?.some(p => p.id === product.id)}
                 onClick={() => onToggleProduct(attendee, product)}
+                isSpecial={product.category === 'supporter'}
               />
             )
           })}

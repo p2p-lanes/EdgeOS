@@ -27,7 +27,7 @@ const useGetPopups = (): UseGetPopups => {
       const response = await api.get('popups')
       if (response.status === 200) {
         const cities = response.data as PopupsProps[]
-        setPopups(cities)
+        setPopups(cities.reverse())
 
         const selectedCity = findValidCity(cities, popupSlug as string) || findValidCity(cities)
         if (selectedCity) setCity(selectedCity)

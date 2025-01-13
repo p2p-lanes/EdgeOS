@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, Plus, LucideIcon, Ban } from 'lucide-react'
+import { Check, Plus, LucideIcon, Ban, Crown } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import { ProductsPass } from '@/types/Products';
 import { TicketCategoryProps } from '@/types/Application';
@@ -12,6 +12,7 @@ interface TicketsBadgeProps {
   disabled: boolean;
   purchased?: boolean;
   onClick?: () => void
+  isSpecial?: boolean
 }
 
 export function TicketsBadge({
@@ -21,6 +22,7 @@ export function TicketsBadge({
   selected = false,
   purchased = false,
   onClick,
+  isSpecial = false,
 }: TicketsBadgeProps) {
   return (
     <button
@@ -43,12 +45,21 @@ export function TicketsBadge({
           ) : null}
         </div>
         <div className="flex flex-col items-start">
-          <div className="flex items-center gap-2">
-            <IconTitle className="w-4 h-4" />
-            <span className="font-medium text-sm">{product.name}</span>
-          </div>
           {
-            product.start_date && product.end_date && (
+            isSpecial ? (
+              <div className="flex items-center gap-2 py-2">
+                <Crown className="w-5 h-5 text-orange-500" />
+                <span className="font-semibold text-md">{product.name}</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <IconTitle className="w-4 h-4" />
+                <span className="font-medium text-sm">{product.name}</span>
+              </div>
+            )
+          }
+          {
+            (product.start_date && product.end_date && !isSpecial) && (
               <span className={cn(
                 "text-xs",
                 selected ? "text-[#005F3A]" : "text-gray-500"

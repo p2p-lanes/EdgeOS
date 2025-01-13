@@ -4,7 +4,6 @@ export const edgeSxsw = {
     "last_name",
     "gender",
     "age",
-    "email",
     "telegram",
     "residence"
   ]

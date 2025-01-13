@@ -1,18 +1,15 @@
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { ProductsProps } from "@/types/Products"
-import { Check, Gem, Info, Plus } from 'lucide-react'
-import type { LucideIcon } from "lucide-react"
+import { ProductsPass } from "@/types/Products";
+import { Check, Info, Plus } from 'lucide-react'
 
-interface PatreonPassProps {
-  product: any;
+interface SpecialProductPassProps {
+  product: ProductsPass;
   selected?: boolean;
   disabled?: boolean;
   onClick: () => void
 }
 
-export default function PatreonPass({ product, disabled, selected, onClick }: PatreonPassProps) {
+export default function SpecialProductPass({ product, disabled, selected, onClick }: SpecialProductPassProps) {
   return (
     <div 
       onClick={!disabled ? onClick : undefined}
@@ -33,7 +30,11 @@ export default function PatreonPass({ product, disabled, selected, onClick }: Pa
         }
         <span className={`font-medium ${selected ? 'text-[#005F3A]' : ''} flex items-center gap-2`}>
           {product.name}
-          <TooltipPatreon/>
+          {
+            product.category === 'patreon' && (
+              <TooltipPatreon/>
+            )
+          }
         </span>
       </div>
       
