@@ -1,7 +1,7 @@
 import { api } from "@/api"
 import { useCityProvider } from "@/providers/cityProvider"
 import { PopupsProps } from "@/types/Popup"
-import { useParams } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useEffect } from "react"
 import useAuthentication from "./useAuthentication"
 
@@ -10,9 +10,10 @@ type UseGetPopups = {
 }
 
 const useGetPopups = (): UseGetPopups => {
-  const { setPopups, setCity } = useCityProvider()
+  const { setPopups } = useCityProvider()
   const { popupSlug } = useParams()
   const { logout } = useAuthentication()
+  const router = useRouter()
 
   const findValidCity = (cities: PopupsProps[], slug?: string) => {
     return cities.find(city => 
@@ -30,7 +31,7 @@ const useGetPopups = (): UseGetPopups => {
         setPopups(cities.reverse())
 
         const selectedCity = findValidCity(cities, popupSlug as string) || findValidCity(cities)
-        if (selectedCity) setCity(selectedCity)
+        if (selectedCity) router.push(`/portal/${selectedCity.slug}`)
       }
     } catch(err: any) {
       if(err.response?.status === 401) {

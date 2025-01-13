@@ -3,7 +3,7 @@
 import { EventCard } from "@/components/Card/EventCard"
 import { EventStatus } from "@/components/Card/EventProgressBar"
 import { Loader } from "@/components/ui/Loader"
-import useWindow from "@/hooks/useWindow"
+import { dynamicForm } from "@/constants"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
@@ -15,7 +15,9 @@ export default function Home() {
   const city = getCity()
   const relevantApplication = getRelevantApplication()
   
-  if(!city && !relevantApplication) return null
+  if(!city || !relevantApplication) return null
+
+  const canApply = !!(city && city.slug && dynamicForm[city.slug] !== null)
 
   const onClickApply = () => {
     if(relevantApplication?.status === 'accepted') {
@@ -35,6 +37,7 @@ export default function Home() {
           {...city!}
           onApply={onClickApply}
           status={relevantApplication?.status as EventStatus}
+          canApply={canApply}
         />
       </div>
     </section>

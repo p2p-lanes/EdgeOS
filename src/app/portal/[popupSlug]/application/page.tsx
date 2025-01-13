@@ -36,6 +36,10 @@ export default function FormPage() {
   const fields = city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null
 
   useEffect(() => {
+    if(city && city.slug && !dynamicForm[city.slug]) {
+      router.push(`/portal/${city?.slug}`)
+      return;
+    }
     if(application && application.status === 'accepted') {
       router.push(`/portal/${city?.slug}`)
     }
