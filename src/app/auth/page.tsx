@@ -4,7 +4,7 @@ import Quote from '@/app/auth/Quote'
 import { Loader } from '@/components/ui/Loader'
 import useAuthentication from '@/hooks/useAuthentication'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { toast } from 'sonner'
 import { Suspense } from 'react'
@@ -15,27 +15,27 @@ const AuthForm = dynamic(() => import('@/app/auth/AuthForm'), {
 })
 
 function AuthContent() {
-  const { login, token, isLoading, isAuthenticated, user } = useAuthentication()
+  const { login, token, isLoading, isAuthenticated } = useAuthentication()
   const router = useRouter()
   const params = useSearchParams()
   const popupSlug = params.get('popup')
 
-  const handleLogin = async () => {
+  const handleLogin = useCallback(async () => {
     const isLogged = await login()
     if(isLogged) {
       router.push(`/portal${popupSlug ? `/${popupSlug}` : ''}`)
     }
-  }
+  }, [login, router, popupSlug])
 
   useEffect(() => {
-    if(isAuthenticated && !isLoading) {
-      router.push('/portal')
-      return
-    }
+    // if(isAuthenticated && !isLoading) {
+    //   router.push('/portal')
+    //   return
+    // }
     
     handleLogin()
 
-  }, [isAuthenticated])
+  }, [handleLogin])
 
   if(isLoading || isAuthenticated || token) {
     return (
