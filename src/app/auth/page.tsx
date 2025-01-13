@@ -7,13 +7,14 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { toast } from 'sonner'
+import { Suspense } from 'react'
 
 // Dynamically import AuthForm with no SSR
 const AuthForm = dynamic(() => import('@/app/auth/AuthForm'), {
   ssr: false,
 })
 
-export default function AuthPage() {
+function AuthContent() {
   const { login, token, isLoading, isAuthenticated, user } = useAuthentication()
   const router = useRouter()
   const params = useSearchParams()
@@ -49,6 +50,18 @@ export default function AuthPage() {
       <Quote />
       <AuthForm />
     </div>
+  )
+}
+
+export default function AuthPage() {
+  return (
+    <Suspense fallback={
+      <div className="w-full h-full">
+        <Loader/>
+      </div>
+    }>
+      <AuthContent />
+    </Suspense>
   )
 }
 
