@@ -15,7 +15,7 @@ export default function Home() {
   const city = getCity()
   const relevantApplication = getRelevantApplication()
   
-  if(!city || !relevantApplication) return null
+  if(!city && !relevantApplication) return null
 
   const canApply = !!(city && city.slug && dynamicForm[city.slug] !== null)
 
