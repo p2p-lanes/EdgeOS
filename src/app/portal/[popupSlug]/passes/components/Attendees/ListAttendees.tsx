@@ -1,10 +1,11 @@
-import { AttendeeCard } from "./AttendeeCard"
-import { AttendeeModal } from "./AttendeeModal"
+
 import { AttendeeProps, CreateAttendee } from "@/types/Attendee"
 import useAttendee from "@/hooks/useAttendee"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { PlusIcon } from "lucide-react"
+import { AttendeeCard } from "./AttendeeCard"
+import { AttendeeModal } from "./AttendeeModal"
 
 const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
   const { addAttendee, removeAttendee, loading, editAttendee } = useAttendee()

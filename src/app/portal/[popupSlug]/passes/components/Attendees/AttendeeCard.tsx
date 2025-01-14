@@ -4,7 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Pencil, Ticket, Trash2, User } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { AttendeeProps } from "@/types/Attendee"
-import { badgeName } from "../constants/multiuse"
+import { badgeName } from "../../constants/multiuse"
 
 interface AttendeeCardProps {
   attendee: AttendeeProps;

@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 import { ProductsPass } from "@/types/Products"
 import { ChevronRight } from "lucide-react"
 import { useState } from "react"
-import { badgeName } from "../constants/multiuse"
+import { badgeName } from "../../../constants/multiuse"
 
 const TotalPurchase = ({total, products, hasSelectedWeeks}: {
   total: { originalTotal: number, total: number }, 

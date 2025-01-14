@@ -4,7 +4,7 @@ import { Card } from "@/components/ui/card"
 import { ButtonAnimated } from "@/components/ui/button"
 import { ProductsPass } from "@/types/Products"
 import { useMemo } from "react"
-import { TicketsBadge } from "./TicketsBadge"
+import Standard from "./Products/Standard"
 import { Ticket } from "lucide-react"
 import { AttendeeProps } from "@/types/Attendee"
 import { useCityProvider } from "@/providers/cityProvider"
@@ -12,7 +12,7 @@ import BannerDiscount from "./BannerDiscount"
 import SelectFullMonth from "./SelectFullMonth"
 import { Separator } from "@/components/ui/separator"
 import TotalPurchase from "./TotalPurchase"
-import { calculateTotal } from "../helpers/products"
+import { calculateTotal } from "../../../helpers/products"
 import { cn } from "@/lib/utils"
 import SpecialProductPass from "./SpecialProductPass"
 
@@ -24,7 +24,7 @@ interface ProductsAttendeeProps {
   loadingProduct: boolean;
 }
 
-export function ProductsAttendee({ products, attendees, onToggleProduct, purchaseProducts, loadingProduct }: ProductsAttendeeProps) {
+export default function Passes({ products, attendees, onToggleProduct, purchaseProducts, loadingProduct }: ProductsAttendeeProps) {
   const { getRelevantApplication, getCity } = useCityProvider()
   const application = getRelevantApplication()
   const city = getCity()
@@ -113,7 +113,7 @@ const ProductsWeekAttendee = ({attendee, index, products, onToggleProduct}: {att
             const disabledProduct = attendee.products?.some(p => p.id === product.id) ?? false
             const isDisabled = disabledProduct || !!monthProductPurchased || (hasExclusiveProduct && product.exclusive)
             return(
-              <TicketsBadge
+              <Standard
                 key={product.id} 
                 iconTitle={Ticket} 
                 product={product}

@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Button, ButtonAnimated } from "@/components/ui/button"
+import { ButtonAnimated } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -11,9 +11,7 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog"
-import usePostData from "../hooks/usePostData"
 
 interface AttendeeModalProps {
   onAddAttendee: (attendee: any) => void

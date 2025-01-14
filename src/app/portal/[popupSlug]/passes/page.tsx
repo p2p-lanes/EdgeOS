@@ -5,11 +5,11 @@ import { useCityProvider } from '@/providers/cityProvider'
 import { useRouter } from 'next/navigation'
 import { Loader } from '@/components/ui/Loader'
 import useGetData from './hooks/useGetData'
-import ListAttendees from './components/ListAttendees'
-import PassesSidebar from './components/PassesSidebar'
 import { AttendeeProps } from '@/types/Attendee'
 import { sortAttendees } from './helpers/filter'
 import Snow from '@/components/Animations/Snow'
+import TabsContainer from './components/Sidebar/TabsContainer'
+import ListAttendees from './components/Attendees/ListAttendees'
 
 export default function Home() {
   const [attendees, setAttendees] = useState<AttendeeProps[]>([])
@@ -39,7 +39,7 @@ export default function Home() {
       {/* <Snow /> */}
       <div className="grid grid-cols-1 xl:grid-cols-[50%,50%] gap-6 relative z-10">
         <ListAttendees attendees={attendees}/>
-        <PassesSidebar productsPurchase={products} attendees={attendees} payments={payments} discount={discountApplication}/>
+        <TabsContainer productsPurchase={products} attendees={attendees} payments={payments} discount={discountApplication}/>
       </div>
     </div>
   )
