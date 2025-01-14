@@ -28,13 +28,7 @@ function AuthContent() {
   }, [login, router, popupSlug])
 
   useEffect(() => {
-    // if(isAuthenticated && !isLoading) {
-    //   router.push('/portal')
-    //   return
-    // }
-    
     handleLogin()
-
   }, [handleLogin])
 
   if(isLoading || isAuthenticated || token) {
