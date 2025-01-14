@@ -18,7 +18,6 @@ const PaymentHistory = ({payments}: {payments: any[]}) => {
     )
   }
 
-
   return(
     <Card className=" w-full">
       <Table>
