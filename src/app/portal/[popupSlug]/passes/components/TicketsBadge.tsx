@@ -24,6 +24,9 @@ export function TicketsBadge({
   onClick,
   isSpecial = false,
 }: TicketsBadgeProps) {
+
+  const showDates = product.start_date && product.end_date
+
   return (
     <button
       onClick={disabled ? undefined : onClick}
@@ -44,7 +47,7 @@ export function TicketsBadge({
             <Plus className="w-4 h-4" />
           ) : null}
         </div>
-        <div className="flex flex-col items-start">
+        <div className={cn("flex flex-col items-start", !showDates && !isSpecial ? "py-2" : "")}>
           {
             isSpecial ? (
               <div className="flex items-center gap-2 py-2">
@@ -53,20 +56,20 @@ export function TicketsBadge({
               </div>
             ) : (
               <div className="flex items-center gap-2">
-                <IconTitle className="w-4 h-4" />
+                <IconTitle className={cn(showDates ? "h-4 w-4" : "h-5 w-5")} />
                 <span className="font-medium text-sm">{product.name}</span>
               </div>
             )
           }
           {
-            (product.start_date && product.end_date && !isSpecial) && (
+            showDates && !isSpecial && (
               <span className={cn(
                 "text-xs",
                 selected ? "text-[#005F3A]" : "text-gray-500"
-              )}>{new Date(product.start_date ?? '').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-              {' '} to {new Date(product.end_date ?? '').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-            </span>
-          )
+               )}>{new Date(product.start_date ?? '').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                {' '} to {new Date(product.end_date ?? '').toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+              </span>
+            )
           }
         </div>
       </div>
