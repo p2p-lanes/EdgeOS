@@ -25,8 +25,9 @@ interface ProductsAttendeeProps {
 }
 
 export function ProductsAttendee({ products, attendees, onToggleProduct, purchaseProducts, loadingProduct }: ProductsAttendeeProps) {
-  const { getRelevantApplication } = useCityProvider()
+  const { getRelevantApplication, getCity } = useCityProvider()
   const application = getRelevantApplication()
+  const city = getCity()
   const total = useMemo(() => calculateTotal(attendees, products), [products, attendees]);
   
   const specialProduct = products.find(p => p.category === 'patreon')
@@ -40,10 +41,14 @@ export function ProductsAttendee({ products, attendees, onToggleProduct, purchas
   return (
     <Card className="p-6 space-y-4">
       <div>
-        <h3 className="font-semibold">Select the weeks you&apos;ll attend!</h3>
-        <p className="text-sm text-muted-foreground">Not sure which week to pick? You can buy now and switch your week closer to the event.
-          Lock in your spot today!
-        </p>
+        <h3 className="font-semibold">Buy your passes!</h3>
+        {
+          city?.passes_description && (
+            <p className="text-sm text-muted-foreground">
+              {city?.passes_description}
+            </p>
+          )
+        }
       </div>
       {attendees.map((attendee, index) => (
         <ProductsWeekAttendee 

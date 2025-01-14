@@ -12,4 +12,5 @@ export type PopupsProps = {
   visible_in_portal?: boolean;
   clickable_in_portal?: boolean;
   slug?: string;
+  passes_description?: string;
 }
