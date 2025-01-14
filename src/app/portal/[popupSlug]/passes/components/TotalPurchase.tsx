@@ -1,7 +1,7 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
 import { ProductsPass } from "@/types/Products"
-import { ChevronDown } from "lucide-react"
+import { ChevronRight } from "lucide-react"
 import { useState } from "react"
 import { badgeName } from "../constants/multiuse"
 
@@ -22,10 +22,10 @@ const TotalPurchase = ({total, products, hasSelectedWeeks}: {
         <CollapsibleTrigger className="w-full">
           <div className="flex justify-between items-center p-3 bg-muted/50 rounded-md">
             <div className="flex items-center gap-2">
-              <ChevronDown 
+              <ChevronRight 
                 className={cn(
                   "h-4 w-4 transition-transform duration-200",
-                  isOpen && "transform rotate-180"
+                  isOpen && "transform rotate-90"
                 )}
               />
               <span className="font-medium">Total</span>

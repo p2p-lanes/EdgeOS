@@ -1,7 +1,7 @@
 import { AttendeeCategory } from "@/types/Attendee";
 
 export const badgeName: Record<AttendeeCategory, string> = {
-  main: 'Primary Ticket Holder',
+  main: 'Primary Pass Holder',
   spouse: 'Spouse',
   kid: 'Child',
 }
