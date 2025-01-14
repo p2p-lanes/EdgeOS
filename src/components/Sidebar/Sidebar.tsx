@@ -13,15 +13,13 @@ import useGetTokenAuth from "@/hooks/useGetTokenAuth"
 
 
 export function BackofficeSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
-  const { setCity } = useCityProvider()
   const router = useRouter()
   const { logout } = useAuthentication()
   const { user } = useGetTokenAuth()
   
 
   const handleClickCity = (city: any) => {
-    setCity(city)
-    router.push(`/portal/${city.slug}`)
+    router.replace(`/portal/${city.slug}`)
   }
 
   if(!user) return <Loader />

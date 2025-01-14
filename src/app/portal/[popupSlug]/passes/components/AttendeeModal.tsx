@@ -46,10 +46,6 @@ export function AttendeeModal({ onAddAttendee, open, setOpen, initialName, initi
 
   const handleOpenChange = (newOpen: boolean) => {
     setOpen(newOpen)
-    if (!newOpen) {
-      setName("")
-      setEmail("")
-    }
   }
 
   return (

@@ -23,7 +23,7 @@ export const calculateTotal = (attendees: AttendeeProps[], products: ProductsPas
   const patreonSelected = products.find(p => p.category === 'patreon')
 
   const totals = attendees.reduce((acc, attendee) => {
-    const attendeeProducts = products.filter(p => p.attendee_category === attendee.category);
+    const attendeeProducts = products.filter(p => p.attendee_category === attendee.category && p.category !== 'patreon');
     const attendeeTotals = calculateAttendeeTotal(attendeeProducts, patreonSelected?.selected ?? false);
     return {
       total: acc.total + attendeeTotals.total,
@@ -34,7 +34,7 @@ export const calculateTotal = (attendees: AttendeeProps[], products: ProductsPas
   if (patreonSelected?.selected) {
     return {
       total: patreonSelected.price ?? 0,
-      originalTotal: totals.originalTotal + (patreonSelected.price ?? 0)
+      originalTotal: patreonSelected.price + totals.originalTotal
     };
   }
 
@@ -42,6 +42,19 @@ export const calculateTotal = (attendees: AttendeeProps[], products: ProductsPas
 };
 
 export const toggleProducts = (prev: ProductsPass[], product: ProductsPass, attendee: AttendeeProps, initialProducts: ProductsPass[]) => {
+  // Manejo de productos exclusivos
+  if (product.exclusive) {
+    const existingExclusive = prev.find(p => p.exclusive && p.selected && p.attendee_category === attendee.category);
+    if (existingExclusive) {
+      return prev.map(p => ({
+        ...p,
+        selected: p.id === existingExclusive.id ? false : 
+                 p.id === product.id ? true : p.selected,
+        attendee_id: p.id === product.id ? attendee.id : p.attendee_id
+      }));
+    }
+  }
+
   // Manejo de productos Patreon
   if (product.category === 'patreon') {
     if (product.selected) {

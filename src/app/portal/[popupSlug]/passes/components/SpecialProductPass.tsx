@@ -1,18 +1,15 @@
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip"
-import { ProductsProps } from "@/types/Products"
-import { Check, Gem, Info, Plus } from 'lucide-react'
-import type { LucideIcon } from "lucide-react"
+import { ProductsPass } from "@/types/Products";
+import { Check, Crown, Info, Plus } from 'lucide-react'
 
-interface PatreonPassProps {
-  product: any;
+interface SpecialProductPassProps {
+  product: ProductsPass;
   selected?: boolean;
   disabled?: boolean;
   onClick: () => void
 }
 
-export default function PatreonPass({ product, disabled, selected, onClick }: PatreonPassProps) {
+export default function SpecialProductPass({ product, disabled, selected, onClick }: SpecialProductPassProps) {
   return (
     <div 
       onClick={!disabled ? onClick : undefined}
@@ -23,7 +20,7 @@ export default function PatreonPass({ product, disabled, selected, onClick }: Pa
         ${selected || disabled ? 'border-2 border-[#16B74A] bg-[#D5F7CC]' : 'cursor-pointer border-2 border-gray-200 bg-transparent hover:bg-gray-100'}
       `}
     >
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-2 py-2">
         {
           selected || disabled ? (
             <Check className="w-4 h-4" color="#005F3A"/>
@@ -31,7 +28,8 @@ export default function PatreonPass({ product, disabled, selected, onClick }: Pa
             <Plus className="w-4 h-4" />
           )
         }
-        <span className={`font-medium ${selected ? 'text-[#005F3A]' : ''} flex items-center gap-2`}>
+        <span className={`font-semibold ${selected ? 'text-[#005F3A]' : ''} flex items-center gap-2`}>
+          <Crown className="w-5 h-5 text-orange-500" />
           {product.name}
           <TooltipPatreon/>
         </span>

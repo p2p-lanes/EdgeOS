@@ -20,16 +20,18 @@ const defaultProducts = (products: ProductsProps[], attendees: AttendeeProps[], 
   const hasDiscount = discount > 0
   const isPatreon = mainAttendee.products?.some(p => p.category === 'patreon')
 
-  return products.map(p => {
-    if(p.category !== 'patreon'){
-      return {
-        ...p,
-        price: isPatreon ? 0 : hasDiscount ? p.price * (1 - discount/100) : p.price,
-        original_price: hasDiscount ? p.price : p.compare_price, // Precio original para mostrar tachado
+  return products
+    .filter(p => p.is_active !== false)
+    .map(p => {
+      if(p.category !== 'patreon' && p.category !== 'supporter'){
+        return {
+          ...p,
+          price: isPatreon ? 0 : hasDiscount ? p.price * (1 - discount/100) : p.price,
+          original_price: hasDiscount ? p.price : p.compare_price, // Precio original para mostrar tachado
+        }
       }
-    }
-    return p
-  }) as ProductsPass[]
+      return {...p, original_price: p.price}
+    }) as ProductsPass[]
 }
 
 const PassesSidebar = ({productsPurchase, attendees, payments, discount}: PassesSidebarProps) => {

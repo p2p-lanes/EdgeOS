@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Pencil, Ticket, Trash2, User } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { AttendeeProps } from "@/types/Attendee"
+import { badgeName } from "../constants/multiuse"
 
 interface AttendeeCardProps {
   attendee: AttendeeProps;
@@ -14,7 +15,7 @@ interface AttendeeCardProps {
 
 export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: AttendeeCardProps) {
   const { email, name, category } = attendee
-  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase()
+  const initials = name.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase()
 
   const isSpouse = category === "spouse";
   const hasProducts = attendee.products && attendee.products.length > 0
@@ -24,7 +25,7 @@ export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: Attend
       <div className="flex justify-between items-center mb-3">
         <Badge variant="secondary" className="w-fit gap-2">
           <User className="h-4 w-4"/>
-          {category === 'main' ? 'Primary Ticket Holder' : category}
+          {badgeName[category] || category}
         </Badge>
         <div className="flex items-center gap-2">
           {
@@ -65,7 +66,7 @@ export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: Attend
         </div>
         <div className="flex flex-col gap-2">
           {hasProducts ? <>
-            <p className="text-xs font-semibold text-muted-foreground">Purchased tickets</p>
+            <p className="text-xs font-semibold text-muted-foreground">Purchased passes</p>
             <div className="grid grid-cols-2 ">
               {attendee.products?.map((p) => (
                   <Badge
@@ -82,7 +83,7 @@ export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: Attend
               ))}
             </div>
           </> : (
-            <p className="text-xs font-semibold text-muted-foreground">No purchased tickets yet</p>
+            <p className="text-xs font-semibold text-muted-foreground">No purchased passes yet</p>
           )}
         </div>
       </div>

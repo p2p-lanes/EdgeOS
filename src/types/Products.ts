@@ -1,6 +1,6 @@
 import { AttendeeCategory } from "./Attendee";
 
-type CategoryProducts = 'week' | 'patreon' | 'month'
+type CategoryProducts = 'week' | 'patreon' | 'month' | 'supporter'
 
 export interface ProductsProps {
   name: string;
@@ -17,6 +17,7 @@ export interface ProductsProps {
   attendee_category: AttendeeCategory;
   builder_price: number | null;
   compare_price: number | null;
+  exclusive: boolean;
 }
 
 export interface ProductsPass extends ProductsProps {

@@ -1,6 +1,6 @@
 'use client'
 
-import { Check, Plus, LucideIcon, Ban } from 'lucide-react'
+import { Check, Plus, LucideIcon, Ban, Crown } from 'lucide-react'
 import { cn } from "@/lib/utils"
 import { ProductsPass } from '@/types/Products';
 import { TicketCategoryProps } from '@/types/Application';
@@ -10,7 +10,9 @@ interface TicketsBadgeProps {
   iconTitle: LucideIcon
   selected?: boolean
   disabled: boolean;
+  purchased?: boolean;
   onClick?: () => void
+  isSpecial?: boolean
 }
 
 export function TicketsBadge({
@@ -18,7 +20,9 @@ export function TicketsBadge({
   disabled,
   iconTitle: IconTitle,
   selected = false,
+  purchased = false,
   onClick,
+  isSpecial = false,
 }: TicketsBadgeProps) {
   return (
     <button
@@ -27,7 +31,9 @@ export function TicketsBadge({
         "flex items-center justify-between w-full px-3 py-1 transition-colors rounded-full",
         "border border-gray-200 hover:bg-gray-100",
         disabled && "bg-gray-200 hover:bg-gray-200 text-gray-600 cursor-default border-gray-300",
-        selected && "bg-[#D5F7CC] hover:bg-[#D5F7CC] text-[#005F3A] border-[#16a34a]"
+        selected && "bg-[#D5F7CC] hover:bg-[#D5F7CC] text-[#005F3A] border-[#16a34a]",
+        purchased && "bg-[#f1ffed] hover:bg-[#f1ffed] text-[#005F3A] border-[transparent]",
+        product.exclusive && "sm:col-span-2 3xl:col-span-3"
       )}
     >
       <div className="flex items-center">
@@ -39,12 +45,21 @@ export function TicketsBadge({
           ) : null}
         </div>
         <div className="flex flex-col items-start">
-          <div className="flex items-center gap-2">
-            <IconTitle className="w-4 h-4" />
-            <span className="font-medium text-sm">{product.name}</span>
-          </div>
           {
-            product.start_date && product.end_date && (
+            isSpecial ? (
+              <div className="flex items-center gap-2 py-2">
+                <Crown className="w-5 h-5 text-orange-500" />
+                <span className="font-semibold text-md">{product.name}</span>
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <IconTitle className="w-4 h-4" />
+                <span className="font-medium text-sm">{product.name}</span>
+              </div>
+            )
+          }
+          {
+            (product.start_date && product.end_date && !isSpecial) && (
               <span className={cn(
                 "text-xs",
                 selected ? "text-[#005F3A]" : "text-gray-500"
@@ -56,14 +71,17 @@ export function TicketsBadge({
         </div>
       </div>
       {
-        disabled ? (
-          <Ban className="w-4 h-4" />
-        ): (
+        purchased ? (
+          <p className="text-xs text-[#005F3A]">Purchased</p>
+        ) : (
+          disabled ? (
+            <Ban className="w-4 h-4" />
+          ): (
           <span className={cn("font-medium text-sm", selected ? "text-[#005F3A]" : "text-gray-600")}>
             ${product.price.toLocaleString()}
           </span>
         )
-      }
+      )}
     </button>
   )
 }

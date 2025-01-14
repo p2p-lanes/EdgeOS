@@ -13,11 +13,10 @@ import Snow from '@/components/Animations/Snow'
 
 export default function Home() {
   const [attendees, setAttendees] = useState<AttendeeProps[]>([])
-  const { getRelevantApplication, getProducts } = useCityProvider()
-  const { payments } = useGetData()
+  const { getRelevantApplication } = useCityProvider()
+  const { payments, loading, products } = useGetData()
   const application = getRelevantApplication()
   const router = useRouter()
-  const products = getProducts()
 
   useEffect(() => {
     if(!application) return;
@@ -30,7 +29,8 @@ export default function Home() {
     setAttendees(sortAttendees(application.attendees));
   }, [application])
 
-  if(!application || !products || !payments || products.length === 0) return <Loader/>
+
+  if(!application || !products || !payments || products.length === 0 || loading) return <Loader/>
 
   const discountApplication = application.ticket_category === 'discounted' && application.discount_assigned ? application.discount_assigned : 0
 
