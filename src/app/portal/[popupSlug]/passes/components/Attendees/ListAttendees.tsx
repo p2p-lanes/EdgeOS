@@ -6,13 +6,18 @@ import { useState } from "react"
 import { PlusIcon } from "lucide-react"
 import { AttendeeCard } from "./AttendeeCard"
 import { AttendeeModal } from "./AttendeeModal"
+import { useCityProvider } from "@/providers/cityProvider"
 
 const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
+  const { getCity } = useCityProvider()
   const { addAttendee, removeAttendee, loading, editAttendee } = useAttendee()
   const [open, setOpen] = useState(false)
   const [initialName, setInitialName] = useState("")
   const [initialEmail, setInitialEmail] = useState("")
+  const [category, setCategory] = useState<'spouse' | 'kid'>('spouse')
   const [isEdit, setIsEdit] = useState(false)
+  const city = getCity()
+
 
   const removeAtt = async (id: number) => {
     return removeAttendee(id)
@@ -37,17 +42,19 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
   const handleModal = ({name, email}: {name: string, email: string}) => {
     const id = attendees.find(a => a.name === initialName)?.id
     if(id){
-      return editAtt(id, {name, email: email, category: 'spouse'})
+      return editAtt(id, { name, email: email, category })
     }
-    return addAtt({name, email: email, category: 'spouse'})
+    return addAtt({ name, email: email, category })
   }
 
   const showSpouse = attendees.find(a => a.category === 'spouse')
+  const showKids = attendees.find(a => a.category === 'kid')
 
-  const handleOpen = () => {
+  const handleOpen = (category: 'kid' | 'spouse') => {
     setIsEdit(false)
     setInitialName("")
     setInitialEmail("")
+    setCategory(category)
     setOpen(true)
   }
 
@@ -69,15 +76,24 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
       })}
       <div className="flex gap-2">
         {!showSpouse && (
-          <Button variant="outline" className="" onClick={handleOpen}>
+          <Button variant="outline" onClick={() => handleOpen('spouse')}>
             <PlusIcon className="h-4 w-4" />
             Add Spouse
           </Button>
         )}
-        <Button variant="outline" disabled>
-          <PlusIcon className="h-4 w-4" />
-          Add Kids (soon)
-        </Button>
+        {
+          (city && city?.slug === 'edge-sxsw') ? (
+            <Button variant="outline" disabled={!!showKids} onClick={() => handleOpen('kid')}>
+              <PlusIcon className="h-4 w-4" />
+              Add Kids
+            </Button>
+          ) : (
+            <Button variant="outline" disabled>
+              <PlusIcon className="h-4 w-4" />
+              Add Kids (soon)
+            </Button>
+          )
+        }
         <AttendeeModal onAddAttendee={handleModal} open={open} setOpen={setOpen} initialName={initialName} initialEmail={initialEmail} isEdit={isEdit}/>
       </div>
     </div>

@@ -3,14 +3,12 @@ import { ProductsProps } from "@/types/Products"
 import { useMemo } from "react"
 
 const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean, application: ApplicationProps, products: ProductsProps[]}) => {
-  const productCompare = useMemo(() => products?.[0] || {price: 100, compare_price: 100}, [products])
-
-  const hasProductsDiscount = products.some(p => p.category === 'week')
+  const productCompare = useMemo(() => products.find(p => p.category === 'week' && p.price !== p.compare_price) ?? {price: 100, compare_price: 100}, [products])
 
   const {discount, label} = useMemo(() => {
     if (isPatreon) return {discount: 100, label: 'discount applied'}
 
-    if(application.discount_assigned === 0) return {discount: 0, label: ''}
+    if(application.discount_assigned === 0 && !productCompare) return {discount: 0, label: ''}
 
     if(application.discount_assigned) return {discount: application.discount_assigned, label: 'discount applied'}
 
@@ -19,7 +17,7 @@ const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean,
     
   }, [isPatreon, application, productCompare])
 
-  if(discount === 0 || !hasProductsDiscount) return null
+  if(discount === 0 || !productCompare) return null
 
   return (
     <div className="w-full bg-gradient-to-r from-[#FF7B7B] to-[#E040FB] py-1 relative top-0 left-0">

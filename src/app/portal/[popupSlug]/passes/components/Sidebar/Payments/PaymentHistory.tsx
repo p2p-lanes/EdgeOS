@@ -1,11 +1,12 @@
 import { Card } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { PaymentsProps } from "@/types/passes"
 
 function formatDate(date: string) {
   return new Date(date).toLocaleDateString('en-EN', {day: 'numeric', month: 'numeric', year: 'numeric'})
 }
 
-const PaymentHistory = ({payments}: {payments: any[]}) => {
+const PaymentHistory = ({payments}: {payments: PaymentsProps[]}) => {
   const approvedPayments = payments?.filter(payment => payment.status === 'approved')
 
   if(!approvedPayments || approvedPayments.length === 0){
