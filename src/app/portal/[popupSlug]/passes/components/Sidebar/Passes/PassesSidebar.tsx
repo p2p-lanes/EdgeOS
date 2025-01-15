@@ -11,7 +11,7 @@ import BannerDiscount from "./Components/BannerDiscount"
 import TotalPurchase from "./Components/TotalPurchase"
 import { usePasses } from "../../../hooks/usePasses"
 
-export default function Passes({ 
+export default function PassesSidebar({ 
   products, 
   attendees, 
   onToggleProduct, 

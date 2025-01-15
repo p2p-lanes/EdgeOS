@@ -6,8 +6,8 @@ import PaymentHistory from "./Payments/PaymentHistory"
 import usePostData from "../../hooks/usePostData"
 import { toggleProducts } from "../../helpers/products"
 import { defaultProducts } from "../../helpers/filter"
-import Passes from "./Passes"
 import { PaymentsProps } from "@/types/passes"
+import PassesSidebar from "./Passes/PassesSidebar"
 
 interface TabsContainerProps {
   productsPurchase: ProductsProps[], 
@@ -39,7 +39,7 @@ const TabsContainer = ({productsPurchase, attendees, payments, discount}: TabsCo
       </TabsList>
 
       <TabsContent value="passes">
-        <Passes products={products} attendees={attendees} onToggleProduct={toggleProduct} purchaseProducts={handleClickPurchase} loadingProduct={loadingProduct} />
+        <PassesSidebar products={products} attendees={attendees} onToggleProduct={toggleProduct} purchaseProducts={handleClickPurchase} loadingProduct={loadingProduct} />
       </TabsContent>
 
       <TabsContent value="payment-history">

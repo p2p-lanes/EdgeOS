@@ -11,7 +11,7 @@ import Snow from '@/components/Animations/Snow'
 import TabsContainer from './components/Sidebar/TabsContainer'
 import ListAttendees from './components/Attendees/ListAttendees'
 
-export default function Home() {
+export default function Passes() {
   const [attendees, setAttendees] = useState<AttendeeProps[]>([])
   const { getRelevantApplication } = useCityProvider()
   const { payments, loading, products } = useGetData()
