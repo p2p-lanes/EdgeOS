@@ -38,104 +38,107 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
 
   return (
     <>
-      <SectionWrapper title="Your participation" subtitle="We understand that your plans may change. We are collecting the following information just to get a sense of capacity of each day/week.">
+      <SectionWrapper 
+        title="Your participation" 
+        subtitle="We understand that your plans may change. We are collecting the following information just to get a sense of capacity of each day/week."
+      >
         {
           fields.has('duration') && (
-          <RadioGroupForm
-            label="Duration"
-            subtitle="Please share how long you intend to come."
-            value={formData.duration}
-            onChange={(value) => handleChange('duration', value)}
-            error={errors.duration}
-            isRequired={!isVideoValid}
-            options={durationOptions}
-          />
-        )
-      }
-
-      {
-        fields.has("builder_boolean") && (
-          <>
-            <CheckboxForm
-              label={`Are you a builder/developer interested in creating open-source software at ${city?.name}?`}
-              id="builder_boolean"
-              checked={isBuilder}
-              onCheckedChange={(checked) => {
-                setIsBuilder(checked === true)
-                handleChange('builder_boolean', checked === true)
-              }}
+            <RadioGroupForm
+              label="Duration"
+              subtitle="Please share how long you intend to come."
+              value={formData.duration}
+              onChange={(value) => handleChange('duration', value)}
+              error={errors.duration}
+              isRequired={!isVideoValid}
+              options={durationOptions}
             />
-            <AnimatePresence>
-              {isBuilder && (
-                <motion.div {...animationProps}>
-                  <TextAreaForm
-                    label="Elaborate on your role as a builder/developer if you said yes."
-                    id="builder_description"
-                    value={formData.builder_description ?? ''}
-                    error={errors.builder_description}
-                    handleChange={(value) => handleChange('builder_description', value)}
-                    isRequired={!isVideoValid}
-                  />
-                </motion.div>
-              )}
-            </AnimatePresence>
-        </>  
-      )}
+          )
+        }
 
-      {
-        fields.has("hackathon_interest") && (
-          <CheckboxForm
-            label={`We will have a hackathon at ${city?.name}. Do you think you’ll want to take part?`}
-            id="hackathon_interest"
-            checked={formData.hackathon_interest || false}
-            onCheckedChange={(checked) => handleChange('hackathon_interest', checked === true)}
-          />
-        )
-      }
+        {
+          fields.has("builder_boolean") && (
+            <>
+              <CheckboxForm
+                label={`Are you a builder/developer interested in creating open-source software at ${city?.name}?`}
+                id="builder_boolean"
+                checked={isBuilder}
+                onCheckedChange={(checked) => {
+                  setIsBuilder(checked === true)
+                  handleChange('builder_boolean', checked === true)
+                }}
+              />
+              <AnimatePresence>
+                {isBuilder && (
+                  <motion.div {...animationProps}>
+                    <TextAreaForm
+                      label="Elaborate on your role as a builder/developer if you said yes."
+                      id="builder_description"
+                      value={formData.builder_description ?? ''}
+                      error={errors.builder_description}
+                      handleChange={(value) => handleChange('builder_description', value)}
+                      isRequired={!isVideoValid}
+                    />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+          </>  
+        )}
 
-      {
-        fields.has("investor") && (
-          <CheckboxForm
-            label="Are you a venture capitalist / investor coming to source deals?"
-            id="investor"
-            checked={formData.investor || false}
-            onCheckedChange={(checked) => handleChange('investor', checked === true)}
-          />
-        )
-      }
+        {
+          fields.has("hackathon_interest") && (
+            <CheckboxForm
+              label={`We will have a hackathon at ${city?.name}. Do you think you’ll want to take part?`}
+              id="hackathon_interest"
+              checked={formData.hackathon_interest || false}
+              onCheckedChange={(checked) => handleChange('hackathon_interest', checked === true)}
+            />
+          )
+        }
 
-      {
-        fields.has("video_url") && (
-          <CardVideo videoUrl={formData.video_url} setVideoUrl={(url) => handleChange('video_url', url)} />
-        )
-      }
+        {
+          fields.has("investor") && (
+            <CheckboxForm
+              label="Are you a venture capitalist / investor coming to source deals?"
+              id="investor"
+              checked={formData.investor || false}
+              onCheckedChange={(checked) => handleChange('investor', checked === true)}
+            />
+          )
+        }
 
-      {
-        fields.has("personal_goals") && (
-          <TextAreaForm
-            label={`What are your goals in attending ${city?.name}?`}
-            id="goals"
-            value={formData.personal_goals ?? ''}
-            error={errors.personal_goals}
-            handleChange={(value) => handleChange('personal_goals', value)}
-          />
-        )
-      }
+        {
+          fields.has("video_url") && (
+            <CardVideo videoUrl={formData.video_url} setVideoUrl={(url) => handleChange('video_url', url)} />
+          )
+        }
 
-      {
-        fields.has("host_session") && (
-          <TextAreaForm
-            label={`What topic would you choose if you were to host a session for ${city?.name}?`}
-            subtitle="This is just to get a sense of the topics you're interested in."
-            id="host_session"
-            value={formData.host_session ?? ''}
-            error={errors.host_session}
-            handleChange={(value) => handleChange('host_session', value)}
-          />
-        )
-      }
-      
+        {
+          fields.has("personal_goals") && (
+            <TextAreaForm
+              label={`What are your goals in attending ${city?.name}?`}
+              id="goals"
+              value={formData.personal_goals ?? ''}
+              error={errors.personal_goals}
+              handleChange={(value) => handleChange('personal_goals', value)}
+            />
+          )
+        }
+
+        {
+          fields.has("host_session") && (
+            <TextAreaForm
+              label={`What topic would you choose if you were to host a session for ${city?.name}?`}
+              subtitle="This is just to get a sense of the topics you're interested in."
+              id="host_session"
+              value={formData.host_session ?? ''}
+              error={errors.host_session}
+              handleChange={(value) => handleChange('host_session', value)}
+            />
+          )
+        }
       </SectionWrapper>
+
       <SectionSeparator />
     </>
   )

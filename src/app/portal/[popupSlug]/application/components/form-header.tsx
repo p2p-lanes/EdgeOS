@@ -1,29 +1,16 @@
 'use client'
 
 import { useCityProvider } from "@/providers/cityProvider"
-import SectionWrapper from "./SectionWrapper"
 import { CalendarDays, MapPin } from "lucide-react"
-import { useEffect } from "react"
-import useWindow from "@/hooks/useWindow"
-import { useState } from "react"
 
 export function FormHeader() {
-  const { isClient } = useWindow()
   const { getCity } = useCityProvider()
   const city = getCity()
 
-  const [calendarDays, setCalendarDays] = useState('')
-
-  useEffect(() => {
-    if(!isClient || !city?.start_date || !city?.end_date) return
-
-    const startDate = new Date(city.start_date).toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
-    const endDate = new Date(city.end_date).toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
-    const calendarDays = startDate + ' - ' + endDate
-    setCalendarDays(calendarDays)
-  }, [city?.start_date, city?.end_date, isClient])
-
   if(!city) return null
+
+  const startDate = new Date(city.start_date)?.toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
+  const endDate = new Date(city.end_date)?.toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
 
   return (
     <div className="flex gap-6 space-y-6">
@@ -49,10 +36,10 @@ export function FormHeader() {
           )
         }
         {
-          city.start_date && (
+          (startDate && endDate) && (
             <div className="flex items-center text-sm text-muted-foreground mb-4">
               <CalendarDays className="mr-2 h-4 w-4" />
-              {calendarDays}
+              {startDate + ' - ' + endDate}
             </div>
           )
         }
