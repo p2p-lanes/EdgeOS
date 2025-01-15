@@ -26,9 +26,20 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
     transition: { duration: 0.3, ease: "easeInOut" }
   };
 
+  if(!fields?.has('scholarship_request')) return null
+
+  const startDate = new Date(city?.start_date ?? '').toLocaleDateString('en-EN', {day: 'numeric', month: 'long'})
+  const endDate = new Date(city?.end_date ?? '').toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
+
   return (
     <>
-      <SectionWrapper title={`${city?.name} scholarship`} subtitle={`Fill out this section if you are interested in securing one of a limited number of scholarships for ${city?.name}. We are prioritizing scholars who apply for the full experience (May 24 - June 21, 2025).`}>  
+      <SectionWrapper 
+        title={`${city?.name} scholarship`} 
+        subtitle={
+          `Fill out this section if you are interested in securing one of a limited number of scholarships for ${city?.name}. 
+          We are prioritizing scholars who apply for the full experience${startDate && endDate ? ` (${startDate} - ${endDate}).` : '.'}`
+        }
+      >  
 
         {
           fields?.has('scholarship_request') && (
@@ -68,7 +79,7 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
                     />
                   )
                 }
-                
+
                 {
                   fields?.has('scholarship_video_url') && (
                     <InputForm
