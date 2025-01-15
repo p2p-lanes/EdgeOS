@@ -10,16 +10,13 @@ const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean,
   const {discount, label} = useMemo(() => {
     if (isPatreon) return {discount: 100, label: 'discount applied'}
 
-    if(application.ticket_category === 'discounted' && application.discount_assigned ){
-      return {discount: application.discount_assigned, label: 'discount applied'}
-    }
+    if(application.discount_assigned === 0) return {discount: 0, label: ''}
 
-    if(application.ticket_category === 'standard'){
-      const discount = 100 - ((productCompare.price ?? 0) / (productCompare.compare_price ?? 0) * 100)
-      return {discount: Math.round(discount), label: 'early bird discount'}
-    }
+    if(application.discount_assigned) return {discount: application.discount_assigned, label: 'discount applied'}
 
-    return {discount: 0, label: ''}
+    const discount = 100 - ((productCompare.price ?? 0) / (productCompare.compare_price ?? 0) * 100)
+    return {discount: Math.round(discount), label: 'early bird discount'}
+    
   }, [isPatreon, application, productCompare])
 
   if(discount === 0 || !hasProductsDiscount) return null

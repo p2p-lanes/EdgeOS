@@ -32,14 +32,12 @@ export default function Home() {
 
   if(!application || !products || !payments || products.length === 0 || loading) return <Loader/>
 
-  const discountApplication = application.ticket_category === 'discounted' && application.discount_assigned ? application.discount_assigned : 0
-
   return (
     <div className="p-4 w-full mx-auto relative">
       {/* <Snow /> */}
       <div className="grid grid-cols-1 xl:grid-cols-[50%,50%] gap-6 relative z-10">
         <ListAttendees attendees={attendees}/>
-        <TabsContainer productsPurchase={products} attendees={attendees} payments={payments} discount={discountApplication}/>
+        <TabsContainer productsPurchase={products} attendees={attendees} payments={payments} discount={application.discount_assigned || 0}/>
       </div>
     </div>
   )
