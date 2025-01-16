@@ -1,7 +1,7 @@
 import * as React from "react"
 import { useIsMobile } from "@/hooks/useIsMobile"
 
-export type EventStatus = 'not_started' | 'draft' | 'in review' | 'accepted'
+export type EventStatus = 'not_started' | 'draft' | 'in review' | 'accepted' | 'rejected'
 
 interface EventProgressBarProps {
   status: EventStatus
@@ -14,7 +14,8 @@ const statusColor = (status: string) => {
 }
 
 export function EventProgressBar({ status }: EventProgressBarProps) {
-  const stages: EventStatus[] = ['not_started', 'draft', 'in review', 'accepted']
+  const stages = ['not_started', 'draft', 'in review', status === 'accepted' ? 'accepted' : 'rejected']
+    
   const currentStageIndex = stages.indexOf(status)
   const progress = (currentStageIndex / (stages.length - 1)) * 100
   const isMobile = useIsMobile()
@@ -24,7 +25,7 @@ export function EventProgressBar({ status }: EventProgressBarProps) {
     'draft': 'Draft',
     'in review': 'Application submitted',
     'accepted': 'Application accepted',
-    // 'ticket_purchased': 'Ticket Purchased'
+    'rejected': 'Application rejected',
   }
 
   const statusLabel = status === 'not_started' ? 'Not started' : stageLabels[status]
@@ -40,9 +41,18 @@ export function EventProgressBar({ status }: EventProgressBarProps) {
       <div className="relative">
         <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
           <div 
-            className="h-full bg-green-500 transition-all duration-300 ease-in-out" 
+            className="h-full transition-all duration-300 ease-in-out bg-green-500"
             style={{ width: `${progress}%` }}
           />
+          {status === 'rejected' && (
+            <div 
+              className="h-full absolute top-0 bg-red-500 transition-all duration-300 ease-in-out"
+              style={{ 
+                width: `${96 / (stages.length - 1)}%`,
+                left: `${(stages.length - 2) / (stages.length - 1) * 100}%`
+              }}
+            />
+          )}
         </div>
         <div className="absolute top-0 left-0 w-full flex justify-between">
           {stages.map((stage, index) => (
@@ -50,9 +60,9 @@ export function EventProgressBar({ status }: EventProgressBarProps) {
               key={stage} 
               className={`w-4 h-4 rounded-full -mt-1 border-2 border-white ${
                 currentStageIndex > index 
-                  ? 'bg-green-500' 
+                  ? 'bg-green-500'
                   : currentStageIndex === index && index !== 0
-                    ? 'bg-green-500'
+                    ? (status === 'rejected' && index === stages.length - 1) ? 'bg-red-500' : 'bg-green-500'
                     : 'bg-gray-200'
               }`}
             />
@@ -71,7 +81,7 @@ export function EventProgressBar({ status }: EventProgressBarProps) {
             }}
           >
             <span className={status === stage ? 'font-bold' : ''}>
-              {stageLabels[stage]}
+              {stageLabels[stage as keyof typeof stageLabels]}
             </span>
           </div>
         ))}

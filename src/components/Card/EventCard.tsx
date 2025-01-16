@@ -5,6 +5,7 @@ import { CardAnimation, CardContent } from "@/components/ui/card"
 import { ButtonAnimated } from "@/components/ui/button"
 import { EventProgressBar, EventStatus } from './EventProgressBar'
 import { PopupsProps } from '@/types/Popup'
+import { Badge } from '../ui/badge'
 
 interface EventCardProps extends PopupsProps {
   status?: EventStatus
@@ -22,6 +23,7 @@ export function EventCard({ name, tagline, location, start_date, end_date, image
     <CardAnimation anim={'entry'} duration={0.6} className="w-full overflow-hidden">
       <div className="flex flex-col sm:flex-row">
         <div className="relative sm:h-auto sm:hidden lg:inline-block lg:w-1/3">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={image_url ?? "https://cdn.prod.website-files.com/67475a01312f8d8225a6b46e/6751bf69596d8a1e1a99d291_half-banner-min.jpg"}
             alt={name}
@@ -45,14 +47,16 @@ export function EventCard({ name, tagline, location, start_date, end_date, image
                 <div className="my-6">
                   <EventProgressBar status={status} />
                 </div>
-                <div className="flex items-end justify-end sm:justify-end">
-                  <ButtonAnimated onClick={onApply} className='w-full md:w-auto px-9'>
-                    {status === 'not_started' ? 'Apply' : 
-                    status === 'draft' ? 'Continue Application' :
-                    status === 'in review' ? 'Edit Application' :
-                    status === 'accepted' ? 'Go to Passes' : 'Modify Ticket'}
-                  </ButtonAnimated>
-                </div>
+                {status !== 'rejected' && (
+                  <div className="flex items-end justify-end sm:justify-end">
+                    <ButtonAnimated onClick={onApply} className='w-full md:w-auto px-9'>
+                      {status === 'not_started' ? 'Apply' : 
+                      status === 'draft' ? 'Continue Application' :
+                      status === 'in review' ? 'Edit Application' :
+                      status === 'accepted' ? 'Go to Passes' : 'Modify Ticket'}
+                    </ButtonAnimated>
+                  </div>
+                )}
               </>
             ) : status === 'accepted' ? (
               <div  className="flex items-end justify-end sm:justify-end">

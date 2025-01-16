@@ -31,6 +31,7 @@ export const edgeEsmeralda: DynamicForm = {
     "social_media",
     "duration",
     "builder_boolean",
+    "builder_description",
     "hackathon_interest",
     "investor",
     "video_url",

@@ -9,6 +9,7 @@ import CardVideo from "./CardVideo"
 import TextAreaForm from "@/components/ui/Form/TextArea"
 import { SectionSeparator } from "./section-separator"
 import { useCityProvider } from "@/providers/cityProvider"
+import { dynamicForm } from "@/constants"
 
 const fieldsParticipation = ["duration", "builder_boolean", "builder_description", "hackathon_interest", "investor", "video_url", "personal_goals", "host_session"]
 
@@ -18,6 +19,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
   const { getCity } = useCityProvider()
   const city = getCity()
 
+  const form = dynamicForm[city?.slug ?? '']
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -39,8 +41,8 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
   return (
     <>
       <SectionWrapper 
-        title="Your participation" 
-        subtitle="We understand that your plans may change. We are collecting the following information just to get a sense of capacity of each day/week."
+        title={form?.participation?.title ?? 'Your participation'} 
+        subtitle={form?.participation?.subtitle ?? 'We understand that your plans may change. We are collecting the following information just to get a sense of capacity of each day/week.'}
       >
         {
           fields.has('duration') && (
@@ -69,7 +71,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
                 }}
               />
               <AnimatePresence>
-                {isBuilder && (
+                {isBuilder && fields.has("builder_description") && (
                   <motion.div {...animationProps}>
                     <TextAreaForm
                       label="Elaborate on your role as a builder/developer if you said yes."
