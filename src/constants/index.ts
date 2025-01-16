@@ -1,6 +1,6 @@
 import { edgeEsmeralda } from "./Forms/edge-esmeralda";
 import { edgeSa } from "./Forms/edge-sa";
-import { edgeSxsw } from "./Forms/edge-sxsw";
+import { edgeAustin } from "./Forms/edge-austin";
 
 export type DynamicForm = {
   local?: string,
@@ -10,6 +10,6 @@ export type DynamicForm = {
 
 export const dynamicForm: Record<string, DynamicForm | null> = {
   "edge-esmeralda": edgeEsmeralda,
-  "edge-sxsw": edgeSxsw,
+  "edge-austin": edgeAustin,
   'edge-sa': edgeSa
 }
