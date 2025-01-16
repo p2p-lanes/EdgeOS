@@ -12,7 +12,9 @@ const OptionsNotShared = [
 
 export const edgeEsmeralda: DynamicForm = {
   local: 'Sonoma County',
-  scolarship_subtitle: 'We understand that some folks will need financial assistance to attend, and have other ways to contribute beyond financial support. We have limited numbers of discounted tickets to allocate. Please elaborate on why you’re applying, and what your contribution might be. We estimate roughly a 10 hour/week volunteer effort from folks who gets scholarships.',
+  scholarship: {
+    interest_text: 'We understand that some folks will need financial assistance to attend, and have other ways to contribute beyond financial support. We have limited numbers of discounted tickets to allocate. Please elaborate on why you’re applying, and what your contribution might be. We estimate roughly a 10 hour/week volunteer effort from folks who gets scholarships.',
+  },
   fields: [
     "first_name",
     "last_name",

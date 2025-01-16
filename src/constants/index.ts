@@ -4,7 +4,12 @@ import { edgeAustin } from "./Forms/edge-austin";
 
 export type DynamicForm = {
   local?: string,
-  scolarship_subtitle?: string,
+  scholarship?: {
+    title?: string,
+    subtitle?: string,
+    interest_text?: string,
+    scholarship_request?: string,
+  },
   fields: string[]
 }
 
