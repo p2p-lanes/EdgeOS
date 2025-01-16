@@ -17,7 +17,6 @@ export default function Home() {
   
   if(!city && !relevantApplication) return null
 
-  
   const onClickApply = () => {
     if(relevantApplication?.status === 'accepted') {
       router.push(`/portal/${city?.slug}/passes`)
