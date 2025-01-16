@@ -48,6 +48,7 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
   }
 
   const showSpouse = attendees.find(a => a.category === 'spouse')
+  const showKid = attendees.find(a => a.category === 'kid')
 
   const handleOpen = (category: 'kid' | 'spouse') => {
     setIsEdit(false)
@@ -82,7 +83,7 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
         )}
         {
           (city && city?.slug === 'edge-austin') ? (
-            <Button variant="outline" onClick={() => handleOpen('kid')}>
+            <Button variant="outline" disabled={!!showKid} onClick={() => handleOpen('kid')}>
               <PlusIcon className="h-4 w-4" />
               Add Kids
             </Button>
