@@ -11,12 +11,11 @@ import BannerDiscount from "./Components/BannerDiscount"
 import TotalPurchase from "./Components/TotalPurchase"
 import { usePasses } from "../../../hooks/usePasses"
 
-export default function PassesSidebar({ 
-  products, 
+export default function PassesSidebar({
   attendees, 
   onToggleProduct, 
   purchaseProducts, 
-  loadingProduct 
+  loading 
 }: PassesProps) {
   const { getRelevantApplication, getCity } = useCityProvider()
   const application = getRelevantApplication()
@@ -29,7 +28,7 @@ export default function PassesSidebar({
     mainAttendee,
     disabledPurchase,
     specialPurchase
-  } = usePasses(products, attendees)
+  } = usePasses(attendees)
 
   return (
     <Card className="p-6 space-y-4">
@@ -47,7 +46,7 @@ export default function PassesSidebar({
           key={attendee.id}
           attendee={attendee}
           index={index}
-          products={products}
+          products={attendee.products}
           onToggleProduct={onToggleProduct}
         />
       ))}
@@ -71,7 +70,7 @@ export default function PassesSidebar({
         </div>
       )}
       
-      <BannerDiscount 
+      {/* <BannerDiscount 
         isPatreon={(specialProduct?.selected && specialProduct?.category === 'patreon') ?? false} 
         application={application} 
         products={products} 
@@ -81,11 +80,11 @@ export default function PassesSidebar({
         total={total} 
         products={products} 
         hasSelectedWeeks={hasSelectedWeeks}
-      />
+      /> */}
 
       <ButtonAnimated 
-        disabled={disabledPurchase || loadingProduct} 
-        loading={loadingProduct} 
+        disabled={disabledPurchase || loading} 
+        loading={loading} 
         className="w-full text-white" 
         onClick={purchaseProducts}
       >
