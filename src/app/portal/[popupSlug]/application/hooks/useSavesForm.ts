@@ -49,7 +49,7 @@ const useSavesForm = () => {
       toast.success("Application Submitted", {
         description: "Your application has been successfully submitted.",
       })
-      router.push('/portal')
+      router.push(`/portal/${city?.slug}`)
     }).catch(() => {
       toast.error("Error Submitting Application", {
         description: "There was an error submitting your application. Please try again.",
