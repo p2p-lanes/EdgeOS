@@ -23,13 +23,8 @@ export default function Home() {
     console.log('application', application)
     if(application === null) return;
 
-    if(application === undefined){
+    if(application === undefined || application.status !== 'accepted'){
       router.replace(`/portal/${params.popupSlug}/application`)
-      return;
-    }
-
-    if(application.status !== 'accepted'){
-      router.replace('./')
       return;
     }
 

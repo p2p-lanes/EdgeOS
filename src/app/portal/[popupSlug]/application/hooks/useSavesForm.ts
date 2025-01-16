@@ -22,7 +22,7 @@ const useSavesForm = () => {
   }
 
   const handleSaveForm = async (formData: Record<string, unknown>) => {
-    if(!city || !user) return
+    if(!city || !user || !applications) return
 
     const data = {
       ...formData,
@@ -58,7 +58,7 @@ const useSavesForm = () => {
   }
 
   const handleSaveDraft = async (formData: Record<string, unknown>) => {
-    if(!city || !user) return
+    if(!city || !user || !applications) return
 
     const data = {
       ...formData,

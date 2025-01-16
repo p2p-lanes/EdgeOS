@@ -2,13 +2,16 @@ import { ApplicationProps } from "@/types/Application"
 import { ProductsProps } from "@/types/Products"
 import { useMemo } from "react"
 
-const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean, application: ApplicationProps, products: ProductsProps[]}) => {
+
+const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean, application: ApplicationProps | null, products: ProductsProps[]}) => {
+
+
   const productCompare = useMemo(() => products.find(p => p.category === 'week' && p.price !== p.compare_price) ?? {price: 100, compare_price: 100}, [products])
 
   const {discount, label} = useMemo(() => {
     if (isPatreon) return {discount: 100, label: 'discount applied'}
     
-    if(!application.discount_assigned && !productCompare.compare_price) return {discount: 0, label: ''}
+    if(!application || !application.discount_assigned && !productCompare.compare_price) return {discount: 0, label: ''}
     
     if(application.discount_assigned) return {discount: application.discount_assigned, label: 'discount applied'}
     
@@ -17,7 +20,6 @@ const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean,
     
   }, [isPatreon, application, productCompare])
   
-  console.log('productCompare', application.discount_assigned, productCompare.compare_price)
   if(discount === 0 || !productCompare) return null
 
   return (
