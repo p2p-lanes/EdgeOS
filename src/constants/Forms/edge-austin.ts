@@ -20,8 +20,8 @@ export const edgeAustin: DynamicForm = {
     "age",
     "telegram",
     "residence",
-    // "builder_boolean",
-    // "scholarship_request",
-    // "is_renter"
+    "builder_boolean",
+    "scholarship_request",
+    "is_renter"
   ]
 }
