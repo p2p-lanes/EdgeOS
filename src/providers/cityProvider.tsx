@@ -1,4 +1,5 @@
 import { ApplicationProps } from '@/types/Application';
+import { AttendeeProps } from '@/types/Attendee';
 import { PopupsProps } from '@/types/Popup';
 import { ProductsProps } from '@/types/Products';
 import { useParams, useRouter } from 'next/navigation';
@@ -12,27 +13,16 @@ interface CityContext_interface {
   getPopups: () => PopupsProps[];
   setPopups: (popups: PopupsProps[]) => void;
   updateApplication: (application: ApplicationProps) => void;
-  getProducts: () => ProductsProps[]
-  setProducts: (products: ProductsProps[]) => void
+  getAttendees: () => AttendeeProps[];
 }
 
 export const CityContext = createContext<CityContext_interface | null>(null);
 
 
 const CityProvider = ({ children }: {children: ReactNode}) => {
-  const [products, setProductsState] = useState<ProductsProps[]>([])
   const [applications, setApplicationsState] = useState<ApplicationProps[]>([]);
   const [popups, setPopupsState] = useState<PopupsProps[]>([]);
   const params = useParams()
-
-
-  const setProducts = (products: ProductsProps[]) => {
-    setProductsState(products)
-  }
-
-  const getProducts = () => {
-    return products
-  }
 
   const getApplications = (): ApplicationProps[] => {
     return applications
@@ -71,9 +61,13 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
     setPopupsState(sortedPopups);
   }
 
-  const updateApplication = (application: ApplicationProps) => {
+  const updateApplication = (application: ApplicationProps): void => {
     const newApps = applications.filter(ap => ap.id !== application.id)
     setApplications([...newApps, application])
+  }
+
+  const getAttendees = (): AttendeeProps[] => {
+    return getRelevantApplication()?.attendees || [];
   }
 
   return (
@@ -85,8 +79,7 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
       getPopups,
       setPopups,
       updateApplication,
-      getProducts,
-      setProducts
+      getAttendees
     }}>
       {children}
     </CityContext.Provider>

@@ -8,7 +8,7 @@ export interface AttendeeProps {
   email: string;
   category: AttendeeCategory;
   application_id: number;
-  products?: ProductsProps[]
+  products: ProductsProps[]
 }
 
 export interface CreateAttendee {

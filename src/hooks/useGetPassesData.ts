@@ -4,7 +4,7 @@ import { PaymentsProps } from "@/types/passes"
 import { ProductsProps } from "@/types/Products"
 import { useEffect, useState } from "react"
 
-const useGetData = () => {
+const useGetPassesData = () => {
   const [loading, setLoading] = useState(false)
   const [payments, setPayments] = useState<PaymentsProps[]>([])
   const [products, setProducts] = useState<ProductsProps[]>([])
@@ -47,4 +47,4 @@ const useGetData = () => {
 
   return ({payments, products, loading})
 }
-export default useGetData
+export default useGetPassesData

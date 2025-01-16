@@ -8,8 +8,8 @@ import { AttendeeCard } from "./AttendeeCard"
 import { AttendeeModal } from "./AttendeeModal"
 import { useCityProvider } from "@/providers/cityProvider"
 
-const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
-  const { getCity } = useCityProvider()
+const ListAttendees = () => {
+  const { getCity, getRelevantApplication } = useCityProvider()
   const { addAttendee, removeAttendee, loading, editAttendee } = useAttendee()
   const [open, setOpen] = useState(false)
   const [initialName, setInitialName] = useState("")
@@ -17,7 +17,7 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
   const [category, setCategory] = useState<'spouse' | 'kid'>('spouse')
   const [isEdit, setIsEdit] = useState(false)
   const city = getCity()
-
+  const attendees = getRelevantApplication()?.attendees || []
 
   const removeAtt = async (id: number) => {
     return removeAttendee(id)
