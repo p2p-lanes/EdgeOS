@@ -175,6 +175,6 @@ const getButtonClasses = ({ disabled, selected, purchased, product }: ButtonClas
     disabled && "bg-gray-200 hover:bg-gray-200 text-gray-600 cursor-default border-gray-300",
     selected && "bg-[#D5F7CC] hover:bg-[#D5F7CC] text-[#005F3A] border-[#16a34a]",
     purchased && "bg-[#f1ffed] hover:bg-[#f1ffed] text-[#005F3A] border-[transparent]",
-    product.exclusive && "sm:col-span-2 3xl:col-span-3"
+    (product.exclusive || product.attendee_category === 'kid') && "sm:col-span-2 3xl:col-span-3"
   );
 };

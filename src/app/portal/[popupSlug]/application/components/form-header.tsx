@@ -13,16 +13,17 @@ export function FormHeader() {
   const endDate = new Date(city.end_date)?.toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
 
   return (
-    <div className="flex gap-6 space-y-6">
+    <div className="flex flex-col md:flex-row gap-6 space-y-6">
       <div className="flex items-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={city.image_url}
           alt={city.name}
-          style={{height: 'auto' }}
-          className="w-full md:w-[20vw] md:max-w-[240px] dark:invert rounded-2xl"
+          style={{height: 'auto'}}
+          className="w-full md:min-h-[180px] md:w-[20vw] md:max-w-[240px] dark:invert rounded-2xl"
         />
       </div>
-      <div className="space-y-3">
+      <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">{city.name} Application</h1>
         <p className="text-md text-muted-foreground">
           {city.tagline}

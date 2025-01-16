@@ -5,9 +5,12 @@ import { ButtonAnimated } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { api } from '@/api'
 import { motion } from 'framer-motion'
+import { useSearchParams } from 'next/navigation'
 
 export default function AuthForm() {
   const [isMounted, setIsMounted] = useState(false)
+  const params = useSearchParams()
+  const popupSlug = params.get('popup')
 
   useEffect(() => {
     setIsMounted(true)
@@ -36,7 +39,7 @@ export default function AuthForm() {
     setIsValidEmail(true)
     setIsLoading(true)
     
-    api.post(`citizens/authenticate`, {email: encodeURIComponent(email)}).then(() => {
+    api.post(`citizens/authenticate`, {email: encodeURIComponent(email), popup_slug: popupSlug ?? null}).then(() => {
       setIsLoading(false)
       setMessage('Check your email inbox for the log in link')
     })
@@ -56,6 +59,7 @@ export default function AuthForm() {
           transition={{ duration: 4, repeat: Infinity, repeatType: 'loop', ease: 'easeIn' }}
           className="relative aspect-square w-24 mx-auto mb-8"
         >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src="https://cdn.prod.website-files.com/67475a01312f8d8225a6b46e/6751bee327618c09459204bb_floatin%20city%20-%20icon-min.png"
             alt="EdgeCity illustration"

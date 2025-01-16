@@ -1,3 +1,5 @@
+import { DynamicForm } from ".."
+
 const OptionsNotShared = [
   { value: "First name", label: "First name" },
   { value: "Last name", label: "Last name" },
@@ -8,11 +10,11 @@ const OptionsNotShared = [
   { value: "Whether or not I'm bringing kids", label: "Whether or not I'm bringing kids" },
 ]
 
-export type DynamicForm = {
-  fields: string[]
-}
-
 export const edgeEsmeralda: DynamicForm = {
+  local: 'Sonoma County',
+  scholarship: {
+    interest_text: 'We understand that some folks will need financial assistance to attend, and have other ways to contribute beyond financial support. We have limited numbers of discounted tickets to allocate. Please elaborate on why you’re applying, and what your contribution might be. We estimate roughly a 10 hour/week volunteer effort from folks who gets scholarships.',
+  },
   fields: [
     "first_name",
     "last_name",
