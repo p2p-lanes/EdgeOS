@@ -1,11 +1,12 @@
 import { api } from "@/api"
 import { useCityProvider } from "@/providers/cityProvider"
+import { PaymentsProps } from "@/types/passes"
 import { ProductsProps } from "@/types/Products"
 import { useEffect, useState } from "react"
 
 const useGetData = () => {
   const [loading, setLoading] = useState(false)
-  const [payments, setPayments] = useState<any[]>([])
+  const [payments, setPayments] = useState<PaymentsProps[]>([])
   const [products, setProducts] = useState<ProductsProps[]>([])
   const { getCity, getRelevantApplication } = useCityProvider()
   

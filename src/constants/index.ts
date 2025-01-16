@@ -1,8 +1,20 @@
-import { DynamicForm, edgeEsmeralda } from "./Forms/edge-esmeralda";
-import { edgeSxsw } from "./Forms/edge-sxsw";
+import { edgeEsmeralda } from "./Forms/edge-esmeralda";
+import { edgeSa } from "./Forms/edge-sa";
+import { edgeAustin } from "./Forms/edge-austin";
+
+export type DynamicForm = {
+  local?: string,
+  scholarship?: {
+    title?: string,
+    subtitle?: string,
+    interest_text?: string,
+    scholarship_request?: string,
+  },
+  fields: string[]
+}
 
 export const dynamicForm: Record<string, DynamicForm | null> = {
   "edge-esmeralda": edgeEsmeralda,
-  "edge-sxsw": edgeSxsw,
-  'edge-sa': null
+  "edge-austin": edgeAustin,
+  'edge-sa': edgeSa
 }

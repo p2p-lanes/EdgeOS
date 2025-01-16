@@ -24,7 +24,7 @@ const SectionWrapper = ({ children, className = "", title, subtitle }: SectionWr
         duration: 0.6,
         ease: "backOut",
       }}
-      className={`grid gap-10 lg:grid-cols-[260px,1fr] pb-12 ${className}`}
+      className={`grid gap-10 xl:grid-cols-[260px,1fr] pb-12 ${className}`}
     >
       <div className="space-y-1">
         <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>

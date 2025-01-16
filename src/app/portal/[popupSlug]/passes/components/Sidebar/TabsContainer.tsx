@@ -7,11 +7,12 @@ import usePostData from "../../hooks/usePostData"
 import { toggleProducts } from "../../helpers/products"
 import { defaultProducts } from "../../helpers/filter"
 import Passes from "./Passes"
+import { PaymentsProps } from "@/types/passes"
 
 interface TabsContainerProps {
   productsPurchase: ProductsProps[], 
   attendees: AttendeeProps[], 
-  payments: any[],
+  payments: PaymentsProps[],
   discount: number
 }
 

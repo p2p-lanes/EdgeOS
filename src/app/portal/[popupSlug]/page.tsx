@@ -17,8 +17,7 @@ export default function Home() {
   
   if(!city && !relevantApplication) return null
 
-  const canApply = !!(city && city.slug && dynamicForm[city.slug] !== null)
-
+  
   const onClickApply = () => {
     if(relevantApplication?.status === 'accepted') {
       router.push(`/portal/${city?.slug}/passes`)
@@ -27,9 +26,11 @@ export default function Home() {
     setIsLoading(true)
     router.push(`/portal/${city?.slug}/application`)
   }
-
+  
   if(isLoading) return <Loader />
-
+  
+  const canApply = dynamicForm[city?.slug ?? ''] !== null
+  
   return (
     <section className="container mx-auto px-4 py-8">
       <div className="space-y-6">

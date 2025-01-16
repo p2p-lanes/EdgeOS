@@ -17,7 +17,7 @@ export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: Attend
   const { email, name, category } = attendee
   const initials = name.split(' ').map(n => n[0]).slice(0,2).join('').toUpperCase()
 
-  const isSpouse = category === "spouse";
+  const enableDelete = category === "spouse" || category === "kid";
   const hasProducts = attendee.products && attendee.products.length > 0
 
   return (
@@ -41,7 +41,7 @@ export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: Attend
             </Button>
           )
         }
-        {(isSpouse && onDelete) && (
+        {(enableDelete && onDelete) && (
           <Button
             variant="ghost"
             size="icon"

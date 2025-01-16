@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { SectionProps } from "@/types/Section";
 import { SectionSeparator } from "./section-separator";
 import { useCityProvider } from "@/providers/cityProvider";
+import { dynamicForm } from "@/constants";
 
 
 const shareableInfo = [
@@ -148,16 +149,16 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
         )}
       </div>
 
-      <div style={{ marginTop: '24px' }}>
-        {fields.has("local_resident") && (
+      {fields.has("local_resident") && (
+        <div style={{ marginTop: '24px' }}>
           <CheckboxForm
-            label="Are you a Sonoma County local?"
+            label={`Are you a ${dynamicForm[city?.slug ?? '']?.local} local?`}
             id="local_resident"
             checked={formData.local_resident || false}
             onCheckedChange={(checked: boolean) => handleChange('local_resident', checked === true)}
           />
-        )}
-      </div>
+        </div>
+      )}
 
       {fields.has("info_not_shared") && (
         <FormInputWrapper>

@@ -1,16 +1,6 @@
 import { AttendeeProps } from "@/types/Attendee";
 import { ProductsPass, ProductsProps } from "@/types/Products";
 
-export const sortAttendees = (attendees: AttendeeProps[]) => {
-  return attendees.sort((a, b) => {
-      if (a.category === 'main') return -1;
-      if (b.category === 'main') return 1;
-      if (a.category === 'spouse') return -1;
-      if (b.category === 'spouse') return 1;
-      return 0;
-    });
-}
-
 export const defaultProducts = (products: ProductsProps[], attendees: AttendeeProps[], discount: number): ProductsPass[] => {
   const mainAttendee = attendees.find(a => a.category === 'main') ?? { id: 0, products: [] }
 
@@ -29,4 +19,14 @@ export const defaultProducts = (products: ProductsProps[], attendees: AttendeePr
       }
       return {...p, original_price: p.price}
     }) as ProductsPass[]
+}
+
+export const sortAttendees = (attendees: AttendeeProps[]) => {
+  return attendees.sort((a, b) => {
+      if (a.category === 'main') return -1;
+      if (b.category === 'main') return 1;
+      if (a.category === 'spouse') return -1;
+      if (b.category === 'spouse') return 1;
+      return 0;
+    });
 }
