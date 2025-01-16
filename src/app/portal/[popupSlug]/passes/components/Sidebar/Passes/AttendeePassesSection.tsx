@@ -4,10 +4,10 @@ import { AttendeePassesProps } from "@/types/passes"
 import Standard from "./Products/Standard"
 import Month from "./Products/Month"
 
-export const AttendeePassesSection = ({attendee, index, products, onToggleProduct}: AttendeePassesProps) => {
-  const monthProduct = products.find(p => p.attendee_category === attendee.category && p.category === 'month')
+export const AttendeePassesSection = ({attendee, index, onToggleProduct}: AttendeePassesProps) => {
+  const monthProduct = attendee.products.find(p => p.attendee_category === attendee.category && p.category === 'month')
   const purchaseSomeProduct = attendee.products?.length ?? 0 > 0
-  const weekProducts = products.filter(p => (p.category === 'week' || p.category === 'supporter') && p.attendee_category === attendee.category)
+  const weekProducts = attendee.products.filter(p => (p.category === 'week' || p.category === 'supporter') && p.attendee_category === attendee.category)
 
   const monthProductPurchased = attendee.products?.some(p => p.category === 'month')
   const hasExclusiveProduct = attendee.products?.some(p => p.exclusive) ?? false

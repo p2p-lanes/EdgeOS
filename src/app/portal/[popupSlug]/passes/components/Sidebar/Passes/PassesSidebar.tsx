@@ -29,7 +29,7 @@ export default function PassesSidebar({
     disabledPurchase,
     specialPurchase
   } = usePasses(attendees)
-
+  
   return (
     <Card className="p-6 space-y-4">
       <div>
@@ -46,7 +46,6 @@ export default function PassesSidebar({
           key={attendee.id}
           attendee={attendee}
           index={index}
-          products={attendee.products}
           onToggleProduct={onToggleProduct}
         />
       ))}
