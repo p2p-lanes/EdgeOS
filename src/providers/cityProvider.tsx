@@ -6,9 +6,9 @@ import { createContext, ReactNode, useContext, useState } from 'react';
 
 interface CityContext_interface {
   getCity: () => PopupsProps | null;
-  getApplications: () => ApplicationProps[];
+  getApplications: () => ApplicationProps[] | null;
   setApplications: (application: ApplicationProps[]) => void;
-  getRelevantApplication: () => ApplicationProps;
+  getRelevantApplication: () => ApplicationProps | null;
   getPopups: () => PopupsProps[];
   setPopups: (popups: PopupsProps[]) => void;
   updateApplication: (application: ApplicationProps) => void;
@@ -21,7 +21,7 @@ export const CityContext = createContext<CityContext_interface | null>(null);
 
 const CityProvider = ({ children }: {children: ReactNode}) => {
   const [products, setProductsState] = useState<ProductsProps[]>([])
-  const [applications, setApplicationsState] = useState<ApplicationProps[]>([]);
+  const [applications, setApplicationsState] = useState<ApplicationProps[] | null>(null);
   const [popups, setPopupsState] = useState<PopupsProps[]>([]);
   const params = useParams()
 
@@ -34,7 +34,7 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
     return products
   }
 
-  const getApplications = (): ApplicationProps[] => {
+  const getApplications = (): ApplicationProps[] | null => {
     return applications
   }
 
@@ -51,8 +51,11 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
     return city ?? null;
   };
 
-  const getRelevantApplication = (): ApplicationProps => {
+  const getRelevantApplication = (): ApplicationProps | null => {
     const city = getCity()
+    console.log(applications)
+    if(!applications) return null;
+
     return applications?.filter((app: ApplicationProps) => app.popup_city_id === city?.id)?.slice(-1)[0]
   }
 
@@ -72,6 +75,7 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
   }
 
   const updateApplication = (application: ApplicationProps) => {
+    if(!applications) return;
     const newApps = applications.filter(ap => ap.id !== application.id)
     setApplications([...newApps, application])
   }

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useCityProvider } from '@/providers/cityProvider'
-import { useRouter } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import { Loader } from '@/components/ui/Loader'
 import useGetData from './hooks/useGetData'
 import { AttendeeProps } from '@/types/Attendee'
@@ -13,13 +13,20 @@ import ListAttendees from './components/Attendees/ListAttendees'
 
 export default function Home() {
   const [attendees, setAttendees] = useState<AttendeeProps[]>([])
-  const { getRelevantApplication } = useCityProvider()
+  const { getRelevantApplication, getApplications } = useCityProvider()
   const { payments, loading, products } = useGetData()
-  const application = getRelevantApplication()
+  const application = getRelevantApplication();
   const router = useRouter()
+  const params = useParams()
 
   useEffect(() => {
-    if(!application) return;
+    console.log('application', application)
+    if(application === null) return;
+
+    if(application === undefined){
+      router.replace(`/portal/${params.popupSlug}/application`)
+      return;
+    }
 
     if(application.status !== 'accepted'){
       router.replace('./')
