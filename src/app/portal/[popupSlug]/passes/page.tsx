@@ -13,18 +13,16 @@ import ListAttendees from './components/Attendees/ListAttendees'
 
 export default function Home() {
   const [attendees, setAttendees] = useState<AttendeeProps[]>([])
-  const { getRelevantApplication, getApplications } = useCityProvider()
+  const { getRelevantApplication } = useCityProvider()
   const { payments, loading, products } = useGetData()
   const application = getRelevantApplication();
   const router = useRouter()
   const params = useParams()
-
   useEffect(() => {
-    console.log('application', application)
     if(application === null) return;
 
     if(application === undefined || application.status !== 'accepted'){
-      router.replace(`/portal/${params.popupSlug}/application`)
+      router.replace(`/portal/${params.popupSlug}`)
       return;
     }
 
