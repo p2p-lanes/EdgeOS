@@ -1,6 +1,6 @@
 import { DynamicForm } from "..";
 
-export const edgeSxsw: DynamicForm = {
+export const edgeAustin: DynamicForm = {
   fields: [
     "first_name",
     "last_name",

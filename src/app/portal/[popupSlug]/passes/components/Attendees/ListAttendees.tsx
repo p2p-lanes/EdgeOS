@@ -81,7 +81,7 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
           </Button>
         )}
         {
-          (city && city?.slug === 'edge-sxsw') ? (
+          (city && city?.slug === 'edge-austin') ? (
             <Button variant="outline" onClick={() => handleOpen('kid')}>
               <PlusIcon className="h-4 w-4" />
               Add Kids
