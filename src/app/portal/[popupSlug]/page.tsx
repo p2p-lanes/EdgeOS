@@ -29,7 +29,7 @@ export default function Home() {
   
   if(isLoading) return <Loader />
   
-  const canApply = dynamicForm[city.slug ?? ''] !== null
+  const canApply = dynamicForm[city?.slug ?? ''] !== null
   
   return (
     <section className="container mx-auto px-4 py-8">
