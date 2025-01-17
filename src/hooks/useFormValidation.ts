@@ -40,6 +40,9 @@ export const useFormValidation = (initialData: FormData) => {
 
     const isRequired = Object.values(requiredFields).flat().includes(name) && fields.has(name)
     if (isRequired) {
+      if(name === 'social_media') {
+        if(!fields.has('video_url')) return '';
+      }
       if (name === 'spouse_info' || name === 'spouse_email') {
         if (!formData.brings_spouse) return '';
       }

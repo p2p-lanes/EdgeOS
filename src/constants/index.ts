@@ -4,6 +4,10 @@ import { edgeAustin } from "./Forms/edge-austin";
 
 export type DynamicForm = {
   local?: string,
+  professional_details?:{
+    title?: string,
+    subtitle?: string,
+  },
   participation?:{
     title?: string,
     subtitle?: string,
@@ -13,6 +17,7 @@ export type DynamicForm = {
     subtitle?: string,
     interest_text?: string,
     scholarship_request?: string,
+    scholarship_details?: string,
   },
   accommodation?: {
     title?: string,

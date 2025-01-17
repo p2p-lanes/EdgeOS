@@ -108,7 +108,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             onChange={(value) => handleChange('telegram', value)}
             error={errors.telegram}
             isRequired={true}
-            subtitle={`The primary form of communication during ${city?.name} will be a Telegram group, so create an account if you don&apos;t already have one`}
+            subtitle={`The primary form of communication during ${city?.name} will be a Telegram group, so create an account if you don't already have one`}
             addon="@"
               placeholder="username"
             />

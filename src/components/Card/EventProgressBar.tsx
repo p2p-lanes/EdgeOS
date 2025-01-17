@@ -14,7 +14,7 @@ const statusColor = (status: string) => {
 }
 
 export function EventProgressBar({ status }: EventProgressBarProps) {
-  const stages = ['not_started', 'draft', 'in review', status === 'not_started' || status === 'accepted' ? 'accepted' : status === 'rejected' ? 'rejected' : null].filter(Boolean)
+  const stages = ['not_started', 'draft', 'in review', status === 'not_started' || status === 'accepted' || status === 'in review' ? 'accepted' : status === 'rejected' ? 'rejected' : null].filter(Boolean)
     
   const currentStageIndex = stages.indexOf(status)
   const progress = (currentStageIndex / (stages.length - 1)) * 100
