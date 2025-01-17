@@ -111,7 +111,7 @@ export default function FormPage() {
         
         <div className="flex flex-col w-full gap-6 md:flex-row justify-between items-center pt-6">
           <ButtonAnimated loading={statusBtn.loadingDraft} disabled={statusBtn.loadingSubmit} variant="outline" type="button" onClick={handleDraft} className="w-full md:w-auto">Save as draft</ButtonAnimated>
-          <ButtonAnimated loading={statusBtn.loadingSubmit} disabled={statusBtn.loadingDraft} type="submit" className="w-full md:w-auto">Submit application</ButtonAnimated>
+          <ButtonAnimated loading={statusBtn.loadingSubmit} disabled={statusBtn.loadingDraft} type="submit" className="w-full md:w-auto">Submit</ButtonAnimated>
         </div>
 
       </form>
