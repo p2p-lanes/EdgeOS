@@ -13,6 +13,11 @@ export const filterAcceptedApplication = (applications: ApplicationProps[], city
 
   if (!acceptedApplications?.length) return null;
 
+  // Ordenamos las aplicaciones aceptadas por submitted_at de más reciente a más antiguo
+  acceptedApplications.sort((a, b) => 
+    new Date(b.updated_at || '').getTime() - new Date(a.updated_at || '').getTime()
+  );
+
   // Ordenamos las popups por end_date de más reciente a más antiguo
   const sortedPopups = [...popups].sort((a, b) => 
     new Date(b.end_date).getTime() - new Date(a.end_date).getTime()

@@ -1,5 +1,5 @@
 
-import { AttendeeProps, CreateAttendee } from "@/types/Attendee"
+import { AttendeeCategory, AttendeeProps, CreateAttendee } from "@/types/Attendee"
 import useAttendee from "@/hooks/useAttendee"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
@@ -14,7 +14,7 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
   const [open, setOpen] = useState(false)
   const [initialName, setInitialName] = useState("")
   const [initialEmail, setInitialEmail] = useState("")
-  const [category, setCategory] = useState<'spouse' | 'kid'>('spouse')
+  const [category, setCategory] = useState<AttendeeCategory>('spouse')
   const [isEdit, setIsEdit] = useState(false)
   const city = getCity()
 
@@ -36,6 +36,7 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
     setIsEdit(true)
     setInitialName(attendees.find(a => a.id === id)?.name ?? "")
     setInitialEmail(attendees.find(a => a.id === id)?.email ?? "")
+    setCategory(attendees.find(a => a.id === id)?.category ?? 'spouse')
     setOpen(true)
   }
 
@@ -94,7 +95,7 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
             </Button>
           )
         }
-        <AttendeeModal onAddAttendee={handleModal} open={open} setOpen={setOpen} initialName={initialName} initialEmail={initialEmail} isEdit={isEdit}/>
+        <AttendeeModal onAddAttendee={handleModal} open={open} setOpen={setOpen} initialName={initialName} initialEmail={initialEmail} category={category} isEdit={isEdit}/>
       </div>
     </div>
   )

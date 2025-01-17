@@ -52,4 +52,5 @@ export interface ApplicationProps {
   updated_at?: string;
   ticket_category?: TicketCategoryProps;
   discount_assigned?: number;
+  submitted_at?: string;
 }
