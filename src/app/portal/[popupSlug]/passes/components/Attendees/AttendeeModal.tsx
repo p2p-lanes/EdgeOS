@@ -20,9 +20,10 @@ interface AttendeeModalProps {
   initialName: string
   initialEmail: string
   isEdit: boolean
+  category: string
 }
 
-export function AttendeeModal({ onAddAttendee, open, setOpen, initialName, initialEmail, isEdit }: AttendeeModalProps) {
+export function AttendeeModal({ onAddAttendee, open, setOpen, initialName, initialEmail, isEdit, category }: AttendeeModalProps) {
   const [loading, setLoading] = useState(false)
   const [name, setName] = useState(initialName)
   const [email, setEmail] = useState(initialEmail)
@@ -35,7 +36,7 @@ export function AttendeeModal({ onAddAttendee, open, setOpen, initialName, initi
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-    await onAddAttendee({ name, email, category: 'spouse' })
+    await onAddAttendee({ name, email, category })
     setName("")
     setEmail("")
     setOpen(false)
@@ -50,9 +51,9 @@ export function AttendeeModal({ onAddAttendee, open, setOpen, initialName, initi
     <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>{isEdit ? 'Edit Spouse' : 'Add Spouse'}</DialogTitle>
+          <DialogTitle>{isEdit ? `Edit ${category}` : `Add ${category}`}</DialogTitle>
           <DialogDescription>
-            Enter the details of your spouse here. Click save when you're done.
+            Enter the details of your {category} here. Click save when you're done.
           </DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit}>
