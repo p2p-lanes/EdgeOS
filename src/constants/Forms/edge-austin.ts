@@ -29,6 +29,7 @@ export const edgeAustin: DynamicForm = {
     "scholarship_request",
     "scholarship_details",
     "is_renter",
+    "booking_confirmation",
     "github_profile",
     "social_media"
   ]

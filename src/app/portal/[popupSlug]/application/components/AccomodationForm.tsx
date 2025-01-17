@@ -49,20 +49,25 @@ const AccomodationForm = ({formData, errors, handleChange, fields}: SectionProps
           )
         }
 
+      {
         <AnimatePresence>
           {formData.is_renter && (
             <motion.div {...animationProps}>
-              <InputForm
+              {fields.has('booking_confirmation') && (
+                <InputForm
                   label="Booking confirmation"
                   id="booking_confirmation"
                   value={formData.booking_confirmation ?? ''}
                   onChange={(e) => handleChange('booking_confirmation', e)}
                   error={errors.booking_confirmation}
-                  subtitle="Please upload your booking confirmation for Hotel Magdalena here. Make sure we can see your name and booking dates."
+                  subtitle="Please submit your booking confirmation for Hotel Magdalena here. Make sure we can see your name and booking dates. You can upload the file to Dropbox, Google Drive, or anywhere where you can make the link public and viewable."
                 />
-            </motion.div>
-          )}
+              )}
+              </motion.div>
+            )
+          }
         </AnimatePresence>
+      }
       </SectionWrapper>
 
       <SectionSeparator />
