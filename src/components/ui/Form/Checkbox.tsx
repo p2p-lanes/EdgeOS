@@ -3,7 +3,7 @@ import { FormInputWrapper } from "../form-input-wrapper"
 import { LabelMuted } from "../label"
 
 type CheckboxFormProps = {
-  label: string
+  label?: string
   id: string
   checked: boolean
   onCheckedChange: (checked: boolean) => void
@@ -18,7 +18,7 @@ const CheckboxForm = ({ label, id, checked, onCheckedChange }: CheckboxFormProps
           checked={checked}
           onCheckedChange={(checked: boolean) => onCheckedChange(checked)}
         />
-        <LabelMuted htmlFor={id}>{label}</LabelMuted>
+        {label && <LabelMuted htmlFor={id}>{label}</LabelMuted>}
       </div>
     </FormInputWrapper>
   )

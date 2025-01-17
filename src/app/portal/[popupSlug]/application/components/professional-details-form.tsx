@@ -3,17 +3,23 @@ import { validateVideoUrl } from "@/helpers/validate";
 import InputForm from "@/components/ui/Form/Input";
 import { SectionProps } from "@/types/Section";
 import { SectionSeparator } from "./section-separator";
+import { dynamicForm } from "@/constants";
+import { useCityProvider } from "@/providers/cityProvider";
 
 const fieldsProfessionalDetails = ["organization", "role", "social_media"]
 
 export function ProfessionalDetailsForm({ formData, errors, handleChange, fields }: SectionProps) {
+  const { getCity } = useCityProvider()
+  const city = getCity()
   const isVideoValid = validateVideoUrl(formData.video_url)
 
   if (!fields || !fields.size || !fieldsProfessionalDetails.some(field => fields.has(field))) return null;
 
+  const form = dynamicForm[city?.slug ?? '']
+
   return (
     <>
-      <SectionWrapper title="Professional Details" subtitle="Tell us about your professional background and current role.">
+      <SectionWrapper title={form?.professional_details?.title ?? "Professional Details"} subtitle={form?.professional_details?.subtitle ?? "Tell us about your professional background and current role."}>
         <div className="grid gap-4 sm:grid-cols-2 sm:items-end">
         {fields.has("organization") && (
           <InputForm
@@ -46,9 +52,20 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
           value={formData.social_media ?? ''}
           onChange={(value: string) => handleChange('social_media', value)}
           error={errors.social_media}
-          isRequired={!isVideoValid}
+          isRequired={!isVideoValid && fields.has("video_url")}
           subtitle="e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Please provide the full link[s]."
         />
+        )}
+
+        {fields.has("github_profile") && (
+          <InputForm
+            label="Your GitHub profile"
+            id="github_profile"
+            value={formData.github_profile ?? ''}
+            onChange={(value: string) => handleChange('github_profile', value)}
+            error={errors.github_profile}
+            subtitle="Show us what you are working on!"
+          />
         )}
       </SectionWrapper>
       <SectionSeparator />

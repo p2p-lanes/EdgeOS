@@ -97,10 +97,11 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
                 {
                   fields?.has('scholarship_details') && (
                     <TextAreaForm
-                      label="If you want to add any more detail in written form, you can use this textbox (you will still need to upload the video above, even if you fill this out)."
+                      label={form?.scholarship?.scholarship_details ?? "If you want to add any more detail in written form, you can use this textbox (you will still need to upload the video above, even if you fill this out)."}
                       id="scholarship_details"
                       value={formData.scholarship_details ?? ''}
                       handleChange={(e) => handleChange('scholarship_details', e)}
+                      isRequired={city?.slug === 'edge-austin'}
                       error={errors.scholarship_details}
                     />
                   )

@@ -24,7 +24,7 @@ export function FormHeader() {
         />
       </div>
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">{city.name} Application</h1>
+        <h1 className="text-3xl font-bold tracking-tight">{city.name}</h1>
         <p className="text-md text-muted-foreground">
           {city.tagline}
         </p>
