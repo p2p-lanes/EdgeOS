@@ -101,6 +101,7 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
                       id="scholarship_details"
                       value={formData.scholarship_details ?? ''}
                       handleChange={(e) => handleChange('scholarship_details', e)}
+                      isRequired={city?.slug === 'edge-austin'}
                       error={errors.scholarship_details}
                     />
                   )

@@ -1,6 +1,9 @@
 import { DynamicForm } from "..";
 
 export const edgeAustin: DynamicForm = {
+  personal_information: {
+    residence_placeholder: "Austin, Texas, USA"
+  },
   professional_details: {
     title: 'Public profile',
     subtitle: 'Share links to your public profiles so we can learn more about you and connect with your work and interests.'
@@ -25,7 +28,6 @@ export const edgeAustin: DynamicForm = {
     "age",
     "telegram",
     "residence",
-    "builder_boolean",
     "scholarship_request",
     "scholarship_details",
     "is_renter",

@@ -60,6 +60,8 @@ const AccomodationForm = ({formData, errors, handleChange, fields}: SectionProps
                   value={formData.booking_confirmation ?? ''}
                   onChange={(e) => handleChange('booking_confirmation', e)}
                   error={errors.booking_confirmation}
+                  placeholder="Booking confirmation file URL"
+                  isRequired={true}
                   subtitle="Please submit your booking confirmation for Hotel Magdalena here. Make sure we can see your name and booking dates. You can upload the file to Dropbox, Google Drive, or anywhere where you can make the link public and viewable."
                 />
               )}

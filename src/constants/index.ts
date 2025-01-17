@@ -4,6 +4,11 @@ import { edgeAustin } from "./Forms/edge-austin";
 
 export type DynamicForm = {
   local?: string,
+  personal_information?:{
+    title?: string,
+    subtitle?: string,
+    residence_placeholder?: string,
+  },
   professional_details?:{
     title?: string,
     subtitle?: string,
