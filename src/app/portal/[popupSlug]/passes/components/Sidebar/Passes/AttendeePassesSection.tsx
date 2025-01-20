@@ -5,14 +5,16 @@ import Standard from "./Products/Standard"
 import Month from "./Products/Month"
 
 export const AttendeePassesSection = ({attendee, index, toggleProduct}: AttendeePassesProps) => {
-  const monthProduct = attendee.products.find(p => p.attendee_category === attendee.category && p.category === 'month')
-  const purchaseSomeProduct = attendee.products?.length ?? 0 > 0
+  const monthProduct = attendee.products.find(p => p.category === 'month')
+  const purchaseSomeProduct = attendee.products?.find(p => p.purchased)
   const weekProducts = attendee.products.filter(p => (p.category === 'week' || p.category === 'supporter') && p.attendee_category === attendee.category)
 
-  const monthProductPurchased = attendee.products?.some(p => p.category === 'month')
+  const monthProductPurchased = attendee.products?.some(p => p.category === 'month' && p.purchased)
   const hasExclusiveProduct = attendee.products?.some(p => p.exclusive && p.purchased) ?? false
 
   if (weekProducts.length === 0) return null
+
+  console.log('attendee', attendee)
 
   return (
     <div className="space-y-4">

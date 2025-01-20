@@ -1,40 +1,51 @@
 import { AttendeeProps } from "@/types/Attendee";
 import { ProductsPass } from "@/types/Products";
 
-const calculateAttendeeTotal = (attendeeProducts: ProductsPass[], patreonSelected: boolean) => {
-  const monthProduct = attendeeProducts.find(p => p.category === 'month' && p.selected);
-  const selectedProducts = attendeeProducts.filter(p => p.selected && p.category !== 'month');
-  const originalTotal = selectedProducts.reduce((sum, product) => sum + (product.original_price ?? 0), 0)
-  
+interface TotalResult {
+  total: number;
+  originalTotal: number;
+}
+
+const _calculateAttendeeTotal = (products: ProductsPass[]): TotalResult => {
+  const monthProduct = products.find(p => p.category === 'month' && p.selected);
+  const selectedProducts = products.filter(p => p.selected && p.category !== 'month');
+  const originalTotal = selectedProducts.reduce((sum, product) => sum + (product.compare_price ?? 0), 0);
+
   if (monthProduct) {
     return {
       total: monthProduct.price ?? 0,
-      originalTotal: originalTotal
+      originalTotal
     };
   }
 
   return {
-    total: patreonSelected ? 0 : selectedProducts.reduce((sum, product) => sum + product.price, 0),
-    originalTotal: originalTotal
+    total: selectedProducts.reduce((sum, product) => sum + (product.price ?? 0), 0),
+    originalTotal
   };
 };
 
-export const calculateTotal = (attendees: AttendeeProps[], products: ProductsPass[]) => {
-  const patreonSelected = products.find(p => p.category === 'patreon')
+export const calculateTotal = (attendees: AttendeeProps[]): TotalResult => {
+  // Encontrar el producto Patreon seleccionado (si existe)
+  const patreonProduct = attendees[0]?.products.find(
+    p => p.category === 'patreon' && p.selected
+  );
 
+  // Calcular totales por cada attendee
   const totals = attendees.reduce((acc, attendee) => {
-    const attendeeProducts = products.filter(p => p.attendee_category === attendee.category && p.category !== 'patreon');
-    const attendeeTotals = calculateAttendeeTotal(attendeeProducts, patreonSelected?.selected ?? false);
+    const attendeeProducts = attendee.products.filter(p => p.category !== 'patreon');
+    const attendeeTotals = _calculateAttendeeTotal(attendeeProducts);
+
     return {
-      total: acc.total + attendeeTotals.total,
+      total: acc.total + (patreonProduct ? 0 : attendeeTotals.total),
       originalTotal: acc.originalTotal + attendeeTotals.originalTotal
     };
   }, { total: 0, originalTotal: 0 });
 
-  if (patreonSelected?.selected) {
+  // Ajustar el total si hay Patreon seleccionado
+  if (patreonProduct?.selected) {
     return {
-      total: patreonSelected.price ?? 0,
-      originalTotal: patreonSelected.price + totals.originalTotal
+      total: patreonProduct.price ?? 0,
+      originalTotal: (patreonProduct.price ?? 0) + totals.originalTotal
     };
   }
 

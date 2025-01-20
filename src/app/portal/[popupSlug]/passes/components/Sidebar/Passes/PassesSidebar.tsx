@@ -18,8 +18,6 @@ export default function PassesSidebar({ purchaseProducts, loading}: PassesProps)
   const city = getCity()
   const { toggleProduct, attendeePasses } = usePassesProvider()
 
-  console.log('attendeePasses',attendeePasses)
-
   const {
     total,
     specialProduct,
@@ -72,13 +70,13 @@ export default function PassesSidebar({ purchaseProducts, loading}: PassesProps)
         isPatreon={(specialProduct?.selected && specialProduct?.category === 'patreon') ?? false} 
         application={application} 
         products={products} 
-      />
+      /> */}
 
       <TotalPurchase 
         total={total} 
-        products={products} 
+        products={[]} 
         hasSelectedWeeks={hasSelectedWeeks}
-      /> */}
+      />
 
       <ButtonAnimated 
         disabled={disabledPurchase || loading} 

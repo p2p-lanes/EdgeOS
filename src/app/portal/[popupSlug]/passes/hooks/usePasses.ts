@@ -1,15 +1,13 @@
 import { useMemo } from "react"
-import { ProductsPass } from "@/types/Products"
 import { AttendeeProps } from "@/types/Attendee"
 import { calculateTotal } from "../helpers/products"
 import { useCityProvider } from "@/providers/cityProvider"
 
-export const usePasses = (passes: AttendeeProps[]) => {
+export const usePasses = (attendeePasses: AttendeeProps[]) => {
   const { getAttendees } = useCityProvider()
   const attendees = getAttendees()
-  // const total = useMemo(() => calculateTotal(attendees, products), [products, attendees])
-  const total = 0
-  const specialProduct = passes.find(a => a.category === 'main')?.products.find(p => p.category === 'patreon')
+  const total = useMemo(() => calculateTotal(attendeePasses), [attendeePasses])
+  const specialProduct = attendeePasses.find(a => a.category === 'main')?.products.find(p => p.category === 'patreon')
   const hasSelectedWeeks = false;
   const mainAttendee = attendees.find(a => a.category === 'main')
   
