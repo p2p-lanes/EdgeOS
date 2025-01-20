@@ -1,6 +1,6 @@
 import { AttendeeProps } from '@/types/Attendee';
 import { ProductsPass } from '@/types/Products';
-import { createContext, ReactNode, useContext, useEffect, useMemo, useState } from 'react';
+import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useCityProvider } from './cityProvider';
 import { sortAttendees } from '@/helpers/filters';
 import useGetPassesData from '@/hooks/useGetPassesData';
@@ -27,10 +27,19 @@ interface ProductUpdate {
 const PassesProvider = ({ children }: { children: ReactNode }) => {
   const { getAttendees } = useCityProvider()
   const [attendeePasses, setAttendeePasses] = useState<AttendeeProps[]>([])
+  const [originalPrices, setOriginalPrices] = useState<Map<number, number>>(new Map())
   const { payments, loading, products } = useGetPassesData()
-  const attendees = useMemo(() => getAttendees(), [getAttendees])
+  const attendees = useMemo(() => sortAttendees(getAttendees()), [getAttendees])
 
-  const setProductsToAttendees = (attendees: AttendeeProps[], products: ProductsPass[]) => {
+  const setInitialProductsToAttendees = useCallback(() => {
+    if(attendees.length === 0 || products.length === 0) return;
+    
+    const prices = new Map();
+    products.forEach(product => {
+      prices.set(product.id, product.price);
+    });
+    setOriginalPrices(prices);
+
     const attendeesWithProducts = attendees.map(attendee => {
       return {
         ...attendee,
@@ -43,13 +52,12 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
       }
     })
     setAttendeePasses(attendeesWithProducts)
-  }
+  }, [attendees, products])
 
   useEffect(() => {
-    if(loading || attendees.length === 0 || products.length === 0) return;
-    const sortedAttendees = sortAttendees(attendees);
-    setProductsToAttendees(sortedAttendees, products)
-  }, [attendees, products, loading])
+    if(loading) return;
+    setInitialProductsToAttendees()
+  }, [attendees, products, loading, setInitialProductsToAttendees])
 
   const getAttendeeById = (attendeeId: number) => {
     return attendeePasses.find(attendee => attendee.id === attendeeId)
@@ -114,14 +122,14 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     const patreonProduct = products.find(p => p.id === productId && p.category === 'patreon');
     if (!patreonProduct) return [];
 
-    // Si estamos seleccionando Patreon, todos los demás productos tienen precio 0
-    // Si estamos deseleccionando Patreon, restauramos los precios originales
-    return products
+    // Cuando se selecciona patreon, todos los productos de todos los attendees deben tener precio 0
+    return attendeePasses
+      .flatMap(attendee => attendee.products)
       .filter(p => p.category !== 'patreon')
       .map(p => ({
         productId: p.id,
         selected: false,
-        price: patreonProduct.selected ? p.original_price : 0
+        price: !patreonProduct.selected ? 0 : originalPrices.get(p.id)
       }));
   };
 
