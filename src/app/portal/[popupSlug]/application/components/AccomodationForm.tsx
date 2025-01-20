@@ -49,6 +49,8 @@ const AccomodationForm = ({formData, errors, handleChange, fields}: SectionProps
     }
   }
 
+  console.log('formData', formData.booking_confirmation)
+
   return (
     <>
       <SectionWrapper
