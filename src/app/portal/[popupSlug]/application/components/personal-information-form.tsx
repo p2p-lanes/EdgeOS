@@ -42,7 +42,9 @@ const fieldsPersonalInformation = ["first_name", "last_name", "email", "gender",
 export function PersonalInformationForm({ formData, errors, handleChange, fields }: SectionProps) {
   const { getCity } = useCityProvider()
   const city = getCity()
+
   if (!fields || !fields.size || !fieldsPersonalInformation.some(field => fields.has(field))) return null;
+  const form = dynamicForm[city?.slug ?? '']
 
   return (
     <>
@@ -108,7 +110,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             onChange={(value) => handleChange('telegram', value)}
             error={errors.telegram}
             isRequired={true}
-            subtitle={`The primary form of communication during ${city?.name} will be a Telegram group, so create an account if you don&apos;t already have one`}
+            subtitle={`The primary form of communication during ${city?.name} will be a Telegram group, so create an account if you don't already have one`}
             addon="@"
               placeholder="username"
             />
@@ -120,7 +122,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             value={formData.residence ?? ''}
             onChange={(value) => handleChange('residence', value)}
             error={errors.residence}
-            placeholder="Healdsburg, California, USA"
+            placeholder={form?.personal_information?.residence_placeholder ?? "Healdsburg, California, USA"}
             subtitle="Please format it like [City, State/Region, Country]. Feel free to put multiple cities if you live in multiple places."
           />
         )}

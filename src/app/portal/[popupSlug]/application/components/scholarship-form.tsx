@@ -34,9 +34,9 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
   return (
     <>
       <SectionWrapper 
-        title={`${city?.name} scholarship`} 
+        title={form?.scholarship?.title ?? `${city?.name} scholarship`} 
         subtitle={
-          `Fill out this section if you are interested in securing one of a limited number of scholarships for ${city?.name}. 
+          form?.scholarship?.subtitle ?? `Fill out this section if you are interested in securing one of a limited number of scholarships for ${city?.name}. 
           We are prioritizing scholars who apply for the full experience${startDate && endDate ? ` (${startDate} - ${endDate}).` : '.'}`
         }
       >  
@@ -44,14 +44,13 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
         {
           fields?.has('scholarship_request') && (
             <CheckboxForm
-              label="Are you interested in applying for a scholarship?"
+              label={form?.scholarship?.scholarship_request ?? "Are you interested in applying for a scholarship?"}
               id="scholarship_request"
               checked={isInterested}
               onCheckedChange={(checked) => {
                 setIsInterested(checked === true)
                 handleChange('scholarship_request', checked === true)
                 if (checked === false) {
-                  handleChange('scholarship_categories', [])
                   handleChange('scholarship_details', '')
                 }
               }}
@@ -64,7 +63,7 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
             <motion.div {...animationProps}>
               <div className="flex flex-col gap-4">
                 <p className="text-sm text-muted-foreground">
-                  {form?.scolarship_subtitle}
+                  {form?.scholarship?.interest_text}
                 </p>
 
                 {
@@ -97,10 +96,11 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
                 {
                   fields?.has('scholarship_details') && (
                     <TextAreaForm
-                      label="If you want to add any more detail in written form, you can use this textbox (you will still need to upload the video above, even if you fill this out)."
+                      label={form?.scholarship?.scholarship_details ?? "If you want to add any more detail in written form, you can use this textbox (you will still need to upload the video above, even if you fill this out)."}
                       id="scholarship_details"
                       value={formData.scholarship_details ?? ''}
                       handleChange={(e) => handleChange('scholarship_details', e)}
+                      isRequired={city?.slug === 'edge-austin'}
                       error={errors.scholarship_details}
                     />
                   )

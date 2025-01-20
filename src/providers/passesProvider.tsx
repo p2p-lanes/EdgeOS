@@ -7,19 +7,20 @@ import useGetPassesData from '@/hooks/useGetPassesData';
 import { PaymentsProps } from '@/types/passes';
 
 interface PassesContext_interface {
-  passes: AttendeeProps[];
+  attendeePasses: AttendeeProps[];
   payments: PaymentsProps[];
   products: ProductsPass[];
   hasProductPurchased: (attendeeId: number, productId: number) => boolean;
   getProductsByAttendeeId: (attendeeId: number) => ProductsPass[];
   getAttendeeById: (attendeeId: number) => AttendeeProps | undefined;
+  toggleProduct: (attendeeId: number, productId: number) => void;
 }
 
 export const PassesContext = createContext<PassesContext_interface | null>(null);
 
 const PassesProvider = ({ children }: { children: ReactNode }) => {
   const { getAttendees } = useCityProvider()
-  const [passes, setPasses] = useState<AttendeeProps[]>([])
+  const [attendeePasses, setAttendeePasses] = useState<AttendeeProps[]>([])
   const { payments, loading, products } = useGetPassesData()
   const attendees = useMemo(() => getAttendees(), [getAttendees])
 
@@ -27,10 +28,15 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     const attendeesWithProducts = attendees.map(attendee => {
       return {
         ...attendee,
-        products: products.filter(product => product.attendee_category === attendee.category)
+        products: products
+          .filter(product => product.attendee_category === attendee.category)
+          .map(product => ({
+            ...product,
+            purchased: attendee.products.some(p => p.id === product.id)
+          }))
       }
     })
-    setPasses(attendeesWithProducts)
+    setAttendeePasses(attendeesWithProducts)
   }
 
   useEffect(() => {
@@ -40,7 +46,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   }, [attendees, products, loading])
 
   const getAttendeeById = (attendeeId: number) => {
-    return passes.find(attendee => attendee.id === attendeeId)
+    return attendeePasses.find(attendee => attendee.id === attendeeId)
   }
 
   const hasProductPurchased = (attendeeId: number, productId: number): boolean => {
@@ -48,17 +54,36 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   }
 
   const getProductsByAttendeeId = (attendeeId: number) => {
-    return passes.find(attendee => attendee.id === attendeeId)?.products || []
+    return attendeePasses.find(attendee => attendee.id === attendeeId)?.products || []
   }
 
+  const _updateAttendeeProducts = (attendee: AttendeeProps, attendeeId: number, productId: number) => {
+    if (attendee.id !== attendeeId) return attendee;
+    
+    return {
+        ...attendee,
+        products: attendee.products.map(product => 
+            product.id === productId 
+                ? { ...product, selected: !product.selected }
+                : product
+        )
+    }
+  }
+
+  const toggleProduct = (attendeeId: number, productId: number) => {
+    setAttendeePasses(prevPasses => 
+        prevPasses.map(attendee => _updateAttendeeProducts(attendee, attendeeId, productId))
+    )
+  }
 
   return (
     <PassesContext.Provider 
       value={{ 
-        passes,
+        attendeePasses,
         hasProductPurchased,
         getProductsByAttendeeId,
         getAttendeeById,
+        toggleProduct,
         payments,
         products
       }}>

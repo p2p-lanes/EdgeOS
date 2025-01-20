@@ -2,8 +2,6 @@ import { ProductsPass } from "@/types/Products"
 import { AttendeeProps } from "@/types/Attendee"
 
 export interface PassesProps {
-  attendees: AttendeeProps[];
-  onToggleProduct: (attendee: AttendeeProps | undefined, product?: ProductsPass) => void;
   purchaseProducts: () => Promise<void>;
   loading: boolean;
 }
@@ -11,7 +9,7 @@ export interface PassesProps {
 export interface AttendeePassesProps {
   attendee: AttendeeProps;
   index: number;
-  onToggleProduct: (attendee: AttendeeProps | undefined, product?: ProductsPass) => void;
+  toggleProduct: (attendeeId: number, productId: number) => void;
 } 
 
 export interface PaymentsProps {

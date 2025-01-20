@@ -10,17 +10,16 @@ import Special from "./Products/Special"
 import BannerDiscount from "./Components/BannerDiscount"
 import TotalPurchase from "./Components/TotalPurchase"
 import { usePasses } from "../../../hooks/usePasses"
+import { usePassesProvider } from "@/providers/passesProvider"
 
-export default function PassesSidebar({
-  attendees, 
-  onToggleProduct, 
-  purchaseProducts, 
-  loading 
-}: PassesProps) {
+export default function PassesSidebar({ purchaseProducts, loading}: PassesProps) {
   const { getRelevantApplication, getCity } = useCityProvider()
   const application = getRelevantApplication()
   const city = getCity()
-  
+  const { toggleProduct, attendeePasses } = usePassesProvider()
+
+  console.log('attendeePasses',attendeePasses)
+
   const {
     total,
     specialProduct,
@@ -28,7 +27,7 @@ export default function PassesSidebar({
     mainAttendee,
     disabledPurchase,
     specialPurchase
-  } = usePasses(attendees)
+  } = usePasses(attendeePasses)
   
   return (
     <Card className="p-6 space-y-4">
@@ -41,24 +40,24 @@ export default function PassesSidebar({
         )}
       </div>
 
-      {attendees.map((attendee, index) => (
+      {attendeePasses.map((attendee, index) => (
         <AttendeePassesSection
           key={attendee.id}
           attendee={attendee}
           index={index}
-          onToggleProduct={onToggleProduct}
+          toggleProduct={toggleProduct}
         />
       ))}
 
       <Separator className="my-12"/>
 
-      {specialProduct && (
+      {(specialProduct && mainAttendee?.id) && (
         <div className="p-0 w-full">
           <Special
             product={specialProduct}
             selected={specialProduct?.selected ?? false}
             disabled={specialPurchase ?? false}
-            onClick={() => onToggleProduct(mainAttendee, specialProduct)}
+            onClick={() => toggleProduct(mainAttendee.id, specialProduct.id)}
           />
           <p className="text-xs text-muted-foreground mt-1">
             {specialProduct?.selected && specialProduct?.category === 'patreon' 

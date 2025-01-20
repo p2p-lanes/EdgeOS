@@ -6,24 +6,21 @@ import PaymentHistory from "./Payments/PaymentHistory"
 import usePostData from "../../hooks/usePostData"
 import { PaymentsProps } from "@/types/passes"
 import PassesSidebar from "./Passes/PassesSidebar"
+import { usePassesProvider } from "@/providers/passesProvider"
 
 interface TabsContainerProps {
-  attendees: AttendeeProps[], 
+  attendeePasses: AttendeeProps[], 
   payments: PaymentsProps[]
 }
 
-const TabsContainer = ({attendees, payments}: TabsContainerProps) => {
+const TabsContainer = () => {
   const { purchaseProducts, loadingProduct } = usePostData()
+
 
   const handleClickPurchase = async () => {
     // await purchaseProducts(products)
     // setProducts(initialProducts)
   }
-
-  const toggleProduct = (attendee: AttendeeProps | undefined, product?: ProductsPass) => {
-    if (!product || !attendee) return;
-    // setProducts(prev => toggleProducts(prev, product, attendee, initialProducts));
-  };
 
   return (
     <Tabs defaultValue="passes" className="w-full mt-6 md:mt-0">
@@ -33,11 +30,11 @@ const TabsContainer = ({attendees, payments}: TabsContainerProps) => {
       </TabsList>
 
       <TabsContent value="passes">
-        <PassesSidebar attendees={attendees} onToggleProduct={toggleProduct} purchaseProducts={handleClickPurchase} loading={loadingProduct} />
+        <PassesSidebar purchaseProducts={handleClickPurchase} loading={loadingProduct} />
       </TabsContent>
 
       <TabsContent value="payment-history">
-        <PaymentHistory payments={payments}/>
+        {/* <PaymentHistory/> */}
       </TabsContent>
     </Tabs>
   )

@@ -21,6 +21,8 @@ import { useCityProvider } from "@/providers/cityProvider"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { dynamicForm } from "../../../../constants"
+import AccomodationForm from "./components/AccomodationForm"
+import uploadFileToS3 from "@/helpers/upload"
 
 export default function FormPage() {
   const [statusBtn, setStatusBtn] = useState({loadingDraft: false, loadingSubmit: false})
@@ -40,7 +42,7 @@ export default function FormPage() {
       router.push(`/portal/${city?.slug}`)
       return;
     }
-    if(application && application.status === 'accepted') {
+    if(application && (application.status === 'accepted' || application.status === 'rejected')) {
       router.push(`/portal/${city?.slug}`)
     }
   }, [application, city])
@@ -105,10 +107,12 @@ export default function FormPage() {
         <ChildrenPlusOnesForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
 
         <ScholarshipForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
+
+        <AccomodationForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
         
         <div className="flex flex-col w-full gap-6 md:flex-row justify-between items-center pt-6">
           <ButtonAnimated loading={statusBtn.loadingDraft} disabled={statusBtn.loadingSubmit} variant="outline" type="button" onClick={handleDraft} className="w-full md:w-auto">Save as draft</ButtonAnimated>
-          <ButtonAnimated loading={statusBtn.loadingSubmit} disabled={statusBtn.loadingDraft} type="submit" className="w-full md:w-auto">Submit application</ButtonAnimated>
+          <ButtonAnimated loading={statusBtn.loadingSubmit} disabled={statusBtn.loadingDraft} type="submit" className="w-full md:w-auto">Submit</ButtonAnimated>
         </div>
 
       </form>

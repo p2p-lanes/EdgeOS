@@ -4,13 +4,13 @@ import { AttendeePassesProps } from "@/types/passes"
 import Standard from "./Products/Standard"
 import Month from "./Products/Month"
 
-export const AttendeePassesSection = ({attendee, index, onToggleProduct}: AttendeePassesProps) => {
+export const AttendeePassesSection = ({attendee, index, toggleProduct}: AttendeePassesProps) => {
   const monthProduct = attendee.products.find(p => p.attendee_category === attendee.category && p.category === 'month')
   const purchaseSomeProduct = attendee.products?.length ?? 0 > 0
   const weekProducts = attendee.products.filter(p => (p.category === 'week' || p.category === 'supporter') && p.attendee_category === attendee.category)
 
   const monthProductPurchased = attendee.products?.some(p => p.category === 'month')
-  const hasExclusiveProduct = attendee.products?.some(p => p.exclusive) ?? false
+  const hasExclusiveProduct = attendee.products?.some(p => p.exclusive && p.purchased) ?? false
 
   if (weekProducts.length === 0) return null
 
@@ -20,10 +20,10 @@ export const AttendeePassesSection = ({attendee, index, onToggleProduct}: Attend
         <p className="font-medium">
           {attendee.name} • <span className="text-sm text-muted-foreground">Attendee {index + 1}</span>
         </p>
-        {!purchaseSomeProduct && (
+        {(!purchaseSomeProduct && monthProduct?.id) && (
           <Month 
             product={monthProduct} 
-            onClick={() => onToggleProduct(attendee, monthProduct)}
+            onClick={() => toggleProduct(attendee.id, monthProduct.id)}
           />
         )}
         <div className={cn("grid grid-cols-1 sm:grid-cols-2 3xl:grid-cols-3 gap-2")}>
@@ -32,14 +32,10 @@ export const AttendeePassesSection = ({attendee, index, onToggleProduct}: Attend
               key={product.id}
               iconTitle={Ticket}
               product={product}
-              disabled={
-                attendee.products?.some(p => p.id === product.id) ||
-                !!monthProductPurchased ||
-                (hasExclusiveProduct && product.exclusive)
-              }
+              disabled={product.purchased || !!monthProductPurchased || hasExclusiveProduct}
               selected={product.selected}
-              purchased={attendee.products?.some(p => p.id === product.id)}
-              onClick={() => onToggleProduct(attendee, product)}
+              purchased={product.purchased}
+              onClick={() => toggleProduct(attendee.id, product.id)}
               isSpecial={product.category === 'supporter'}
             />
           ))}

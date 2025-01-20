@@ -11,6 +11,7 @@ const usePostData = () => {
   const getApplication = useGetApplications(false)
 
   const purchaseProducts = async (products: ProductsPass[]) => {
+    if(!application) return;
     setLoadingProduct(true)
     const productsPurchase = products.filter(p => p.selected)
     const filteredProducts = productsPurchase.reduce((acc: ProductsPass[], product) => {

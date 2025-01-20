@@ -10,7 +10,11 @@ export const paymentCapacityOptions = [
 
 export const edgeSa: DynamicForm = {
   local: 'South Africa',
-  scolarship_subtitle: 'We always want to make our trips inclusive and not cost prohibitive, so if you need sponsorship support, let us know :) As a reminder we\'re a 501c3 and all ticket costs go toward covering our expenses for events for the long term.',
+  scholarship: {
+    title: 'Edge South Africa financial support',
+    subtitle: 'We always want to make our trips inclusive and not cost prohibitive, so if you need sponsorship support, let us know :) As a reminder we\'re a 501c3 and all ticket costs go toward covering our expenses for events for the long term.',
+    scholarship_request: 'Are you interested in applying for financial support?'
+  },
   fields: [
     "first_name",
     "last_name",

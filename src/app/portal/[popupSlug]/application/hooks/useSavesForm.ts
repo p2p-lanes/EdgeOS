@@ -22,7 +22,7 @@ const useSavesForm = () => {
   }
 
   const handleSaveForm = async (formData: Record<string, unknown>) => {
-    if(!city || !user) return
+    if(!city || !user || !applications) return
 
     const data = {
       ...formData,
@@ -49,7 +49,7 @@ const useSavesForm = () => {
       toast.success("Application Submitted", {
         description: "Your application has been successfully submitted.",
       })
-      router.push('/portal')
+      router.push(`/portal/${city?.slug}`)
     }).catch(() => {
       toast.error("Error Submitting Application", {
         description: "There was an error submitting your application. Please try again.",
@@ -58,7 +58,7 @@ const useSavesForm = () => {
   }
 
   const handleSaveDraft = async (formData: Record<string, unknown>) => {
-    if(!city || !user) return
+    if(!city || !user || !applications) return
 
     const data = {
       ...formData,

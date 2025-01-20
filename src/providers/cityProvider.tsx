@@ -7,9 +7,9 @@ import { createContext, ReactNode, useContext, useState } from 'react';
 
 interface CityContext_interface {
   getCity: () => PopupsProps | null;
-  getApplications: () => ApplicationProps[];
+  getApplications: () => ApplicationProps[] | null;
   setApplications: (application: ApplicationProps[]) => void;
-  getRelevantApplication: () => ApplicationProps;
+  getRelevantApplication: () => ApplicationProps | null;
   getPopups: () => PopupsProps[];
   setPopups: (popups: PopupsProps[]) => void;
   updateApplication: (application: ApplicationProps) => void;
@@ -41,8 +41,10 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
     return city ?? null;
   };
 
-  const getRelevantApplication = (): ApplicationProps => {
+  const getRelevantApplication = (): ApplicationProps | null => {
     const city = getCity()
+    if(!applications) return null;
+
     return applications?.filter((app: ApplicationProps) => app.popup_city_id === city?.id)?.slice(-1)[0]
   }
 
@@ -62,12 +64,15 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
   }
 
   const updateApplication = (application: ApplicationProps): void => {
+    if(!applications) return;
     const newApps = applications.filter(ap => ap.id !== application.id)
     setApplications([...newApps, application])
   }
 
   const getAttendees = (): AttendeeProps[] => {
-    return getRelevantApplication()?.attendees || [];
+    const application = getRelevantApplication()
+    if(!application) return [];
+    return application.attendees || [];
   }
 
   return (
