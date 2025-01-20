@@ -50,6 +50,11 @@ const useProgress = (formData: any) => {
         required: formData.scholarship_request
       },
       {
+        name: 'scholarship',
+        fields: ['scholarship_details'].filter(f => fields.has(f)),
+        required: formData.scholarship_request && city?.slug === 'edge-austin'
+      },
+      {
         name: 'accommodation',
         fields: ['booking_confirmation'].filter(f => fields.has(f)),
         required: formData.is_renter

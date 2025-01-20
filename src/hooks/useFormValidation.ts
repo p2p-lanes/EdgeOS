@@ -12,7 +12,7 @@ const requiredFields = {
   professionalDetails: ['organization', 'social_media'],
   participation: ['duration', 'builder_description'],
   childrenPlusOnes: ['spouse_info', 'spouse_email', 'kids_info'],
-  scholarship: ['scholarship_video_url'],
+  scholarship: ['scholarship_video_url', 'scholarship_details'],
   accommodation: ['booking_confirmation'],
 }
 
@@ -61,7 +61,7 @@ export const useFormValidation = (initialData: FormData) => {
         if (!formData.scholarship_request || validateVideoUrl(formData.scholarship_video_url)) return '';
       }
       if(name === 'scholarship_details') {
-        if(!formData.scholarship_request && city?.slug !== 'edge-austin') return '';
+        if(!formData.scholarship_request || city?.slug !== 'edge-austin') return '';
       }
 
       if (Array.isArray(value)) {
