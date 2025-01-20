@@ -9,12 +9,16 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import InputForm from "@/components/ui/Form/Input";
+import { FileUploadInput } from "@/components/ui/file-upload-input";
+import uploadFileToS3 from "@/helpers/upload";
+import { useState } from "react";
 
 const fieldsAccomodation = ["is_renter"]
 
 const AccomodationForm = ({formData, errors, handleChange, fields}: SectionProps) => {
   const { getCity } = useCityProvider()
   const city = getCity()
+  const [loading, setLoading] = useState(false)
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -26,6 +30,25 @@ const AccomodationForm = ({formData, errors, handleChange, fields}: SectionProps
   if (!fields || !fields.size || !fieldsAccomodation.some(field => fields.has(field))) return null;
 
   const form = dynamicForm[city?.slug ?? '']
+
+  const onChangeInputFile = async (files: File[]) => {
+    setLoading(true)
+    try {
+      if (files.length > 0) {
+        const file = files[0]
+        const url = await uploadFileToS3(file)
+        console.log('url', url)
+        handleChange('booking_confirmation', url)
+      } else {
+        handleChange('booking_confirmation', '')
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
     <>
       <SectionWrapper
@@ -54,16 +77,17 @@ const AccomodationForm = ({formData, errors, handleChange, fields}: SectionProps
           {formData.is_renter && (
             <motion.div {...animationProps}>
               {fields.has('booking_confirmation') && (
-                <InputForm
-                  label="Booking confirmation"
+                <FileUploadInput
+                  label="Select file"
                   id="booking_confirmation"
                   value={formData.booking_confirmation ?? ''}
-                  onChange={(e) => handleChange('booking_confirmation', e)}
+                  onFilesSelected={onChangeInputFile}
                   error={errors.booking_confirmation}
                   placeholder="Booking confirmation file URL"
                   isRequired={true}
-                  subtitle="Please submit your booking confirmation for Hotel Magdalena here. Make sure we can see your name and booking dates. You can upload the file to Dropbox, Google Drive, or anywhere where you can make the link public and viewable."
-                />
+                  loading={loading}
+                  subtitle="Please submit your booking confirmation for Hotel Magdalena here. Make sure we can see your name and booking dates."
+                 />
               )}
               </motion.div>
             )

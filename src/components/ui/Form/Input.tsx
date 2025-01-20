@@ -6,27 +6,33 @@ import { LabelMuted, LabelRequired } from "../label"
 interface InputFormProps {
   label: string
   id: string
-  value: string
-  onChange: (value: string) => void
+  value?: string
+  onChange: (value: string | File[]) => void
   error?: string
   isRequired?: boolean
   subtitle?: string
   placeholder?: string
+  type?: string
+  ref?: React.RefObject<HTMLInputElement>
+  multiple?: boolean,
+  accept?: string
+  className?: string
 }
 
-const InputForm = ({ label, id, value, onChange, error, subtitle, placeholder, isRequired = false }: InputFormProps) => {
+const InputForm = ({ label, id, value, onChange, error, subtitle, isRequired = false, type = 'text', ...rest }: InputFormProps) => {
   return (
     <FormInputWrapper>
       <div className="flex flex-col gap-2">
         <LabelRequired htmlFor={id} isRequired={isRequired}>{label}</LabelRequired>
         {subtitle && <LabelMuted className="text-sm text-muted-foreground">{subtitle}</LabelMuted>}
       </div>
-      <Input 
+      <Input
+        type={type}
         id={id} 
         value={value}
         onChange={(e) => onChange(e.target.value)}
         error={error}
-        placeholder={placeholder}
+        {...rest}
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </FormInputWrapper>

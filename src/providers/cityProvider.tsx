@@ -53,7 +53,6 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
 
   const getRelevantApplication = (): ApplicationProps | null => {
     const city = getCity()
-    console.log(applications)
     if(!applications) return null;
 
     return applications?.filter((app: ApplicationProps) => app.popup_city_id === city?.id)?.slice(-1)[0]
