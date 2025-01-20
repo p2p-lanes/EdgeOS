@@ -7,7 +7,7 @@ interface InputFormProps {
   label: string
   id: string
   value?: string
-  onChange: (value: string | File[]) => void
+  onChange: (value: string) => void
   error?: string
   isRequired?: boolean
   subtitle?: string
