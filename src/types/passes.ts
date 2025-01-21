@@ -9,7 +9,7 @@ export interface PassesProps {
 export interface AttendeePassesProps {
   attendee: AttendeeProps;
   index: number;
-  toggleProduct: (attendeeId: number, productId: number) => void;
+  toggleProduct: (attendeeId: number, product: ProductsPass) => void;
 } 
 
 export interface PaymentsProps {

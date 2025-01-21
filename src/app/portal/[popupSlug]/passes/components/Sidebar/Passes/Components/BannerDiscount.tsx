@@ -4,8 +4,6 @@ import { useMemo } from "react"
 
 
 const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean, application: ApplicationProps | null, products: ProductsProps[]}) => {
-
-
   const productCompare = useMemo(() => products.find(p => p.category === 'week' && p.price !== p.compare_price) ?? {price: 100, compare_price: 100}, [products])
 
   const {discount, label} = useMemo(() => {

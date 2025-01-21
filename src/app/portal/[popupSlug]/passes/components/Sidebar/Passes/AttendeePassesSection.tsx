@@ -14,8 +14,6 @@ export const AttendeePassesSection = ({attendee, index, toggleProduct}: Attendee
 
   if (weekProducts.length === 0) return null
 
-  console.log('attendee', attendee)
-
   return (
     <div className="space-y-4">
       <div className="space-y-2">
@@ -25,7 +23,7 @@ export const AttendeePassesSection = ({attendee, index, toggleProduct}: Attendee
         {(!purchaseSomeProduct && monthProduct?.id) && (
           <Month 
             product={monthProduct} 
-            onClick={() => toggleProduct(attendee.id, monthProduct.id)}
+            onClick={() => toggleProduct(attendee.id, monthProduct)}
           />
         )}
         <div className={cn("grid grid-cols-1 sm:grid-cols-2 3xl:grid-cols-3 gap-2")}>
@@ -37,7 +35,7 @@ export const AttendeePassesSection = ({attendee, index, toggleProduct}: Attendee
               disabled={product.purchased || !!monthProductPurchased || hasExclusiveProduct}
               selected={product.selected}
               purchased={product.purchased}
-              onClick={() => toggleProduct(attendee.id, product.id)}
+              onClick={() => toggleProduct(attendee.id, product)}
               isSpecial={product.category === 'supporter'}
             />
           ))}

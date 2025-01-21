@@ -4,24 +4,26 @@ import { Card } from "@/components/ui/card"
 import { ButtonAnimated } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useCityProvider } from "@/providers/cityProvider"
-import { PassesProps } from "@/types/passes"
 import { AttendeePassesSection } from "./AttendeePassesSection"
 import Special from "./Products/Special"
 import BannerDiscount from "./Components/BannerDiscount"
 import TotalPurchase from "./Components/TotalPurchase"
 import { usePasses } from "../../../hooks/usePasses"
 import { usePassesProvider } from "@/providers/passesProvider"
+import usePurchaseProducts from "../../../hooks/usePurchaseProducts"
+import { useApplication } from "@/providers/applicationProvider"
 
-export default function PassesSidebar({ purchaseProducts, loading}: PassesProps) {
-  const { getRelevantApplication, getCity } = useCityProvider()
+export default function PassesSidebar() {
+  const { getCity } = useCityProvider()
+  const { getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
   const city = getCity()
-  const { toggleProduct, attendeePasses } = usePassesProvider()
+  const { toggleProduct, attendeePasses, products } = usePassesProvider()
+  const { purchaseProducts, loading } = usePurchaseProducts()
 
   const {
     total,
     specialProduct,
-    hasSelectedWeeks,
     mainAttendee,
     disabledPurchase,
     specialPurchase
@@ -55,7 +57,7 @@ export default function PassesSidebar({ purchaseProducts, loading}: PassesProps)
             product={specialProduct}
             selected={specialProduct?.selected ?? false}
             disabled={specialPurchase ?? false}
-            onClick={() => toggleProduct(mainAttendee.id, specialProduct.id)}
+            onClick={() => toggleProduct(mainAttendee.id, specialProduct)}
           />
           <p className="text-xs text-muted-foreground mt-1">
             {specialProduct?.selected && specialProduct?.category === 'patreon' 
@@ -66,23 +68,22 @@ export default function PassesSidebar({ purchaseProducts, loading}: PassesProps)
         </div>
       )}
       
-      {/* <BannerDiscount 
-        isPatreon={(specialProduct?.selected && specialProduct?.category === 'patreon') ?? false} 
-        application={application} 
-        products={products} 
-      /> */}
+      <BannerDiscount 
+        isPatreon={((specialProduct?.selected || specialProduct?.purchased) && specialProduct?.category === 'patreon') ?? false} 
+        application={application}
+        products={products}
+      />
 
       <TotalPurchase 
         total={total} 
-        products={[]} 
-        hasSelectedWeeks={hasSelectedWeeks}
+        attendees={attendeePasses}
       />
 
       <ButtonAnimated 
         disabled={disabledPurchase || loading} 
         loading={loading} 
         className="w-full text-white" 
-        onClick={purchaseProducts}
+        onClick={() => purchaseProducts(attendeePasses)}
       >
         Complete Purchase
       </ButtonAnimated>

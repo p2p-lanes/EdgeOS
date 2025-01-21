@@ -4,47 +4,52 @@ import { useCityProvider } from './cityProvider';
 import { sortAttendees } from '@/helpers/filters';
 import useGetPassesData from '@/hooks/useGetPassesData';
 import { getProductStrategy } from '@/strategies/ProductStrategies';
+import { ProductsPass } from '@/types/Products';
+import { useApplication } from './applicationProvider';
 
 interface PassesContext_interface {
   attendeePasses: AttendeeProps[];
-  toggleProduct: (attendeeId: number, productId: number) => void;
+  toggleProduct: (attendeeId: number, product: ProductsPass) => void;
+  products: ProductsPass[];
 }
 
 export const PassesContext = createContext<PassesContext_interface | null>(null);
 
 
 const PassesProvider = ({ children }: { children: ReactNode }) => {
-  const { getAttendees } = useCityProvider()
+  const { getAttendees } = useApplication()
   const [attendeePasses, setAttendeePasses] = useState<AttendeeProps[]>([])
-  const { payments, loading, products } = useGetPassesData()
+  const { products } = useGetPassesData()
   const attendees = useMemo(() => sortAttendees(getAttendees()), [getAttendees])
 
-  const toggleProduct = (attendeeId: number, productId: number) => {
-    const attendee = attendeePasses.find(a => a.id === attendeeId);
-    const product = attendee?.products.find(p => p.id === productId);
-    
-    if (!attendee || !product) return;
+  const toggleProduct = (attendeeId: number, product: ProductsPass) => {
+    if (!product) return;
     
     const strategy = getProductStrategy(product.category, product.exclusive);
-    const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, productId);
+    const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product);
     setAttendeePasses(updatedAttendees);
   }
-
+  
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
-      const initialAttendees = attendees.map(attendee => ({
-        ...attendee,
-        products: products
-          .filter(product => product.attendee_category === attendee.category)
-          .map(product => ({
-            ...product,
-            selected: false,
-            purchased: false,
-            attendee_id: attendee.id,
-            original_price: product.price,
-            disabled: false
-          }))
-      }));
+      const hasPatreonPurchased = attendees.some(attendee => attendee.products?.some(p => p.category === 'patreon'));
+      const initialAttendees = attendees.map(attendee => {
+        
+        return {
+          ...attendee,
+          products: products
+            .filter(product => product.attendee_category === attendee.category && product.is_active)
+            .map(product => ({
+              ...product,
+              selected: false,
+              purchased: attendee.products?.some(purchasedProduct => purchasedProduct.id === product.id) || false,
+              attendee_id: attendee.id,
+              original_price: product.price,
+              price: hasPatreonPurchased ? 0 : product.price,
+              disabled: false
+            }))
+        };
+      });
       setAttendeePasses(initialAttendees);
     }
   }, [attendees, products]);
@@ -53,7 +58,8 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     <PassesContext.Provider 
       value={{ 
         attendeePasses,
-        toggleProduct
+        toggleProduct,
+        products
       }}>
       {children}
     </PassesContext.Provider>

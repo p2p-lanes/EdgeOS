@@ -1,11 +1,11 @@
 'use client'
-import { useCityProvider } from "@/providers/cityProvider"
+import { useApplication } from "@/providers/applicationProvider"
 import PassesProvider from "@/providers/passesProvider"
 import { useRouter } from "next/navigation"
 import { ReactNode, useEffect } from "react"
 
 const Layout = ({ children }: { children: ReactNode }) => {
-  const { getRelevantApplication } = useCityProvider()
+  const { getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
   const router = useRouter()
 

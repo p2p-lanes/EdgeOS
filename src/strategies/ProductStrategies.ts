@@ -5,26 +5,26 @@ interface ProductStrategy {
   handleSelection: (
     attendees: AttendeeProps[],
     attendeeId: number,
-    productId: number
+    product: ProductsPass
   ) => AttendeeProps[];
 }
 
 class ExclusiveProductStrategy implements ProductStrategy {
-  handleSelection(attendees: AttendeeProps[], attendeeId: number, productId: number): AttendeeProps[] {
+  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
     return attendees.map(attendee => {
       if (attendee.id !== attendeeId) return attendee;
       
-      const hasSelectedExclusive = attendee.products.some(
-        p => p.exclusive && (p.selected || p.purchased)
-      );
+      const willBeSelected = !product?.selected;
       
       return {
         ...attendee,
-        products: attendee.products.map(product => ({
-          ...product,
-          selected: product.id === productId ? !product.selected : product.selected,
-          disabled: product.exclusive && product.id !== productId && 
-            (hasSelectedExclusive || product.selected)
+        products: attendee.products.map(p => ({
+          ...p,
+          selected: 
+            p.id === product.id ? !p.selected :
+            (p.exclusive && willBeSelected && product?.exclusive) ? false :
+            p.selected,
+          disabled: product.exclusive && p.id !== product.id && p.selected
         }))
       };
     });
@@ -32,39 +32,36 @@ class ExclusiveProductStrategy implements ProductStrategy {
 }
 
 class PatreonProductStrategy implements ProductStrategy {
-  handleSelection(attendees: AttendeeProps[], attendeeId: number, productId: number): AttendeeProps[] {
-    const isPatreonSelected = attendees
-      .find(a => a.id === attendeeId)
-      ?.products.find(p => p.id === productId)?.selected;
+  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
+    const isPatreonSelected = product?.selected;
 
     return attendees.map(attendee => ({
       ...attendee,
-      products: attendee.products.map(product => ({
-        ...product,
-        selected: attendee.id === attendeeId && product.id === productId ? 
-          !product.selected : product.selected,
-        price: !isPatreonSelected ? 0 : product.original_price || product.price
+      products: attendee.products.map(p => ({
+        ...p,
+        selected: (attendee.id === attendeeId && p.id === product.id) ? 
+          !p.selected : p.selected,
+        price: p.id === product.id ? 
+          (product.original_price || product.price) : 
+          (!isPatreonSelected ? 0 : p.original_price || p.price)
       }))
     }));
   }
 }
 
 class MonthProductStrategy implements ProductStrategy {
-  handleSelection(attendees: AttendeeProps[], attendeeId: number, productId: number): AttendeeProps[] {
-    const targetAttendee = attendees.find(a => a.id === attendeeId);
-    const isMonthSelected = targetAttendee?.products.find(p => p.id === productId)?.selected;
+  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
+    const isMonthSelected = product?.selected;
 
     return attendees.map(attendee => {
       if (attendee.id !== attendeeId) return attendee;
       
       return {
         ...attendee,
-        products: attendee.products.map(product => ({
-          ...product,
-          selected: product.id === productId ? 
-            !product.selected : 
-            product.category === 'week' ? 
-              !isMonthSelected : product.selected
+        products: attendee.products.map(p => ({
+          ...p,
+          selected: p.id === product.id ? !p.selected : 
+            p.category === 'week' ? !isMonthSelected : p.selected
         }))
       };
     });
@@ -72,17 +69,17 @@ class MonthProductStrategy implements ProductStrategy {
 }
 
 class WeekProductStrategy implements ProductStrategy {
-  handleSelection(attendees: AttendeeProps[], attendeeId: number, productId: number): AttendeeProps[] {
-    const targetAttendee = attendees.find(a => a.id === attendeeId);
-    const currentProduct = targetAttendee?.products.find(p => p.id === productId);
-    const willBeSelected = !currentProduct?.selected;
+  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
+    const willBeSelected = !product?.selected;
 
     // Calculamos el número total de semanas que estarán seleccionadas después del cambio
-    const futureSelectedWeeksCount = targetAttendee?.products.filter(p => 
+    const selectedWeeksCount = attendees.find(a => a.id === attendeeId)?.products.filter(p => 
       p.category === 'week' && (
-        p.id === productId ? willBeSelected : p.selected
+        p.id === product.id ? willBeSelected : p.selected
       )
     ).length || 0;
+
+    const willBeSelectMonth = selectedWeeksCount !== 0 && selectedWeeksCount % 4 === 0;
 
     return attendees.map(attendee => {
       if (attendee.id !== attendeeId) return attendee;
@@ -91,12 +88,12 @@ class WeekProductStrategy implements ProductStrategy {
       
       return {
         ...attendee,
-        products: attendee.products.map(product => ({
-          ...product,
+        products: attendee.products.map(p => ({
+          ...p,
           selected: 
-            product.id === productId ? willBeSelected :
-            product.id === monthProduct?.id ? futureSelectedWeeksCount % 4 === 0 :
-            product.selected
+            p.id === product.id ? willBeSelected :
+            p.id === monthProduct?.id ? willBeSelectMonth :
+            p.selected
         }))
       };
     });

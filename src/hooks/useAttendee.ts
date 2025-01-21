@@ -2,10 +2,11 @@ import { api } from "@/api"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useState } from "react"
 import { CreateAttendee } from "@/types/Attendee"
+import { useApplication } from "@/providers/applicationProvider"
 
 const useAttendee = () => {
   const [loading, setLoading] = useState(false)
-  const { getRelevantApplication, updateApplication } = useCityProvider()
+  const { getRelevantApplication, updateApplication } = useApplication()
   const application = getRelevantApplication()
 
   const addAttendee = async ({name, email, category}: CreateAttendee) => {

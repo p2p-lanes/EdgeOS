@@ -30,3 +30,20 @@ export const sortAttendees = (attendees: AttendeeProps[]) => {
       return 0;
     });
 }
+
+export const filterProductsToPurchase = (products: ProductsPass[]) => {
+  return products.reduce((acc: ProductsPass[], product) => {
+      if (product.category === 'month' || product.category === 'patreon') {
+        return [...acc, product];
+      }
+      const hasMonthProduct = products.some(p => 
+        p.category === 'month' && 
+        p.attendee_category === product.attendee_category
+      );
+      
+      if (!hasMonthProduct) {
+        return [...acc, product];
+      }
+      return acc;
+    }, []).map(p => ({product_id: p.id, attendee_id: p.attendee_id, quantity: 1}))
+}

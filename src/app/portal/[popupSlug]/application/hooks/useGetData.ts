@@ -2,11 +2,12 @@ import { api } from "@/api"
 import { useCityProvider } from "@/providers/cityProvider"
 import { filterAcceptedApplication, filterApplicationDraft } from "../helpers/filters"
 import useGetTokenAuth from "@/hooks/useGetTokenAuth"
+import { useApplication } from "@/providers/applicationProvider"
 
 const useGetData = () => {
-  const { getCity, getApplications, getPopups } = useCityProvider()
+  const { getCity, getPopups } = useCityProvider()
+  const { applications } = useApplication()
   const city = getCity()
-  const applications = getApplications()
   const popups = getPopups()
   const { user } = useGetTokenAuth()
   
