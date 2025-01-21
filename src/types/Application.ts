@@ -40,7 +40,6 @@ export interface ApplicationProps {
   brings_kids?: boolean;
   kids_info?: string;
   scholarship_request?: boolean;
-  scholarship_categories?: string[];
   scholarship_details?: string;
   status?: ApplicationStatusProps;
   citizen_id?: number;

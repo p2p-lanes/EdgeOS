@@ -1,35 +1,10 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ProductsPass, ProductsProps } from "@/types/Products"
-import { AttendeeProps } from "@/types/Attendee"
-import { useMemo, useState } from "react"
 import PaymentHistory from "./Payments/PaymentHistory"
-import usePostData from "../../hooks/usePostData"
-import { toggleProducts } from "../../helpers/products"
-import { defaultProducts } from "../../helpers/filter"
-import Passes from "./Passes"
-import { PaymentsProps } from "@/types/passes"
+import PassesSidebar from "./Passes/PassesSidebar"
+import useGetPaymentsData from "@/hooks/useGetPaymentsData"
 
-interface TabsContainerProps {
-  productsPurchase: ProductsProps[], 
-  attendees: AttendeeProps[], 
-  payments: PaymentsProps[],
-  discount: number
-}
-
-const TabsContainer = ({productsPurchase, attendees, payments, discount}: TabsContainerProps) => {
-  const initialProducts = useMemo(() => defaultProducts(productsPurchase, attendees, discount), [productsPurchase, attendees, discount])
-  const [products, setProducts] = useState<ProductsPass[]>(initialProducts)
-  const { purchaseProducts, loadingProduct } = usePostData()
-
-  const handleClickPurchase = async () => {
-    await purchaseProducts(products)
-    setProducts(initialProducts)
-  }
-
-  const toggleProduct = (attendee: AttendeeProps | undefined, product?: ProductsPass) => {
-    if (!product || !attendee) return;
-    setProducts(prev => toggleProducts(prev, product, attendee, initialProducts));
-  };
+const TabsContainer = () => {
+  const { payments } = useGetPaymentsData()
 
   return (
     <Tabs defaultValue="passes" className="w-full mt-6 md:mt-0">
@@ -39,7 +14,7 @@ const TabsContainer = ({productsPurchase, attendees, payments, discount}: TabsCo
       </TabsList>
 
       <TabsContent value="passes">
-        <Passes products={products} attendees={attendees} onToggleProduct={toggleProduct} purchaseProducts={handleClickPurchase} loadingProduct={loadingProduct} />
+        <PassesSidebar/>
       </TabsContent>
 
       <TabsContent value="payment-history">
@@ -48,4 +23,5 @@ const TabsContainer = ({productsPurchase, attendees, payments, discount}: TabsCo
     </Tabs>
   )
 }
+
 export default TabsContainer

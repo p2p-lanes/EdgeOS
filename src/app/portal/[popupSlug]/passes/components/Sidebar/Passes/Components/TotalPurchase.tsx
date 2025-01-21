@@ -4,14 +4,14 @@ import { ProductsPass } from "@/types/Products"
 import { ChevronRight } from "lucide-react"
 import { useState } from "react"
 import { badgeName } from "../../../../constants/multiuse"
+import { AttendeeProps } from "@/types/Attendee"
 
-const TotalPurchase = ({total, products, hasSelectedWeeks}: {
+const TotalPurchase = ({total, attendees }: {
   total: { originalTotal: number, total: number }, 
-  products: ProductsPass[],
-  hasSelectedWeeks: boolean
+  attendees: AttendeeProps[]
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const productsCart = products.filter(p => p.selected && p.category !== 'month')
+  const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected && p.category !== 'month'))
 
   return (
     <Collapsible
@@ -43,7 +43,7 @@ const TotalPurchase = ({total, products, hasSelectedWeeks}: {
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        {hasSelectedWeeks ? (
+        {productsCart.length > 0 ? (
           <div className="space-y-2 px-3">
             {
               productsCart.map(product => (

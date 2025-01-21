@@ -7,17 +7,17 @@ import { PlusIcon } from "lucide-react"
 import { AttendeeCard } from "./AttendeeCard"
 import { AttendeeModal } from "./AttendeeModal"
 import { useCityProvider } from "@/providers/cityProvider"
+import { useApplication } from "@/providers/applicationProvider"
 
-const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
-  const { getCity } = useCityProvider()
+const ListAttendees = () => {
   const { addAttendee, removeAttendee, loading, editAttendee } = useAttendee()
   const [open, setOpen] = useState(false)
   const [initialName, setInitialName] = useState("")
   const [initialEmail, setInitialEmail] = useState("")
   const [category, setCategory] = useState<AttendeeCategory>('spouse')
   const [isEdit, setIsEdit] = useState(false)
-  const city = getCity()
-
+  const { getAttendees } = useApplication()
+  const attendees = getAttendees()
 
   const removeAtt = async (id: number) => {
     return removeAttendee(id)
@@ -49,7 +49,6 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
   }
 
   const showSpouse = attendees.find(a => a.category === 'spouse')
-  const showKid = attendees.find(a => a.category === 'kid')
 
   const handleOpen = (category: 'kid' | 'spouse') => {
     setIsEdit(false)
@@ -82,19 +81,11 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
             Add Spouse
           </Button>
         )}
-        {
-          (city && city?.slug === 'edge-austin') ? (
-            <Button variant="outline" disabled={!!showKid} onClick={() => handleOpen('kid')}>
-              <PlusIcon className="h-4 w-4" />
-              Add Kids
-            </Button>
-          ) : (
-            <Button variant="outline" disabled>
-              <PlusIcon className="h-4 w-4" />
-              Add Kids (soon)
-            </Button>
-          )
-        }
+
+        <Button variant="outline" onClick={() => handleOpen('kid')}>
+          <PlusIcon className="h-4 w-4" />
+          Add Kids
+        </Button>
         <AttendeeModal onAddAttendee={handleModal} open={open} setOpen={setOpen} initialName={initialName} initialEmail={initialEmail} category={category} isEdit={isEdit}/>
       </div>
     </div>

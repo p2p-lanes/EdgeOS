@@ -51,7 +51,6 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
                 setIsInterested(checked === true)
                 handleChange('scholarship_request', checked === true)
                 if (checked === false) {
-                  handleChange('scholarship_categories', [])
                   handleChange('scholarship_details', '')
                 }
               }}
