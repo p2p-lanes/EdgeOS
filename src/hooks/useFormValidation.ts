@@ -12,7 +12,7 @@ const requiredFields = {
   professionalDetails: ['organization', 'social_media'],
   participation: ['duration', 'builder_description'],
   childrenPlusOnes: ['spouse_info', 'spouse_email', 'kids_info'],
-  scholarship: ['scholarship_video_url'],
+  scholarship: ['scholarship_video_url', 'scholarship_details'],
   accommodation: ['booking_confirmation'],
 }
 
@@ -26,10 +26,8 @@ export const useFormValidation = (initialData: FormData) => {
 
   const validateField = useCallback((name: FieldName, value: FieldValue, formData: FormData) => {
     if (!fields?.has(name)) return ''
-
-    const isVideoValid = validateVideoUrl(formData.video_url)
     
-    if (isVideoValid) {
+    if (formData.video_url && validateVideoUrl(formData.video_url)) {
       const requiredWithVideo = [
         ...requiredFields.personalInformation,
         ...requiredFields.childrenPlusOnes,
@@ -39,7 +37,9 @@ export const useFormValidation = (initialData: FormData) => {
       if (!requiredWithVideo.includes(name)) return ''
     }
 
-    const isRequired = Object.values(requiredFields).flat().includes(name) && fields.has(name)
+    const isRequired = Object.values(requiredFields).flat().includes(name)
+
+    console.log('isRequired', isRequired, name)
     if (isRequired) {
       if(name === 'booking_confirmation') {
         if(!formData.is_renter) return '';
@@ -61,7 +61,7 @@ export const useFormValidation = (initialData: FormData) => {
         if (!formData.scholarship_request || validateVideoUrl(formData.scholarship_video_url)) return '';
       }
       if(name === 'scholarship_details') {
-        if(!formData.scholarship_request && city?.slug !== 'edge-austin') return '';
+        if(!formData.scholarship_request || city?.slug !== 'edge-austin') return '';
       }
 
       if (Array.isArray(value)) {

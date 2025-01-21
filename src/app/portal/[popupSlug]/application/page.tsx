@@ -22,6 +22,7 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { dynamicForm } from "../../../../constants"
 import AccomodationForm from "./components/AccomodationForm"
+import uploadFileToS3 from "@/helpers/upload"
 
 export default function FormPage() {
   const [statusBtn, setStatusBtn] = useState({loadingDraft: false, loadingSubmit: false})

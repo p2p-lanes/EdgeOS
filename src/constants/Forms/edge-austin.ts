@@ -19,7 +19,7 @@ export const edgeAustin: DynamicForm = {
   },
   accommodation: {
     title: 'Accommodation',
-    subtitle: 'Your ticket is included with your stay (a minimum of 4 nights from March 2nd to March 7th), granting you a 100% discount on the participation fee. Please provide your booking confirmation for verification. Kindly note that your application will be subject to review and approval.'
+    subtitle: 'If you booked your stay at Hotel Magdalena via our link, you get a FREE ticket (requires minimum stay of 4 nights, 2-7 March, 2025). Please provide your booking confirmation for verification. Kindly note that your application will be subject to review and approval.'
   },
   fields: [
     "first_name",
