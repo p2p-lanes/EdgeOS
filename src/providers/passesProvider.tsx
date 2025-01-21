@@ -17,7 +17,8 @@ export const PassesContext = createContext<PassesContext_interface | null>(null)
 
 
 const PassesProvider = ({ children }: { children: ReactNode }) => {
-  const { getAttendees } = useApplication()
+  const { getAttendees, getRelevantApplication } = useApplication()
+  const application = getRelevantApplication()
   const [attendeePasses, setAttendeePasses] = useState<AttendeeProps[]>([])
   const { products } = useGetPassesData()
   const attendees = useMemo(() => sortAttendees(getAttendees()), [getAttendees])
@@ -33,6 +34,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
       const hasPatreonPurchased = attendees.some(attendee => attendee.products?.some(p => p.category === 'patreon'));
+      const discount = application?.discount_assigned || 0
       const initialAttendees = attendees.map(attendee => {
         
         return {
@@ -45,7 +47,10 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
               purchased: attendee.products?.some(purchasedProduct => purchasedProduct.id === product.id) || false,
               attendee_id: attendee.id,
               original_price: product.price,
-              price: hasPatreonPurchased ? 0 : product.price,
+              price: hasPatreonPurchased ? 0 : 
+                     (product.category !== 'patreon' && product.category !== 'supporter' && discount > 0) ? 
+                     product.price * (1 - discount/100) : 
+                     product.price,
               disabled: false
             }))
         };
