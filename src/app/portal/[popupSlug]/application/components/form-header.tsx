@@ -20,7 +20,7 @@ export function FormHeader() {
           src={city.image_url}
           alt={city.name}
           style={{height: 'auto'}}
-          className="w-full md:min-h-[180px] md:w-[20vw] md:max-w-[240px] dark:invert rounded-2xl"
+          className="w-full md:min-h-[180px] md:w-[20vw] md:max-w-[240px] object-cover dark:invert rounded-2xl"
         />
       </div>
       <div className="space-y-2">

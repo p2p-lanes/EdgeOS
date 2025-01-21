@@ -27,7 +27,7 @@ interface FileUploadInputProps {
 export function FileUploadInput({
   onFilesSelected,
   maxFiles = 1,
-  acceptedFileTypes = ["application/pdf"],
+  acceptedFileTypes = ["application/pdf", "image/png", "image/jpeg", "image/jpg"],
   placeholder = "Drag and drop files here, or",
   label = "Select file",
   id,
