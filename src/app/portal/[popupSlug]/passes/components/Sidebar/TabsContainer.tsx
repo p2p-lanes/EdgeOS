@@ -6,7 +6,6 @@ import PaymentHistory from "./Payments/PaymentHistory"
 import usePostData from "../../hooks/usePostData"
 import { PaymentsProps } from "@/types/passes"
 import PassesSidebar from "./Passes/PassesSidebar"
-import { usePassesProvider } from "@/providers/passesProvider"
 
 interface TabsContainerProps {
   attendeePasses: AttendeeProps[], 
