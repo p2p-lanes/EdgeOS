@@ -7,8 +7,7 @@ function formatDate(date: string) {
   return new Date(date).toLocaleDateString('en-EN', {day: 'numeric', month: 'numeric', year: 'numeric'})
 }
 
-const PaymentHistory = () => {
-  const { payments } = useGetPaymentsData()
+const PaymentHistory = ({payments}: {payments: PaymentsProps[]}) => {
   const approvedPayments = payments?.filter(payment => payment.status === 'approved')
 
   if(!approvedPayments || approvedPayments.length === 0){
