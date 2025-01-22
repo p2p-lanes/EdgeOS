@@ -72,7 +72,7 @@ export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: Attend
                 <Badge
                   key={p.id}
                   variant="outline" 
-                  className={'w-[100%] lg:w-[172px] md:min-h-[42px] flex bg-[#0F172A] text-white gap-2'}
+                  className={'w-[100%] 2xl:w-[172px] md:min-h-[42px] flex bg-[#0F172A] text-white gap-2'}
                 >
                   <Ticket className="h-4 w-4" />
                   <div className="flex flex-col">
