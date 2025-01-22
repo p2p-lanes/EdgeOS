@@ -84,7 +84,7 @@ const ListAttendees = () => {
 
         <Button variant="outline" onClick={() => handleOpen('kid')}>
           <PlusIcon className="h-4 w-4" />
-          Add Kids
+          Add Kid
         </Button>
         <AttendeeModal onAddAttendee={handleModal} open={open} setOpen={setOpen} initialName={initialName} initialEmail={initialEmail} category={category} isEdit={isEdit}/>
       </div>

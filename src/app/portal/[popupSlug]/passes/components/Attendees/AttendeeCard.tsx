@@ -69,17 +69,17 @@ export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: Attend
             <p className="text-xs font-semibold text-muted-foreground">Purchased passes</p>
             <div className="grid grid-cols-2 ">
               {attendee.products?.map((p) => (
-                  <Badge
-                    key={p.id}
-                    variant="outline" 
-                    className={'w-fit bg-[#0F172A] text-white gap-1'}
-                  >
-                    <Ticket className="h-4 w-4" />
-                    <div className="flex flex-col">
-                      <p className="text-xs font-semibold text-white">{p.name}</p>
-                      <p className="text-xs font-semibold text-white">{p.start_date && p.end_date ? `${new Date(p.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} to ${new Date(p.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}</p>
-                    </div>
-                  </Badge>
+                <Badge
+                  key={p.id}
+                  variant="outline" 
+                  className={'w-[172px] flex bg-[#0F172A] text-white gap-2'}
+                >
+                  <Ticket className="h-4 w-4" />
+                  <div className="flex flex-col">
+                    <p className="text-xs font-semibold text-white">{p.name}</p>
+                    <p className="text-xs font-semibold text-white">{p.start_date && p.end_date ? `${new Date(p.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} to ${new Date(p.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}` : ''}</p>
+                  </div>
+                </Badge>
               ))}
             </div>
           </> : (
