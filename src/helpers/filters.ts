@@ -6,6 +6,9 @@ export const sortAttendees = (attendees: AttendeeProps[]) => {
       if (b.category === 'main') return 1;
       if (a.category === 'spouse') return -1;
       if (b.category === 'spouse') return 1;
+      if (a.category === 'kid' && b.category === 'kid') {
+        return a.name.localeCompare(b.name);
+      }
       return 0;
     });
 }

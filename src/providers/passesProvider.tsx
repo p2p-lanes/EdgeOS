@@ -1,11 +1,11 @@
 import { AttendeeProps } from '@/types/Attendee';
 import { createContext, ReactNode, useContext, useMemo, useState, useEffect } from 'react';
-import { useCityProvider } from './cityProvider';
 import { sortAttendees } from '@/helpers/filters';
 import useGetPassesData from '@/hooks/useGetPassesData';
 import { getProductStrategy } from '@/strategies/ProductStrategies';
 import { ProductsPass } from '@/types/Products';
 import { useApplication } from './applicationProvider';
+import { getPriceStrategy } from '@/strategies/PriceStrategy';
 
 interface PassesContext_interface {
   attendeePasses: AttendeeProps[];
@@ -14,7 +14,6 @@ interface PassesContext_interface {
 }
 
 export const PassesContext = createContext<PassesContext_interface | null>(null);
-
 
 const PassesProvider = ({ children }: { children: ReactNode }) => {
   const { getAttendees, getRelevantApplication } = useApplication()
@@ -25,18 +24,22 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleProduct = (attendeeId: number, product: ProductsPass) => {
     if (!product) return;
-    
+    const discount = application?.discount_assigned || 0;
+
     const strategy = getProductStrategy(product.category, product.exclusive);
-    const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product);
+    const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product, discount);
+
     setAttendeePasses(updatedAttendees);
   }
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
-      const hasPatreonPurchased = attendees.some(attendee => attendee.products?.some(p => p.category === 'patreon'));
+
       const discount = application?.discount_assigned || 0
+      
       const initialAttendees = attendees.map(attendee => {
-        
+        const hasPatreonPurchased = attendee.products?.some(p => p.category === 'patreon')
+        const priceStrategy = getPriceStrategy();
         return {
           ...attendee,
           products: products
@@ -47,17 +50,14 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
               purchased: attendee.products?.some(purchasedProduct => purchasedProduct.id === product.id) || false,
               attendee_id: attendee.id,
               original_price: product.price,
-              price: hasPatreonPurchased ? 0 : 
-                     (product.category !== 'patreon' && product.category !== 'supporter' && discount > 0) ? 
-                     product.price * (1 - discount/100) : 
-                     product.price,
-              disabled: false
+              disabled: false,
+              price: priceStrategy.calculatePrice(product, hasPatreonPurchased, discount)
             }))
         };
       });
       setAttendeePasses(initialAttendees);
     }
-  }, [attendees, products]);
+  }, [attendees, products, application?.discount_assigned]);
 
   return (
     <PassesContext.Provider 
