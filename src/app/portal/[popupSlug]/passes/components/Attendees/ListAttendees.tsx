@@ -1,12 +1,11 @@
 
-import { AttendeeCategory, AttendeeProps, CreateAttendee } from "@/types/Attendee"
+import { AttendeeCategory, CreateAttendee } from "@/types/Attendee"
 import useAttendee from "@/hooks/useAttendee"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { PlusIcon } from "lucide-react"
 import { AttendeeCard } from "./AttendeeCard"
 import { AttendeeModal } from "./AttendeeModal"
-import { useCityProvider } from "@/providers/cityProvider"
 import { useApplication } from "@/providers/applicationProvider"
 
 const ListAttendees = () => {

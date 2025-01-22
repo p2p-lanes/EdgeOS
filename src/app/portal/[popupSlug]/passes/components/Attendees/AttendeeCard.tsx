@@ -67,7 +67,7 @@ export function AttendeeCard({loading, attendee, onDelete, onClickEdit }: Attend
         <div className="flex flex-col gap-2">
           {hasProducts ? <>
             <p className="text-xs font-semibold text-muted-foreground">Purchased passes</p>
-            <div className="grid grid-cols-2 ">
+            <div className="grid grid-cols-2 gap-1">
               {attendee.products?.map((p) => (
                 <Badge
                   key={p.id}
