@@ -15,7 +15,6 @@ const shareableInfo = [
   { value: "first_name", label: "First name" },
   { value: "last_name", label: "Last name" },
   { value: "email", label: "Email address" },
-  { value: "participation", label: "Participation" },
   { value: "telegram", label: "Telegram username" },
   { value: "participation", label: "Participation" },
   { value: "brings_kids", label: "Whether or not I'm bringing kids" },

@@ -29,16 +29,16 @@ const useResources = () => {
     status: application?.status === 'accepted' ? 'active' : 'disabled',
     path: `/portal/${city?.slug}/passes`,
   },
-  {
-    name: 'Attendee Directory',
+  ...(city?.slug === 'edge-esmeralda' ? [{
+    name: 'Attendee Directory', 
     icon: Users,
-    status: 'active',
+    status: 'active' as const,
     path: `/portal/${city?.slug}/attendees`,
-  },
+  }] : []),
   {
     name: 'Housing',
     icon: Home,
-    status: 'soon'
+    status: 'soon' as const
   }
 ]
 
