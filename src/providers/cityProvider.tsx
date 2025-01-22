@@ -1,57 +1,32 @@
-import { ApplicationProps } from '@/types/Application';
 import { PopupsProps } from '@/types/Popup';
-import { ProductsProps } from '@/types/Products';
+import { useParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 interface CityContext_interface {
   getCity: () => PopupsProps | null;
-  setCity: (city: PopupsProps) => void;
-  getApplications: () => ApplicationProps[];
-  setApplications: (application: ApplicationProps[]) => void;
-  getRelevantApplication: () => ApplicationProps;
   getPopups: () => PopupsProps[];
   setPopups: (popups: PopupsProps[]) => void;
-  updateApplication: (application: ApplicationProps) => void;
-  getProducts: () => ProductsProps[]
-  setProducts: (products: ProductsProps[]) => void
 }
 
 export const CityContext = createContext<CityContext_interface | null>(null);
 
-
 const CityProvider = ({ children }: {children: ReactNode}) => {
-  const [products, setProductsState] = useState<ProductsProps[]>([])
-  const [city, setCityState] = useState<PopupsProps | null>(null);
-  const [applications, setApplicationsState] = useState<ApplicationProps[]>([]);
   const [popups, setPopupsState] = useState<PopupsProps[]>([]);
+  const params = useParams()
 
-  const setProducts = (products: ProductsProps[]) => {
-    setProductsState(products)
-  }
-
-  const getProducts = () => {
-    return products
-  }
-
-  const getApplications = (): ApplicationProps[] => {
-    return applications
-  }
-
-  const setApplications = (applications: ApplicationProps[]): void => {
-    setApplicationsState(applications);
+  const getValidCity = (): PopupsProps | null => {
+    const city = popups.find((popup: PopupsProps) => popup.slug === params.popupSlug && popup.clickable_in_portal && popup.visible_in_portal)
+    return city ?? null;
   }
 
   const getCity = (): PopupsProps | null => {
-    return city;
+    const city = getValidCity()
+    if(!city){
+      const selectedCity = popups.find((popup: PopupsProps) => popup.clickable_in_portal && popup.visible_in_portal)
+      if(selectedCity) return selectedCity
+    }
+    return city ?? null;
   };
-
-  const setCity = (city: PopupsProps): void => {
-    setCityState(city);
-  };
-
-  const getRelevantApplication = (): ApplicationProps => {
-    return applications?.filter((app: ApplicationProps) => app.popup_city_id === city?.id)?.slice(-1)[0]
-  }
 
   const getPopups = (): PopupsProps[] => {
     return popups
@@ -68,24 +43,14 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
     setPopupsState(sortedPopups);
   }
 
-  const updateApplication = (application: ApplicationProps) => {
-    const newApps = applications.filter(ap => ap.id !== application.id)
-    setApplications([...newApps, application])
-  }
-
   return (
-    <CityContext.Provider value={{
-      getCity,
-      setCity,
-      getApplications,
-      setApplications,
-      getRelevantApplication,
-      getPopups,
-      setPopups,
-      updateApplication,
-      getProducts,
-      setProducts
-    }}>
+    <CityContext.Provider 
+      value={{
+        getCity,
+        getPopups,
+        setPopups,
+      }}
+    >
       {children}
     </CityContext.Provider>
   );

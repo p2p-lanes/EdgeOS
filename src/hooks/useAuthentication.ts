@@ -26,6 +26,7 @@ const useAuthentication = (): UseAuthenticationReturn => {
   const searchParams = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search)
   const tokenUrl = searchParams?.get('token_url') ?? null;
 
+  //TODO: validate token
   const validateToken = (token: string): boolean => {
     try {
       const decoded = jwtDecode(token) as User
@@ -60,7 +61,19 @@ const useAuthentication = (): UseAuthenticationReturn => {
     return false;
   }
 
+  const setTokenValidated = (token: string) => {
+    instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
+    const decoded = jwtDecode(token) as User
+    setUser(decoded)
+    setIsAuthenticated(true)
+  }
+
   const login = async (): Promise<boolean> => {
+
+    if(token && validateToken(token)){
+      return true
+    }
+
     const isAuthenticated = await _authenticate()
 
     if (isAuthenticated) {
@@ -89,10 +102,7 @@ const useAuthentication = (): UseAuthenticationReturn => {
     }
     
     if (validateToken(token)) {
-      instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      const decoded = jwtDecode(token) as User
-      setUser(decoded)
-      setIsAuthenticated(true)
+      setTokenValidated(token)
     } else {
       logout()
     }

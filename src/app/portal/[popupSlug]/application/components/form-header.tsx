@@ -1,42 +1,30 @@
 'use client'
 
 import { useCityProvider } from "@/providers/cityProvider"
-import SectionWrapper from "./SectionWrapper"
 import { CalendarDays, MapPin } from "lucide-react"
-import { useEffect } from "react"
-import useWindow from "@/hooks/useWindow"
-import { useState } from "react"
 
 export function FormHeader() {
-  const { isClient } = useWindow()
   const { getCity } = useCityProvider()
   const city = getCity()
 
-  const [calendarDays, setCalendarDays] = useState('')
-
-  useEffect(() => {
-    if(!isClient || !city?.start_date || !city?.end_date) return
-
-    const startDate = new Date(city.start_date).toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
-    const endDate = new Date(city.end_date).toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
-    const calendarDays = startDate + ' - ' + endDate
-    setCalendarDays(calendarDays)
-  }, [city?.start_date, city?.end_date, isClient])
-
   if(!city) return null
 
+  const startDate = new Date(city.start_date)?.toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
+  const endDate = new Date(city.end_date)?.toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
+
   return (
-    <div className="flex gap-6 space-y-6">
+    <div className="flex flex-col md:flex-row gap-6 space-y-6">
       <div className="flex items-center">
+        {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={city.image_url}
           alt={city.name}
-          style={{height: 'auto' }}
-          className="w-full md:w-[20vw] md:max-w-[240px] dark:invert rounded-2xl"
+          style={{height: 'auto'}}
+          className="w-full md:min-h-[180px] md:w-[20vw] md:max-w-[240px] object-cover dark:invert rounded-2xl"
         />
       </div>
-      <div className="space-y-3">
-        <h1 className="text-3xl font-bold tracking-tight">{city.name} Application</h1>
+      <div className="space-y-2">
+        <h1 className="text-3xl font-bold tracking-tight">{city.name}</h1>
         <p className="text-md text-muted-foreground">
           {city.tagline}
         </p>
@@ -49,10 +37,10 @@ export function FormHeader() {
           )
         }
         {
-          city.start_date && (
+          (startDate && endDate) && (
             <div className="flex items-center text-sm text-muted-foreground mb-4">
               <CalendarDays className="mr-2 h-4 w-4" />
-              {calendarDays}
+              {startDate + ' - ' + endDate}
             </div>
           )
         }

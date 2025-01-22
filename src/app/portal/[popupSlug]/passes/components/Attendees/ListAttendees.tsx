@@ -1,17 +1,23 @@
-import { AttendeeCard } from "./AttendeeCard"
-import { AttendeeModal } from "./AttendeeModal"
-import { AttendeeProps, CreateAttendee } from "@/types/Attendee"
+
+import { AttendeeCategory, AttendeeProps, CreateAttendee } from "@/types/Attendee"
 import useAttendee from "@/hooks/useAttendee"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { PlusIcon } from "lucide-react"
+import { AttendeeCard } from "./AttendeeCard"
+import { AttendeeModal } from "./AttendeeModal"
+import { useCityProvider } from "@/providers/cityProvider"
+import { useApplication } from "@/providers/applicationProvider"
 
-const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
+const ListAttendees = () => {
   const { addAttendee, removeAttendee, loading, editAttendee } = useAttendee()
   const [open, setOpen] = useState(false)
   const [initialName, setInitialName] = useState("")
   const [initialEmail, setInitialEmail] = useState("")
+  const [category, setCategory] = useState<AttendeeCategory>('spouse')
   const [isEdit, setIsEdit] = useState(false)
+  const { getAttendees } = useApplication()
+  const attendees = getAttendees()
 
   const removeAtt = async (id: number) => {
     return removeAttendee(id)
@@ -30,23 +36,25 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
     setIsEdit(true)
     setInitialName(attendees.find(a => a.id === id)?.name ?? "")
     setInitialEmail(attendees.find(a => a.id === id)?.email ?? "")
+    setCategory(attendees.find(a => a.id === id)?.category ?? 'spouse')
     setOpen(true)
   }
 
   const handleModal = ({name, email}: {name: string, email: string}) => {
     const id = attendees.find(a => a.name === initialName)?.id
     if(id){
-      return editAtt(id, {name, email: email, category: 'spouse'})
+      return editAtt(id, { name, email: email, category })
     }
-    return addAtt({name, email: email, category: 'spouse'})
+    return addAtt({ name, email: email, category })
   }
 
   const showSpouse = attendees.find(a => a.category === 'spouse')
 
-  const handleOpen = () => {
+  const handleOpen = (category: 'kid' | 'spouse') => {
     setIsEdit(false)
     setInitialName("")
     setInitialEmail("")
+    setCategory(category)
     setOpen(true)
   }
 
@@ -68,16 +76,17 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
       })}
       <div className="flex gap-2">
         {!showSpouse && (
-          <Button variant="outline" className="" onClick={handleOpen}>
+          <Button variant="outline" onClick={() => handleOpen('spouse')}>
             <PlusIcon className="h-4 w-4" />
             Add Spouse
           </Button>
         )}
-        <Button variant="outline" disabled>
+
+        <Button variant="outline" onClick={() => handleOpen('kid')}>
           <PlusIcon className="h-4 w-4" />
-          Add Kids (soon)
+          Add Kids
         </Button>
-        <AttendeeModal onAddAttendee={handleModal} open={open} setOpen={setOpen} initialName={initialName} initialEmail={initialEmail} isEdit={isEdit}/>
+        <AttendeeModal onAddAttendee={handleModal} open={open} setOpen={setOpen} initialName={initialName} initialEmail={initialEmail} category={category} isEdit={isEdit}/>
       </div>
     </div>
   )

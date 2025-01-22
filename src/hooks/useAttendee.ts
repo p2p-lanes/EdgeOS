@@ -2,13 +2,15 @@ import { api } from "@/api"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useState } from "react"
 import { CreateAttendee } from "@/types/Attendee"
+import { useApplication } from "@/providers/applicationProvider"
 
 const useAttendee = () => {
   const [loading, setLoading] = useState(false)
-  const { getRelevantApplication, updateApplication } = useCityProvider()
+  const { getRelevantApplication, updateApplication } = useApplication()
   const application = getRelevantApplication()
 
   const addAttendee = async ({name, email, category}: CreateAttendee) => {
+    if(!application) return;
     setLoading(true)
     try{
       const response = await api.post(`applications/${application.id}/attendees`, {name, email, category})
@@ -24,6 +26,7 @@ const useAttendee = () => {
   }
 
   const removeAttendee = async (attendee_id: number) => {
+    if(!application) return;
     setLoading(true)
     try{
       const response = await api.delete(`applications/${application.id}/attendees/${attendee_id}`,)
@@ -39,6 +42,7 @@ const useAttendee = () => {
   }
 
   const editAttendee = async (attendee_id: number, {name, email, category}: CreateAttendee) => {
+    if(!application) return;
     setLoading(true)
     try{
       const response = await api.put(`applications/${application.id}/attendees/${attendee_id}`, {name, email, category})

@@ -8,12 +8,14 @@ import { Label } from "@/components/ui/label";
 import { SectionProps } from "@/types/Section";
 import { SectionSeparator } from "./section-separator";
 import { useCityProvider } from "@/providers/cityProvider";
+import { dynamicForm } from "@/constants";
 
 
 const shareableInfo = [
   { value: "first_name", label: "First name" },
   { value: "last_name", label: "Last name" },
   { value: "email", label: "Email address" },
+  { value: "participation", label: "Participation" },
   { value: "telegram", label: "Telegram username" },
   { value: "participation", label: "Participation" },
   { value: "brings_kids", label: "Whether or not I'm bringing kids" },
@@ -41,7 +43,9 @@ const fieldsPersonalInformation = ["first_name", "last_name", "email", "gender",
 export function PersonalInformationForm({ formData, errors, handleChange, fields }: SectionProps) {
   const { getCity } = useCityProvider()
   const city = getCity()
+
   if (!fields || !fields.size || !fieldsPersonalInformation.some(field => fields.has(field))) return null;
+  const form = dynamicForm[city?.slug ?? '']
 
   return (
     <>
@@ -107,7 +111,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             onChange={(value) => handleChange('telegram', value)}
             error={errors.telegram}
             isRequired={true}
-            subtitle={`The primary form of communication during ${city?.name} will be a Telegram group, so create an account if you don&apos;t already have one`}
+            subtitle={`The primary form of communication during ${city?.name} will be a Telegram group, so create an account if you don't already have one`}
             addon="@"
               placeholder="username"
             />
@@ -119,7 +123,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             value={formData.residence ?? ''}
             onChange={(value) => handleChange('residence', value)}
             error={errors.residence}
-            placeholder="Healdsburg, California, USA"
+            placeholder={form?.personal_information?.residence_placeholder ?? "Healdsburg, California, USA"}
             subtitle="Please format it like [City, State/Region, Country]. Feel free to put multiple cities if you live in multiple places."
           />
         )}
@@ -148,16 +152,16 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
         )}
       </div>
 
-      <div style={{ marginTop: '24px' }}>
-        {fields.has("local_resident") && (
+      {fields.has("local_resident") && (
+        <div style={{ marginTop: '24px' }}>
           <CheckboxForm
-            label="Are you a Sonoma County local?"
+            label={`Are you a ${dynamicForm[city?.slug ?? '']?.local} local?`}
             id="local_resident"
             checked={formData.local_resident || false}
             onCheckedChange={(checked: boolean) => handleChange('local_resident', checked === true)}
           />
-        )}
-      </div>
+        </div>
+      )}
 
       {fields.has("info_not_shared") && (
         <FormInputWrapper>

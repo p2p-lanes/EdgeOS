@@ -1,9 +1,11 @@
+import { useApplication } from "@/providers/applicationProvider"
 import { useCityProvider } from "@/providers/cityProvider"
 import { Resource } from "@/types/resources"
 import { CircleDot, FileText, Home, Tag, Ticket, User, Users } from "lucide-react"
 
 const useResources = () => {
-  const { getRelevantApplication, getCity } = useCityProvider()
+  const { getCity } = useCityProvider()
+  const { getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
   const city = getCity()
 

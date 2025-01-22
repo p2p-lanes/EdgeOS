@@ -4,14 +4,15 @@ import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
 import { ApplicationProps } from "@/types/Application"
 import useGetTokenAuth from "@/hooks/useGetTokenAuth"
+import { useApplication } from "@/providers/applicationProvider"
 
 const useSavesForm = () => {
   const { user } = useGetTokenAuth()
-  const { getCity, setApplications, getRelevantApplication, getApplications } = useCityProvider()
+  const { getCity} = useCityProvider()
+  const { getRelevantApplication, applications, setApplications } = useApplication()
   const application = getRelevantApplication()
   const city = getCity()
   const router = useRouter()
-  const applications = getApplications()
 
   const createApplication = async (formData: Record<string, unknown>) => {
     return api.post('applications', formData)
@@ -22,7 +23,7 @@ const useSavesForm = () => {
   }
 
   const handleSaveForm = async (formData: Record<string, unknown>) => {
-    if(!city || !user) return
+    if(!city || !user || !applications) return
 
     const data = {
       ...formData,
@@ -49,7 +50,7 @@ const useSavesForm = () => {
       toast.success("Application Submitted", {
         description: "Your application has been successfully submitted.",
       })
-      router.push('/portal')
+      router.push(`/portal/${city?.slug}`)
     }).catch(() => {
       toast.error("Error Submitting Application", {
         description: "There was an error submitting your application. Please try again.",
@@ -58,7 +59,7 @@ const useSavesForm = () => {
   }
 
   const handleSaveDraft = async (formData: Record<string, unknown>) => {
-    if(!city || !user) return
+    if(!city || !user || !applications) return
 
     const data = {
       ...formData,

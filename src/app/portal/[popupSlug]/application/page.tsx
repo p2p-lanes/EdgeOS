@@ -21,27 +21,39 @@ import { useCityProvider } from "@/providers/cityProvider"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { dynamicForm } from "../../../../constants"
+import AccomodationForm from "./components/AccomodationForm"
+import { useApplication } from "@/providers/applicationProvider"
 
 export default function FormPage() {
   const [statusBtn, setStatusBtn] = useState({loadingDraft: false, loadingSubmit: false})
   const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation(initial_data)
   const { isLoading: isLoadingForm, showExistingCard, existingApplication, setShowExistingCard } = useInitForm(setFormData)
   const { handleSaveForm, handleSaveDraft } = useSavesForm()
-  const { getCity, getRelevantApplication } = useCityProvider()
+  const { getCity } = useCityProvider()
+  const { getRelevantApplication } = useApplication()
   const progress = useProgress(formData)
   const city = getCity()
   const application = getRelevantApplication()
   const router = useRouter()
 
+  const fields = city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null
+
   useEffect(() => {
-    if(application && application.status === 'accepted') {
+    if(city && city.slug && !dynamicForm[city.slug]) {
+      router.push(`/portal/${city?.slug}`)
+      return;
+    }
+    if(application && (application.status === 'accepted' || application.status === 'rejected')) {
       router.push(`/portal/${city?.slug}`)
     }
   }, [application, city])
 
   const handleImport = async () => {
-    if (existingApplication) {
-      setFormData(existingApplication);
+    if (existingApplication && fields) {
+      const filteredData = Object.fromEntries(
+        Object.entries(existingApplication).filter(([key]) => fields.has(key))
+      );
+      setFormData(filteredData as Record<string, any>);
       setShowExistingCard(false);
       toast.success("Previous application data imported successfully");
     }
@@ -76,8 +88,6 @@ export default function FormPage() {
     return <Loader />
   }
 
-  const fields = city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null
-
   if(!fields || !fields.size) return null
 
   return (
@@ -98,10 +108,12 @@ export default function FormPage() {
         <ChildrenPlusOnesForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
 
         <ScholarshipForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
+
+        <AccomodationForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
         
         <div className="flex flex-col w-full gap-6 md:flex-row justify-between items-center pt-6">
           <ButtonAnimated loading={statusBtn.loadingDraft} disabled={statusBtn.loadingSubmit} variant="outline" type="button" onClick={handleDraft} className="w-full md:w-auto">Save as draft</ButtonAnimated>
-          <ButtonAnimated loading={statusBtn.loadingSubmit} disabled={statusBtn.loadingDraft} type="submit" className="w-full md:w-auto">Submit application</ButtonAnimated>
+          <ButtonAnimated loading={statusBtn.loadingSubmit} disabled={statusBtn.loadingDraft} type="submit" className="w-full md:w-auto">Submit</ButtonAnimated>
         </div>
 
       </form>

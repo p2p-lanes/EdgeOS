@@ -1,4 +1,4 @@
-import { ProductsProps } from "./Products";
+import { ProductsPass, ProductsProps } from "./Products";
 
 export type AttendeeCategory = "main" | "spouse" | 'kid'
 
@@ -8,7 +8,7 @@ export interface AttendeeProps {
   email: string;
   category: AttendeeCategory;
   application_id: number;
-  products?: ProductsProps[]
+  products: ProductsPass[]
 }
 
 export interface AttendeeDirectory {
