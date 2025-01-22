@@ -3,10 +3,11 @@ import { useCityProvider } from "@/providers/cityProvider"
 import { api } from "@/api"
 import useGetTokenAuth from "./useGetTokenAuth"
 import useAuthentication from "./useAuthentication"
+import { useApplication } from "@/providers/applicationProvider"
 
 const useGetApplications = (autoFetch = true) => {
-  const { setApplications } = useCityProvider()
-
+  const { setApplications } = useApplication()
+  
   const { user } = useGetTokenAuth()
   const { logout } = useAuthentication()
 

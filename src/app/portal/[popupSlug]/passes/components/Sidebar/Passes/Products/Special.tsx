@@ -96,7 +96,15 @@ function SpecialBase({
       </div>
       
       <div className="flex items-center gap-4">
-        <ProductPrice product={product} selected={selected} />
+        {
+          product.purchased ? (
+            <span className="text-sm font-medium text-[#005F3A]">
+              Purchased
+            </span>
+          ) : (
+            <ProductPrice product={product} selected={selected} />
+          )
+        }
       </div>
     </div>
   );

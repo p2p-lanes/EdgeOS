@@ -4,33 +4,32 @@ import { Card } from "@/components/ui/card"
 import { ButtonAnimated } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useCityProvider } from "@/providers/cityProvider"
-import { PassesProps } from "@/types/passes"
 import { AttendeePassesSection } from "./AttendeePassesSection"
 import Special from "./Products/Special"
 import BannerDiscount from "./Components/BannerDiscount"
 import TotalPurchase from "./Components/TotalPurchase"
 import { usePasses } from "../../../hooks/usePasses"
+import { usePassesProvider } from "@/providers/passesProvider"
+import usePurchaseProducts from "../../../hooks/usePurchaseProducts"
+import { useApplication } from "@/providers/applicationProvider"
+import { Skeleton } from "@/components/ui/skeleton"
 
-export default function Passes({ 
-  products, 
-  attendees, 
-  onToggleProduct, 
-  purchaseProducts, 
-  loadingProduct 
-}: PassesProps) {
-  const { getRelevantApplication, getCity } = useCityProvider()
+export default function PassesSidebar() {
+  const { getCity } = useCityProvider()
+  const { getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
   const city = getCity()
-  
+  const { toggleProduct, attendeePasses, products } = usePassesProvider()
+  const { purchaseProducts, loading } = usePurchaseProducts()
+
   const {
     total,
     specialProduct,
-    hasSelectedWeeks,
     mainAttendee,
     disabledPurchase,
     specialPurchase
-  } = usePasses(products, attendees)
-
+  } = usePasses(attendeePasses)
+  
   return (
     <Card className="p-6 space-y-4">
       <div>
@@ -42,25 +41,33 @@ export default function Passes({
         )}
       </div>
 
-      {attendees.map((attendee, index) => (
+      {!attendeePasses || attendeePasses.length === 0 && (
+        <div className="space-y-4">
+          <Skeleton className="h-[21px] w-[160px] rounded-lg" />
+          <Skeleton className="h-[92px] rounded-lg" />
+          <Skeleton className="h-[21px] w-[160px]  rounded-lg" />
+          <Skeleton className="h-[92px] rounded-lg" />
+        </div>
+      )}
+
+      {attendeePasses.map((attendee, index) => (
         <AttendeePassesSection
           key={attendee.id}
           attendee={attendee}
           index={index}
-          products={products}
-          onToggleProduct={onToggleProduct}
+          toggleProduct={toggleProduct}
         />
       ))}
 
       <Separator className="my-12"/>
 
-      {specialProduct && (
+      {(specialProduct && mainAttendee?.id) && (
         <div className="p-0 w-full">
           <Special
             product={specialProduct}
             selected={specialProduct?.selected ?? false}
             disabled={specialPurchase ?? false}
-            onClick={() => onToggleProduct(mainAttendee, specialProduct)}
+            onClick={() => toggleProduct(mainAttendee.id, specialProduct)}
           />
           <p className="text-xs text-muted-foreground mt-1">
             {specialProduct?.selected && specialProduct?.category === 'patreon' 
@@ -72,22 +79,21 @@ export default function Passes({
       )}
       
       <BannerDiscount 
-        isPatreon={(specialProduct?.selected && specialProduct?.category === 'patreon') ?? false} 
-        application={application} 
-        products={products} 
+        isPatreon={((specialProduct?.selected || specialProduct?.purchased) && specialProduct?.category === 'patreon') ?? false} 
+        application={application}
+        products={products}
       />
 
       <TotalPurchase 
         total={total} 
-        products={products} 
-        hasSelectedWeeks={hasSelectedWeeks}
+        attendees={attendeePasses}
       />
 
       <ButtonAnimated 
-        disabled={disabledPurchase || loadingProduct} 
-        loading={loadingProduct} 
+        disabled={disabledPurchase || loading} 
+        loading={loading} 
         className="w-full text-white" 
-        onClick={purchaseProducts}
+        onClick={() => purchaseProducts(attendeePasses)}
       >
         Complete Purchase
       </ButtonAnimated>

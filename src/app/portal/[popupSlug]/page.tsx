@@ -4,12 +4,14 @@ import { EventCard } from "@/components/Card/EventCard"
 import { EventStatus } from "@/components/Card/EventProgressBar"
 import { Loader } from "@/components/ui/Loader"
 import { dynamicForm } from "@/constants"
+import { useApplication } from "@/providers/applicationProvider"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
 export default function Home() {
-  const { getCity, getRelevantApplication } = useCityProvider()
+  const { getCity } = useCityProvider()
+  const { getRelevantApplication } = useApplication()
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const city = getCity()

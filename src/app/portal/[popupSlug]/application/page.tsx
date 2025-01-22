@@ -22,14 +22,15 @@ import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 import { dynamicForm } from "../../../../constants"
 import AccomodationForm from "./components/AccomodationForm"
-import uploadFileToS3 from "@/helpers/upload"
+import { useApplication } from "@/providers/applicationProvider"
 
 export default function FormPage() {
   const [statusBtn, setStatusBtn] = useState({loadingDraft: false, loadingSubmit: false})
   const { formData, errors, handleChange, validateForm, setFormData } = useFormValidation(initial_data)
   const { isLoading: isLoadingForm, showExistingCard, existingApplication, setShowExistingCard } = useInitForm(setFormData)
   const { handleSaveForm, handleSaveDraft } = useSavesForm()
-  const { getCity, getRelevantApplication } = useCityProvider()
+  const { getCity } = useCityProvider()
+  const { getRelevantApplication } = useApplication()
   const progress = useProgress(formData)
   const city = getCity()
   const application = getRelevantApplication()

@@ -1,23 +1,23 @@
 
-import { AttendeeCategory, AttendeeProps, CreateAttendee } from "@/types/Attendee"
+import { AttendeeCategory, CreateAttendee } from "@/types/Attendee"
 import useAttendee from "@/hooks/useAttendee"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { PlusIcon } from "lucide-react"
 import { AttendeeCard } from "./AttendeeCard"
 import { AttendeeModal } from "./AttendeeModal"
-import { useCityProvider } from "@/providers/cityProvider"
+import { useApplication } from "@/providers/applicationProvider"
+import { Skeleton } from "@/components/ui/skeleton"
 
-const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
-  const { getCity } = useCityProvider()
+const ListAttendees = () => {
   const { addAttendee, removeAttendee, loading, editAttendee } = useAttendee()
   const [open, setOpen] = useState(false)
   const [initialName, setInitialName] = useState("")
   const [initialEmail, setInitialEmail] = useState("")
   const [category, setCategory] = useState<AttendeeCategory>('spouse')
   const [isEdit, setIsEdit] = useState(false)
-  const city = getCity()
-
+  const { getAttendees } = useApplication()
+  const attendees = getAttendees()
 
   const removeAtt = async (id: number) => {
     return removeAttendee(id)
@@ -49,7 +49,6 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
   }
 
   const showSpouse = attendees.find(a => a.category === 'spouse')
-  const showKid = attendees.find(a => a.category === 'kid')
 
   const handleOpen = (category: 'kid' | 'spouse') => {
     setIsEdit(false)
@@ -62,6 +61,9 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
   return (
     <div className="space-y-4 md:mt-3">
       <h2 className="text-xl font-semibold">Attendees</h2>
+      {!attendees || attendees.length === 0 && (
+        <Skeleton className="h-[142px] rounded-lg" />
+      )}
       {attendees.map((attendee) => {
         const hasDelete = attendee.category !== 'main' && (!attendee.products || attendee.products.length === 0)
         const hasEdit = attendee.category !== 'main'
@@ -77,24 +79,16 @@ const ListAttendees = ({attendees}: {attendees: AttendeeProps[]}) => {
       })}
       <div className="flex gap-2">
         {!showSpouse && (
-          <Button variant="outline" onClick={() => handleOpen('spouse')}>
+          <Button variant="outline" disabled={!attendees || attendees.length === 0} onClick={() => handleOpen('spouse')}>
             <PlusIcon className="h-4 w-4" />
             Add Spouse
           </Button>
         )}
-        {
-          (city && city?.slug === 'edge-austin') ? (
-            <Button variant="outline" disabled={!!showKid} onClick={() => handleOpen('kid')}>
-              <PlusIcon className="h-4 w-4" />
-              Add Kids
-            </Button>
-          ) : (
-            <Button variant="outline" disabled>
-              <PlusIcon className="h-4 w-4" />
-              Add Kids (soon)
-            </Button>
-          )
-        }
+
+        <Button variant="outline" disabled={!attendees || attendees.length === 0} onClick={() => handleOpen('kid')}>
+          <PlusIcon className="h-4 w-4" />
+          Add Kid
+        </Button>
         <AttendeeModal onAddAttendee={handleModal} open={open} setOpen={setOpen} initialName={initialName} initialEmail={initialEmail} category={category} isEdit={isEdit}/>
       </div>
     </div>
