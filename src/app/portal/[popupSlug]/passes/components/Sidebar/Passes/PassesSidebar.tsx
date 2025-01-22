@@ -12,6 +12,7 @@ import { usePasses } from "../../../hooks/usePasses"
 import { usePassesProvider } from "@/providers/passesProvider"
 import usePurchaseProducts from "../../../hooks/usePurchaseProducts"
 import { useApplication } from "@/providers/applicationProvider"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function PassesSidebar() {
   const { getCity } = useCityProvider()
@@ -39,6 +40,15 @@ export default function PassesSidebar() {
           </p>
         )}
       </div>
+
+      {!attendeePasses || attendeePasses.length === 0 && (
+        <div className="space-y-4">
+          <Skeleton className="h-[21px] w-[160px] rounded-lg" />
+          <Skeleton className="h-[92px] rounded-lg" />
+          <Skeleton className="h-[21px] w-[160px]  rounded-lg" />
+          <Skeleton className="h-[92px] rounded-lg" />
+        </div>
+      )}
 
       {attendeePasses.map((attendee, index) => (
         <AttendeePassesSection

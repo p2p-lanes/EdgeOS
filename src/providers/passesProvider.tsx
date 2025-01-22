@@ -1,6 +1,5 @@
 import { AttendeeProps } from '@/types/Attendee';
 import { createContext, ReactNode, useContext, useMemo, useState, useEffect } from 'react';
-import { useCityProvider } from './cityProvider';
 import { sortAttendees } from '@/helpers/filters';
 import useGetPassesData from '@/hooks/useGetPassesData';
 import { getProductStrategy } from '@/strategies/ProductStrategies';
@@ -14,7 +13,6 @@ interface PassesContext_interface {
 }
 
 export const PassesContext = createContext<PassesContext_interface | null>(null);
-
 
 const PassesProvider = ({ children }: { children: ReactNode }) => {
   const { getAttendees, getRelevantApplication } = useApplication()

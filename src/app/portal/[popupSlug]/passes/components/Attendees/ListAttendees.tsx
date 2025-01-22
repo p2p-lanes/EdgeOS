@@ -7,6 +7,7 @@ import { PlusIcon } from "lucide-react"
 import { AttendeeCard } from "./AttendeeCard"
 import { AttendeeModal } from "./AttendeeModal"
 import { useApplication } from "@/providers/applicationProvider"
+import { Skeleton } from "@/components/ui/skeleton"
 
 const ListAttendees = () => {
   const { addAttendee, removeAttendee, loading, editAttendee } = useAttendee()
@@ -60,6 +61,9 @@ const ListAttendees = () => {
   return (
     <div className="space-y-4 md:mt-3">
       <h2 className="text-xl font-semibold">Attendees</h2>
+      {!attendees || attendees.length === 0 && (
+        <Skeleton className="h-[142px] rounded-lg" />
+      )}
       {attendees.map((attendee) => {
         const hasDelete = attendee.category !== 'main' && (!attendee.products || attendee.products.length === 0)
         const hasEdit = attendee.category !== 'main'
@@ -75,13 +79,13 @@ const ListAttendees = () => {
       })}
       <div className="flex gap-2">
         {!showSpouse && (
-          <Button variant="outline" onClick={() => handleOpen('spouse')}>
+          <Button variant="outline" disabled={!attendees || attendees.length === 0} onClick={() => handleOpen('spouse')}>
             <PlusIcon className="h-4 w-4" />
             Add Spouse
           </Button>
         )}
 
-        <Button variant="outline" onClick={() => handleOpen('kid')}>
+        <Button variant="outline" disabled={!attendees || attendees.length === 0} onClick={() => handleOpen('kid')}>
           <PlusIcon className="h-4 w-4" />
           Add Kid
         </Button>
