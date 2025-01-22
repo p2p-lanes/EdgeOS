@@ -24,34 +24,22 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
 
   const toggleProduct = (attendeeId: number, product: ProductsPass) => {
     if (!product) return;
-    
-    const strategy = getProductStrategy(product.category, product.exclusive);
-    const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product);
-    
-    const hasPatreonSelected = updatedAttendees.some(attendee => 
-      attendee.products.some(p => p.category === 'patreon' && p.selected)
-    );
-
     const discount = application?.discount_assigned || 0;
-    const priceStrategy = getPriceStrategy();
 
-    const attendeesWithUpdatedPrices = updatedAttendees.map(attendee => ({
-      ...attendee,
-      products: attendee.products.map(p => ({
-        ...p,
-        price: priceStrategy.calculatePrice(p, hasPatreonSelected, discount)
-      }))
-    }));
+    const strategy = getProductStrategy(product.category, product.exclusive);
+    const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product, discount);
 
-    setAttendeePasses(attendeesWithUpdatedPrices);
+    setAttendeePasses(updatedAttendees);
   }
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
-      const hasPatreonPurchased = attendees.some(attendee => attendee.products?.some(p => p.category === 'patreon'));
+
       const discount = application?.discount_assigned || 0
+      
       const initialAttendees = attendees.map(attendee => {
-        
+        const hasPatreonPurchased = attendee.products?.some(p => p.category === 'patreon')
+        const priceStrategy = getPriceStrategy();
         return {
           ...attendee,
           products: products
@@ -62,17 +50,14 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
               purchased: attendee.products?.some(purchasedProduct => purchasedProduct.id === product.id) || false,
               attendee_id: attendee.id,
               original_price: product.price,
-              price: hasPatreonPurchased ? 0 : 
-                     (product.category !== 'patreon' && product.category !== 'supporter' && discount > 0) ? 
-                     product.price * (1 - discount/100) : 
-                     product.price,
-              disabled: false
+              disabled: false,
+              price: priceStrategy.calculatePrice(product, hasPatreonPurchased, discount)
             }))
         };
       });
       setAttendeePasses(initialAttendees);
     }
-  }, [attendees, products]);
+  }, [attendees, products, application?.discount_assigned]);
 
   return (
     <PassesContext.Provider 
