@@ -5,6 +5,7 @@ import useGetPassesData from '@/hooks/useGetPassesData';
 import { getProductStrategy } from '@/strategies/ProductStrategies';
 import { ProductsPass } from '@/types/Products';
 import { useApplication } from './applicationProvider';
+import { getPriceStrategy } from '@/strategies/PriceStrategy';
 
 interface PassesContext_interface {
   attendeePasses: AttendeeProps[];
@@ -26,7 +27,23 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     
     const strategy = getProductStrategy(product.category, product.exclusive);
     const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product);
-    setAttendeePasses(updatedAttendees);
+    
+    const hasPatreonSelected = updatedAttendees.some(attendee => 
+      attendee.products.some(p => p.category === 'patreon' && p.selected)
+    );
+
+    const discount = application?.discount_assigned || 0;
+    const priceStrategy = getPriceStrategy();
+
+    const attendeesWithUpdatedPrices = updatedAttendees.map(attendee => ({
+      ...attendee,
+      products: attendee.products.map(p => ({
+        ...p,
+        price: priceStrategy.calculatePrice(p, hasPatreonSelected, discount)
+      }))
+    }));
+
+    setAttendeePasses(attendeesWithUpdatedPrices);
   }
   
   useEffect(() => {
