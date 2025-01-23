@@ -1,5 +1,5 @@
 import { TableCell } from "@/components/ui/table"
-import CellControl from "../../CellControl"
+import CellControl from "./CellControl"
 
 const CommonCell = ({value, className}: {value: string, className?: string}) => {
   return (

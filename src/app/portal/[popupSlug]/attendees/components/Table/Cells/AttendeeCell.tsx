@@ -1,5 +1,5 @@
 import { AttendeeDirectory } from "@/types/Attendee"
-import CellControl from "../../CellControl"
+import CellControl from "./CellControl"
 import { TableCell } from "@/components/ui/table"
 
 const AttendeeCell = ({attendee, className}: {attendee: AttendeeDirectory, className?: string}) => {
