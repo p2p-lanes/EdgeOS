@@ -1,6 +1,7 @@
+import { ProductsProps } from "@/types/Products"
 import { EyeOff } from "lucide-react"
 
-const CellControl = ({value, className}: {value: string | boolean, className: string}) => {
+const CellControl = ({children, value, className}: {children: React.ReactNode, value: string | boolean | ProductsProps[], className?: string}) => {
 
   if(value === '*'){
     return(
@@ -10,7 +11,7 @@ const CellControl = ({value, className}: {value: string | boolean, className: st
 
   return (
     <div className={className}>
-      {value}
+      {children}
     </div>
   )
 }

@@ -17,7 +17,7 @@ export interface AttendeeDirectory {
   first_name: string;
   last_name: string;
   telegram: string;
-  participation: string | boolean[];
+  participation: string | ProductsProps[];
   role: string;
   organization: string;
 }
