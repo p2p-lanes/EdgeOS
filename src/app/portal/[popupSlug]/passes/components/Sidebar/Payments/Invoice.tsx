@@ -1,3 +1,5 @@
+import { formatDate } from '@/helpers/dates';
+import { PaymentsProps, ProductsSnapshotProps } from '@/types/passes';
 import { pdf, Document, Page, View, Text, Image, StyleSheet } from '@react-pdf/renderer';
 
 const styles = StyleSheet.create({
@@ -50,49 +52,70 @@ const styles = StyleSheet.create({
   },
 });
 
-// Componente del PDF
-export const Invoice = ({ invoiceData }: { invoiceData: any }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      {/* Logo */}
-      <Image src={invoiceData.logoUrl} style={styles.logo} />
+interface InvoiceProps {
+  payment: PaymentsProps
+  discount?: number
+  hasPatreon?: boolean
+  imageUrl?: string
+  clientName: string
+}
 
-      {/* Invoice Info */}
+// Componente del PDF
+export const Invoice = ({ payment, discount, hasPatreon, imageUrl, clientName }: InvoiceProps) => {
+  console.log(discount, hasPatreon)
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        {/* eslint-disable-next-line jsx-a11y/alt-text */}
+      <Image src={imageUrl} style={styles.logo} />
+
       <View style={[styles.section, {flexDirection: 'row', justifyContent: 'space-between'}]}>
         <View style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1}}>
-          <Text>{invoiceData.companyName}</Text>
-          <Text>Address: {invoiceData.companyAddress}</Text>
-          <Text>Email: {invoiceData.companyEmail}</Text>
+          <Text>Edge Institute Inc</Text>
+          <Text>Address: 1300 S 6th St, Austin, TX 78704</Text>
+          <Text>Email: allison@edgecity.live</Text>
         </View>
         <View style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1, alignItems: 'flex-end'}}>
-          <Text>Date: {invoiceData.date}</Text>
-          <Text>Invoice #: {invoiceData.invoiceNumber}</Text>
-          <Text>Client: {invoiceData.clientName}</Text>
+          <Text>Date: {formatDate(payment.created_at)}</Text>
+          <Text>Invoice #: {payment.id}</Text>
+          <Text>Bill to: {clientName}</Text>
         </View>
       </View>
 
-      {/* Table */}
       <View style={styles.table}>
-        {/* Table Header */}
         <View style={[styles.tableRow, styles.tableHeader]}>
+          <Text style={styles.tableCell}>Quantity</Text>
           <Text style={styles.tableCell}>Description</Text>
+          <Text style={styles.tableCell}>Unit Price</Text>
+          {
+            discount && !hasPatreon && (
+              <Text style={styles.tableCell}>Discount</Text>
+            )
+          }
           <Text style={styles.tableCell}>Rate</Text>
           <Text style={styles.tableCell}>Amount</Text>
         </View>
-        {/* Table Rows */}
-        {invoiceData.items.map((item: any, index: any) => (
+        {payment.products_snapshot.map((item: ProductsSnapshotProps, index: number) => (
           <View key={index} style={styles.tableRow}>
-            <Text style={styles.tableCell}>{item.description}</Text>
-            <Text style={styles.tableCell}>{item.rate}</Text>
-            <Text style={styles.tableCell}>{item.amount}</Text>
+            <Text style={styles.tableCell}>{item.quantity}</Text>
+            <Text style={styles.tableCell}>{item.product_name}</Text>
+            <Text style={styles.tableCell}>{item.product_price} USD</Text>
+            {
+              discount && !hasPatreon && (
+                <Text style={styles.tableCell}>{discount}%</Text>
+              )
+            }
+            <Text style={styles.tableCell}>1</Text>
+            <Text style={styles.tableCell}>{item.product_price * item.quantity} {payment.currency}</Text>
           </View>
         ))}
       </View>
 
       {/* Footer */}
       <View style={styles.footer}>
-        <Text style={{fontWeight: 'bold', fontFamily: 'Helvetica-Bold'}}>Total: {invoiceData.total} USDC</Text>
+        <Text style={{fontWeight: 'bold', fontFamily: 'Helvetica-Bold'}}>Total: {payment.amount} {payment.currency}</Text>
       </View>
     </Page>
   </Document>
-);
+  )
+};

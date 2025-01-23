@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import useGetPaymentsData from "@/hooks/useGetPaymentsData"
 import { Check, Download } from "lucide-react"
 import { PaymentsProps } from "@/types/passes"
 import { Invoice } from "./Invoice"
@@ -9,10 +8,7 @@ import { pdf } from "@react-pdf/renderer"
 import { saveAs } from 'file-saver';
 import { useCityProvider } from "@/providers/cityProvider"
 import { useApplication } from "@/providers/applicationProvider"
-
-function formatDate(date: string) {
-  return new Date(date).toLocaleDateString('en-EN', {day: 'numeric', month: 'numeric', year: 'numeric'})
-}
+import { formatDate } from "@/helpers/dates"
 
 const PaymentHistory = ({payments}: {payments: PaymentsProps[]}) => {
   const { getCity } = useCityProvider()
@@ -33,31 +29,22 @@ const PaymentHistory = ({payments}: {payments: PaymentsProps[]}) => {
 
   const handleDownloadInvoice = async (payment: PaymentsProps) => {
     if(!application) return
-    console.log(city?.image_url)
-    const invoiceData = {
-      logoUrl: city?.image_url, // URL del logo
-      companyName: 'Edge Institute Inc',
-      companyAddress: '1300 S 6th St, Austin, TX 78704',
-      companyEmail: 'allison@edgecity.live',
-      date: formatDate(payment.created_at),
-      invoiceNumber: payment.id,
-      clientName: application.first_name + ' ' + application.last_name,
-      items: payment.products_snapshot.map((product) => ({
-        description: product.product_name,
-        rate: '',
-        amount: product.product_price.toString()
-      })),
-      total: payment.amount.toString(),
-    };
-
-    // Genera el PDF como un blob
-    const blob = await pdf(<Invoice invoiceData={invoiceData} />).toBlob();
-    // Usa file-saver para descargar el archivo
-    saveAs(blob, 'invoice.pdf');
+    
+    const clientName = application.first_name + ' ' + application.last_name
+    const blob = await pdf(<Invoice 
+        payment={payment} 
+        imageUrl={city?.image_url} 
+        clientName={clientName} 
+        discount={0} 
+        hasPatreon={application.attendees.some(attendee => 
+          attendee.products?.some(product => product.category === 'patreon')
+        )}
+      />).toBlob();
+    saveAs(blob, `${clientName}-invoice.pdf`);
   }
 
   return(
-    <Card className=" w-full">
+    <Card className="w-full">
       <Table>
         <TableHeader>
           <TableRow>
