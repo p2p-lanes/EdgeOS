@@ -37,7 +37,7 @@ const TotalPurchase = ({total, attendees }: {
                 ${total.originalTotal.toFixed(2)}
               </span>
             )}
-            <span className="font-medium">${total.total.toFixed(2)}</span>
+            <span data-testid="total-price" className="font-medium">${total.total.toFixed(2)}</span>
           </div>
 
         </div>

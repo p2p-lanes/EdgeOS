@@ -9,7 +9,10 @@ const withSpecialProductPresentation = (WrappedComponent: React.ComponentType<an
     const { selected, disabled } = props;
     
     const getStatusIcon = () => {
-      if (selected || disabled) {
+      if (disabled) {
+        return null;
+      }
+      if (selected) {
         return <Check className="w-4 h-4" color="#005F3A"/>;
       }
       return <Plus className="w-4 h-4" />;
@@ -80,6 +83,7 @@ function SpecialBase({
 }: SpecialProps & { getStatusIcon: () => JSX.Element }) {
   return (
     <div 
+      data-testid="patron-pass"
       onClick={!disabled ? onClick : undefined}
       className={cn(
         "w-full rounded-full flex items-center justify-between py-1 px-4",

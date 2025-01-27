@@ -39,7 +39,6 @@ export const useFormValidation = (initialData: FormData) => {
 
     const isRequired = Object.values(requiredFields).flat().includes(name)
 
-    console.log('isRequired', isRequired, name)
     if (isRequired) {
       if(name === 'booking_confirmation') {
         if(!formData.is_renter) return '';

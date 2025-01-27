@@ -117,7 +117,7 @@ export default function AuthForm() {
               ) : 'Log in'}
             </ButtonAnimated>
             <p className="mt-2 text-sm text-gray-600" style={{ textAlign: 'center', textWrap: 'balance' }}>
-            You'll receive a magic link in your email inbox to log in
+            You&apos;ll receive a magic link in your email inbox to log in
             </p>
           </form>
         </motion.div>
