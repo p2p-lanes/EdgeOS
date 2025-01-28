@@ -9,7 +9,7 @@ const Permissions = ({children}: {children: React.ReactNode}) => {
 
   
   useEffect(() => {
-    if(resources.some(resource => resource.path === route)) {
+    if(resources.some(resource => resource.path === route && resource.status === 'active')) {
       return;
     }
     router.push('/portal')
