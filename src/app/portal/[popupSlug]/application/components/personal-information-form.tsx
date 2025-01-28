@@ -9,39 +9,31 @@ import { SectionProps } from "@/types/Section";
 import { SectionSeparator } from "./section-separator";
 import { useCityProvider } from "@/providers/cityProvider";
 import { dynamicForm } from "@/constants";
-
-
-const shareableInfo = [
-  { value: "first_name", label: "First name" },
-  { value: "last_name", label: "Last name" },
-  { value: "email", label: "Email address" },
-  { value: "telegram", label: "Telegram username" },
-  { value: "participation", label: "Participation" },
-  { value: "brings_kids", label: "Whether or not I'm bringing kids" },
-  { value: 'role', label: 'Role' },
-  { value: 'organization', label: 'Organization' }
-]
-
-const ageOptions = [
-  { value: "18-24", label: "18-24" },
-  { value: "25-34", label: "25-34" },
-  { value: "35-44", label: "35-44" },
-  { value: "45-54", label: "45-54" },
-  { value: "55+", label: "55+" },
-]
-
-const genderOptions = [
-  { value: "Male", label: "Male" },
-  { value: "Female", label: "Female" },
-  { value: "Other", label: "Other" },
-  { value: "Prefer not to say", label: "Prefer not to say" },
-]
+import { motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
+import { ageOptions, genderOptions, shareableInfo } from "../constants/forms";
+import { useEffect } from 'react';
 
 const fieldsPersonalInformation = ["first_name", "last_name", "email", "gender", "age", "telegram", "residence", "eth_address", "referral", "local_resident", "info_not_shared"]
 
 export function PersonalInformationForm({ formData, errors, handleChange, fields }: SectionProps) {
   const { getCity } = useCityProvider()
   const city = getCity()
+
+  useEffect(() => {
+    console.log('form',formData.gender, !genderOptions.some(opt => opt.value === formData.gender))
+    if (formData.gender && !genderOptions.some(opt => opt.value === formData.gender)) {
+      handleChange('gender_specify', formData.gender);
+      handleChange('gender', 'Specify');
+    }
+  }, [formData.gender, handleChange]);
+
+  const animationProps = {
+    initial: { opacity: 0, height: 0 },
+    animate: { opacity: 1, height: "auto" },
+    exit: { opacity: 0, height: 0 },
+    transition: { duration: 0.3, ease: "easeInOut" }
+  };
 
   if (!fields || !fields.size || !fieldsPersonalInformation.some(field => fields.has(field))) return null;
   const form = dynamicForm[city?.slug ?? '']
@@ -78,28 +70,6 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             onChange={(value) => handleChange('email', value)}
             error={errors.email}
             isRequired={true}
-          />
-        )}
-        {fields.has("gender") && (
-          <SelectForm 
-            label="Gender"
-            id="gender"
-            value={formData.gender}
-            onChange={(value) => handleChange('gender', value)}
-            error={errors.gender}
-            isRequired={true}
-            options={genderOptions}
-          />
-        )}
-        {fields.has("age") && (
-          <SelectForm 
-            label="Age"
-            id="age"
-            value={formData.age}
-            onChange={(value) => handleChange('age', value)}
-            error={errors.age}
-            isRequired={true}
-            options={ageOptions}
           />
         )}
         {fields.has("telegram") && (
@@ -149,6 +119,45 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             subtitle="List everyone who encouraged you to apply."
           />
         )}
+        <div className="flex flex-col gap-4">
+          {fields.has("gender") && (
+            <SelectForm 
+              label="Gender"
+              id="gender"
+              value={formData.gender}
+              onChange={(value) => handleChange('gender', value)}
+              error={errors.gender}
+              isRequired={true}
+              options={genderOptions}
+            />
+          )}
+
+          <AnimatePresence>
+            {formData.gender === 'Specify' && (
+              <motion.div {...animationProps}>
+                <InputForm
+                  isRequired
+                  label="Specify your gender"
+                  id="gender_specify"
+                  value={formData.gender_specify ?? ''}
+                  onChange={(e) => handleChange('gender_specify', e)}
+                  error={errors.gender_specify}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+        {fields.has("age") && (
+          <SelectForm 
+            label="Age"
+            id="age"
+            value={formData.age}
+            onChange={(value) => handleChange('age', value)}
+            error={errors.age}
+            isRequired={true}
+            options={ageOptions}
+          />
+        )}
       </div>
 
       {fields.has("local_resident") && (
@@ -161,6 +170,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
           />
         </div>
       )}
+
 
       {fields.has("info_not_shared") && (
         <FormInputWrapper>
