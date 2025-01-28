@@ -28,6 +28,8 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
 
   if(!fields?.has('scholarship_request')) return null
 
+  const isEdgeAustin = city?.slug === 'edge-austin'
+
   const startDate = new Date(city?.start_date ?? '').toLocaleDateString('en-EN', {day: 'numeric', month: 'long'})
   const endDate = new Date(city?.end_date ?? '').toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
 
@@ -46,7 +48,9 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
             <CheckboxForm
               label={form?.scholarship?.scholarship_request ?? "Are you interested in applying for a scholarship?"}
               id="scholarship_request"
-              checked={isInterested}
+              disabled={isEdgeAustin}
+              defaultChecked={isEdgeAustin ? true : isInterested}
+              checked={!isEdgeAustin ? isInterested : true}
               onCheckedChange={(checked) => {
                 setIsInterested(checked === true)
                 handleChange('scholarship_request', checked === true)
