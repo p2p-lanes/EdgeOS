@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import SectionWrapper from "./SectionWrapper"
 import { SectionProps } from "@/types/Section"
@@ -26,9 +26,16 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
     transition: { duration: 0.3, ease: "easeInOut" }
   };
 
-  if(!fields?.has('scholarship_request')) return null
-
   const isEdgeAustin = city?.slug === 'edge-austin'
+
+  useEffect(() => {
+    if (isEdgeAustin) {
+      setIsInterested(true)
+      handleChange('scholarship_request', true)
+    }
+  }, [isEdgeAustin])
+
+  if(!fields?.has('scholarship_request')) return null
 
   const startDate = new Date(city?.start_date ?? '').toLocaleDateString('en-EN', {day: 'numeric', month: 'long'})
   const endDate = new Date(city?.end_date ?? '').toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
@@ -51,7 +58,7 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
               disabled={isEdgeAustin}
               defaultChecked={isEdgeAustin ? true : isInterested}
               checked={!isEdgeAustin ? isInterested : true}
-              onCheckedChange={(checked) => {
+              onCheckedChange={isEdgeAustin ? () => {} : (checked) => {
                 setIsInterested(checked === true)
                 handleChange('scholarship_request', checked === true)
                 if (checked === false) {
