@@ -15,7 +15,7 @@ const Permissions = ({children}: {children: React.ReactNode}) => {
     router.push('/portal')
   }, [route, router, resources])
 
-  if(resources.some(resource => resource.path === route)) {
+  if(resources.some(resource => resource.path === route && resource.status === 'active')) {
     return children
   }
   return <div>You are not authorized to access this page</div>
