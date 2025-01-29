@@ -111,6 +111,7 @@ export const Invoice = ({ payment, discount, hasPatreon, imageUrl, clientName }:
         {payment.products_snapshot.map((item: ProductsSnapshotProps, index: number) => {
           const unitPrice = payment.rate > 1 ? (item.product_price / payment.rate).toFixed(8) : item.product_price
           const totalUnit = Number(unitPrice) * item.quantity
+          const totalDiscount = discount ? (totalUnit * (1 - discount / 100)) : totalUnit
           return(
             <View key={index} style={styles.tableRow}>
               <Text style={styles.tableCellMini}>{item.quantity}</Text>
@@ -126,7 +127,7 @@ export const Invoice = ({ payment, discount, hasPatreon, imageUrl, clientName }:
                   <Text style={styles.tableCell}> 1 {payment.currency} = {payment.rate} USD </Text>
                 )
               }
-              <Text style={styles.tableCell}>{totalUnit} {payment.currency}</Text>
+              <Text style={styles.tableCell}>{totalDiscount} {payment.currency}</Text>
             </View>
           )
         })}
