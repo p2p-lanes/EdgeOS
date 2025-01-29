@@ -30,7 +30,7 @@ const styles = StyleSheet.create({
   },
   tableCell: {
     flex: 1,
-    padding: 6,
+    padding: 4,
     borderRightWidth: 1,
     borderBottomWidth: 1,
     borderColor: '#000',
@@ -50,6 +50,13 @@ const styles = StyleSheet.create({
     marginTop: 20,
     textAlign: 'right',
   },
+  tableCellMini: {
+    padding: 4,
+    borderRightWidth: 1,
+    borderBottomWidth: 1,
+    borderColor: '#000',
+    width: '60px',
+  }
 });
 
 interface InvoiceProps {
@@ -62,7 +69,9 @@ interface InvoiceProps {
 
 // Componente del PDF
 export const Invoice = ({ payment, discount, hasPatreon, imageUrl, clientName }: InvoiceProps) => {
-  console.log(discount, hasPatreon)
+
+  const total = payment.rate > 1 ? (payment.amount / payment.rate).toFixed(8) : payment.amount
+
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -84,7 +93,7 @@ export const Invoice = ({ payment, discount, hasPatreon, imageUrl, clientName }:
 
       <View style={styles.table}>
         <View style={[styles.tableRow, styles.tableHeader]}>
-          <Text style={styles.tableCell}>Quantity</Text>
+          <Text style={styles.tableCellMini}>Quantity</Text>
           <Text style={styles.tableCell}>Description</Text>
           <Text style={styles.tableCell}>Unit Price</Text>
           {
@@ -92,28 +101,42 @@ export const Invoice = ({ payment, discount, hasPatreon, imageUrl, clientName }:
               <Text style={styles.tableCell}>Discount</Text>
             )
           }
-          <Text style={styles.tableCell}>Rate</Text>
+          {
+            payment.rate > 1 && (
+              <Text style={styles.tableCell}>Rate</Text>
+            )
+          }
           <Text style={styles.tableCell}>Amount</Text>
         </View>
-        {payment.products_snapshot.map((item: ProductsSnapshotProps, index: number) => (
-          <View key={index} style={styles.tableRow}>
-            <Text style={styles.tableCell}>{item.quantity}</Text>
-            <Text style={styles.tableCell}>{item.product_name}</Text>
-            <Text style={styles.tableCell}>{item.product_price} USD</Text>
-            {
-              discount && !hasPatreon && (
-                <Text style={styles.tableCell}>{discount}%</Text>
-              )
-            }
-            <Text style={styles.tableCell}>{payment.rate}</Text>
-            <Text style={styles.tableCell}>{item.product_price * item.quantity} {payment.currency}</Text>
-          </View>
-        ))}
+        {payment.products_snapshot.map((item: ProductsSnapshotProps, index: number) => {
+          const unitPrice = payment.rate > 1 ? (item.product_price / payment.rate).toFixed(8) : item.product_price
+          const totalUnit = Number(unitPrice) * item.quantity
+          return(
+            <View key={index} style={styles.tableRow}>
+              <Text style={styles.tableCellMini}>{item.quantity}</Text>
+              <Text style={styles.tableCell}>{item.product_name}</Text>
+              <Text style={styles.tableCell}>{item.product_price} USD</Text>
+              {
+                discount && !hasPatreon && (
+                  <Text style={styles.tableCell}>{discount}%</Text>
+                )
+              }
+              {
+                payment.rate > 1 && (
+                  <Text style={styles.tableCell}> 1 {payment.currency} = {payment.rate} USD </Text>
+                )
+              }
+              <Text style={styles.tableCell}>{totalUnit} {payment.currency}</Text>
+            </View>
+          )
+        })}
       </View>
 
       {/* Footer */}
       <View style={styles.footer}>
-        <Text style={{fontWeight: 'bold', fontFamily: 'Helvetica-Bold'}}>Total: {payment.amount} {payment.currency}</Text>
+        <Text style={{fontWeight: 'bold', fontFamily: 'Helvetica-Bold'}}>
+          Total: {total} {payment.currency}
+        </Text>
       </View>
     </Page>
   </Document>
