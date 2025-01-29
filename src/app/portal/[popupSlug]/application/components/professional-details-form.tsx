@@ -11,7 +11,7 @@ const fieldsProfessionalDetails = ["organization", "role", "social_media"]
 export function ProfessionalDetailsForm({ formData, errors, handleChange, fields }: SectionProps) {
   const { getCity } = useCityProvider()
   const city = getCity()
-  const isVideoValid = validateVideoUrl(formData.video_url)
+  const isVideoValid = validateVideoUrl(formData.video_url, fields)
 
   if (!fields || !fields.size || !fieldsProfessionalDetails.some(field => fields.has(field))) return null;
 
@@ -52,7 +52,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
           value={formData.social_media ?? ''}
           onChange={(value: string) => handleChange('social_media', value)}
           error={errors.social_media}
-          isRequired={!isVideoValid && fields.has("video_url")}
+          isRequired={!isVideoValid}
           subtitle="e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Please provide the full link[s]."
         />
         )}

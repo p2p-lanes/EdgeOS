@@ -8,7 +8,7 @@ type FieldValue = string | boolean | string[] | string[][] | null
 type FormData = Record<FieldName, FieldValue>
 
 const requiredFields = {
-  personalInformation: ['first_name', 'last_name', 'telegram', 'gender', 'age', 'email'],
+  personalInformation: ['first_name', 'last_name', 'telegram', 'gender', 'age', 'email', 'gender_specify'],
   professionalDetails: ['organization', 'social_media'],
   participation: ['duration', 'builder_description'],
   childrenPlusOnes: ['spouse_info', 'spouse_email', 'kids_info'],
@@ -39,13 +39,15 @@ export const useFormValidation = (initialData: FormData) => {
 
     const isRequired = Object.values(requiredFields).flat().includes(name)
 
-    console.log('isRequired', isRequired, name)
     if (isRequired) {
       if(name === 'booking_confirmation') {
         if(!formData.is_renter) return '';
       }
       if(name === 'social_media') {
         if(!fields.has('video_url')) return '';
+      }
+      if(name === 'gender_specify') {
+        if(formData.gender !== 'Specify') return '';
       }
       if (name === 'spouse_info' || name === 'spouse_email') {
         if (!formData.brings_spouse) return '';
