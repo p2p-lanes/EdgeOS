@@ -9,16 +9,17 @@ type CheckboxFormProps = {
   onCheckedChange: (checked: boolean) => void
   disabled?: boolean
   defaultChecked?: boolean
-
+  value?: string
 }
 
-const CheckboxForm = ({ label, id, checked, onCheckedChange, disabled, defaultChecked }: CheckboxFormProps) => {
+const CheckboxForm = ({ label, id, checked, onCheckedChange, disabled, defaultChecked, value }: CheckboxFormProps) => {
   return (
     <FormInputWrapper>
       <div className="flex items-center space-x-2 my-2">
         <Checkbox
           id={id}
           checked={checked}
+          value={value}
           onCheckedChange={(checked: boolean) => onCheckedChange(checked)}
           disabled={disabled}
           defaultChecked={defaultChecked}

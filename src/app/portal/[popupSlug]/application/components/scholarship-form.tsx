@@ -29,11 +29,11 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
   const isEdgeAustin = city?.slug === 'edge-austin'
 
   useEffect(() => {
-    if (isEdgeAustin) {
+    if (isEdgeAustin && !formData.scholarship_request) {
       setIsInterested(true)
       handleChange('scholarship_request', true)
     }
-  }, [isEdgeAustin])
+  }, [isEdgeAustin, handleChange, formData.scholarship_request])
 
   if(!fields?.has('scholarship_request')) return null
 
@@ -56,6 +56,7 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
               label={form?.scholarship?.scholarship_request ?? "Are you interested in applying for a scholarship?"}
               id="scholarship_request"
               disabled={isEdgeAustin}
+              value={formData.scholarship_request}
               defaultChecked={isEdgeAustin ? true : isInterested}
               checked={!isEdgeAustin ? isInterested : true}
               onCheckedChange={isEdgeAustin ? () => {} : (checked) => {
