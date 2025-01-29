@@ -36,7 +36,8 @@ const useResources = () => {
   {
     name: 'Attendee Directory', 
     icon: Users,
-    status: canSeeAttendees ? 'active' : isEdge ? 'disabled' : 'hidden',
+    // status: canSeeAttendees ? 'active' : isEdge ? 'disabled' : 'hidden',
+    status: 'hidden',
     path: `/portal/${city?.slug}/attendees`,
   },
   {
