@@ -10,6 +10,7 @@ const useResources = () => {
   const city = getCity()
 
   const isEdge = city?.slug === 'edge-esmeralda' || city?.slug === 'buenos-aires'
+  const isEdgeAustin = city?.slug === 'edge-austin'
   const canSeeAttendees = isEdge && application && application.attendees.some(attendee => attendee.products.length > 0)
 
   const resources: Resource[] = [
@@ -35,13 +36,14 @@ const useResources = () => {
   {
     name: 'Attendee Directory', 
     icon: Users,
-    status: canSeeAttendees ? 'active' : isEdge ? 'disabled' : 'hidden',
+    // status: canSeeAttendees ? 'active' : isEdge ? 'disabled' : 'hidden',
+    status: 'hidden',
     path: `/portal/${city?.slug}/attendees`,
   },
   {
     name: 'Housing',
     icon: Home,
-    status: 'soon' as const
+    status: isEdgeAustin ? 'hidden' : 'soon' as const
   }
 ]
 
