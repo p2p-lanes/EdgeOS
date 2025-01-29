@@ -21,9 +21,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
   const city = getCity()
 
   useEffect(() => {
-    console.log('formData' ,formData)
     if (formData.gender && formData.gender !== '' && !genderOptions.some(opt => opt.value === formData.gender)) {
-      console.log('entro')
       handleChange('gender_specify', formData.gender);
       handleChange('gender', 'Specify');
     }
