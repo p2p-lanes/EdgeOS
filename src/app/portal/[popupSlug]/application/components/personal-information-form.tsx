@@ -21,12 +21,13 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
   const city = getCity()
 
   useEffect(() => {
-    console.log('form',formData.gender, !genderOptions.some(opt => opt.value === formData.gender))
-    if (formData.gender && !genderOptions.some(opt => opt.value === formData.gender)) {
+    console.log('formData' ,formData)
+    if (formData.gender && formData.gender !== '' && !genderOptions.some(opt => opt.value === formData.gender)) {
+      console.log('entro')
       handleChange('gender_specify', formData.gender);
       handleChange('gender', 'Specify');
     }
-  }, [formData.gender, handleChange]);
+  }, [formData.gender]);
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -41,7 +42,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
   return (
     <>
     <SectionWrapper title="Personal Information" subtitle="Your basic information helps us identify and contact you.">
-      <div className="grid gap-4 sm:grid-cols-2 sm:items-end">
+      <div className="grid gap-4 sm:grid-cols-2">
         {fields.has("first_name") && (
           <InputForm
             label="First name"
@@ -82,8 +83,8 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             isRequired={true}
             subtitle={`The primary form of communication during ${city?.name} will be a Telegram group, so create an account if you don't already have one`}
             addon="@"
-              placeholder="username"
-            />
+            placeholder="username"
+          />
         )}
         {fields.has("residence") && (
           <InputForm
@@ -96,35 +97,13 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             subtitle="Please format it like [City, State/Region, Country]. Feel free to put multiple cities if you live in multiple places."
           />
         )}
-        {fields.has("eth_address") && (
-          <InputForm
-            label="ETH address"
-            id="eth_address"
-            value={formData.eth_address ?? ''}
-            onChange={(value) => handleChange('eth_address', value)}
-            error={errors.eth_address}
-            isRequired={false}
-            placeholder="0x..."
-            subtitle="For POAPs, NFTs, allowlists."
-          />
-        )}
-        {fields.has("referral") && (
-          <InputForm
-            label="Did anyone refer you?"
-            id="referral"
-            value={formData.referral ?? ''}
-            onChange={(value) => handleChange('referral', value)}
-            error={errors.referral}
-            isRequired={false}
-            subtitle="List everyone who encouraged you to apply."
-          />
-        )}
-        <div className="flex flex-col gap-4">
+        
+        <div className="flex flex-col gap-4 w-full">
           {fields.has("gender") && (
             <SelectForm 
               label="Gender"
               id="gender"
-              value={formData.gender}
+              value={(formData.gender && formData.gender !== '' && !genderOptions.some(opt => opt.value === formData.gender)) ? 'Specify' : formData.gender}
               onChange={(value) => handleChange('gender', value)}
               error={errors.gender}
               isRequired={true}
@@ -147,15 +126,43 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             )}
           </AnimatePresence>
         </div>
+
         {fields.has("age") && (
-          <SelectForm 
-            label="Age"
-            id="age"
-            value={formData.age}
-            onChange={(value) => handleChange('age', value)}
-            error={errors.age}
-            isRequired={true}
-            options={ageOptions}
+          <div className="flex flex-col">
+            <SelectForm 
+              label="Age"
+              id="age"
+              value={formData.age}
+              onChange={(value) => handleChange('age', value)}
+              error={errors.age}
+              isRequired={true}
+              options={ageOptions}
+            />
+          </div>
+        )}
+
+        {fields.has("referral") && (
+          <InputForm
+            label="Did anyone refer you?"
+            id="referral"
+            value={formData.referral ?? ''}
+            onChange={(value) => handleChange('referral', value)}
+            error={errors.referral}
+            isRequired={false}
+            subtitle="List everyone who encouraged you to apply."
+          />
+        )}
+
+        {fields.has("eth_address") && (
+          <InputForm
+            label="ETH address"
+            id="eth_address"
+            value={formData.eth_address ?? ''}
+            onChange={(value) => handleChange('eth_address', value)}
+            error={errors.eth_address}
+            isRequired={false}
+            placeholder="0x..."
+            subtitle="For POAPs, NFTs, allowlists."
           />
         )}
       </div>
