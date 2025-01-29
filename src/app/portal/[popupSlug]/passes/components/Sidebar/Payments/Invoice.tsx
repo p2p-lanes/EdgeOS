@@ -105,7 +105,7 @@ export const Invoice = ({ payment, discount, hasPatreon, imageUrl, clientName }:
                 <Text style={styles.tableCell}>{discount}%</Text>
               )
             }
-            <Text style={styles.tableCell}>1</Text>
+            <Text style={styles.tableCell}>{payment.rate}</Text>
             <Text style={styles.tableCell}>{item.product_price * item.quantity} {payment.currency}</Text>
           </View>
         ))}

@@ -28,6 +28,7 @@ export interface PaymentsProps {
   external_id: string | null;
   status: 'approved' | 'pending' | 'rejected';
   amount: number;
+  rate: number;
   source: string | null;
   currency: string;
   checkout_url: string | null;
