@@ -13,14 +13,14 @@ export interface AttendeePassesProps {
 } 
 
 export interface ProductsSnapshotProps {
-    product_id: number,
-    attendee_id: number,
-    quantity: number,
-    product_name: string,
-    product_description: string | null,
-    product_price: number,
-    product_category: string,
-    created_at: string
+  product_id: number,
+  attendee_id: number,
+  quantity: number,
+  product_name: string,
+  product_description: string | null,
+  product_price: number,
+  product_category: string,
+  created_at: string
 }
 
 export interface PaymentsProps {
@@ -28,6 +28,7 @@ export interface PaymentsProps {
   external_id: string | null;
   status: 'approved' | 'pending' | 'rejected';
   amount: number;
+  rate: number;
   source: string | null;
   currency: string;
   checkout_url: string | null;

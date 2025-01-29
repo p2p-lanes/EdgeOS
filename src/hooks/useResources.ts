@@ -1,13 +1,17 @@
 import { useApplication } from "@/providers/applicationProvider"
 import { useCityProvider } from "@/providers/cityProvider"
 import { Resource } from "@/types/resources"
-import { CircleDot, FileText, Home, Tag, Ticket, User } from "lucide-react"
+import { CircleDot, FileText, Home, Tag, Ticket, User, Users } from "lucide-react"
 
 const useResources = () => {
   const { getCity } = useCityProvider()
   const { getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
   const city = getCity()
+
+  const isEdge = city?.slug === 'edge-esmeralda' || city?.slug === 'buenos-aires'
+  const isEdgeAustin = city?.slug === 'edge-austin'
+  const canSeeAttendees = isEdge && application && application.attendees.some(attendee => attendee.products.length > 0)
 
   const resources: Resource[] = [
   {
@@ -30,9 +34,16 @@ const useResources = () => {
     path: `/portal/${city?.slug}/passes`,
   },
   {
+    name: 'Attendee Directory', 
+    icon: Users,
+    // status: canSeeAttendees ? 'active' : isEdge ? 'disabled' : 'hidden',
+    status: 'hidden',
+    path: `/portal/${city?.slug}/attendees`,
+  },
+  {
     name: 'Housing',
     icon: Home,
-    status: 'soon'
+    status: isEdgeAustin ? 'hidden' : 'soon' as const
   }
 ]
 
