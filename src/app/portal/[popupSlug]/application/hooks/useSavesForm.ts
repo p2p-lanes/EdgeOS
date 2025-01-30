@@ -6,6 +6,11 @@ import { ApplicationProps } from "@/types/Application"
 import useGetTokenAuth from "@/hooks/useGetTokenAuth"
 import { useApplication } from "@/providers/applicationProvider"
 
+interface ApplicationFormData extends Record<string, unknown> {
+  gender?: string;
+  gender_specify?: string;
+}
+
 const useSavesForm = () => {
   const { user } = useGetTokenAuth()
   const { getCity} = useCityProvider()
@@ -22,73 +27,105 @@ const useSavesForm = () => {
     return api.put(`applications/${id}`, formData)
   }
 
-  const handleSaveForm = async (formData: Record<string, unknown>) => {
-    if(!city || !user || !applications) return
+  const processFormData = (formData: ApplicationFormData) => {
+    if (!city || !user) return null;
 
-    const data = {
-      ...formData,
-      citizen_id: user?.citizen_id,
-      popup_city_id: city?.id,
-      status: 'in review'
+    let processedData = { ...formData };
+    
+    // Procesar el género específico
+    if (formData.gender === 'Specify' && formData.gender_specify) {
+      processedData = {
+        ...processedData,
+        gender: formData.gender_specify
+      };
+      delete processedData.gender_specify;
     }
 
-    const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
-    await response.then((data) => {
-      if(data.status !== 201 && data.status !== 200){
-        return
+    return {
+      ...processedData,
+      citizen_id: user.citizen_id,
+      popup_city_id: city.id,
+    };
+  };
+
+  const updateApplicationsList = (newApplication: ApplicationProps) => {
+    if (!applications) return;
+    
+    const existingIndex = applications.findIndex(app => app.id === newApplication.id);
+    const updatedApplications = existingIndex >= 0
+      ? applications.map(app => app.id === newApplication.id ? newApplication : app)
+      : [...applications, newApplication];
+    
+    setApplications(updatedApplications);
+  };
+
+  const handleSubmission = async (
+    formData: ApplicationFormData, 
+    status: 'draft' | 'in review',
+    successMessage: { title: string; description: string },
+    errorMessage: { title: string; description: string }
+  ) => {
+    if (!city || !user || !applications) return;
+
+    const processedData = processFormData(formData);
+    if (!processedData) return;
+
+    const data = { ...processedData, status };
+
+    try {
+      const response = await (application?.id 
+        ? updateApplication(application.id, data) 
+        : createApplication(data));
+
+      if (status === 'in review' && response.status !== 201 && response.status !== 200) {
+        return;
       }
 
-      const newApplication = data.data
-      const existingIndex = applications.findIndex((app: ApplicationProps) => app.id === newApplication.id)
+      updateApplicationsList(response.data);
       
-      const updatedApplications = existingIndex >= 0
-        ? applications.map((app: ApplicationProps) => app.id === newApplication.id ? newApplication : app)
-        : [...applications, newApplication]
-      
-      
-      setApplications(updatedApplications)
-      toast.success("Application Submitted", {
-        description: "Your application has been successfully submitted.",
-      })
-      router.push(`/portal/${city?.slug}`)
-    }).catch(() => {
-      toast.error("Error Submitting Application", {
-        description: "There was an error submitting your application. Please try again.",
-      })
-    })
-  }
+      toast.success(successMessage.title, {
+        description: successMessage.description,
+      });
 
-  const handleSaveDraft = async (formData: Record<string, unknown>) => {
-    if(!city || !user || !applications) return
-
-    const data = {
-      ...formData,
-      citizen_id: user?.citizen_id,
-      popup_city_id: city?.id,
-      status: 'draft'
+      if (status === 'in review') {
+        router.push(`/portal/${city?.slug}`);
+      }
+    } catch (error) {
+      toast.error(errorMessage.title, {
+        description: errorMessage.description,
+      });
     }
+  };
 
-    const response = application?.id ? updateApplication(application.id, data) : createApplication(data)
+  const handleSaveForm = async (formData: ApplicationFormData) => {
+    await handleSubmission(
+      formData,
+      'in review',
+      {
+        title: "Application Submitted",
+        description: "Your application has been successfully submitted."
+      },
+      {
+        title: "Error Submitting Application",
+        description: "There was an error submitting your application. Please try again."
+      }
+    );
+  };
 
-    await response.then((data) => {
-      const newApplication = data.data
-      const existingIndex = applications.findIndex((app: ApplicationProps) => app.id === newApplication.id)
-      
-      const updatedApplications = existingIndex >= 0
-        ? applications.map((app: ApplicationProps) => app.id === newApplication.id ? newApplication : app)
-        : [...applications, newApplication]
-      
-      setApplications(updatedApplications)
-      
-      toast.success("Draft Saved", {
-        description: "Your draft has been successfully saved.",
-      })
-    }).catch(() => {
-      toast.error("Error Saving Draft", {
-          description: "There was an error saving your draft. Please try again.",
-        })
-    })
-  }
+  const handleSaveDraft = async (formData: ApplicationFormData) => {
+    await handleSubmission(
+      formData,
+      'draft',
+      {
+        title: "Draft Saved",
+        description: "Your draft has been successfully saved."
+      },
+      {
+        title: "Error Saving Draft",
+        description: "There was an error saving your draft. Please try again."
+      }
+    );
+  };
 
   return ({
     handleSaveDraft,

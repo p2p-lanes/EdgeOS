@@ -29,13 +29,13 @@ const PaymentHistory = ({payments}: {payments: PaymentsProps[]}) => {
 
   const handleDownloadInvoice = async (payment: PaymentsProps) => {
     if(!application) return
-    
+
     const clientName = application.first_name + ' ' + application.last_name
     const blob = await pdf(<Invoice 
         payment={payment} 
         imageUrl={city?.image_url} 
         clientName={clientName} 
-        discount={0} 
+        discount={application.discount_assigned} 
         hasPatreon={application.attendees.some(attendee => 
           attendee.products?.some(product => product.category === 'patreon')
         )}

@@ -19,6 +19,7 @@ export const edgeSa: DynamicForm = {
     "first_name",
     "last_name",
     "gender",
+    "gender_specify",
     "age",
     "telegram",
     "residence",

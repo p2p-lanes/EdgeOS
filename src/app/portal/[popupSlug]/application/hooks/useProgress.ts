@@ -5,10 +5,10 @@ import { useEffect, useMemo, useState } from "react"
 
 const useProgress = (formData: any) => {
   const [progress, setProgress] = useState(0)
-  const isVideoValid = validateVideoUrl(formData.video_url)
   const { getCity } = useCityProvider()
   const city = getCity()
   const fields = useMemo(() => city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null, [city])
+  const isVideoValid = validateVideoUrl(formData.video_url, fields)
 
   useEffect(() => {
     if (!fields) return
@@ -18,6 +18,11 @@ const useProgress = (formData: any) => {
         name: 'personalInformation',
         fields: ['first_name', 'last_name', 'telegram', 'gender', 'age', 'email'].filter(f => fields.has(f)),
         required: true
+      },
+      {
+        name: 'personalInformation',
+        fields: ['gender_specify'].filter(f => fields.has(f)),
+        required: formData.gender === 'Specify'
       },
       {
         name: 'professionalDetails',
@@ -72,7 +77,7 @@ const useProgress = (formData: any) => {
     ).length
 
     setProgress(totalSections > 0 ? (filledSections / totalSections) * 100 : 0)
-  }, [formData, fields, isVideoValid])
+  }, [formData, fields, isVideoValid, city?.slug])
 
   return progress
 }

@@ -8,7 +8,7 @@ type FieldValue = string | boolean | string[] | string[][] | null
 type FormData = Record<FieldName, FieldValue>
 
 const requiredFields = {
-  personalInformation: ['first_name', 'last_name', 'telegram', 'gender', 'age', 'email'],
+  personalInformation: ['first_name', 'last_name', 'telegram', 'gender', 'age', 'email', 'gender_specify'],
   professionalDetails: ['organization', 'social_media'],
   participation: ['duration', 'builder_description'],
   childrenPlusOnes: ['spouse_info', 'spouse_email', 'kids_info'],
@@ -26,8 +26,10 @@ export const useFormValidation = (initialData: FormData) => {
 
   const validateField = useCallback((name: FieldName, value: FieldValue, formData: FormData) => {
     if (!fields?.has(name)) return ''
+
+    const validateVideo = validateVideoUrl(formData.video_url)
     
-    if (formData.video_url && validateVideoUrl(formData.video_url)) {
+    if (formData.video_url && validateVideo) {
       const requiredWithVideo = [
         ...requiredFields.personalInformation,
         ...requiredFields.childrenPlusOnes,
@@ -44,7 +46,10 @@ export const useFormValidation = (initialData: FormData) => {
         if(!formData.is_renter) return '';
       }
       if(name === 'social_media') {
-        if(!fields.has('video_url')) return '';
+        if(fields.has('video_url') && validateVideo) return '';
+      }
+      if(name === 'gender_specify') {
+        if(formData.gender !== 'Specify') return '';
       }
       if (name === 'spouse_info' || name === 'spouse_email') {
         if (!formData.brings_spouse) return '';
@@ -56,7 +61,6 @@ export const useFormValidation = (initialData: FormData) => {
         if (!formData.builder_boolean || validateVideoUrl(formData.video_url)) return '';
       }
       if(name === 'scholarship_video_url') {
-        console.log('formData.scholarship_request', formData.scholarship_request)
         if (!formData.scholarship_request || validateVideoUrl(formData.scholarship_video_url)) return '';
       }
       if(name === 'scholarship_details') {
@@ -69,7 +73,7 @@ export const useFormValidation = (initialData: FormData) => {
       return !value ? 'This field is required' : ''
     }
     return ''
-  }, [fields])
+  }, [fields, city?.slug])
 
   const handleChange = useCallback((name: FieldName, value: FieldValue) => {
     setFormData(prev => ({ ...prev, [name]: value }))

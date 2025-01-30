@@ -17,20 +17,21 @@ export const edgeAustin: DynamicForm = {
     subtitle: 'Fill out this section if you are interested in securing one of a limited number of scholarships for Edge City Austin. Kindly note that your application will be subject to review and approval.',
     scholarship_details: "Tell us about your motivation for joining Edge City Austin. Share details about a project you’re currently working on or one that you’re passionate about. Feel free to include anything else you'd like us to know!"
   },
-  accommodation: {
-    title: 'Accommodation',
-    subtitle: 'If you booked your stay at Hotel Magdalena via our link, you get a FREE ticket (requires minimum stay of 4 nights, 2-7 March, 2025). Please provide your booking confirmation for verification. Kindly note that your application will be subject to review and approval.'
-  },
+  // accommodation: {
+  //   title: 'Accommodation',
+  //   subtitle: 'If you booked your stay at Hotel Magdalena via our link, you get a FREE ticket (requires minimum stay of 4 nights, 2-7 March, 2025). Please provide your booking confirmation for verification. Kindly note that your application will be subject to review and approval.'
+  // },
   fields: [
     "first_name",
     "last_name",
     "gender",
+    "gender_specify",
     "age",
     "telegram",
     "residence",
     "scholarship_request",
     "scholarship_details",
-    "is_renter",
+    // "is_renter",
     "booking_confirmation",
     "github_profile",
     "social_media"
