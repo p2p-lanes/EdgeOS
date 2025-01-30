@@ -94,6 +94,7 @@ export default function PassesSidebar() {
         loading={loading} 
         className="w-full text-white" 
         onClick={() => purchaseProducts(attendeePasses)}
+        data-purchase
       >
         Complete Purchase
       </ButtonAnimated>

@@ -53,15 +53,43 @@ describe('Passes', () => {
 
   it('should auto-select week tickets when selecting month ticket for spouse category', () => {
     // Seleccionar el ticket mensual para spouse
-    cy.get('button[data-category="month"][data-attCategory="spouse"]')
+    cy.get('button[data-category="month"][data-attcategory="spouse"]')
       .first()
       .click();
 
     // Verificar que todos los tickets semanales para spouse estén seleccionados
-    cy.get('button[data-category="week"][data-attCategory="spouse"]')
+    cy.get('button[data-category="week"][data-attcategory="spouse"]')
       .each(($ticket) => {
         cy.wrap($ticket)
           .should('have.attr', 'data-selected', 'true');
       });
+  });
+
+  it('should successfully purchase weekly tickets and verify API response', () => {
+    // Seleccionar algunos tickets semanales
+    cy.get('button[data-category="week"]')
+      .eq(2)
+      .click();
+    
+    // Obtener el total antes de la compra
+    cy.get('[data-total]')
+      .invoke('attr', 'data-total')
+      .then((totalPrice) => {
+        // Hacer clic en el botón de compra
+        cy.get('[data-purchase]').click();
+
+        cy.intercept('POST', 'https://portaldev.simplefi.tech/payments/').as('purchaseRequest');
+
+        cy.wait('@purchaseRequest').then((interception) => {
+          expect(interception.response?.statusCode).to.equal(200);
+          expect(interception.response?.body.amount).to.equal(Number(totalPrice));
+        });
+      });
+
+    cy.wait(2000);
+
+    cy.origin('https://develop.pagar.simplefi.tech', () => {
+      cy.url().should('include', 'develop.pagar.simplefi.tech');
+    });
   });
 })

@@ -2,7 +2,6 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ProductsPass } from "@/types/Products";
 import { Check, Crown, Info, Plus } from 'lucide-react'
 import { cn } from "@/lib/utils";
-import { Button } from "@/components/ui/button";
 
 // HOC para manejar la lógica de presentación
 const withSpecialProductPresentation = (WrappedComponent: React.ComponentType<any>) => {
@@ -55,8 +54,10 @@ const ProductPrice = ({ product, selected }: ProductPriceProps) => (
 
 const TooltipPatreon = () => (
   <Tooltip>
-    <TooltipTrigger>
-      <Info className="w-4 h-4 text-gray-500" />
+    <TooltipTrigger asChild>
+      <div className="cursor-pointer">
+        <Info className="w-4 h-4 text-gray-500" />
+      </div>
     </TooltipTrigger>
     <TooltipContent className="bg-white text-black max-w-[420px] border border-gray-200">
       ⁠A patron pass gives you access to the whole month and supports scholarships 
@@ -83,7 +84,7 @@ function SpecialBase({
   getStatusIcon 
 }: SpecialProps & { getStatusIcon: () => JSX.Element }) {
   return (
-    <Button 
+    <button
       data-category="patreon"
       onClick={!disabled ? onClick : undefined}
       data-selected={selected}
@@ -113,7 +114,7 @@ function SpecialBase({
           )
         }
       </div>
-    </Button>
+    </button>
   );
 }
 
