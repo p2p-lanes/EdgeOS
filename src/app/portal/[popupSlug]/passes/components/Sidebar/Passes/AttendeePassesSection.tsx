@@ -24,11 +24,18 @@ export const AttendeePassesSection = ({attendee, index, toggleProduct}: Attendee
           <Month 
             product={monthProduct} 
             onClick={() => toggleProduct(attendee.id, monthProduct)}
+            data-attCategory={attendee.category}
+            data-category="month"
+            data-selected={monthProduct.selected}
           />
         )}
         <div className={cn("grid grid-cols-1 sm:grid-cols-2 3xl:grid-cols-3 gap-2")}>
           {weekProducts?.map((product) => (
             <Standard
+              data-attCategory={attendee.category}
+              data-category="week"
+              data-price={product.price}
+              data-selected={product.selected}
               key={product.id}
               iconTitle={Ticket}
               product={product}

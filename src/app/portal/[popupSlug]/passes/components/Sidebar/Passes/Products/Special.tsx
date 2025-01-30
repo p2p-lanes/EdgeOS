@@ -2,6 +2,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ProductsPass } from "@/types/Products";
 import { Check, Crown, Info, Plus } from 'lucide-react'
 import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
 
 // HOC para manejar la lógica de presentación
 const withSpecialProductPresentation = (WrappedComponent: React.ComponentType<any>) => {
@@ -82,9 +83,11 @@ function SpecialBase({
   getStatusIcon 
 }: SpecialProps & { getStatusIcon: () => JSX.Element }) {
   return (
-    <div 
-      data-testid="patron-pass"
+    <Button 
+      data-category="patreon"
       onClick={!disabled ? onClick : undefined}
+      data-selected={selected}
+      data-price={product.price}
       className={cn(
         "w-full rounded-full flex items-center justify-between py-1 px-4",
         "transition-all duration-300",
@@ -110,7 +113,7 @@ function SpecialBase({
           )
         }
       </div>
-    </div>
+    </Button>
   );
 }
 
