@@ -13,6 +13,7 @@ import { usePassesProvider } from "@/providers/passesProvider"
 import usePurchaseProducts from "../../../hooks/usePurchaseProducts"
 import { useApplication } from "@/providers/applicationProvider"
 import { Skeleton } from "@/components/ui/skeleton"
+import DiscountCode from "./Components/DiscountCode"
 
 export default function PassesSidebar() {
   const { getCity } = useCityProvider()
@@ -84,15 +85,13 @@ export default function PassesSidebar() {
         products={products}
       />
 
-      <Button onClick={() => setDiscount({discount_value: 20, discount_type: 'percentage'})}>Apply 20% discount</Button>
-
-      <Button onClick={() => setDiscount({discount_value: 500, discount_type: 'fixed'})}>Apply 500 fixed discount</Button>
-
 
       <TotalPurchase 
         total={total} 
         attendees={attendeePasses}
       />
+
+      <DiscountCode/>
 
       <ButtonAnimated 
         disabled={disabledPurchase || loading} 

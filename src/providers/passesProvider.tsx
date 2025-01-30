@@ -24,7 +24,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   const [attendeePasses, setAttendeePasses] = useState<AttendeeProps[]>([])
   const { products } = useGetPassesData()
   const attendees = useMemo(() => sortAttendees(getAttendees()), [getAttendees])
-  const [discountApplied, setDiscountApplied] = useState<DiscountProps>({discount_value: 0, discount_type: 'percentage'})
+  const [discountApplied, setDiscountApplied] = useState<DiscountProps>({discount_value: 0, discount_type: 'percentage', discount_code: null})
 
   const toggleProduct = (attendeeId: number, product: ProductsPass) => {
     if (!product) return;
