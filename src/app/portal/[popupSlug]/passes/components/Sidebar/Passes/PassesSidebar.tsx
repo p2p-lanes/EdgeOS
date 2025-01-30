@@ -1,7 +1,7 @@
 "use client"
 
 import { Card } from "@/components/ui/card"
-import { ButtonAnimated } from "@/components/ui/button"
+import { Button, ButtonAnimated } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { useCityProvider } from "@/providers/cityProvider"
 import { AttendeePassesSection } from "./AttendeePassesSection"
@@ -19,7 +19,7 @@ export default function PassesSidebar() {
   const { getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
   const city = getCity()
-  const { toggleProduct, attendeePasses, products } = usePassesProvider()
+  const { toggleProduct, attendeePasses, products, discountApplied, setDiscount } = usePassesProvider()
   const { purchaseProducts, loading } = usePurchaseProducts()
 
   const {
@@ -83,6 +83,11 @@ export default function PassesSidebar() {
         application={application}
         products={products}
       />
+
+      <Button onClick={() => setDiscount({discount_value: 20, discount_type: 'percentage'})}>Apply 20% discount</Button>
+
+      <Button onClick={() => setDiscount({discount_value: 500, discount_type: 'fixed'})}>Apply 500 fixed discount</Button>
+
 
       <TotalPurchase 
         total={total} 

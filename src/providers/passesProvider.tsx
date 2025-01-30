@@ -6,11 +6,14 @@ import { getProductStrategy } from '@/strategies/ProductStrategies';
 import { ProductsPass } from '@/types/Products';
 import { useApplication } from './applicationProvider';
 import { getPriceStrategy } from '@/strategies/PriceStrategy';
+import { DiscountProps } from '@/types/discounts';
 
 interface PassesContext_interface {
   attendeePasses: AttendeeProps[];
   toggleProduct: (attendeeId: number, product: ProductsPass) => void;
   products: ProductsPass[];
+  setDiscount: (discount: DiscountProps) => void;
+  discountApplied: DiscountProps;
 }
 
 export const PassesContext = createContext<PassesContext_interface | null>(null);
@@ -21,22 +24,19 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   const [attendeePasses, setAttendeePasses] = useState<AttendeeProps[]>([])
   const { products } = useGetPassesData()
   const attendees = useMemo(() => sortAttendees(getAttendees()), [getAttendees])
+  const [discountApplied, setDiscountApplied] = useState<DiscountProps>({discount_value: 0, discount_type: 'percentage'})
 
   const toggleProduct = (attendeeId: number, product: ProductsPass) => {
     if (!product) return;
-    const discount = application?.discount_assigned || 0;
 
     const strategy = getProductStrategy(product.category, product.exclusive);
-    const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product, discount);
+    const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product, discountApplied);
 
     setAttendeePasses(updatedAttendees);
   }
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
-
-      const discount = application?.discount_assigned || 0
-      
       const initialAttendees = attendees.map(attendee => {
         const hasPatreonPurchased = attendee.products?.some(p => p.category === 'patreon')
         const priceStrategy = getPriceStrategy();
@@ -51,17 +51,54 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
               attendee_id: attendee.id,
               original_price: product.price,
               disabled: false,
-              price: priceStrategy.calculatePrice(product, hasPatreonPurchased, discount)
+              price: priceStrategy.calculatePrice(product, hasPatreonPurchased, discountApplied)
             }))
         };
       });
       setAttendeePasses(initialAttendees);
     }
-  }, [attendees, products, application?.discount_assigned]);
+  }, [attendees, products, discountApplied]);
+
+  useEffect(() => {
+    setDiscountApplied({discount_value: application?.discount_assigned || 0, discount_type: 'percentage'})
+  }, [application?.discount_assigned])
+
+  const setDiscount = (discount: DiscountProps) => {
+    const priceStrategy = getPriceStrategy();
+    
+    // Solo consideramos productos regulares para el cálculo del mejor descuento
+    const regularProducts = attendeePasses.flatMap(attendee => 
+      attendee.products.filter(p => 
+        p.category !== 'patreon' && 
+        p.category !== 'supporter' &&
+        !p.purchased
+      )
+    );
+
+    if (regularProducts.length === 0) {
+      setDiscountApplied(discount);
+      return;
+    }
+
+    // Encontramos el producto con el precio más alto
+    const productWithHighestPrice = regularProducts.reduce((highest, current) => 
+      (current.original_price || 0) > (highest.original_price || 0) ? current : highest
+    );
+
+    const bestDiscount = priceStrategy.getBestDiscount(
+      productWithHighestPrice.original_price || 0,
+      application?.discount_assigned || 0,
+      discount
+    );
+
+    setDiscountApplied(bestDiscount);
+  }
 
   return (
     <PassesContext.Provider 
       value={{ 
+        setDiscount,
+        discountApplied,
         attendeePasses,
         toggleProduct,
         products
