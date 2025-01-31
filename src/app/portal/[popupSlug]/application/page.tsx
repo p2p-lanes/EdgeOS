@@ -23,6 +23,7 @@ import { useRouter } from "next/navigation"
 import { dynamicForm } from "../../../../constants"
 import AccomodationForm from "./components/AccomodationForm"
 import { useApplication } from "@/providers/applicationProvider"
+import useGetFields from "./hooks/useGetFields"
 
 export default function FormPage() {
   const [statusBtn, setStatusBtn] = useState({loadingDraft: false, loadingSubmit: false})
@@ -35,18 +36,18 @@ export default function FormPage() {
   const city = getCity()
   const application = getRelevantApplication()
   const router = useRouter()
-
-  const fields = city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null
+  const { fields } = useGetFields()
 
   useEffect(() => {
-    if(city && city.slug && !dynamicForm[city.slug]) {
+    console.log(fields)
+    if(city && city.slug && fields?.size === 0) {
       router.push(`/portal/${city?.slug}`)
       return;
     }
     if(application && (application.status === 'accepted' || application.status === 'rejected')) {
       router.push(`/portal/${city?.slug}`)
     }
-  }, [application, city])
+  }, [application, city, fields])
 
   const handleImport = async () => {
     if (existingApplication && fields) {
