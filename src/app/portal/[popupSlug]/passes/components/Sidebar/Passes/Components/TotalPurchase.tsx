@@ -2,18 +2,22 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { cn } from "@/lib/utils"
 import { ProductsPass } from "@/types/Products"
 import { ChevronRight, Tag } from "lucide-react"
-import { useState } from "react"
+import { useMemo, useState } from "react"
 import { badgeName } from "../../../../constants/multiuse"
 import { AttendeeProps } from "@/types/Attendee"
 import useDiscountCode from "../../../../hooks/useDiscountCode"
+import { calculateTotal } from "../../../../helpers/products"
 
-const TotalPurchase = ({total, attendees }: {
-  total: { originalTotal: number, total: number }, 
-  attendees: AttendeeProps[]
+const TotalPurchase = ({attendees }: {
+  attendees: AttendeeProps[],
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { discountApplied } = useDiscountCode()
   const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected && p.category !== 'month'))
+
+  const patreonSelected = attendees.some(attendee => attendee.products.some(p => p.selected && p.category === 'patreon'))
+
+  const { originalTotal, total, discountAmount } = calculateTotal(attendees, discountApplied)
 
   return (
     <Collapsible
@@ -34,18 +38,17 @@ const TotalPurchase = ({total, attendees }: {
           </div>
           
           <div className="flex items-center gap-2">
-            {total.originalTotal > 0 && total.originalTotal !== total.total && (
+            {originalTotal > 0 && originalTotal !== total && (
               <span className="text-xs text-muted-foreground line-through">
-                ${total.originalTotal.toFixed(2)}
+                ${originalTotal.toFixed(2)}
               </span>
             )}
-            <span className="font-medium">${total.total.toFixed(2)}</span>
+            <span className="font-medium">${total.toFixed(2)}</span>
           </div>
-
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        {productsCart.length > 0 || (discountApplied.discount_value > 0 && discountApplied.discount_code) ? (
+        {productsCart.length > 0 ? (
           <div className="space-y-2 px-3">
             {
               productsCart.map(product => (
@@ -57,13 +60,13 @@ const TotalPurchase = ({total, attendees }: {
             }
 
             {
-              discountApplied.discount_value > 0 && discountApplied.discount_code && (
+              discountAmount > 0 && !patreonSelected && (
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <div className="flex items-center gap-1">
                     <Tag className="w-4 h-4" />
-                    <span className="text-xs">{discountApplied.discount_code}</span>
+                    <span className="text-xs">{discountApplied.discount_code} ({discountApplied.discount_value}% OFF)</span>
                   </div>
-                  <span>-{discountApplied.discount_value}%</span>
+                  <span> - ${discountAmount.toFixed(2)}</span>
                 </div>
               )
             }

@@ -7,6 +7,7 @@ import { ProductsPass } from '@/types/Products';
 import { useApplication } from './applicationProvider';
 import { getPriceStrategy } from '@/strategies/PriceStrategy';
 import { DiscountProps } from '@/types/discounts';
+import { useCityProvider } from './cityProvider';
 
 interface PassesContext_interface {
   attendeePasses: AttendeeProps[];
@@ -21,6 +22,8 @@ export const PassesContext = createContext<PassesContext_interface | null>(null)
 const PassesProvider = ({ children }: { children: ReactNode }) => {
   const { getAttendees, getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
+  const { getCity } = useCityProvider()
+  const city = getCity()
   const [attendeePasses, setAttendeePasses] = useState<AttendeeProps[]>([])
   const { products } = useGetPassesData()
   const attendees = useMemo(() => sortAttendees(getAttendees()), [getAttendees])
@@ -37,6 +40,10 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
+      const bestDiscount = (application?.discount_assigned || 0) >= discountApplied.discount_value
+        ? {discount_value: application?.discount_assigned || 0, discount_type: 'percentage', discount_code: null}
+        : {discount_value: 0, discount_type: 'percentage', discount_code: null}
+
       const initialAttendees = attendees.map(attendee => {
         const hasPatreonPurchased = attendee.products?.some(p => p.category === 'patreon')
         const priceStrategy = getPriceStrategy();
@@ -51,47 +58,24 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
               attendee_id: attendee.id,
               original_price: product.price,
               disabled: false,
-              price: priceStrategy.calculatePrice(product, hasPatreonPurchased, discountApplied)
+              price: priceStrategy.calculatePrice(product, hasPatreonPurchased, bestDiscount.discount_value || 0)
             }))
         };
       });
       setAttendeePasses(initialAttendees);
     }
-  }, [attendees, products, discountApplied]);
+  }, [attendees, products, application?.discount_assigned, discountApplied]);
 
   useEffect(() => {
-    setDiscountApplied({discount_value: application?.discount_assigned || 0, discount_type: 'percentage'})
-  }, [application?.discount_assigned])
+    if(city?.id){
+      setDiscountApplied({discount_value: 0, discount_type: 'percentage'})
+    }
+  }, [city?.id])
 
   const setDiscount = (discount: DiscountProps) => {
-    const priceStrategy = getPriceStrategy();
+    if((application?.discount_assigned || 0) >= discount.discount_value) return;
     
-    // Solo consideramos productos regulares para el cálculo del mejor descuento
-    const regularProducts = attendeePasses.flatMap(attendee => 
-      attendee.products.filter(p => 
-        p.category !== 'patreon' && 
-        p.category !== 'supporter' &&
-        !p.purchased
-      )
-    );
-
-    if (regularProducts.length === 0) {
-      setDiscountApplied(discount);
-      return;
-    }
-
-    // Encontramos el producto con el precio más alto
-    const productWithHighestPrice = regularProducts.reduce((highest, current) => 
-      (current.original_price || 0) > (highest.original_price || 0) ? current : highest
-    );
-
-    const bestDiscount = priceStrategy.getBestDiscount(
-      productWithHighestPrice.original_price || 0,
-      application?.discount_assigned || 0,
-      discount
-    );
-
-    setDiscountApplied(bestDiscount);
+    setDiscountApplied(discount);
   }
 
   return (

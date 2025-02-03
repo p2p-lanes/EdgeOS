@@ -40,6 +40,8 @@ export const edgeEsmeralda: DynamicForm = {
     "host_session",
     "brings_spouse",
     "brings_kids",
+    "spouse_info",
+    "spouse_email",
     "kids_info",
     "scholarship_interest",
     "scholarship_info",

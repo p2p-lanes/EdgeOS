@@ -15,15 +15,18 @@ const DiscountCode = () => {
   }
 
   return (
-    <div className="flex px-2 gap-4">
-      <p className="text-sm font-medium underline whitespace-nowrap cursor-pointer" onClick={() => setOpen(!open)}>Have a coupon?</p>
+    <div className="flex px-0 gap-2">
+      <p className="text-sm font-medium underline whitespace-nowrap cursor-pointer mt-2" onClick={() => setOpen(!open)}>Have a coupon?</p>
       {
         open ? (
-          <>
-            <div className="flex flex-col w-full items-start gap-2">
+          <div className="flex flex-col w-full items-start gap-2">
+            <div className="flex w-full items-start">
               <Input
-                placeholder="Enter discount code" 
+                disabled={loading || validDiscount}
+                error={!validDiscount && !!discountMsg ? discountMsg : ''}
+                placeholder="Enter coupon code" 
                 data-discount-code={discountCode}
+                value={discountCode}
                 onChange={(e) => setDiscountCode(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && discountCode.length > 0 && !loading) {
@@ -31,23 +34,24 @@ const DiscountCode = () => {
                   }
                 }}
               />
-              {
-                !loading && (discountMsg || validDiscount) && (
-                  <p className={`flex items-center gap-1 text-xs text-muted-foreground ${validDiscount ? 'text-green-500' : 'text-red-500'}`}>
-                    {validDiscount ? <CheckCircle className="w-4 h-4 text-green-500" /> : <XCircle className="w-4 h-4 text-red-500" />}
-                    {validDiscount ? 'Congrats! Coupon discount applied successfully' : discountMsg}
-                  </p>
-                )
-              }
-            </div>
-            <Button
-              variant="link"
-              onClick={handleApplyDiscount} 
-              disabled={discountCode.length === 0 || loading}
-            >
+              <Button
+                variant="link"
+                className="hover:no-underline font-bold text-[#7F22FE]"
+                onClick={handleApplyDiscount}
+                disabled={discountCode.length === 0 || loading || validDiscount}
+              >
               Apply 
             </Button>
-          </>
+            </div>
+            {
+              !loading && (discountMsg || validDiscount) && (
+                <p className={`flex items-center gap-1 text-xs ${validDiscount ? 'text-green-500' : 'text-red-500'}`}>
+                  {validDiscount ? <CheckCircle className="w-4 h-4 text-green-500" /> : <XCircle className="w-4 h-4 text-red-500" />}
+                  {validDiscount ? 'Coupon code applied successfully.' : discountMsg}
+                </p>
+              )
+            }
+          </div>
         ) : null
       }
     </div>

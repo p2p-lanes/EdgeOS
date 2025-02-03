@@ -32,14 +32,13 @@ export default function FormPage() {
   const { handleSaveForm, handleSaveDraft } = useSavesForm()
   const { getCity } = useCityProvider()
   const { getRelevantApplication } = useApplication()
+  const { fields } = useGetFields()
   const progress = useProgress(formData)
   const city = getCity()
   const application = getRelevantApplication()
   const router = useRouter()
-  const { fields } = useGetFields()
 
   useEffect(() => {
-    console.log(fields)
     if(city && city.slug && fields?.size === 0) {
       router.push(`/portal/${city?.slug}`)
       return;

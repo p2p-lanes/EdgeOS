@@ -2,12 +2,12 @@ import { DiscountProps } from "@/types/discounts";
 import { ProductsPass } from "@/types/Products";
 
 export interface PriceStrategy {
-  calculatePrice(product: ProductsPass, hasPatreonPurchased: boolean, discount: DiscountProps): number;
+  calculatePrice(product: ProductsPass, hasPatreonPurchased: boolean, discount: number): number;
   getBestDiscount(price: number, applicationDiscount: number, currentDiscount: DiscountProps): DiscountProps;
 }
 
 class DefaultPriceStrategy implements PriceStrategy {
-  calculatePrice(product: ProductsPass, hasPatreonPurchased: boolean, discount: DiscountProps): number {
+  calculatePrice(product: ProductsPass, hasPatreonPurchased: boolean, discount: number): number {
     const isSpecialProduct = product.category === 'patreon' || product.category === 'supporter';
     const originalPrice = product.original_price || product.price || 0;
 
@@ -15,12 +15,13 @@ class DefaultPriceStrategy implements PriceStrategy {
       return 0;
     }
 
-    if (product.category !== 'patreon' && product.category !== 'supporter') {
-      if (discount.discount_type === 'percentage') {
-        return originalPrice * (1 - discount.discount_value / 100);
-      } else if (discount.discount_type === 'fixed') {
-        return Math.max(0, originalPrice - discount.discount_value);
-      }
+    if (product.category !== 'patreon' && product.category !== 'supporter' && discount > 0) {
+      return originalPrice * (1 - discount / 100);
+      // if (discount.discount_type === 'percentage') {
+      //   return originalPrice * (1 - discount.discount_value / 100);
+      // } else if (discount.discount_type === 'fixed') {
+      //   return Math.max(0, originalPrice - discount.discount_value);
+      // }
     }
 
     return originalPrice;
