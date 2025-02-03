@@ -32,6 +32,8 @@ export type DynamicForm = {
 }
 
 export const dynamicForm: Record<string, DynamicForm | null> = {
+  'default': edgeEsmeralda,
+  'buenos-aires': edgeEsmeralda,
   "edge-esmeralda": edgeEsmeralda,
   "edge-austin": edgeAustin,
   'edge-sa': edgeSa
