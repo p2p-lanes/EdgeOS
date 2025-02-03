@@ -85,13 +85,13 @@ export default function PassesSidebar() {
         products={products}
       />
 
+      <DiscountCode/>
 
       <TotalPurchase 
         total={total} 
         attendees={attendeePasses}
       />
 
-      <DiscountCode/>
 
       <ButtonAnimated 
         disabled={disabledPurchase || loading} 

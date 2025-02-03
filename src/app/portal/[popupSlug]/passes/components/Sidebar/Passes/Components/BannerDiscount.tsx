@@ -3,7 +3,6 @@ import { ApplicationProps } from "@/types/Application"
 import { ProductsProps } from "@/types/Products"
 import { useMemo } from "react"
 
-
 const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean, application: ApplicationProps | null, products: ProductsProps[]}) => {
   const { discountApplied } = usePassesProvider()
   const productCompare = useMemo(() => products.find(p => p.category === 'week' && p.price !== p.compare_price) ?? {price: 100, compare_price: 100}, [products])
@@ -22,7 +21,7 @@ const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean,
     return {discount: Math.round(discount), label: 'early bird discount'}
   }, [isPatreon, application, productCompare, discountApplied])
   
-  if(discount === 0 || !productCompare) return null
+  if(discount === 0 || !productCompare || discountApplied.discount_code) return null
 
   return (
     <div className="w-full bg-gradient-to-r from-[#FF7B7B] to-[#E040FB] py-1 relative top-0 left-0">

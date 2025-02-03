@@ -1,23 +1,25 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
 import { ProductsPass } from "@/types/Products"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Tag } from "lucide-react"
 import { useState } from "react"
 import { badgeName } from "../../../../constants/multiuse"
 import { AttendeeProps } from "@/types/Attendee"
+import useDiscountCode from "../../../../hooks/useDiscountCode"
 
 const TotalPurchase = ({total, attendees }: {
   total: { originalTotal: number, total: number }, 
   attendees: AttendeeProps[]
 }) => {
   const [isOpen, setIsOpen] = useState(false)
+  const { discountApplied } = useDiscountCode()
   const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected && p.category !== 'month'))
 
   return (
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="space-y-4 pt-4"
+      className="space-y-4 pt-0"
     >
       <CollapsibleTrigger className="w-full">
         <div className="flex justify-between items-center p-3 bg-muted/50 rounded-md">
@@ -43,7 +45,7 @@ const TotalPurchase = ({total, attendees }: {
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent>
-        {productsCart.length > 0 ? (
+        {productsCart.length > 0 || (discountApplied.discount_value > 0 && discountApplied.discount_code) ? (
           <div className="space-y-2 px-3">
             {
               productsCart.map(product => (
@@ -52,6 +54,18 @@ const TotalPurchase = ({total, attendees }: {
                   <span>${product.original_price?.toFixed(2)}</span>
                 </div>
               ))
+            }
+
+            {
+              discountApplied.discount_value > 0 && discountApplied.discount_code && (
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <div className="flex items-center gap-1">
+                    <Tag className="w-4 h-4" />
+                    <span className="text-xs">{discountApplied.discount_code}</span>
+                  </div>
+                  <span>-{discountApplied.discount_value}%</span>
+                </div>
+              )
             }
           </div>
         ) : (

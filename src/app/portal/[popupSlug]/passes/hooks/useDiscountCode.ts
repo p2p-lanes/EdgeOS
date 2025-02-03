@@ -6,31 +6,36 @@ import { toast } from "sonner"
 
 const useDiscountCode = () => {
   const [loading, setLoading] = useState(false)
+  const [discountMsg, setDiscountMsg] = useState('')
+  const [validDiscount, setValidDiscount] = useState(false)
   const { getCity } = useCityProvider()
-  const { setDiscount } = usePassesProvider()
+  const { setDiscount, discountApplied } = usePassesProvider()
   const city = getCity()
 
-
   const getDiscountCode = async (discountCode: string) => {
-    if(!city?.id) return
+    if(!city?.id) return;
 
     setLoading(true)
 
     try{
       const res = await api.get(`discount-codes?code=${discountCode.toUpperCase()}&popup_city_id=${city.id}`)
       if(res.status === 200){
-        setDiscount({discount_value: res.data.discount_value, discount_type: res.data.discount_type, discount_code: res.data.code})
-        toast.success('Discount code applied')
+        setDiscount({discount_value: res.data.discount_value, discount_type: 'percentage', discount_code: res.data.code})
+        setDiscountMsg(res.data.message)
+        setValidDiscount(true)
       }else{
-        toast.error(res.data.message)
+        setDiscountMsg(res.data.message)
+        setValidDiscount(false)
       }
     }catch(error: any){
-      toast.error(error.response.data.detail)
+      setDiscountMsg(error.response.data.detail)
+      setValidDiscount(false)
     }finally{
       setLoading(false)
     }
   }
   
-  return { getDiscountCode, loading }
+  return { getDiscountCode, loading, discountMsg, validDiscount, discountApplied }
+
 }
 export default useDiscountCode
