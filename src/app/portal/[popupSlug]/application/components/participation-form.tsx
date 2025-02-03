@@ -10,6 +10,7 @@ import TextAreaForm from "@/components/ui/Form/TextArea"
 import { SectionSeparator } from "./section-separator"
 import { useCityProvider } from "@/providers/cityProvider"
 import { dynamicForm } from "@/constants"
+import { formatDate} from "@/helpers/dates"
 
 const fieldsParticipation = ["duration", "builder_boolean", "builder_description", "hackathon_interest", "investor", "video_url", "personal_goals", "host_session"]
 
@@ -20,6 +21,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
   const city = getCity()
 
   const form = dynamicForm[city?.slug ?? '']
+  const dates = `${formatDate(city?.start_date, {day: 'numeric', month: 'short'})} - ${formatDate(city?.end_date, {day: 'numeric', month: 'short', year: 'numeric'})}`
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -33,7 +35,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
     { value: "1 weekend", label: "1 weekend" },
     { value: "2 weeks", label: "2 weeks" },
     { value: "a few days", label: "A few days" },
-    { value: "full length", label: "The full time (May 24 - June 21, 2025)" },
+    { value: "full length", label: `The full time (${dates})` },
   ]
 
   if (!fields || !fields.size || !fieldsParticipation.some(field => fields.has(field))) return null;
