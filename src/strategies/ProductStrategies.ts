@@ -1,13 +1,14 @@
 import { AttendeeProps } from '@/types/Attendee';
 import { ProductsPass } from '@/types/Products';
 import { getPriceStrategy, PriceStrategy } from "@/strategies/PriceStrategy";
+import { DiscountProps } from '@/types/discounts';
 
 interface ProductStrategy {
   handleSelection: (
     attendees: AttendeeProps[],
     attendeeId: number,
     product: ProductsPass,
-    discount?: number
+    discount?: DiscountProps
   ) => AttendeeProps[];
 }
 
@@ -40,7 +41,7 @@ class PatreonProductStrategy implements ProductStrategy {
     this.priceStrategy = getPriceStrategy();
   }
 
-  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass, discount?: number): AttendeeProps[] {
+  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass, discount?: DiscountProps): AttendeeProps[] {
     const isPatreonSelected = !product?.selected;
 
     return attendees.map(attendee => ({
@@ -48,7 +49,7 @@ class PatreonProductStrategy implements ProductStrategy {
       products: attendee.products.map(p => ({
         ...p,
         selected: (attendee.id === attendeeId && p.id === product.id) ? !p.selected : p.selected,
-        price: this.priceStrategy.calculatePrice(p, isPatreonSelected || false, discount || 0)
+        price: this.priceStrategy.calculatePrice(p, isPatreonSelected || false, discount || { discount_value: 0, discount_type: 'percentage' })
       }))
     }));
   }
