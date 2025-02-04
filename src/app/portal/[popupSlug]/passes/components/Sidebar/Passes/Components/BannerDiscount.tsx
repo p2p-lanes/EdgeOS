@@ -14,7 +14,7 @@ const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean,
     if(!application || !application.discount_assigned && !productCompare.compare_price && !discountApplied.discount_value) return {discount: 0, label: ''}
     
     if(discountApplied.discount_value){
-      if(application.discount_assigned) return {discount: discountApplied.discount_value, label: `You're eligible for a special discount of ${discountApplied.discount_value}%. Enjoy!`}
+      if(application.discount_assigned) return {discount: discountApplied.discount_value, label: `You've been awarded a special ${discountApplied.discount_value}% discount. Enjoy!`}
       return {discount: discountApplied.discount_value, label: `You've unlocked an extra ${discountApplied.discount_value}% off with your code. Enjoy!`}
     }
 
