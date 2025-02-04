@@ -10,67 +10,66 @@ interface TotalResult {
 interface PriceCalculationStrategy {
   calculate(products: ProductsPass[], discount: DiscountProps): TotalResult;
 }
-class MonthlyPriceStrategy implements PriceCalculationStrategy {
+
+abstract class BasePriceStrategy implements PriceCalculationStrategy {
+  protected calculateOriginalTotal(products: ProductsPass[]): number {
+    return products
+      .filter(p => p.selected)
+      .reduce((sum, product) => sum + (product.compare_price ?? product.original_price ?? 0), 0);
+  }
+
+  abstract calculate(products: ProductsPass[], discount: DiscountProps): TotalResult;
+}
+
+class MonthlyPriceStrategy extends BasePriceStrategy {
   calculate(products: ProductsPass[], discount: DiscountProps): TotalResult {
     const monthProduct = products.find(p => p.category === 'month' && p.selected);
-    const nonDiscountableTotal = this.calculateNonDiscountableTotal(products);
     
     const monthPrice = monthProduct?.price ?? 0;
-    const discountAmount = discount.discount_value 
-      ? monthPrice * (discount.discount_value / 100)
-      : 0;
-    
-    const monthAmount = monthPrice - discountAmount;
+    const originalTotal = this.calculateOriginalTotal(products)
+    const discountAmount = discount.discount_value ? originalTotal * (discount.discount_value / 100): 0;
 
     return {
-      total: monthAmount + nonDiscountableTotal,
-      originalTotal: this.calculateOriginalTotal(products),
+      total: monthPrice,
+      originalTotal: originalTotal,
       discountAmount: discountAmount
     };
   }
 
-  private calculateNonDiscountableTotal(products: ProductsPass[]): number {
+  protected calculateOriginalTotal(products: ProductsPass[]): number {
     return products
-      .filter(p => p.selected && !['week', 'month'].includes(p.category))
-      .reduce((sum, product) => sum + (product.price ?? 0), 0);
-  }
-
-  private calculateOriginalTotal(products: ProductsPass[]): number {
-    return products
-      .filter(p => p.selected)
+      .filter(p => p.selected && p.category === 'week')
       .reduce((sum, product) => sum + (product.compare_price ?? 0), 0);
   }
 }
 
-class WeeklyPriceStrategy implements PriceCalculationStrategy {
+class WeeklyPriceStrategy extends BasePriceStrategy {
   calculate(products: ProductsPass[], discount: DiscountProps): TotalResult {
     const weekProducts = products.filter(p => p.category === 'week' && p.selected);
-    const nonDiscountableTotal = this.calculateNonDiscountableTotal(products);
     
     const discountableTotal = weekProducts.reduce((sum, product) => sum + (product.price ?? 0), 0);
-    const discountAmount = discount.discount_value 
-      ? discountableTotal * (discount.discount_value / 100)
-      : 0;
-    
-    const discountedAmount = discountableTotal - discountAmount;
+    const originalTotal = this.calculateOriginalTotal(products)
+    const discountAmount = discount.discount_value ? originalTotal * (discount.discount_value / 100): 0;
 
     return {
-      total: discountedAmount + nonDiscountableTotal,
-      originalTotal: this.calculateOriginalTotal(products),
+      total: discountableTotal,
+      originalTotal: originalTotal,
       discountAmount: discountAmount
     };
   }
+}
 
-  private calculateNonDiscountableTotal(products: ProductsPass[]): number {
-    return products
-      .filter(p => p.selected && !['week', 'month'].includes(p.category))
-      .reduce((sum, product) => sum + (product.price ?? 0), 0);
-  }
+class PatreonPriceStrategy extends BasePriceStrategy {
+  calculate(products: ProductsPass[], discount: DiscountProps): TotalResult {
+    const patreonProduct = products.find(p => (p.category === 'patreon' || p.category === 'supporter') && p.selected);
+    const patreonPrice = patreonProduct?.price ?? 0;
+    const originalTotal = this.calculateOriginalTotal(products)
 
-  private calculateOriginalTotal(products: ProductsPass[]): number {
-    return products
-      .filter(p => p.selected)
-      .reduce((sum, product) => sum + (product.compare_price ?? 0), 0);
+    return {
+      total: patreonPrice,
+      originalTotal: originalTotal,
+      discountAmount: 0
+    };
   }
 }
 
@@ -90,8 +89,12 @@ class TotalCalculator {
   }
 
   private getStrategy(products: ProductsPass[]): PriceCalculationStrategy {
+    const hasPatreon = products.some(p => (p.category === 'patreon' || p.category === 'supporter') && p.selected);
     const hasMonthly = products.some(p => p.category === 'month' && p.selected);
-    return hasMonthly ? new MonthlyPriceStrategy() : new WeeklyPriceStrategy();
+
+    if(hasPatreon) return new PatreonPriceStrategy()
+    if(hasMonthly) return new MonthlyPriceStrategy()
+    return new WeeklyPriceStrategy()
   }
 }
 

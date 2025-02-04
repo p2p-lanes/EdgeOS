@@ -41,6 +41,12 @@ export default function PassesSidebar() {
         )}
       </div>
 
+      <BannerDiscount 
+        isPatreon={((specialProduct?.selected || specialProduct?.purchased) && specialProduct?.category === 'patreon') ?? false} 
+        application={application}
+        products={products}
+      />
+
       {!attendeePasses || attendeePasses.length === 0 && (
         <div className="space-y-4">
           <Skeleton className="h-[21px] w-[160px] rounded-lg" />
@@ -69,20 +75,8 @@ export default function PassesSidebar() {
             disabled={specialPurchase ?? false}
             onClick={() => toggleProduct(mainAttendee.id, specialProduct)}
           />
-          <p className="text-xs text-muted-foreground mt-1">
-            {specialProduct?.selected && specialProduct?.category === 'patreon' 
-              ? 'Patron ticket holders get free weekly passes for their whole family group' 
-              : ''
-            }
-          </p>
         </div>
       )}
-      
-      <BannerDiscount 
-        isPatreon={((specialProduct?.selected || specialProduct?.purchased) && specialProduct?.category === 'patreon') ?? false} 
-        application={application}
-        products={products}
-      />
 
       <DiscountCode/>
 

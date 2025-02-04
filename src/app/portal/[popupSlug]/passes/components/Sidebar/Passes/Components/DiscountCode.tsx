@@ -15,12 +15,12 @@ const DiscountCode = () => {
   }
 
   return (
-    <div className="flex px-0 gap-2">
+    <div className="flex px-0 gap-4">
       <p className="text-sm font-medium underline whitespace-nowrap cursor-pointer mt-2" onClick={() => setOpen(!open)}>Have a coupon?</p>
       {
         open ? (
           <div className="flex flex-col w-full items-start gap-2">
-            <div className="flex w-full items-start">
+            <div className="flex w-full items-start gap-4">
               <Input
                 disabled={loading || validDiscount}
                 error={!validDiscount && !!discountMsg ? discountMsg : ''}
@@ -35,8 +35,8 @@ const DiscountCode = () => {
                 }}
               />
               <Button
-                variant="link"
-                className="hover:no-underline font-bold text-[#7F22FE]"
+                variant="secondary"
+                className="hover:no-underline font-bold text-[#7F22FE] bg-[#7F22FE]/10"
                 onClick={handleApplyDiscount}
                 disabled={discountCode.length === 0 || loading || validDiscount}
               >

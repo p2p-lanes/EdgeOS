@@ -40,10 +40,6 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
-      const bestDiscount = (application?.discount_assigned || 0) >= discountApplied.discount_value
-        ? {discount_value: application?.discount_assigned || 0, discount_type: 'percentage', discount_code: null}
-        : {discount_value: 0, discount_type: 'percentage', discount_code: null}
-
       const initialAttendees = attendees.map(attendee => {
         const hasPatreonPurchased = attendee.products?.some(p => p.category === 'patreon')
         const priceStrategy = getPriceStrategy();
@@ -56,15 +52,15 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
               selected: false,
               purchased: attendee.products?.some(purchasedProduct => purchasedProduct.id === product.id) || false,
               attendee_id: attendee.id,
-              original_price: product.price,
+              original_price: discountApplied.discount_value ? product.price : product.compare_price ?? product.price,
               disabled: false,
-              price: priceStrategy.calculatePrice(product, hasPatreonPurchased, bestDiscount.discount_value || 0)
+              price: priceStrategy.calculatePrice(product, hasPatreonPurchased, discountApplied.discount_value)
             }))
         };
       });
       setAttendeePasses(initialAttendees);
     }
-  }, [attendees, products, application?.discount_assigned, discountApplied]);
+  }, [attendees, products, discountApplied]);
 
   useEffect(() => {
     if(city?.id){
@@ -72,8 +68,14 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [city?.id])
 
+  useEffect(() => {
+    if(application?.discount_assigned && application?.discount_assigned > discountApplied.discount_value){
+      setDiscountApplied({discount_value: application?.discount_assigned, discount_type: 'percentage'})
+    }
+  }, [application?.discount_assigned, discountApplied.discount_value])
+
   const setDiscount = (discount: DiscountProps) => {
-    if((application?.discount_assigned || 0) >= discount.discount_value) return;
+    if(discount.discount_value <= discountApplied.discount_value) return;
     
     setDiscountApplied(discount);
   }

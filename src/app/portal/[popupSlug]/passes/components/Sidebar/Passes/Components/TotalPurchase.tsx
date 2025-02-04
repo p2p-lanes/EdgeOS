@@ -1,23 +1,33 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
-import { ProductsPass } from "@/types/Products"
 import { ChevronRight, Tag } from "lucide-react"
-import { useMemo, useState } from "react"
-import { badgeName } from "../../../../constants/multiuse"
+import { useState } from "react"
 import { AttendeeProps } from "@/types/Attendee"
 import useDiscountCode from "../../../../hooks/useDiscountCode"
 import { calculateTotal } from "../../../../helpers/products"
+import ProductCart from "./ProductCart"
+import { ProductsPass } from "@/types/Products"
+import { DiscountProps } from "@/types/discounts"
 
-const TotalPurchase = ({attendees }: {
+const TotalPurchase = ({ attendees }: {
   attendees: AttendeeProps[],
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { discountApplied } = useDiscountCode()
-  const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected && p.category !== 'month'))
+
+  const productsCart = attendees.flatMap(attendee =>
+    attendee.products.filter(p => p.selected)
+  ).sort((a, b) => a.category === 'month' ? 1 : -1)
 
   const patreonSelected = attendees.some(attendee => attendee.products.some(p => p.selected && p.category === 'patreon'))
 
   const { originalTotal, total, discountAmount } = calculateTotal(attendees, discountApplied)
+
+  const calculateDiscountMonthProduct = (product: ProductsPass) => {
+    const category = product.attendee_category
+    const totalPrice = attendees.find(att => att.category === category)?.products.filter(p => p.category === 'week' && p.selected).reduce((acc, p) => acc + p.price, 0)
+    return totalPrice ? totalPrice - product.price : 0
+  }
 
   return (
     <Collapsible
@@ -51,25 +61,10 @@ const TotalPurchase = ({attendees }: {
         {productsCart.length > 0 ? (
           <div className="space-y-2 px-3">
             {
-              productsCart.map(product => (
-                <div key={`${product.id}-${product.name}`} className="flex justify-between text-sm text-muted-foreground">
-                  <span>1 x {product.name} ({badgeName[product.attendee_category] || product.attendee_category})</span>
-                  <span>${product.original_price?.toFixed(2)}</span>
-                </div>
-              ))
+              productsCart.map(product => <ProductCart key={product.id} product={product} calculateDiscount={calculateDiscountMonthProduct}/>)
             }
 
-            {
-              discountAmount > 0 && !patreonSelected && (
-                <div className="flex justify-between text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <Tag className="w-4 h-4" />
-                    <span className="text-xs">{discountApplied.discount_code} ({discountApplied.discount_value}% OFF)</span>
-                  </div>
-                  <span> - ${discountAmount.toFixed(2)}</span>
-                </div>
-              )
-            }
+            <DiscountCouponTotal discountAmount={discountAmount} discountApplied={discountApplied} patreonSelected={patreonSelected} />
           </div>
         ) : (
           <p className="text-sm text-muted-foreground px-3">
@@ -79,6 +74,33 @@ const TotalPurchase = ({attendees }: {
       </CollapsibleContent>
     </Collapsible>
   )
+}
+
+const DiscountCouponTotal = ({discountAmount, discountApplied, patreonSelected}: {
+  discountAmount: number,
+  discountApplied: DiscountProps,
+  patreonSelected: boolean
+}) => {
+
+  if(!discountApplied.discount_value || discountAmount === 0 || patreonSelected) return null
+
+  if(discountAmount > 0){
+    return(
+      <div className="flex justify-between text-sm text-muted-foreground">
+        <div className="flex items-center gap-2">
+          <Tag className="w-4 h-4" />
+          <span className="text-sm text-muted-foreground">
+            {
+              discountApplied.discount_code ? 
+                `${discountApplied.discount_code } (${discountApplied.discount_value}% OFF)` :
+                `${discountApplied.discount_value}% OFF`
+            }
+          </span>
+        </div>
+        <span> - ${discountAmount.toFixed(2)}</span>
+      </div>
+    )
+  }
 }
 
 export default TotalPurchase
