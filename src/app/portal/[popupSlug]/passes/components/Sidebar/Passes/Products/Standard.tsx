@@ -135,6 +135,7 @@ function StandardBase({
   onClick,
   isSpecial = false,
   getStatusIcon,
+  ...rest
 }: TicketsBadgeProps & { getStatusIcon: () => JSX.Element | null }) {
   const hasDates = !!(product.start_date && product.end_date);
 
@@ -142,6 +143,7 @@ function StandardBase({
     <button
       onClick={disabled ? undefined : onClick}
       className={getButtonClasses({ disabled, selected, purchased, product })}
+      {...rest}
     >
       <div className="flex items-center">
         <div className="flex items-center w-6 h-6">

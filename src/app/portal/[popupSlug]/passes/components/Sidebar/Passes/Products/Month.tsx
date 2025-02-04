@@ -2,13 +2,14 @@ import { cn } from "@/lib/utils"
 import { ProductsPass } from "@/types/Products"
 import { DollarSign, HandMetal, Plus } from "lucide-react"
 
-const Month = ({product, onClick}: {product?: ProductsPass, onClick: () => void}) => {
+const Month = ({product, onClick, ...rest}: {product?: ProductsPass, onClick: () => void}) => {
 
   if(!product) return null
 
   return (
     <div className="flex justify-center">
       <button
+        {...rest}
         onClick={onClick}
         className="relative p-[2px] inline-flex items-center rounded-full bg-gradient-to-r from-pink-500 via-purple-500 to-indigo-500 group"
       >

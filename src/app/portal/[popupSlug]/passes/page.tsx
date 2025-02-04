@@ -16,7 +16,7 @@ export default function Passes() {
   useEffect(() => {
     if(application === null) return;
 
-    if(application === undefined || application.status !== 'accepted'){
+    if(application && application.status !== 'accepted'){
       router.replace(`/portal/${params.popupSlug}`)
       return;
     }

@@ -41,3 +41,6 @@ cypress.config.ts
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# cypress
+cypress.config.ts

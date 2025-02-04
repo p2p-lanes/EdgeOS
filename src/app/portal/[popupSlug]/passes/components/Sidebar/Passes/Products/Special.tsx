@@ -9,7 +9,10 @@ const withSpecialProductPresentation = (WrappedComponent: React.ComponentType<an
     const { selected, disabled } = props;
     
     const getStatusIcon = () => {
-      if (selected || disabled) {
+      if (disabled) {
+        return null;
+      }
+      if (selected) {
         return <Check className="w-4 h-4" color="#005F3A"/>;
       }
       return <Plus className="w-4 h-4" />;
@@ -51,8 +54,10 @@ const ProductPrice = ({ product, selected }: ProductPriceProps) => (
 
 const TooltipPatreon = () => (
   <Tooltip>
-    <TooltipTrigger>
-      <Info className="w-4 h-4 text-gray-500" />
+    <TooltipTrigger asChild>
+      <div className="cursor-pointer">
+        <Info className="w-4 h-4 text-gray-500" />
+      </div>
     </TooltipTrigger>
     <TooltipContent className="bg-white text-black max-w-[420px] border border-gray-200">
       ⁠A patron pass gives you access to the whole month and supports scholarships 
@@ -79,8 +84,11 @@ function SpecialBase({
   getStatusIcon 
 }: SpecialProps & { getStatusIcon: () => JSX.Element }) {
   return (
-    <div 
+    <button
+      data-category="patreon"
       onClick={!disabled ? onClick : undefined}
+      data-selected={selected}
+      data-price={product.price}
       className={cn(
         "w-full rounded-full flex items-center justify-between py-1 px-4",
         "transition-all duration-300",
@@ -106,7 +114,7 @@ function SpecialBase({
           )
         }
       </div>
-    </div>
+    </button>
   );
 }
 

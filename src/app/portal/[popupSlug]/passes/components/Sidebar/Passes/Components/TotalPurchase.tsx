@@ -53,7 +53,7 @@ const TotalPurchase = ({ attendees }: {
                 ${originalTotal.toFixed(2)}
               </span>
             )}
-            <span className="font-medium">${total.toFixed(2)}</span>
+            <span className="font-medium" data-total={total.toFixed(2)}>${total.toFixed(2)}</span>
           </div>
         </div>
       </CollapsibleTrigger>
