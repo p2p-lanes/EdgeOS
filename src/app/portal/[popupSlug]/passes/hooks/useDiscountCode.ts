@@ -23,7 +23,7 @@ const useDiscountCode = () => {
       if(res.status === 200){
         const newDiscount = compareDiscount(res.data.discount_value)
         if(newDiscount.is_best){
-          setDiscount({discount_value: res.data.discount_value, discount_type: 'percentage', discount_code: res.data.code})
+          setDiscount({discount_value: newDiscount.discount_value, discount_type: 'percentage', discount_code: res.data.code})
           setDiscountMsg(res.data.message)
           setValidDiscount(true)
           return;

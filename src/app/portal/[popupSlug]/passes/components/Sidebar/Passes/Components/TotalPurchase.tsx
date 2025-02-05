@@ -38,6 +38,7 @@ const TotalPurchase = ({ attendees }: {
       open={isOpen}
       onOpenChange={setIsOpen}
       className="space-y-4 pt-0"
+      data-cart
     >
       <CollapsibleTrigger className="w-full">
         <div className="flex justify-between items-center p-3 bg-muted/50 rounded-md">
@@ -107,7 +108,7 @@ const DiscountCouponTotal = ({discountAmount, discountApplied, patreonSelected}:
           {getLabelDiscount()}
         </span>
       </div>
-        <span> - ${discountAmount.toFixed(2)}</span>
+        <span data-discount-amount={discountAmount.toFixed(2)}> - ${discountAmount.toFixed(2)}</span>
       </div>
     )
   }
