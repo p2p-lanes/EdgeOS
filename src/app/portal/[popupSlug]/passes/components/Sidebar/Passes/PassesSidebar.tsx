@@ -78,7 +78,7 @@ export default function PassesSidebar() {
         </div>
       )}
 
-      {/* <DiscountCode/> */}
+      <DiscountCode/>
 
       <TotalPurchase
         attendees={attendeePasses}
