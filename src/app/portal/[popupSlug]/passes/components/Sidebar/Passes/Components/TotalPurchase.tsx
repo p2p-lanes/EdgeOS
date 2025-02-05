@@ -15,9 +15,13 @@ const TotalPurchase = ({ attendees }: {
   const [isOpen, setIsOpen] = useState(false)
   const { discountApplied } = useDiscountCode()
 
-  const productsCart = attendees.flatMap(attendee =>
-    attendee.products.filter(p => p.selected)
-  ).sort((a, b) => a.category === 'month' ? 1 : -1)
+  const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected)).sort((a, b) => {
+    if (a.category === 'patreon') return -1
+    if (b.category === 'patreon') return 1
+    if (a.category === 'month') return 1
+    if (b.category === 'month') return -1
+    return 0
+  })
 
   const patreonSelected = attendees.some(attendee => attendee.products.some(p => p.selected && p.category === 'patreon'))
 
@@ -82,25 +86,33 @@ const DiscountCouponTotal = ({discountAmount, discountApplied, patreonSelected}:
   patreonSelected: boolean
 }) => {
 
-  if(!discountApplied.discount_value || discountAmount === 0 || patreonSelected) return null
+  if((!discountApplied.discount_value || discountAmount === 0) && !patreonSelected) return null
+
+  const getLabelDiscount = () => {
+    if(patreonSelected){
+      return 'Patron Free Tickets'
+    }
+    if(discountApplied.discount_code){
+      return `${discountApplied.discount_code } (${discountApplied.discount_value}% OFF)`
+    }
+    return `${discountApplied.discount_value}% OFF`
+  }
 
   if(discountAmount > 0){
     return(
       <div className="flex justify-between text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
-          <Tag className="w-4 h-4" />
-          <span className="text-sm text-muted-foreground">
-            {
-              discountApplied.discount_code ? 
-                `${discountApplied.discount_code } (${discountApplied.discount_value}% OFF)` :
-                `${discountApplied.discount_value}% OFF`
-            }
-          </span>
-        </div>
+        <Tag className="w-4 h-4" />
+        <span className="text-sm text-muted-foreground">
+          {getLabelDiscount()}
+        </span>
+      </div>
         <span> - ${discountAmount.toFixed(2)}</span>
       </div>
     )
   }
+
+  return null
 }
 
 export default TotalPurchase

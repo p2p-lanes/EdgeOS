@@ -62,13 +62,15 @@ class WeeklyPriceStrategy extends BasePriceStrategy {
 class PatreonPriceStrategy extends BasePriceStrategy {
   calculate(products: ProductsPass[], discount: DiscountProps): TotalResult {
     const patreonProduct = products.find(p => (p.category === 'patreon' || p.category === 'supporter') && p.selected);
+    const productsSelected = products.filter(p => p.selected && p.category !== 'patreon' && p.category !== 'supporter')
     const patreonPrice = patreonProduct?.price ?? 0;
     const originalTotal = this.calculateOriginalTotal(products)
+    const discountAmount = productsSelected.reduce((sum, product) => sum + (product.original_price ?? 0), 0)
 
     return {
       total: patreonPrice,
       originalTotal: originalTotal,
-      discountAmount: 0
+      discountAmount: discountAmount
     };
   }
 }
