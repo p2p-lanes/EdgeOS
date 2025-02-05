@@ -12,7 +12,7 @@ const ProductCart = ({ product, calculateDiscount }: { product: ProductsPass, ca
       return(
         <div className="flex justify-between text-sm text-muted-foreground">
           <span className="flex items-center gap-2"><Tag className="w-4 h-4" />Discount on Full {product.name}</span>
-          <span> - ${calculateDiscountMonth.toFixed(2)}</span>
+          <span data-month-discount={calculateDiscountMonth.toFixed(2)}> - ${calculateDiscountMonth.toFixed(2)}</span>
         </div>
       )
     }
@@ -21,7 +21,7 @@ const ProductCart = ({ product, calculateDiscount }: { product: ProductsPass, ca
   return (
     <div className="flex justify-between text-sm text-muted-foreground">
       <span>1 x {product.name} ({badgeName[product.attendee_category] || product.attendee_category})</span>
-      <span>${product.original_price?.toFixed(2)}</span>
+      <span data-product-price={product.original_price?.toFixed(2)}>${product.original_price?.toFixed(2)}</span>
     </div>
   )
 }

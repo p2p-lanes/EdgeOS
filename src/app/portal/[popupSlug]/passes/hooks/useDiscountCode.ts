@@ -23,12 +23,12 @@ const useDiscountCode = () => {
       if(res.status === 200){
         const newDiscount = compareDiscount(res.data.discount_value)
         if(newDiscount.is_best){
-          setDiscount({discount_value: res.data.discount_value, discount_type: 'percentage', discount_code: res.data.code})
+          setDiscount({discount_value: newDiscount.discount_value, discount_type: 'percentage', discount_code: res.data.code})
           setDiscountMsg(res.data.message)
           setValidDiscount(true)
           return;
         }
-        setDiscountMsg('You already have a higher assigned discount than this coupon. Please, try another one.')
+        setDiscountMsg('You already have a higher discount than this coupon. Please, try another one.')
         setValidDiscount(false)
         return;
       }else{

@@ -64,6 +64,79 @@ describe('Passes', () => {
           .should('have.attr', 'data-selected', 'true');
       });
   });
+  
+  it('should correctly calculate total price with discounts', () => {
+    // Seleccionar aleatoriamente entre 1 y 4 tickets
+    const numTicketsToSelect = Math.floor(Math.random() * 4) + 1;
+    
+    // Obtener todos los tickets disponibles y seleccionar algunos al azar
+    cy.get('button[data-category]').then($tickets => {
+      const tickets = $tickets.toArray();
+      const selectedIndexes: number[] = [];
+      
+      while (selectedIndexes.length < numTicketsToSelect) {
+        const randomIndex = Math.floor(Math.random() * tickets.length);
+        if (!selectedIndexes.some(index => index === randomIndex)) {
+          selectedIndexes.push(randomIndex);
+          cy.wrap(tickets[randomIndex]).click();
+        }
+      }
+    });
+
+    // Verificar si hay tickets seleccionados antes de continuar
+    cy.get('button[data-selected="true"]').then($selectedTickets => {
+      if ($selectedTickets.length > 0) {
+        cy.get('[data-cart]').click();
+        
+        let totalPrice = 0;
+        let monthlyDiscounts = 0;
+        let additionalDiscounts = 0;
+
+        // Sumar precios de productos
+        cy.get('[data-product-price]').each(($price) => {
+          const productPrice = parseFloat($price.attr('data-product-price') || '0');
+          totalPrice += productPrice;
+        });
+
+        // Restar descuentos mensuales
+        cy.get('button[data-category="month"]').then($monthTickets => {
+          // Verificar si hay tickets mensuales seleccionados
+          $monthTickets.each((_, monthTicket) => {
+            const isSelected = monthTicket.getAttribute('data-selected') === 'true';
+            if (isSelected) {
+              cy.get('[data-month-discount]').then($discounts => {
+                if ($discounts.length > 0) {
+                  $discounts.each((_, discount) => {
+                    monthlyDiscounts += parseFloat(discount.getAttribute('data-month-discount') || '0');
+                  });
+                }
+              });
+            }
+          });
+        });
+
+        // Restar descuentos adicionales
+        cy.get('[data-discount-amount]').then($discounts => {
+          if ($discounts.length > 0) {
+            $discounts.each((_, discount) => {
+              additionalDiscounts += parseFloat(discount.getAttribute('data-discount-amount') || '0');
+            });
+          }
+
+          // Calcular total final
+          const expectedTotal = (totalPrice - monthlyDiscounts - additionalDiscounts).toFixed(2);
+
+          // Verificar que el total mostrado sea igual al total esperado
+          cy.get('[data-total]')
+            .should('be.visible')
+            .invoke('attr', 'data-total')
+            .then((displayedTotal) => {
+              expect(displayedTotal).to.equal(expectedTotal);
+            });
+        });
+      }
+    });
+  });
 
   it('should successfully purchase weekly tickets and verify API response', () => {
     // Seleccionar algunos tickets semanales
