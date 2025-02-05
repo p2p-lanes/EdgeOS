@@ -49,7 +49,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
             .filter(product => product.attendee_category === attendee.category && product.is_active)
             .map(product => ({
               ...product,
-              selected: false,
+              selected: attendeePasses.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.selected || false,
               purchased: attendee.products?.some(purchasedProduct => purchasedProduct.id === product.id) || false,
               attendee_id: attendee.id,
               original_price: discountApplied.discount_value ? product.price : product.compare_price ?? product.price,

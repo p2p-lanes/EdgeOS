@@ -2,7 +2,6 @@ import { api } from "@/api"
 import { useCityProvider } from "@/providers/cityProvider"
 import { usePassesProvider } from "@/providers/passesProvider"
 import { useState } from "react"
-import { toast } from "sonner"
 
 const useDiscountCode = () => {
   const [loading, setLoading] = useState(false)
@@ -18,7 +17,7 @@ const useDiscountCode = () => {
     setLoading(true)
 
     try{
-      const res = await api.get(`discount-codes?code=${discountCode.toUpperCase()}&popup_city_id=${city.id}`)
+      const res = await api.get(`coupon-codes?code=${discountCode.toUpperCase()}&popup_city_id=${city.id}`)
       if(res.status === 200){
         setDiscount({discount_value: res.data.discount_value, discount_type: 'percentage', discount_code: res.data.code})
         setDiscountMsg(res.data.message)

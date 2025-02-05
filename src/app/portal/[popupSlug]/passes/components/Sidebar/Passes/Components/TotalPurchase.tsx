@@ -95,7 +95,7 @@ const DiscountCouponTotal = ({discountAmount, discountApplied, patreonSelected}:
     if(discountApplied.discount_code){
       return `${discountApplied.discount_code } (${discountApplied.discount_value}% OFF)`
     }
-    return `${discountApplied.discount_value}% OFF`
+    return `Award ${discountApplied.discount_value}% OFF`
   }
 
   if(discountAmount > 0){
