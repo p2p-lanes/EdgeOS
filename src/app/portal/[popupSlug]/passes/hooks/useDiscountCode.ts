@@ -19,7 +19,7 @@ const useDiscountCode = () => {
     setLoading(true)
 
     try{
-      const res = await api.get(`coupon-codes?code=${discountCode.toUpperCase()}&popup_city_id=${city.id}`)
+      const res = await api.get(`coupon-codes?code=${discountCode}&popup_city_id=${city.id}`)
       if(res.status === 200){
         const newDiscount = compareDiscount(res.data.discount_value)
         if(newDiscount.is_best){
