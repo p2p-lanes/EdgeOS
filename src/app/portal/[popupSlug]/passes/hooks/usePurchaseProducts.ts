@@ -27,7 +27,7 @@ const usePurchaseProducts = () => {
       const data = {
         application_id: application.id,
         products: filteredProducts,
-        discount_code: discountApplied.discount_code
+        coupon_code: discountApplied.discount_code
       }
       const response = await api.post('payments', data)
       if(response.status === 200){
