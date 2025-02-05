@@ -16,7 +16,7 @@ const DiscountCode = () => {
 
   return (
     <div className="flex px-0 gap-4">
-      <p className="text-sm font-medium underline whitespace-nowrap cursor-pointer mt-2" onClick={() => setOpen(!open)}>Have a coupon?</p>
+      <p className="text-sm font-medium underline whitespace-nowrap cursor-pointer my-2" onClick={() => setOpen(!open)}>Have a coupon?</p>
       {
         open ? (
           <div className="flex flex-col w-full items-start gap-2">
