@@ -27,7 +27,7 @@ const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean,
   if(discount === 0 || !productCompare) return null
 
   return (
-    <div className="w-full bg-gray-100 py-1 relative top-0 left-0 rounded-sm px-4">
+    <div className="w-full bg-gray-100 py-2 relative top-0 left-0 rounded-lg px-4">
       <div className="w-full mx-auto flex justify-center items-center gap-1">
         <Award className="w-4 h-4 stroke-[#FF7B7B] stroke-[2] bg-gradient-to-r from-[#FF7B7B] to-[#E040FB] bg-clip-text text-transparent" />
         <h2 className="text-center">
