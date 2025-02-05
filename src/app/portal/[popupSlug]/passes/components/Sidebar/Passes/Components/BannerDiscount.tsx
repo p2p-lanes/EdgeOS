@@ -8,6 +8,7 @@ const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean,
   const { discountApplied } = usePassesProvider()
   const productCompare = useMemo(() => products.find(p => p.category === 'week' && p.price !== p.compare_price) ?? {price: 100, compare_price: 100}, [products])
 
+  
   const {discount, label} = useMemo(() => {
     if (isPatreon) return {discount: 100, label: 'As a Patron, enjoy free weekly passes for your entire family group!'}
     
@@ -19,7 +20,7 @@ const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean,
     }
 
     const discount = 100 - ((productCompare.price ?? 0) / (productCompare.compare_price ?? 0) * 100)
-
+    
     return {discount: Math.round(discount), label: 'early bird discount'}
   }, [isPatreon, application, productCompare, discountApplied])
   

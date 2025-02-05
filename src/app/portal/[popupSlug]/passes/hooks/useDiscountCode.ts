@@ -1,4 +1,5 @@
 import { api } from "@/api"
+import useCompareDiscount from "@/hooks/useCompareDiscount"
 import { useCityProvider } from "@/providers/cityProvider"
 import { usePassesProvider } from "@/providers/passesProvider"
 import { useState } from "react"
@@ -10,6 +11,7 @@ const useDiscountCode = () => {
   const { getCity } = useCityProvider()
   const { setDiscount, discountApplied } = usePassesProvider()
   const city = getCity()
+  const { compareDiscount } = useCompareDiscount()
 
   const getDiscountCode = async (discountCode: string) => {
     if(!city?.id) return;
@@ -19,9 +21,16 @@ const useDiscountCode = () => {
     try{
       const res = await api.get(`coupon-codes?code=${discountCode.toUpperCase()}&popup_city_id=${city.id}`)
       if(res.status === 200){
-        setDiscount({discount_value: res.data.discount_value, discount_type: 'percentage', discount_code: res.data.code})
-        setDiscountMsg(res.data.message)
-        setValidDiscount(true)
+        const newDiscount = compareDiscount(res.data.discount_value)
+        if(newDiscount.is_best){
+          setDiscount({discount_value: res.data.discount_value, discount_type: 'percentage', discount_code: res.data.code})
+          setDiscountMsg(res.data.message)
+          setValidDiscount(true)
+          return;
+        }
+        setDiscountMsg('You already have a higher assigned discount than this coupon. Please, try another one.')
+        setValidDiscount(false)
+        return;
       }else{
         setDiscountMsg(res.data.message)
         setValidDiscount(false)
