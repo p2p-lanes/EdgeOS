@@ -79,6 +79,9 @@ const ProductDates = ({ start_date, end_date, selected }: ProductDatesProps) => 
 );
 
 const ProductPrice = ({ purchased, disabled, product, selected }: ProductPriceProps) => {
+  const price = product.price
+  const originalPrice = product.original_price ?? price
+
   const getPriceDisplay = () => {
     if (purchased) {
       return (
@@ -97,12 +100,21 @@ const ProductPrice = ({ purchased, disabled, product, selected }: ProductPricePr
     }
 
     return (
-      <span className={cn(
-        "text-sm font-medium",
-        selected ? "text-[#005F3A]" : "text-gray-900"
-      )}>
-        ${product.price.toLocaleString()}
-      </span>
+      <div className="flex items-center gap-2">
+        {
+          originalPrice !== price && (
+            <p className="text-xs text-muted-foreground line-through">
+              ${originalPrice.toLocaleString()}
+            </p>
+          )
+        }
+        <span className={cn(
+          "text-sm font-medium",
+          selected ? "text-[#005F3A]" : "text-gray-900"
+        )}>
+          ${price.toLocaleString()}
+        </span>
+      </div>
     );
   };
 
@@ -123,6 +135,7 @@ function StandardBase({
   onClick,
   isSpecial = false,
   getStatusIcon,
+  ...rest
 }: TicketsBadgeProps & { getStatusIcon: () => JSX.Element | null }) {
   const hasDates = !!(product.start_date && product.end_date);
 
@@ -130,6 +143,7 @@ function StandardBase({
     <button
       onClick={disabled ? undefined : onClick}
       className={getButtonClasses({ disabled, selected, purchased, product })}
+      {...rest}
     >
       <div className="flex items-center">
         <div className="flex items-center w-6 h-6">

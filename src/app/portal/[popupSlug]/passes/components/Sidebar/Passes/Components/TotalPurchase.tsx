@@ -1,23 +1,43 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
-import { ProductsPass } from "@/types/Products"
-import { ChevronRight } from "lucide-react"
+import { ChevronRight, Tag } from "lucide-react"
 import { useState } from "react"
-import { badgeName } from "../../../../constants/multiuse"
 import { AttendeeProps } from "@/types/Attendee"
+import useDiscountCode from "../../../../hooks/useDiscountCode"
+import { calculateTotal } from "../../../../helpers/products"
+import ProductCart from "./ProductCart"
+import { ProductsPass } from "@/types/Products"
+import { DiscountProps } from "@/types/discounts"
 
-const TotalPurchase = ({total, attendees }: {
-  total: { originalTotal: number, total: number }, 
-  attendees: AttendeeProps[]
+const TotalPurchase = ({ attendees }: {
+  attendees: AttendeeProps[],
 }) => {
   const [isOpen, setIsOpen] = useState(false)
-  const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected && p.category !== 'month'))
+  const { discountApplied } = useDiscountCode()
+
+  const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected)).sort((a, b) => {
+    if (a.category === 'patreon') return -1
+    if (b.category === 'patreon') return 1
+    if (a.category === 'month') return 1
+    if (b.category === 'month') return -1
+    return 0
+  })
+
+  const patreonSelected = attendees.some(attendee => attendee.products.some(p => p.selected && p.category === 'patreon'))
+
+  const { originalTotal, total, discountAmount } = calculateTotal(attendees, discountApplied)
+
+  const calculateDiscountMonthProduct = (product: ProductsPass) => {
+    const category = product.attendee_category
+    const totalPrice = attendees.find(att => att.category === category)?.products.filter(p => p.category === 'week' && p.selected).reduce((acc, p) => acc + p.price, 0)
+    return totalPrice ? totalPrice - product.price : 0
+  }
 
   return (
     <Collapsible
       open={isOpen}
       onOpenChange={setIsOpen}
-      className="space-y-4 pt-4"
+      className="space-y-4 pt-0"
     >
       <CollapsibleTrigger className="w-full">
         <div className="flex justify-between items-center p-3 bg-muted/50 rounded-md">
@@ -32,27 +52,23 @@ const TotalPurchase = ({total, attendees }: {
           </div>
           
           <div className="flex items-center gap-2">
-            {total.originalTotal > 0 && total.originalTotal !== total.total && (
+            {originalTotal > 0 && originalTotal !== total && (
               <span className="text-xs text-muted-foreground line-through">
-                ${total.originalTotal.toFixed(2)}
+                ${originalTotal.toFixed(2)}
               </span>
             )}
-            <span className="font-medium">${total.total.toFixed(2)}</span>
+            <span className="font-medium" data-total={total.toFixed(2)}>${total.toFixed(2)}</span>
           </div>
-
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent>
         {productsCart.length > 0 ? (
           <div className="space-y-2 px-3">
             {
-              productsCart.map(product => (
-                <div key={`${product.id}-${product.name}`} className="flex justify-between text-sm text-muted-foreground">
-                  <span>1 x {product.name} ({badgeName[product.attendee_category] || product.attendee_category})</span>
-                  <span>${product.original_price?.toFixed(2)}</span>
-                </div>
-              ))
+              productsCart.map(product => <ProductCart key={product.id} product={product} calculateDiscount={calculateDiscountMonthProduct}/>)
             }
+
+            <DiscountCouponTotal discountAmount={discountAmount} discountApplied={discountApplied} patreonSelected={patreonSelected} />
           </div>
         ) : (
           <p className="text-sm text-muted-foreground px-3">
@@ -62,6 +78,41 @@ const TotalPurchase = ({total, attendees }: {
       </CollapsibleContent>
     </Collapsible>
   )
+}
+
+const DiscountCouponTotal = ({discountAmount, discountApplied, patreonSelected}: {
+  discountAmount: number,
+  discountApplied: DiscountProps,
+  patreonSelected: boolean
+}) => {
+
+  if((!discountApplied.discount_value || discountAmount === 0) && !patreonSelected) return null
+
+  const getLabelDiscount = () => {
+    if(patreonSelected){
+      return 'Patron Free Tickets'
+    }
+    if(discountApplied.discount_code){
+      return `${discountApplied.discount_code } (${discountApplied.discount_value}% OFF)`
+    }
+    return `Award ${discountApplied.discount_value}% OFF`
+  }
+
+  if(discountAmount > 0){
+    return(
+      <div className="flex justify-between text-sm text-muted-foreground">
+        <div className="flex items-center gap-2">
+        <Tag className="w-4 h-4" />
+        <span className="text-sm text-muted-foreground">
+          {getLabelDiscount()}
+        </span>
+      </div>
+        <span> - ${discountAmount.toFixed(2)}</span>
+      </div>
+    )
+  }
+
+  return null
 }
 
 export default TotalPurchase

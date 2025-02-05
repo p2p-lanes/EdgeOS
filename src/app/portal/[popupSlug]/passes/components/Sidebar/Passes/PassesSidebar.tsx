@@ -13,6 +13,7 @@ import { usePassesProvider } from "@/providers/passesProvider"
 import usePurchaseProducts from "../../../hooks/usePurchaseProducts"
 import { useApplication } from "@/providers/applicationProvider"
 import { Skeleton } from "@/components/ui/skeleton"
+import DiscountCode from "./Components/DiscountCode"
 
 export default function PassesSidebar() {
   const { getCity } = useCityProvider()
@@ -23,7 +24,6 @@ export default function PassesSidebar() {
   const { purchaseProducts, loading } = usePurchaseProducts()
 
   const {
-    total,
     specialProduct,
     mainAttendee,
     disabledPurchase,
@@ -40,6 +40,12 @@ export default function PassesSidebar() {
           </p>
         )}
       </div>
+
+      <BannerDiscount 
+        isPatreon={((specialProduct?.selected || specialProduct?.purchased) && specialProduct?.category === 'patreon') ?? false} 
+        application={application}
+        products={products}
+      />
 
       {!attendeePasses || attendeePasses.length === 0 && (
         <div className="space-y-4">
@@ -69,23 +75,12 @@ export default function PassesSidebar() {
             disabled={specialPurchase ?? false}
             onClick={() => toggleProduct(mainAttendee.id, specialProduct)}
           />
-          <p className="text-xs text-muted-foreground mt-1">
-            {specialProduct?.selected && specialProduct?.category === 'patreon' 
-              ? 'Patron ticket holders get free weekly passes for their whole family group' 
-              : ''
-            }
-          </p>
         </div>
       )}
-      
-      <BannerDiscount 
-        isPatreon={((specialProduct?.selected || specialProduct?.purchased) && specialProduct?.category === 'patreon') ?? false} 
-        application={application}
-        products={products}
-      />
 
-      <TotalPurchase 
-        total={total} 
+      <DiscountCode/>
+
+      <TotalPurchase
         attendees={attendeePasses}
       />
 
@@ -94,6 +89,7 @@ export default function PassesSidebar() {
         loading={loading} 
         className="w-full text-white" 
         onClick={() => purchaseProducts(attendeePasses)}
+        data-purchase
       >
         Complete Purchase
       </ButtonAnimated>

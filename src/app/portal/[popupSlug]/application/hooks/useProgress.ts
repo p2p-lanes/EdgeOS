@@ -2,12 +2,13 @@ import { dynamicForm } from "@/constants"
 import { validateVideoUrl } from "@/helpers/validate"
 import { useCityProvider } from "@/providers/cityProvider"
 import { useEffect, useMemo, useState } from "react"
+import useGetFields from "./useGetFields"
 
 const useProgress = (formData: any) => {
   const [progress, setProgress] = useState(0)
   const { getCity } = useCityProvider()
   const city = getCity()
-  const fields = useMemo(() => city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null, [city])
+  const { fields } = useGetFields()
   const isVideoValid = validateVideoUrl(formData.video_url, fields)
 
   useEffect(() => {

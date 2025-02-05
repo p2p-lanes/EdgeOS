@@ -6,7 +6,6 @@ import useAuthentication from '@/hooks/useAuthentication'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
-import { toast } from 'sonner'
 import { Suspense } from 'react'
 
 // Dynamically import AuthForm with no SSR

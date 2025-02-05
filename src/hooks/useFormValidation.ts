@@ -1,3 +1,4 @@
+import useGetFields from '@/app/portal/[popupSlug]/application/hooks/useGetFields'
 import { dynamicForm } from '@/constants'
 import { validateVideoUrl } from '@/helpers/validate'
 import { useCityProvider } from '@/providers/cityProvider'
@@ -21,9 +22,11 @@ export const useFormValidation = (initialData: FormData) => {
   const [errors, setErrors] = useState<Record<FieldName, string>>({})
   const { getCity } = useCityProvider()
   const city = getCity()
+  const { fields } = useGetFields()
 
-  const fields = useMemo(() => city?.slug ? new Set(dynamicForm[city.slug]?.fields) : null, [city])
 
+  console.log('formData', formData)
+  console.log('fields', fields)
   const validateField = useCallback((name: FieldName, value: FieldValue, formData: FormData) => {
     if (!fields?.has(name)) return ''
 
