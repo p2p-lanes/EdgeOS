@@ -26,7 +26,7 @@ const DiscountCode = () => {
                 error={!validDiscount && !!discountMsg ? discountMsg : ''}
                 placeholder="Enter coupon code" 
                 data-discount-code={discountCode}
-                value={discountCode}
+                value={discountCode.toUpperCase()}
                 onChange={(e) => setDiscountCode(e.target.value)}
                 onKeyDown={(e) => {
                   if (e.key === 'Enter' && discountCode.length > 0 && !loading) {
