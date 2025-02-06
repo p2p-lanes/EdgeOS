@@ -7,18 +7,18 @@ import icon from '../../public/icon.png'
 
 export const metadata: Metadata = {
   title: "Citizen Portal",
-  description: "Your gateway to Edge City",
+  description: "Your gateway to Citizen Portal",
   icons: {
     icon: icon.src,
   },
   openGraph: {
-    title: "Edge Portal",
-    description: "Your gateway to Edge City",
+    title: "Citizen Portal",
+    description: "Your gateway to Citizen Portal",
     images: [{
       url: "https://simplefi.s3.us-east-2.amazonaws.com/edgecity.png",
       width: 1200,
       height: 630,
-      alt: 'Edge Portal'
+      alt: 'Citizen Portal'
     }]
   }
 };
