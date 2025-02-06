@@ -21,7 +21,7 @@ const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean,
 
     const discount = 100 - ((productCompare.price ?? 0) / (productCompare.compare_price ?? 0) * 100)
     
-    return {discount: Math.round(discount), label: 'early bird discount'}
+    return {discount: Math.round(discount), label: `${Math.round(discount)}% early bird discount`}
   }, [isPatreon, application, productCompare, discountApplied])
   
   if(discount === 0 || !productCompare) return null
