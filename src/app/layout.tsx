@@ -3,10 +3,10 @@ import "../styles/globals.css";
 import { GeistSans } from 'geist/font/sans';
 import GoogleAnalytics from "@/components/utils/GoogleAnalytics";
 import { Toaster } from "sonner";
-import icon from '../../public/EdgeCityIcon.png'
+import icon from '../../public/icon.png'
 
 export const metadata: Metadata = {
-  title: "Edge Portal",
+  title: "Citizen Portal",
   description: "Your gateway to Edge City",
   icons: {
     icon: icon.src,
