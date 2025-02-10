@@ -23,7 +23,7 @@ class DefaultPriceStrategy implements PriceStrategy {
       //   return Math.max(0, originalPrice - discount.discount_value);
       // }
     }
-
+    
     return originalPrice;
   }
 

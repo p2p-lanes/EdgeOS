@@ -49,6 +49,7 @@ class PatreonProductStrategy implements ProductStrategy {
       products: attendee.products.map(p => ({
         ...p,
         selected: (attendee.id === attendeeId && p.id === product.id) ? !p.selected : p.selected,
+        // original_price: p.price,
         price: this.priceStrategy.calculatePrice(p, isPatreonSelected || false, discount?.discount_value || 0)
       }))
     }));

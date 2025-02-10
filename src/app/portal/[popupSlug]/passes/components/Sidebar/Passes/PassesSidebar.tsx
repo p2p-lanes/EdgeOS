@@ -43,7 +43,6 @@ export default function PassesSidebar() {
 
       <BannerDiscount 
         isPatreon={((specialProduct?.selected || specialProduct?.purchased) && specialProduct?.category === 'patreon') ?? false} 
-        application={application}
         products={products}
       />
 
@@ -82,6 +81,8 @@ export default function PassesSidebar() {
 
       <TotalPurchase
         attendees={attendeePasses}
+        isPatreon={((specialProduct?.selected || specialProduct?.purchased) && specialProduct?.category === 'patreon') ?? false} 
+        products={products}
       />
 
       <ButtonAnimated 

@@ -6,11 +6,14 @@ import { AttendeeProps } from "@/types/Attendee"
 import useDiscountCode from "../../../../hooks/useDiscountCode"
 import { calculateTotal } from "../../../../helpers/products"
 import ProductCart from "./ProductCart"
-import { ProductsPass } from "@/types/Products"
+import { ProductsPass, ProductsProps } from "@/types/Products"
 import { DiscountProps } from "@/types/discounts"
+import useCalculateDiscount from "../../../../hooks/useCalculateDiscount"
 
-const TotalPurchase = ({ attendees }: {
+const TotalPurchase = ({ attendees, isPatreon, products }: {
   attendees: AttendeeProps[],
+  isPatreon: boolean,
+  products: ProductsProps[]
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { discountApplied } = useDiscountCode()
@@ -81,7 +84,7 @@ const TotalPurchase = ({ attendees }: {
   )
 }
 
-const DiscountCouponTotal = ({discountAmount, discountApplied, patreonSelected}: {
+const DiscountCouponTotal = ({ discountAmount, discountApplied, patreonSelected}: {
   discountAmount: number,
   discountApplied: DiscountProps,
   patreonSelected: boolean
