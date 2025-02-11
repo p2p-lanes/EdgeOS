@@ -27,7 +27,7 @@ class ExclusiveProductStrategy implements ProductStrategy {
             p.id === product.id ? !p.selected :
             (p.exclusive && willBeSelected && product?.exclusive) ? false :
             p.selected,
-          disabled: product.exclusive && p.id !== product.id && p.selected
+          // disabled: product.exclusive && p.id !== product.id && p.selected
         }))
       };
     });

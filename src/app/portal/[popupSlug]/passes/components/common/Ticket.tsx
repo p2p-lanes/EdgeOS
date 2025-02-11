@@ -2,13 +2,13 @@ import { AttendeeProps } from "@/types/Attendee"
 import { QrCode, User } from "lucide-react"
 import { badgeName } from "../../constants/multiuse"
 import { ProductsPass } from "@/types/Products"
-import ProductTicket from "./ProductTicket"
 import { useCityProvider } from "@/providers/cityProvider"
 import { EdgeLand } from "@/components/Icons/EdgeLand"
 import { Button } from "@/components/ui/button"
+import Product from "./ProductTicket"
 
 const Ticket = ({attendee, toggleProduct}: {attendee: AttendeeProps, toggleProduct: (attendeeId: number, product: ProductsPass) => void}) => {
-  const weekProducts = attendee.products.filter((product) => product.category === 'week')
+  const standardProducts = attendee.products.filter((product) => product.category !== 'patreon' && product.category !== 'month')
   const { getCity} = useCityProvider()
   const city = getCity()
 
@@ -21,7 +21,7 @@ const Ticket = ({attendee, toggleProduct}: {attendee: AttendeeProps, toggleProdu
             className="absolute inset-0 z-0 rounded-3xl "
             style={{
               background: `linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.8) 40%, #FFFFFF 82%), url(${city?.image_url})`,
-              backgroundSize: '115% 120%',
+              backgroundSize: 'cover',
               backgroundPosition: 'top',
             }}
           />
@@ -47,17 +47,17 @@ const Ticket = ({attendee, toggleProduct}: {attendee: AttendeeProps, toggleProdu
 
         <div className="flex flex-col p-8 gap-2">
           {
-            weekProducts.map((product) => (
-              <ProductTicket key={`${product.id}-${attendee.id}`} product={product} onClick={() => toggleProduct(attendee.id, product)}/>
+            standardProducts.map((product) => (
+              <Product key={`${product.id}-${attendee.id}`} product={product} onClick={() => toggleProduct(attendee.id, product)}/>
             ))
           }
 
-          <div className="flex w-full justify-end">
-            <Button variant={'ghost'}>
-            <p className="text-sm font-medium">Check-in Code</p>
-            <QrCode className="w-5 h-5 text-gray-500"/>
+          {/* <div className="flex w-full justify-end">
+            <Button variant={'ghost'} >
+              <p className="text-sm font-medium">Check-in Code</p>
+              <QrCode className="w-5 h-5 text-gray-500"/>
             </Button>
-          </div>
+          </div> */}
 
         </div>
       </div>

@@ -1,11 +1,10 @@
 import { ButtonAnimated } from "@/components/ui/button"
-import { AttendeeProps } from "@/types/Attendee"
 import { usePassesProvider } from "@/providers/passesProvider";
 import usePurchaseProducts from "../../../hooks/usePurchaseProducts";
 
-const CompletePurchaseButton = ({attendees}: {attendees: AttendeeProps[]}) => {
+const CompletePurchaseButton = () => {
   const { purchaseProducts, loading } = usePurchaseProducts();
-  const { isEditing } = usePassesProvider()
+  const { isEditing, attendeePasses: attendees } = usePassesProvider()
   const someSelected = attendees.some(attendee => attendee.products.some(product => product.selected))
 
   if (!someSelected || isEditing) return <div></div>;

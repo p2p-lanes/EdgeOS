@@ -13,7 +13,7 @@ const variants: Record<VariantStyles, string> = {
   default: 'bg-white border-neutral-300 text-neutral-700 hover:bg-slate-100',
 }
 
-const ProductTicket = ({product, onClick}: {product: ProductsPass, onClick: () => void}) => {
+const Product = ({product, onClick}: {product: ProductsPass, onClick: () => void}) => {
   const originalPrice = product.compare_price ?? product.price
 
   return (
@@ -63,4 +63,4 @@ const ProductTicket = ({product, onClick}: {product: ProductsPass, onClick: () =
   )
 }
 
-export default ProductTicket
+export default Product

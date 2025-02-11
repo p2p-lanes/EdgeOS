@@ -3,7 +3,11 @@ import { usePassesProvider } from "@/providers/passesProvider"
 import { PencilIcon, XIcon } from "lucide-react"
 
 const EditPassesButton = () => {
-  const { toggleEditing, isEditing } = usePassesProvider()
+  const { toggleEditing, isEditing, attendeePasses } = usePassesProvider()
+
+  const somePurchased = attendeePasses.some(attendee => attendee.products.some(product => product.purchased))
+
+  if(!somePurchased) return null
 
   if(isEditing){
     return(

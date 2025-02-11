@@ -16,14 +16,14 @@ export default function HomePasses() {
   const { toggleProduct, attendeePasses: attendees } = usePassesProvider()
 
   return (
-    <div className="gap-6 w-full mt-6 mx-auto md:mt-0 max-w-3xl space-y-4">
+    <div className="w-full mx-auto max-w-3xl space-y-6">
       <TitleTabs title="Your Passes" subtitle="View and manage your passes here. Need to make changes? You can switch your week closer to the event to match your plans!" />
       
       <div className="my-4 flex justify-between">
         <BalancePasses />
         <div className="flex gap-3">
           <EditPassesButton />
-          <InvoicePassesButton />
+          {/* <InvoicePassesButton /> */}
         </div>
       </div>
 
@@ -37,7 +37,7 @@ export default function HomePasses() {
 
       <div className="flex w-full justify-between">
         <AddAttendeeToolbar/>
-        <CompletePurchaseButton attendees={attendees}/>
+        <CompletePurchaseButton />
       </div>
     </div>
   )
