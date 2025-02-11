@@ -1,34 +1,43 @@
 'use client'
 
-import { useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Snow from '@/components/Animations/Snow'
-import TabsContainer from './components/Sidebar/TabsContainer'
-import ListAttendees from './components/Attendees/ListAttendees'
-import { useApplication } from '@/providers/applicationProvider'
+import { usePassesProvider } from '@/providers/passesProvider'
+import BalancePasses from './components/common/BalancePasses'
+import EditPassesButton from './components/common/Buttons/EditPassesButton'
+import InvoicePassesButton from './components/common/Buttons/InvoicePassesButton'
+import TitleTabs from './components/common/TitleTabs'
+import usePermission from './hooks/usePermission'
+import Ticket from './components/common/Ticket'
+import CompletePurchaseButton from './components/common/Buttons/CompletePurchaseButton'
+import AddAttendeeToolbar from './components/AddAttendeeToolbar'
 
-export default function Passes() {
-  const { getRelevantApplication } = useApplication()
-  const application = getRelevantApplication();
-  const router = useRouter()
-  const params = useParams()
+export default function HomePasses() {
+  usePermission()
 
-  useEffect(() => {
-    if(application === null) return;
-
-    if(application && application.status !== 'accepted'){
-      router.replace(`/portal/${params.popupSlug}`)
-      return;
-    }
-  }, [application])
-
+  const { toggleProduct, attendeePasses: attendees } = usePassesProvider()
 
   return (
-    <div className="p-4 w-full mx-auto relative">
-      {/* <Snow /> */}
-      <div className="grid grid-cols-1 xl:grid-cols-[50%,50%] gap-6 relative z-10">
-        <ListAttendees/>
-        <TabsContainer />
+    <div className="gap-6 w-full mt-6 mx-auto md:mt-0 max-w-3xl space-y-4">
+      <TitleTabs title="Your Passes" subtitle="View and manage your passes here. Need to make changes? You can switch your week closer to the event to match your plans!" />
+      
+      <div className="my-4 flex justify-between">
+        <BalancePasses />
+        <div className="flex gap-3">
+          <EditPassesButton />
+          <InvoicePassesButton />
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4">
+        {
+          attendees.map(attendee => (
+            <Ticket key={attendee.id} attendee={attendee} toggleProduct={toggleProduct} />
+          ))
+        }
+      </div>
+
+      <div className="flex w-full justify-between">
+        <AddAttendeeToolbar/>
+        <CompletePurchaseButton attendees={attendees}/>
       </div>
     </div>
   )
