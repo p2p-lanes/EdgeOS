@@ -5,6 +5,7 @@ type ModalType = {
   isOpen: boolean
   category: AttendeeCategory | null
   editingAttendee: AttendeeProps | null
+  isDelete?: boolean
 }
 
 const useModal = () => {
@@ -38,11 +39,21 @@ const useModal = () => {
     })
   }
 
+  const handleDelete = (attendee: AttendeeProps) => {
+    setModal({
+      isOpen: true,
+      category: attendee.category,
+      editingAttendee: attendee,
+      isDelete: true
+    })
+  }
+
   return ({
     modal,
     handleOpenModal,
     handleCloseModal,
-    handleEdit
+    handleEdit,
+    handleDelete
   })
 }
 export default useModal

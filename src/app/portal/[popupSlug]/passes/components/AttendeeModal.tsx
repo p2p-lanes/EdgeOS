@@ -7,13 +7,15 @@ import { Label } from "@/components/ui/label"
 import { AttendeeCategory, AttendeeProps } from "@/types/Attendee"
 import Modal from "@/components/ui/modal"
 import { DialogFooter } from "@/components/ui/dialog"
+import { badgeName } from "../constants/multiuse"
 
 interface AttendeeModalProps {
   open: boolean
   onClose: () => void
   onSubmit: (data: AttendeeProps) => Promise<void>
   category: AttendeeCategory
-  editingAttendee: AttendeeProps | null
+  editingAttendee: AttendeeProps | null,
+  isDelete?: boolean
 }
 
 const defaultFormData = {
@@ -21,7 +23,7 @@ const defaultFormData = {
   email: "",
 }
 
-export function AttendeeModal({ onSubmit, open, onClose, category, editingAttendee }: AttendeeModalProps) {
+export function AttendeeModal({ onSubmit, open, onClose, category, editingAttendee, isDelete }: AttendeeModalProps) {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState(defaultFormData)
 
@@ -45,8 +47,20 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
     }
   }
 
-  const title = editingAttendee ? `Edit ${category}` : `Add ${category}`
+  const title = editingAttendee ? `Edit ${editingAttendee.name}` : `Add ${badgeName[category]}`
   const description = `Enter the details of your ${category} here. Click save when you're done.`
+
+  if(isDelete) {
+    return (
+      <Modal open={open} onClose={onClose} title={`Delete ${editingAttendee?.name}`} description={`Are you sure you want to delete this ${category}?`}>
+        <DialogFooter>
+          <ButtonAnimated className="bg-red-500" loading={loading} onClick={handleSubmit}>
+            Delete
+          </ButtonAnimated>
+        </DialogFooter>
+      </Modal>
+    )
+  }
   
   return (
     <Modal open={open} onClose={onClose} title={title} description={description}>

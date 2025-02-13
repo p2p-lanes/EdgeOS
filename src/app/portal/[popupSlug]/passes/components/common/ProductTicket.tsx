@@ -7,7 +7,7 @@ import { usePassesProvider } from "@/providers/passesProvider"
 type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
 
 const variants: Record<VariantStyles, string> = {
-  selected: 'bg-green-300 border-green-400 text-green-800 hover:bg-green-300/80',
+  selected: 'bg-green-200 border-green-400 text-green-800 hover:bg-green-200/80',
   purchased: 'bg-slate-800 text-white border-neutral-700',
   edit: 'bg-slate-800/30 border-dashed border-slate-200 text-neutral-700',
   disabled: 'bg-neutral-0 text-neutral-300 cursor-not-allowed ',
@@ -30,14 +30,16 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
       )}
     >
       <div className="flex justify-between w-full">
-        <div className="flex items-center gap-2">
-          {
-            !product.selected && !product.purchased && (
-              <Plus className="w-4 h-4" />
-            )
-          }
-          <Ticket className="w-4 h-4" />
-          <p className="font-semibold text-sm">{product.name}</p>
+        <div className="flex md:items-center md:gap-2 flex-col md:flex-row">
+          <div className="flex items-center gap-2">
+            {
+              !product.selected && !product.purchased && (
+                <Plus className="w-4 h-4" />
+              )
+            }
+            <Ticket className="w-4 h-4" />
+            <p className="font-semibold text-sm">{product.name}</p>
+          </div>
 
           {
             product.start_date && product.end_date && (

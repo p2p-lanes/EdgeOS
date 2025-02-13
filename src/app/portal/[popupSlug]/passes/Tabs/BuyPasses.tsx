@@ -1,11 +1,11 @@
 import { usePassesProvider } from "@/providers/passesProvider"
-import AddAttendeeToolbar from "../components/AddAttendeeToolbar"
 import AttendeeTicket from "../components/common/AttendeeTicket"
 import CompletePurchaseButton from "../components/common/Buttons/CompletePurchaseButton"
 import TitleTabs from "../components/common/TitleTabs"
 import TotalPurchase from "../components/common/TotalPurchase"
 import BannerDiscount from "../components/common/BannerDiscount"
 import DiscountCode from "../components/common/DiscountCode"
+import ToolbarTop from "../components/ToolbarTop"
 
 const BuyPasses = () => {
   const { toggleProduct, attendeePasses: attendees, products } = usePassesProvider()
@@ -17,7 +17,7 @@ const BuyPasses = () => {
       <BannerDiscount isPatreon={false} products={products} />
 
       <div className="my-4 flex justify-start">
-        <AddAttendeeToolbar/>
+        <ToolbarTop/>
       </div>
 
       <div className="flex flex-col gap-4">
