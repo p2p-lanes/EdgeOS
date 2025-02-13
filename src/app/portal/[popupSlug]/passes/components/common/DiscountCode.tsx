@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
-import useDiscountCode from "../../../../hooks/useDiscountCode"
+import useDiscountCode from "../../hooks/useDiscountCode"
 import { Input } from "@/components/ui/input"
 import { XCircle } from "lucide-react"
 import { CheckCircle } from "lucide-react"
@@ -19,12 +19,13 @@ const DiscountCode = () => {
       <p className="text-sm font-medium underline whitespace-nowrap cursor-pointer my-2" onClick={() => setOpen(!open)}>Have a coupon?</p>
       {
         open ? (
-          <div className="flex flex-col w-full items-start gap-2">
-            <div className="flex w-full items-start gap-4">
+          <div className="flex flex-col items-start gap-2">
+            <div className="flex items-start gap-4">
               <Input
                 disabled={loading || validDiscount}
                 error={!validDiscount && !!discountMsg ? discountMsg : ''}
                 placeholder="Enter coupon code" 
+                className="bg-white text-black"
                 data-discount-code={discountCode}
                 value={discountCode.toUpperCase()}
                 onChange={(e) => setDiscountCode(e.target.value)}

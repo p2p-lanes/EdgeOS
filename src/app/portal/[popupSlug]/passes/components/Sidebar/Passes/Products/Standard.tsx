@@ -71,8 +71,7 @@ const ProductTitle = ({ isSpecial, product, IconTitle, showDates }: ProductTitle
 
 const ProductDates = ({ start_date, end_date, selected }: ProductDatesProps) => (
   <span className={cn(
-    "text-xs",
-    selected ? "text-[#005F3A]" : "text-gray-500"
+    "text-xs text-nowrap", selected ? "text-[#005F3A]" : "text-gray-500"
   )}>
     {formatDate(start_date)} to {formatDate(end_date)}
   </span>
@@ -80,7 +79,7 @@ const ProductDates = ({ start_date, end_date, selected }: ProductDatesProps) => 
 
 const ProductPrice = ({ purchased, disabled, product, selected }: ProductPriceProps) => {
   const price = product.price
-  const originalPrice = product.original_price ?? price
+  const originalPrice = product.compare_price ?? price
 
   const getPriceDisplay = () => {
     if (purchased) {

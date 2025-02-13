@@ -27,7 +27,7 @@ class ExclusiveProductStrategy implements ProductStrategy {
             p.id === product.id ? !p.selected :
             (p.exclusive && willBeSelected && product?.exclusive) ? false :
             p.selected,
-          disabled: product.exclusive && p.id !== product.id && p.selected
+          // disabled: product.exclusive && p.id !== product.id && p.selected
         }))
       };
     });
@@ -49,6 +49,7 @@ class PatreonProductStrategy implements ProductStrategy {
       products: attendee.products.map(p => ({
         ...p,
         selected: (attendee.id === attendeeId && p.id === product.id) ? !p.selected : p.selected,
+        // original_price: p.price,
         price: this.priceStrategy.calculatePrice(p, isPatreonSelected || false, discount?.discount_value || 0)
       }))
     }));
@@ -106,9 +107,33 @@ class WeekProductStrategy implements ProductStrategy {
   }
 }
 
-export const getProductStrategy = (category: string, exclusive: boolean): ProductStrategy => {
-  if (exclusive) return new ExclusiveProductStrategy();
-  switch (category) {
+class EditWeekProductStrategy implements ProductStrategy {
+  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
+    return attendees.map(attendee => {
+
+      const willBeSelected = !product.selected;
+
+      return {
+        ...attendee,
+        products: attendee.products.map(p => ({
+          ...p,
+          selected: p.id === product.id ? willBeSelected : p.selected,
+          edit: p.id === product.id ? willBeSelected : p.edit,
+          disabled: false
+        }))
+      };
+    });
+  }
+}
+
+export const getProductStrategy = (product: ProductsPass, isEditing: boolean): ProductStrategy => {
+  if (isEditing && product.category === 'week') {
+    return new EditWeekProductStrategy();
+  }
+  
+  if (product.exclusive) return new ExclusiveProductStrategy();
+  
+  switch (product.category) {
     case 'patreon':
       return new PatreonProductStrategy();
     case 'month':

@@ -1,7 +1,7 @@
 
 import { ProductsPass } from "@/types/Products"
-import { badgeName } from "../../../../constants/multiuse"
 import { Tag } from "lucide-react"
+import { badgeName } from "../../constants/multiuse"
 
 const ProductCart = ({ product, calculateDiscount }: { product: ProductsPass, calculateDiscount: (product: ProductsPass) => number }) => {
 
@@ -21,7 +21,7 @@ const ProductCart = ({ product, calculateDiscount }: { product: ProductsPass, ca
   return (
     <div className="flex justify-between text-sm text-muted-foreground">
       <span>1 x {product.name} ({badgeName[product.attendee_category] || product.attendee_category})</span>
-      <span data-product-price={product.original_price?.toFixed(2)}>${product.original_price?.toFixed(2)}</span>
+      <span data-product-price={product.compare_price?.toFixed(2)}>${product.compare_price?.toFixed(2)}</span>
     </div>
   )
 }

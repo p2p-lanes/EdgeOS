@@ -6,14 +6,14 @@ import { Separator } from "@/components/ui/separator"
 import { useCityProvider } from "@/providers/cityProvider"
 import { AttendeePassesSection } from "./AttendeePassesSection"
 import Special from "./Products/Special"
-import BannerDiscount from "./Components/BannerDiscount"
+import BannerDiscount from "../../common/BannerDiscount"
 import TotalPurchase from "./Components/TotalPurchase"
 import { usePasses } from "../../../hooks/usePasses"
 import { usePassesProvider } from "@/providers/passesProvider"
 import usePurchaseProducts from "../../../hooks/usePurchaseProducts"
 import { useApplication } from "@/providers/applicationProvider"
 import { Skeleton } from "@/components/ui/skeleton"
-import DiscountCode from "./Components/DiscountCode"
+import DiscountCode from "../../common/DiscountCode"
 
 export default function PassesSidebar() {
   const { getCity } = useCityProvider()
@@ -43,7 +43,6 @@ export default function PassesSidebar() {
 
       <BannerDiscount 
         isPatreon={((specialProduct?.selected || specialProduct?.purchased) && specialProduct?.category === 'patreon') ?? false} 
-        application={application}
         products={products}
       />
 
@@ -82,6 +81,8 @@ export default function PassesSidebar() {
 
       <TotalPurchase
         attendees={attendeePasses}
+        isPatreon={((specialProduct?.selected || specialProduct?.purchased) && specialProduct?.category === 'patreon') ?? false} 
+        products={products}
       />
 
       <ButtonAnimated 

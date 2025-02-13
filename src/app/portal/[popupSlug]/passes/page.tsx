@@ -1,36 +1,28 @@
 'use client'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import usePermission from './hooks/usePermission'
+import YourPasses from "./Tabs/YourPasses"
+import BuyPasses from "./Tabs/BuyPasses"
+import { ShoppingCart, Ticket } from "lucide-react"
 
-import { useEffect } from 'react'
-import { useParams, useRouter } from 'next/navigation'
-import Snow from '@/components/Animations/Snow'
-import TabsContainer from './components/Sidebar/TabsContainer'
-import ListAttendees from './components/Attendees/ListAttendees'
-import { useApplication } from '@/providers/applicationProvider'
-
-export default function Passes() {
-  const { getRelevantApplication } = useApplication()
-  const application = getRelevantApplication();
-  const router = useRouter()
-  const params = useParams()
-
-  useEffect(() => {
-    if(application === null) return;
-
-    if(application && application.status !== 'accepted'){
-      router.replace(`/portal/${params.popupSlug}`)
-      return;
-    }
-  }, [application])
-
+export default function HomePasses() {
+  usePermission()
 
   return (
-    <div className="p-4 w-full mx-auto relative">
-      {/* <Snow /> */}
-      <div className="grid grid-cols-1 xl:grid-cols-[50%,50%] gap-6 relative z-10">
-        <ListAttendees/>
-        <TabsContainer />
-      </div>
-    </div>
+    <Tabs defaultValue="your-passes" className="w-full mt-6 md:mt-0 mx-auto max-w-3xl">
+      <TabsList className="grid w-full grid-cols-2 mb-4">
+        <TabsTrigger value="your-passes"> <Ticket className="w-4 h-4 mr-2" /> Your Passes</TabsTrigger>
+        <TabsTrigger value="buy-passes"> <ShoppingCart className="w-4 h-4 mr-2" /> Buy Passes</TabsTrigger>
+      </TabsList>
+
+      <TabsContent value="your-passes">
+        <YourPasses/>
+      </TabsContent>
+
+      <TabsContent value="buy-passes">
+        <BuyPasses/>
+      </TabsContent>
+    </Tabs>
   )
 }
 
