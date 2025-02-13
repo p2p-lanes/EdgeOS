@@ -30,21 +30,23 @@ const AddAttendeeToolbar = () => {
       {!hasSpouse && (
         <Button
           variant="outline"
+          className="bg-white text-black hover:bg-white hover:shadow-md transition-all"
           disabled={!attendees.length}
           onClick={() => handleOpenModal('spouse')}
         >
           <PlusIcon className="h-4 w-4 mr-2" />
-          Add Spouse
+          Add spouse
         </Button>
       )}
 
       <Button
-        variant="outline"
+        variant="default"
+        className="bg-white text-black hover:bg-white hover:shadow-md transition-all"
         disabled={!attendees.length}
         onClick={() => handleOpenModal('kid')}
       >
         <PlusIcon className="h-4 w-4 mr-2" />
-        Add Kid
+        Add children
       </Button>
 
       {modal.isOpen && (

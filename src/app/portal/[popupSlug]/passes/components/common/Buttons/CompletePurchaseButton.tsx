@@ -7,11 +7,9 @@ const CompletePurchaseButton = () => {
   const { isEditing, attendeePasses: attendees } = usePassesProvider()
   const someSelected = attendees.some(attendee => attendee.products.some(product => product.selected))
 
-  if (!someSelected || isEditing) return <div></div>;
-
   return (
     <ButtonAnimated
-      disabled={loading} 
+      disabled={loading || !someSelected || isEditing} 
       loading={loading} 
       className="w-fit text-white bg-slate-800" 
       onClick={() => purchaseProducts(attendees)}

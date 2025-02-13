@@ -107,9 +107,33 @@ class WeekProductStrategy implements ProductStrategy {
   }
 }
 
-export const getProductStrategy = (category: string, exclusive: boolean): ProductStrategy => {
-  if (exclusive) return new ExclusiveProductStrategy();
-  switch (category) {
+class EditWeekProductStrategy implements ProductStrategy {
+  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
+    return attendees.map(attendee => {
+
+      const willBeSelected = !product.selected;
+
+      return {
+        ...attendee,
+        products: attendee.products.map(p => ({
+          ...p,
+          selected: p.id === product.id ? willBeSelected : p.selected,
+          edit: p.id === product.id ? willBeSelected : p.edit,
+          disabled: false
+        }))
+      };
+    });
+  }
+}
+
+export const getProductStrategy = (product: ProductsPass, isEditing: boolean): ProductStrategy => {
+  if (isEditing && product.category === 'week') {
+    return new EditWeekProductStrategy();
+  }
+  
+  if (product.exclusive) return new ExclusiveProductStrategy();
+  
+  switch (product.category) {
     case 'patreon':
       return new PatreonProductStrategy();
     case 'month':

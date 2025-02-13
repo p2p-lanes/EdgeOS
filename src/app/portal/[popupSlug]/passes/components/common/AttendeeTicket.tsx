@@ -1,24 +1,24 @@
 import { AttendeeProps } from "@/types/Attendee"
 import { QrCode, User } from "lucide-react"
+import { Button } from "@/components/ui/button"
 import { badgeName } from "../../constants/multiuse"
 import { ProductsPass } from "@/types/Products"
 import { useCityProvider } from "@/providers/cityProvider"
 import { EdgeLand } from "@/components/Icons/EdgeLand"
-import { Button } from "@/components/ui/button"
 import Product from "./ProductTicket"
 
-const Ticket = ({attendee, toggleProduct}: {attendee: AttendeeProps, toggleProduct: (attendeeId: number, product: ProductsPass) => void}) => {
+const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void}) => {
   const standardProducts = attendee.products.filter((product) => product.category !== 'patreon' && product.category !== 'month')
-  const { getCity} = useCityProvider()
+  const { getCity } = useCityProvider()
   const city = getCity()
 
   return (
     <div className="w-full overflow-hidden">
-      <div className="w-full rounded-3xl border border-gray-200 h-full grid grid-cols-[1fr_2px_2fr]">
+      <div className="w-full rounded-3xl border border-gray-200 h-full grid grid-cols-[1fr_2px_2fr] bg-white">
 
         <div className="relative flex flex-col p-6 overflow-hidden h-full">
           <div 
-            className="absolute inset-0 z-0 rounded-3xl "
+            className="absolute inset-0 z-0 rounded-3xl"
             style={{
               background: `linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.8) 40%, #FFFFFF 82%), url(${city?.image_url})`,
               backgroundSize: 'cover',
@@ -41,14 +41,21 @@ const Ticket = ({attendee, toggleProduct}: {attendee: AttendeeProps, toggleProdu
         </div>
 
         <div className="border-r-2 border-dashed border-gray-200 self-stretch relative">
-          <div className="absolute -top-[23px] -left-[23px] w-[48px] h-[46px] bg-white rounded-3xl border border-gray-200"></div>
-          <div className="absolute -bottom-[23px] -left-[23px] w-[48px] h-[46px] bg-white rounded-3xl border border-gray-200"></div> 
+          <div className="absolute -top-[23px] -left-[23px] w-[48px] h-[46px] bg-neutral-100 rounded-3xl border border-gray-200"></div>
+          <div className="absolute -bottom-[23px] -left-[23px] w-[48px] h-[46px] bg-neutral-100 rounded-3xl border border-gray-200"></div> 
         </div>
 
-        <div className="flex flex-col p-8 gap-2">
+        <div className="flex flex-col p-8 gap-2 ">
+          {
+            standardProducts.length === 0 && (
+              <div className="flex w-full h-full justify-center items-center">
+                <p className="text-sm font-medium text-neutral-500">Tickets included in your pass</p>
+              </div>
+            )
+          }
           {
             standardProducts.map((product) => (
-              <Product key={`${product.id}-${attendee.id}`} product={product} onClick={() => toggleProduct(attendee.id, product)}/>
+              <Product key={`${product.id}-${attendee.id}`} product={product} defaultDisabled={!toggleProduct && !product.purchased} onClick={() => toggleProduct && toggleProduct(attendee.id, product)}/>
             ))
           }
 
@@ -67,4 +74,4 @@ const Ticket = ({attendee, toggleProduct}: {attendee: AttendeeProps, toggleProdu
   )
 }
 
-export default Ticket
+export default AttendeeTicket

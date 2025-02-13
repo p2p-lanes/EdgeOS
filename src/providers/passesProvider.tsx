@@ -36,7 +36,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   const toggleProduct = (attendeeId: number, product: ProductsPass) => {
     if (!product) return;
 
-    const strategy = getProductStrategy(product.category, product.exclusive);
+    const strategy = getProductStrategy(product, isEditing);
     const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product, discountApplied);
 
     setAttendeePasses(updatedAttendees);
@@ -68,6 +68,17 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   }, [attendees, products, discountApplied]);
 
   const toggleEditing = () => {
+    if(isEditing) {
+      setAttendeePasses(attendeePasses.map(attendee => ({
+        ...attendee,
+        products: attendee.products.map(product => ({...product, edit: false, selected: false, disabled: false}))
+      })))
+    }else{
+      setAttendeePasses(attendeePasses.map(attendee => ({
+        ...attendee,
+        products: attendee.products.map(product => ({...product, disabled: !product.purchased}))
+      })))
+    }
     setIsEditing(!isEditing)
   }
 

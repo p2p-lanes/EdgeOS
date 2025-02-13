@@ -1,45 +1,28 @@
 'use client'
-
-import { usePassesProvider } from '@/providers/passesProvider'
-import BalancePasses from './components/common/BalancePasses'
-import EditPassesButton from './components/common/Buttons/EditPassesButton'
-import InvoicePassesButton from './components/common/Buttons/InvoicePassesButton'
-import TitleTabs from './components/common/TitleTabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import usePermission from './hooks/usePermission'
-import Ticket from './components/common/Ticket'
-import CompletePurchaseButton from './components/common/Buttons/CompletePurchaseButton'
-import AddAttendeeToolbar from './components/AddAttendeeToolbar'
+import YourPasses from "./Tabs/YourPasses"
+import BuyPasses from "./Tabs/BuyPasses"
+import { ShoppingCart, Ticket } from "lucide-react"
 
 export default function HomePasses() {
   usePermission()
 
-  const { toggleProduct, attendeePasses: attendees } = usePassesProvider()
-
   return (
-    <div className="w-full mx-auto max-w-3xl space-y-6">
-      <TitleTabs title="Your Passes" subtitle="View and manage your passes here. Need to make changes? You can switch your week closer to the event to match your plans!" />
-      
-      <div className="my-4 flex justify-between">
-        <BalancePasses />
-        <div className="flex gap-3">
-          <EditPassesButton />
-          {/* <InvoicePassesButton /> */}
-        </div>
-      </div>
+    <Tabs defaultValue="your-passes" className="w-full mt-6 md:mt-0 mx-auto max-w-3xl">
+      <TabsList className="grid w-full grid-cols-2 mb-4">
+        <TabsTrigger value="your-passes"> <Ticket className="w-4 h-4 mr-2" /> Your Passes</TabsTrigger>
+        <TabsTrigger value="buy-passes"> <ShoppingCart className="w-4 h-4 mr-2" /> Buy Passes</TabsTrigger>
+      </TabsList>
 
-      <div className="flex flex-col gap-4">
-        {
-          attendees.map(attendee => (
-            <Ticket key={attendee.id} attendee={attendee} toggleProduct={toggleProduct} />
-          ))
-        }
-      </div>
+      <TabsContent value="your-passes">
+        <YourPasses/>
+      </TabsContent>
 
-      <div className="flex w-full justify-between">
-        <AddAttendeeToolbar/>
-        <CompletePurchaseButton />
-      </div>
-    </div>
+      <TabsContent value="buy-passes">
+        <BuyPasses/>
+      </TabsContent>
+    </Tabs>
   )
 }
 

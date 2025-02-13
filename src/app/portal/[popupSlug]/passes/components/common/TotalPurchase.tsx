@@ -3,12 +3,11 @@ import { cn } from "@/lib/utils"
 import { ChevronRight, Tag } from "lucide-react"
 import { useState } from "react"
 import { AttendeeProps } from "@/types/Attendee"
-import useDiscountCode from "../../../../hooks/useDiscountCode"
-import { calculateTotal } from "../../../../helpers/products"
-import ProductCart from "./ProductCart"
 import { ProductsPass, ProductsProps } from "@/types/Products"
 import { DiscountProps } from "@/types/discounts"
-import useCalculateDiscount from "../../../../hooks/useCalculateDiscount"
+import useDiscountCode from "../../hooks/useDiscountCode"
+import { calculateTotal } from "../../helpers/products"
+import ProductCart from "./ProductCart"
 
 const TotalPurchase = ({ attendees, isPatreon, products }: {
   attendees: AttendeeProps[],
@@ -43,8 +42,8 @@ const TotalPurchase = ({ attendees, isPatreon, products }: {
       className="space-y-4 pt-0"
       data-cart
     >
-      <CollapsibleTrigger className="w-full">
-        <div className="flex justify-between items-center p-3 bg-muted/50 rounded-md">
+      <CollapsibleTrigger className="w-full bg-white rounded-md">
+        <div className="flex justify-between items-center p-3">
           <div className="flex items-center gap-2">
             <ChevronRight 
               className={cn(

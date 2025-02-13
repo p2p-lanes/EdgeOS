@@ -6,14 +6,14 @@ import { Separator } from "@/components/ui/separator"
 import { useCityProvider } from "@/providers/cityProvider"
 import { AttendeePassesSection } from "./AttendeePassesSection"
 import Special from "./Products/Special"
-import BannerDiscount from "./Components/BannerDiscount"
+import BannerDiscount from "../../common/BannerDiscount"
 import TotalPurchase from "./Components/TotalPurchase"
 import { usePasses } from "../../../hooks/usePasses"
 import { usePassesProvider } from "@/providers/passesProvider"
 import usePurchaseProducts from "../../../hooks/usePurchaseProducts"
 import { useApplication } from "@/providers/applicationProvider"
 import { Skeleton } from "@/components/ui/skeleton"
-import DiscountCode from "./Components/DiscountCode"
+import DiscountCode from "../../common/DiscountCode"
 
 export default function PassesSidebar() {
   const { getCity } = useCityProvider()

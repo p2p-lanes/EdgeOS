@@ -2,27 +2,31 @@ import { ProductsPass } from "@/types/Products"
 import { Plus, Ticket } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatDate } from "@/helpers/dates"
+import { usePassesProvider } from "@/providers/passesProvider"
 
 type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
 
 const variants: Record<VariantStyles, string> = {
   selected: 'bg-green-300 border-green-400 text-green-800 hover:bg-green-300/80',
   purchased: 'bg-slate-800 text-white border-neutral-700',
-  edit: 'bg-white border-dashed border-neutral-200 text-neutral-700',
-  disabled: 'bg-neutral-200 text-neutral-400 cursor-not-allowed',
+  edit: 'bg-slate-800/30 border-dashed border-slate-200 text-neutral-700',
+  disabled: 'bg-neutral-0 text-neutral-300 cursor-not-allowed ',
   default: 'bg-white border-neutral-300 text-neutral-700 hover:bg-slate-100',
 }
 
-const Product = ({product, onClick}: {product: ProductsPass, onClick: () => void}) => {
+const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, onClick: () => void, defaultDisabled?: boolean}) => {
+  const disabled = product.disabled || defaultDisabled
   const originalPrice = product.compare_price ?? product.price
+  const { edit, purchased, selected } = product
+  const { isEditing } = usePassesProvider()
 
   return (
     <button 
-      onClick={product.disabled || product.purchased ? undefined : onClick}
-      disabled={product.disabled || product.purchased}
+      onClick={disabled || (purchased && !isEditing) ? undefined : onClick}
+      disabled={disabled || (purchased && !isEditing)}
       className={cn(
         'flex items-center gap-2 border border-neutral-200 rounded-md p-2',
-        variants[product.selected ? 'selected' : product.purchased ? 'purchased' : product.disabled ? 'disabled' : product.edit ? 'edit' : 'default']
+        variants[(edit && purchased) ? 'edit' : disabled ? 'disabled' : selected ? 'selected' : purchased ? 'purchased' : 'default']
       )}
     >
       <div className="flex justify-between w-full">
@@ -37,7 +41,7 @@ const Product = ({product, onClick}: {product: ProductsPass, onClick: () => void
 
           {
             product.start_date && product.end_date && (
-              <span className={`text-xs text-muted-foreground ${product.purchased ? 'text-white' : ''}`}>
+              <span className={cn(`text-xs text-muted-foreground ${product.purchased ? 'text-white' : ''}`, disabled && 'text-neutral-300')}>
                 {formatDate(product.start_date, {day: 'numeric', month: 'short'})} to {formatDate(product.end_date, {day: 'numeric', month: 'short'})}
               </span>
             )
@@ -49,12 +53,12 @@ const Product = ({product, onClick}: {product: ProductsPass, onClick: () => void
           <div className="flex items-center gap-2">
             {
               originalPrice !== product.price && (
-                <p className="text-xs text-muted-foreground line-through">
+                <p className={cn("text-xs text-muted-foreground line-through", disabled && 'text-neutral-300')}>
                   ${originalPrice.toLocaleString()}
                 </p>
               )
             }
-            <p className="text-md font-medium">$ {product.price.toLocaleString()}</p>
+            <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price.toLocaleString()}</p>
           </div>
         )
       }

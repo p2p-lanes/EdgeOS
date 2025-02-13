@@ -21,7 +21,7 @@ const HeaderBar = () => {
   const pathsToDisplay = splitPath.length > 0 ? splitPath : ['application'];
 
   return (
-    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-6 w-[100%]">
+    <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-white px-6 w-[100%]">
       <SidebarTrigger />
       <Breadcrumb>
         <BreadcrumbList>
