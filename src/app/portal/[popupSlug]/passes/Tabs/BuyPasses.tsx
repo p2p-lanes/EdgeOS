@@ -6,9 +6,13 @@ import TotalPurchase from "../components/common/TotalPurchase"
 import BannerDiscount from "../components/common/BannerDiscount"
 import DiscountCode from "../components/common/DiscountCode"
 import ToolbarTop from "../components/ToolbarTop"
+import { usePasses } from "../hooks/usePasses"
+import { Separator } from "@/components/ui/separator"
+import Special from "../components/common/Products/Special"
 
 const BuyPasses = () => {
   const { toggleProduct, attendeePasses: attendees, products } = usePassesProvider()
+  const { specialProduct, mainAttendee, specialPurchase } = usePasses(attendees)
 
   return (
     <div className="space-y-6">
@@ -27,6 +31,16 @@ const BuyPasses = () => {
           ))
         }
       </div>
+
+      {(specialProduct && mainAttendee?.id) && (
+        <div className="p-0 w-full">
+          <Separator className="my-4"/>
+          <Special
+            product={specialProduct}
+            onClick={() => toggleProduct(mainAttendee.id, specialProduct)}
+          />
+        </div>
+      )}
 
       <DiscountCode/>
 

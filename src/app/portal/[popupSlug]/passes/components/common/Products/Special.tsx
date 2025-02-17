@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 // HOC para manejar la lógica de presentación
 const withSpecialProductPresentation = (WrappedComponent: React.ComponentType<any>) => {
   return function WithSpecialProductPresentation(props: SpecialProps) {
-    const { selected, disabled } = props;
+    const { selected, disabled } = props.product;
     
     const getStatusIcon = () => {
       if (disabled) {
@@ -25,16 +25,21 @@ const withSpecialProductPresentation = (WrappedComponent: React.ComponentType<an
 interface ProductTitleProps {
   product: ProductsPass;
   selected: boolean;
+  disabled: boolean;
 }
 
-const ProductTitle = ({ product, selected }: ProductTitleProps) => (
+const ProductTitle = ({ product, selected, disabled }: ProductTitleProps) => (
   <span className={cn(
     "font-semibold flex items-center gap-2",
     selected && "text-[#005F3A]"
   )}>
-    <Crown className="w-5 h-5 text-orange-500" />
+    <Crown className={cn("w-5 h-5 text-orange-500", disabled && "text-neutral-300")} />
     {product.name}
-    <TooltipPatreon />
+    {
+      !disabled && (
+        <TooltipPatreon />
+      )
+    }
   </span>
 );
 
@@ -70,37 +75,42 @@ const TooltipPatreon = () => (
 // Interfaces
 interface SpecialProps {
   product: ProductsPass;
-  selected?: boolean;
-  disabled?: boolean;
-  onClick: () => void;
+  onClick?: () => void;
+}
+
+type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
+
+const variants: Record<VariantStyles, string> = {
+  selected: 'bg-green-200 border-green-400 text-green-800 hover:bg-green-200/80',
+  purchased: 'bg-slate-800 text-white border-neutral-700',
+  edit: 'bg-slate-800/30 border-dashed border-slate-200 text-neutral-700',
+  disabled: 'bg-neutral-0 text-neutral-300 cursor-not-allowed ',
+  default: 'bg-white border-neutral-300 text-neutral-700 hover:bg-slate-100',
 }
 
 // Componente base
 function SpecialBase({ 
   product, 
-  disabled, 
-  selected = false, 
   onClick,
-  getStatusIcon 
+  getStatusIcon
 }: SpecialProps & { getStatusIcon: () => JSX.Element }) {
+
+  const { selected, disabled, purchased } = product
+
   return (
     <button
       data-category="patreon"
-      onClick={!disabled ? onClick : undefined}
+      onClick={!disabled && onClick ? onClick : undefined}
       data-selected={selected}
       data-price={product.price}
       className={cn(
-        "w-full rounded-full flex items-center justify-between py-1 px-4",
-        "transition-all duration-300",
-        selected && "cursor-pointer",
-        selected || disabled 
-          ? "border-2 border-[#16B74A] bg-[#D5F7CC]" 
-          : "cursor-pointer border-2 border-gray-200 bg-transparent hover:bg-gray-100"
+        'w-full py-1 px-4 flex items-center justify-between gap-2 border border-neutral-200 rounded-md',
+        variants[disabled || !onClick ? 'disabled' : selected ? 'selected' : purchased ? 'purchased' : 'default']
       )}
     >
       <div className="flex items-center gap-2 py-2">
         {getStatusIcon()}
-        <ProductTitle product={product} selected={selected} />
+        <ProductTitle product={product} disabled={disabled || !onClick} selected={selected ?? false} />
       </div>
       
       <div className="flex items-center gap-4">
@@ -110,7 +120,7 @@ function SpecialBase({
               Purchased
             </span>
           ) : (
-            <ProductPrice product={product} selected={selected} />
+            <ProductPrice product={product} selected={selected ?? false} />
           )
         }
       </div>

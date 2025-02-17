@@ -7,7 +7,7 @@ import { ProductsPass, ProductsProps } from "@/types/Products"
 import { DiscountProps } from "@/types/discounts"
 import useDiscountCode from "../../hooks/useDiscountCode"
 import { calculateTotal } from "../../helpers/products"
-import ProductCart from "./ProductCart"
+import ProductCart from "./Products/ProductCart"
 
 const TotalPurchase = ({ attendees, isPatreon, products }: {
   attendees: AttendeeProps[],

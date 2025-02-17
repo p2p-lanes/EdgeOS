@@ -1,7 +1,7 @@
 
 import { ProductsPass } from "@/types/Products"
 import { Tag } from "lucide-react"
-import { badgeName } from "../../constants/multiuse"
+import { badgeName } from "../../../constants/multiuse"
 
 const ProductCart = ({ product, calculateDiscount }: { product: ProductsPass, calculateDiscount: (product: ProductsPass) => number }) => {
 
