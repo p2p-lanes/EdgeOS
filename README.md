@@ -83,10 +83,8 @@ The system's database consists of the following tables:
 For each table, staff users can create **custom views with specific filters** to streamline their workflow and enhance data management efficiency.
 
 ---
----
 
 ## Coupon Codes
-**Date:** January 29th, 2025  
 
 ### Overview
 This feature enables Edge City to create and manage promotional coupon codes within the Noco environment, giving customers discounts to complete purchases. It simplifies the application of discounts at checkout and tracking of active codes.
@@ -151,16 +149,11 @@ For example, if he has been awarded with a 20% off in his application, but then 
 
 # Approval Flow
 
-## Table of Contents
-
 ## Overview
 This documentation explains how an application's final status is determined. The process involves two key steps:
 
-### Calculated Status
-This status is derived from what the approvers have voted. In other words, it reflects the outcome of the review process based solely on the decisions made by the reviewers.
-
-### Final Status
-Beyond the calculated status, additional logic is applied. This extra step takes into account factors such as whether the applicant requested a discount, if the city requires approval, and whether the application has been submitted. This ensures that the final status accurately reflects both the approvers’ decision and any supplementary criteria.
+1. **Calculated Status**: This status is derived from what the approvers have voted. In other words, it reflects the outcome of the review process based solely on the decisions made by the reviewers.
+2. **Final Status**: Beyond the calculated status, additional logic is applied. This extra step takes into account factors such as whether the applicant requested a discount, if the city requires approval, and whether the application has been submitted. This ensures that the final status accurately reflects both the approvers’ decision and any supplementary criteria.
 
 The sections below provide a detailed, easy-to-understand explanation of how these statuses are determined.
 
