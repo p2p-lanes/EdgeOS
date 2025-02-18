@@ -20,6 +20,9 @@ npm run dev
 We'd love to have you!
 Hit us up on Telegram at @tulezao or via email at tule@simplefi.tech
 
+---
+---
+
 # Network State Infrastructure
 
 ## Table of Contents
@@ -30,7 +33,7 @@ Hit us up on Telegram at @tulezao or via email at tule@simplefi.tech
   - [Backend API](#backend-api)
 - [Database Tables](#database-tables)
 - [Coupon Codes](#coupon-codes)
-- [Further Documentation](#further-documentation)
+- [Approval Flow](#approval-flow)
 
 ---
 
@@ -83,6 +86,7 @@ The system's database consists of the following tables:
 
 For each table, staff users can create **custom views with specific filters** to streamline their workflow and enhance data management efficiency.
 
+---
 ---
 
 ## Coupon Codes
@@ -148,12 +152,82 @@ Currently, we have three types of discounts: **discount assigned in application,
 For example, if he has been awarded with a 20% off in his application, but then applies a coupon of 50% off, he will have a 50% discount at checkout.
 
 ---
+---
 
-## Further Documentation
-For additional technical details on the implementation of each module, refer to the specific component documentation:
-- [User Portal Documentation](#)
-- [Backoffice Documentation](#)
-- [Backend API Documentation](#)
+# Approval Flow
+
+## Table of Contents
+
+## Overview
+This documentation explains how an application's final status is determined. The process involves two key steps:
+
+### Calculated Status
+This status is derived from what the approvers have voted. In other words, it reflects the outcome of the review process based solely on the decisions made by the reviewers.
+
+### Final Status
+Beyond the calculated status, additional logic is applied. This extra step takes into account factors such as whether the applicant requested a discount, if the city requires approval, and whether the application has been submitted. This ensures that the final status accurately reflects both the approvers’ decision and any supplementary criteria.
+
+The sections below provide a detailed, easy-to-understand explanation of how these statuses are determined.
+
+---
+
+## Calculated Status
+The calculated status is determined by the votes of reviewers. Each reviewer can vote in one of several ways, such as **"yes", "no", "strong yes", or "strong no"**. Based on these votes, the system decides on a preliminary outcome using these simple rules:
+
+### Accepted
+The application is marked as **accepted** if:
+- Any reviewer votes **"strong yes"**.
+  - *(This decisive vote for acceptance wins over any negative votes.)*
+- Or if there are at least **two "yes" votes** from the reviewers.
+  - *(There are specific combinations that satisfy this, but simply put, enough positive votes lead to acceptance.)*
+
+### Rejected
+The application is marked as **rejected** if:
+- Any reviewer votes **"strong no"**.
+- Or if there are at least **two "no" votes** from the reviewers.
+
+### Undecided
+If neither of the above conditions is met, the calculated status remains **empty (no decision).**
+
+#### Key Point
+The system checks for acceptance first. This means that even if there are negative votes (for example, one "strong no" or "no"), a single "strong yes" vote will cause the application to be marked as **accepted**. For instance:
+- **1 "strong no", 1 "no", and 1 "strong yes" → Accepted** *(because "strong yes" takes precedence).*
+
+---
+
+## Final Status
+
+### When the City Does Not Require Approval
+The final status of an application is determined by combining the calculated status from the reviewers’ votes with additional logic based on discount requests and approval requirements. Here’s how it works:
+
+#### **Rejection Takes Precedence**
+- If the calculated status is marked as **REJECTED** (meaning the reviewers have strongly voted against the application), then the final status is immediately set to **REJECTED**, regardless of any discount considerations.
+
+#### **Handling Cities That Do Not Require Approval**
+- In some cities (“pop-up cities”), discount approval isn’t needed.
+- If **no discount was requested** in these cases, the application is **automatically set to ACCEPTED**.
+
+#### **Handling Discount Requests and Missing Discounts**
+When approval is required:
+- The system checks if the applicant **requested a discount**. This check depends on the type of discount request:
+  - For cities that **require approval**: Only an **explicit scholarship discount request** is considered.
+  - For cities that **do not require approval**: Being a **renter** or requesting a **scholarship discount** qualifies as a discount request.
+
+#### **Missing Discount Scenario**
+- If a discount was requested but **has not yet been assigned**, it is considered **“missing.”**
+- When a discount is missing, even if there’s no definitive reviewer outcome yet, the application status is set to:
+  - **IN REVIEW** if the application **has been submitted**.
+  - **DRAFT** if the application **has not been submitted**.
+
+#### **Default Outcome**
+If none of the above conditions apply—meaning the review outcome is neither a clear rejection nor the discount conditions are causing a delay—the final status will simply be **the outcome provided by the reviewers (the calculated status).**
+
+---
+
+## Notification to the Applicant
+Once the **final status** is set to **accepted**, an email notification is sent to the applicant. However, to prevent immediate emails in case of accidental clicks or missteps that might affect the final status, the system waits for **2 minutes** before sending out the email. 
+
+This delay is **configurable**, allowing adjustments if needed to ensure that notifications are only sent when the decision is truly final.
 
 
 
