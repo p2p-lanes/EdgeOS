@@ -21,7 +21,6 @@ We'd love to have you!
 Hit us up on Telegram at @tulezao or via email at tule@simplefi.tech
 
 ---
----
 
 # Network State Infrastructure
 
@@ -35,12 +34,9 @@ Hit us up on Telegram at @tulezao or via email at tule@simplefi.tech
 - [Coupon Codes](#coupon-codes)
 - [Approval Flow](#approval-flow)
 
----
 
 ## Introduction
 This document describes the infrastructure and functionalities of the software developed for managing a Network State with pop-up cities. The system allows users to apply to different temporary cities, manage their participation, and purchase passes and housing with various payment methods, including cryptocurrencies. Additionally, it provides administrative tools for efficient attendee management, application approvals, and automation of key processes.
-
----
 
 ## Infrastructure Overview
 The system consists of the following main modules:
@@ -152,7 +148,6 @@ Currently, we have three types of discounts: **discount assigned in application,
 For example, if he has been awarded with a 20% off in his application, but then applies a coupon of 50% off, he will have a 50% discount at checkout.
 
 ---
----
 
 # Approval Flow
 
@@ -221,8 +216,6 @@ When approval is required:
 
 #### **Default Outcome**
 If none of the above conditions apply—meaning the review outcome is neither a clear rejection nor the discount conditions are causing a delay—the final status will simply be **the outcome provided by the reviewers (the calculated status).**
-
----
 
 ## Notification to the Applicant
 Once the **final status** is set to **accepted**, an email notification is sent to the applicant. However, to prevent immediate emails in case of accidental clicks or missteps that might affect the final status, the system waits for **2 minutes** before sending out the email. 
