@@ -43,8 +43,8 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
+      const hasPatreonPurchased = attendees.some(a => a.products.some(p => p.category === 'patreon'));
       const initialAttendees = attendees.map(attendee => {
-        const hasPatreonPurchased = attendee.products?.some(p => p.category === 'patreon');
         const priceStrategy = getPriceStrategy();
         const purchaseStrategy = getPurchaseStrategy();
         

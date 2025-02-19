@@ -24,9 +24,10 @@ const TotalProvider = ({ children }: { children: ReactNode }) => {
   const [balance, setBalanceState] = useState<number>(0)
 
   useEffect(() => {
+    const hasPatreon = attendeePasses.some(a => a.products.some(p => (p.category === 'patreon' || p.category === 'supporter') && p.selected))
     const calculator = new TotalCalculator();
     const result = calculator.calculate(attendeePasses, discountApplied)
-    const balance = result.total - (application?.credit || 0)
+    const balance = hasPatreon ? result.total : result.total - (application?.credit || 0)
 
     setTotalState(balance)
     setOriginalTotalState(result.originalTotal)
