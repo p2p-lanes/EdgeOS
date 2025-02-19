@@ -57,7 +57,7 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
 interface ButtonAnimatedProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode
-  variant?: 'default' | 'outline' | 'ghost'
+  variant?: 'default' | 'outline' | 'ghost' | 'secondary'
   loading?: boolean
 }
 
@@ -77,6 +77,7 @@ const ButtonAnimated: React.FC<ButtonAnimatedProps> = ({
             'bg-primary text-primary-foreground hover:bg-primary/90': variant === 'default',
             'border border-input hover:bg-accent hover:text-accent-foreground': variant === 'outline',
             'hover:bg-accent hover:text-accent-foreground': variant === 'ghost',
+            'bg-secondary text-secondary-foreground hover:bg-secondary/80': variant === 'secondary',
           },
           "h-10 py-2 px-4 gap-2 items-center",
           className

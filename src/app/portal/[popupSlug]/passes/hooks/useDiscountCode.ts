@@ -42,8 +42,19 @@ const useDiscountCode = () => {
       setLoading(false)
     }
   }
-  
-  return { getDiscountCode, loading, discountMsg, validDiscount, discountApplied }
 
+  const clearDiscountMessage = () => {
+    setDiscountMsg('')
+  }
+  
+  return { 
+    getDiscountCode, 
+    loading, 
+    discountMsg, 
+    validDiscount, 
+    discountApplied,
+    clearDiscountMessage 
+  }
 }
+
 export default useDiscountCode
