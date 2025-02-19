@@ -15,6 +15,7 @@ const BuyPasses = () => {
   const { toggleProduct, attendeePasses: attendees, products } = usePassesProvider()
   const mainAttendee = attendees.find(a => a.category === 'main')
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
+  const someProductSelected = attendees.some(a => a.products.some(p => p.selected))
 
   return (
     <div className="space-y-6 pb-[20px] md:pb-0">
@@ -56,21 +57,25 @@ const BuyPasses = () => {
       </div>
 
       {/* Versión mobile con bottom sheet y versión integrada */}
-      <div className="block md:hidden">
-        <BottomSheet>
-          {(isModal) => (
-            <>
-              <TotalPurchase
-                attendees={attendees}
-                isModal={isModal}
-              />
-              <div className="flex w-full justify-center mt-4">
-                <CompletePurchaseButton />
-              </div>
-            </>
-          )}
-        </BottomSheet>
-      </div>
+      {
+        someProductSelected && (
+          <div className="block md:hidden">
+            <BottomSheet>
+              {(isModal) => (
+                <>
+                  <TotalPurchase
+                    attendees={attendees}
+                    isModal={isModal}
+                  />
+                  <div className="flex w-full justify-center mt-4">
+                    <CompletePurchaseButton />
+                  </div>
+                </>
+              )}
+            </BottomSheet>
+          </div>
+        )
+      }
     </div>
   )
 }
