@@ -9,7 +9,7 @@ const BannerDiscount = ({isPatreon, products}: {isPatreon: boolean, products: Pr
 
   return (
     <div className="w-full bg-transparent border-2 border-transparent bg-gradient-to-r from-[#FF7B7B] to-[#E040FB] rounded-md">
-      <div className="w-full bg-neutral-100 rounded-md py-1 px-4">
+      <div className="w-full bg-[#EDE9FE] rounded-md py-1 px-4">
         <div className="w-full mx-auto flex justify-center items-center gap-1">
           <Award className="w-4 h-4 stroke-[#FF7B7B] stroke-[2] bg-gradient-to-r from-[#FF7B7B] to-[#E040FB] bg-clip-text text-transparent" />
           <h2 className="text-center">

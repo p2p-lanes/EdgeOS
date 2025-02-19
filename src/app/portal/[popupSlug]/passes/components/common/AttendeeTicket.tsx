@@ -10,6 +10,9 @@ import useModal from "../../hooks/useModal"
 import useAttendee from "@/hooks/useAttendee"
 import { AttendeeModal } from "../AttendeeModal"
 import OptionsMenu from "./Buttons/OptionsMenu"
+import { TooltipContent } from "@/components/ui/tooltip"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import { TooltipProvider } from "@/components/ui/tooltip"
 
 const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void}) => {
   const standardProducts = attendee.products.filter((product) => product.category !== 'patreon' && product.category !== 'month')
@@ -98,10 +101,19 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
 
 
             <div className="flex w-full justify-end">
-              <Button variant={'ghost'} >
-                <p className="text-sm font-medium">Check-in Code</p>
-                <QrCode className="w-5 h-5 text-gray-500"/>
-              </Button>
+              <TooltipProvider>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <div className="flex items-center gap-2 p-2">
+                      <p className="text-sm font-medium text-muted-foreground">Check-in Code</p>
+                      <QrCode className="w-5 h-5 text-gray-500"/>
+                    </div>
+                  </TooltipTrigger>
+                  <TooltipContent className="bg-white text-black max-w-[420px] border border-gray-200">
+                    <p className="text-sm text-gray-600">Closer to the event, your check-in code will be able to download your code</p>
+                  </TooltipContent>
+                </Tooltip>
+              </TooltipProvider>
             </div>
 
 

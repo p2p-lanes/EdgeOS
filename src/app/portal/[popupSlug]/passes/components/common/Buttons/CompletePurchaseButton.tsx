@@ -11,7 +11,7 @@ const CompletePurchaseButton = () => {
     <ButtonAnimated
       disabled={loading || !someSelected} 
       loading={loading} 
-      className="w-fit text-white bg-slate-800" 
+      className="w-full md:w-fit text-white bg-slate-800" 
       onClick={() => purchaseProducts(attendees)}
       data-purchase
     >

@@ -61,6 +61,20 @@ export default {
   				ring: 'hsl(var(--sidebar-ring))'
   			}
   		},
+			keyframes: {
+        slideDown: {
+          from: { height: '0px', opacity: '0' },
+          to: { height: 'var(--radix-collapsible-content-height)', opacity: '1' },
+        },
+        slideUp: {
+          from: { height: 'var(--radix-collapsible-content-height)', opacity: '1' },
+          to: { height: '0px', opacity: '0' },
+        },
+      },
+      animation: {
+        slideDown: 'slideDown 300ms ease-out',
+        slideUp: 'slideUp 300ms ease-out',
+      },
   		fontWeight: {
   			medium: '500'
   		},

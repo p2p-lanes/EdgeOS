@@ -9,6 +9,7 @@ import ToolbarTop from "../components/ToolbarTop"
 import { Separator } from "@/components/ui/separator"
 import Special from "../components/common/Products/Special"
 import BalancePasses from "../components/common/BalancePasses"
+import BottomSheet from "@/components/common/BottomSheet"
 
 const BuyPasses = () => {
   const { toggleProduct, attendeePasses: attendees, products } = usePassesProvider()
@@ -16,10 +17,8 @@ const BuyPasses = () => {
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 pb-[20px] md:pb-0">
       <TitleTabs title="Buy Passes" subtitle="Choose your attendance weeks and get passes for you and your group." />
-      
-      <BannerDiscount isPatreon={false} products={products} />
 
       <BalancePasses />
 
@@ -27,6 +26,7 @@ const BuyPasses = () => {
         <ToolbarTop canEdit/>
       </div>
 
+      <BannerDiscount isPatreon={false} products={products} />
 
       <div className="flex flex-col gap-4">
         {
@@ -48,14 +48,28 @@ const BuyPasses = () => {
 
       <DiscountCode/>
 
-      <TotalPurchase
-        attendees={attendees}
-        isPatreon={false} 
-        products={products}
-      />
+      <div className="hidden md:flex md:flex-col md:gap-4">
+        <TotalPurchase attendees={attendees} />
+        <div className="flex w-full justify-center">
+          <CompletePurchaseButton />
+        </div>
+      </div>
 
-      <div className="flex w-full justify-center">
-        <CompletePurchaseButton />
+      {/* Versión mobile con bottom sheet y versión integrada */}
+      <div className="block md:hidden">
+        <BottomSheet>
+          {(isModal) => (
+            <>
+              <TotalPurchase
+                attendees={attendees}
+                isModal={isModal}
+              />
+              <div className="flex w-full justify-center mt-4">
+                <CompletePurchaseButton />
+              </div>
+            </>
+          )}
+        </BottomSheet>
       </div>
     </div>
   )

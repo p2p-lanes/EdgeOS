@@ -10,11 +10,7 @@ import ProductCart from "./Products/ProductCart"
 import { useApplication } from "@/providers/applicationProvider"
 import { useTotal } from "@/providers/totalProvider"
 
-const TotalPurchase = ({ attendees, isPatreon, products }: {
-  attendees: AttendeeProps[],
-  isPatreon: boolean,
-  products: ProductsProps[]
-}) => {
+const TotalPurchase = ({ attendees, isModal }: {attendees: AttendeeProps[], isModal?: boolean}) => {
   const [isOpen, setIsOpen] = useState(false)
   const { discountApplied } = useDiscountCode()
   const { originalTotal, total, discountAmount } = useTotal()
@@ -42,7 +38,7 @@ const TotalPurchase = ({ attendees, isPatreon, products }: {
       className="space-y-4 pt-0"
       data-cart
     >
-      <CollapsibleTrigger className="w-full bg-neutral-200 rounded-md">
+      <CollapsibleTrigger className={cn("w-full bg-neutral-200 rounded-md", isModal && "bg-transparent")}>
         <div className="flex justify-between items-center p-3">
           <div className="flex items-center gap-2">
             <ChevronRight 
@@ -64,7 +60,7 @@ const TotalPurchase = ({ attendees, isPatreon, products }: {
           </div>
         </div>
       </CollapsibleTrigger>
-      <CollapsibleContent>
+      <CollapsibleContent className="transition-all duration-300 ease-in-out data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown">
         {productsCart.length > 0 ? (
           <div className="space-y-2 px-3">
             {

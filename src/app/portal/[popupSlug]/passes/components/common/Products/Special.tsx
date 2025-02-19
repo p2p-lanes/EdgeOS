@@ -81,11 +81,11 @@ interface SpecialProps {
 type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
 
 const variants: Record<VariantStyles, string> = {
-  selected: 'bg-green-200 border-green-400 text-green-800 hover:bg-green-200/80',
+  selected: 'bg-gradient-to-r from-[#FF7B7B]/30 to-[#E040FB]/30 border-neutral-300',
   purchased: 'bg-slate-800 text-white border-neutral-700',
   edit: 'bg-slate-800/30 border-dashed border-slate-200 text-neutral-700',
   disabled: 'bg-neutral-0 text-neutral-300 cursor-not-allowed ',
-  default: 'bg-white border-neutral-300 text-neutral-700 hover:bg-slate-100',
+  default: 'bg-white border-neutral-300 text-neutral-700 hover:bg-gradient-to-r hover:from-[#FF7B7B]/10 hover:to-[#E040FB]/10',
 }
 
 // Componente base

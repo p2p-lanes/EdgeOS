@@ -27,7 +27,7 @@ const ToolbarTop = ({canEdit = false}: {canEdit?: boolean}) => {
 
 
   return (
-    <div className="flex justify-between w-full">
+    <div className="flex justify-between w-full flex-wrap gap-2">
       <div className="flex gap-2">
         {!hasSpouse && (
           <Button
@@ -66,6 +66,7 @@ const ToolbarTop = ({canEdit = false}: {canEdit?: boolean}) => {
         {canEdit && <EditPassesButton/>}
         <Button variant={'ghost'} onClick={() => setIsInvoiceModalOpen(true)}>
           <Newspaper className="h-4 w-4" />
+          <p className="text-sm font-medium hidden md:block">View Invoices</p>
         </Button>
       </div>
 

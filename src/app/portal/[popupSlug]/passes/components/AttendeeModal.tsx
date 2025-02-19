@@ -78,19 +78,23 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
               required
             />
           </div>
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="email" className="text-right">
-              Email
-            </Label>
-            <Input
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(e) => setFormData(prev => ({...prev, email: e.target.value}))}
-              className="col-span-3"
-              required
-            />
-          </div>
+          {
+            category !== 'kid' && (
+              <div className="grid grid-cols-4 items-center gap-4">
+                <Label htmlFor="email" className="text-right">
+                  Email
+                </Label>
+                <Input
+                  id="email"
+                  type="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData(prev => ({...prev, email: e.target.value}))}
+                  className="col-span-3"
+                  required
+                />
+              </div>
+            )
+          }
         </div>
         <DialogFooter>
           <ButtonAnimated loading={loading} type="submit">
