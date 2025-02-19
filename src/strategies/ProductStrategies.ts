@@ -76,50 +76,59 @@ class MonthProductStrategy implements ProductStrategy {
 }
 
 class WeekProductStrategy implements ProductStrategy {
+  protected countActiveWeeks(products: ProductsPass[]): number {
+    return products.filter(p => 
+      p.category === 'week' && 
+      (p.purchased || p.selected)
+    ).length;
+  }
+
+  protected hasEditedWeeks(products: ProductsPass[]): boolean {
+    return products.some(p => 
+      p.category === 'week' && 
+      p.edit
+    );
+  }
+
+  protected shouldSelectMonth(activeWeeks: number, hasEditedWeeks: boolean, monthPurchased: boolean): boolean {
+    // Si el mes está purchased, solo debe estar selected si hay weeks editadas
+    if (monthPurchased) {
+      return false;
+    }
+    // Si no está purchased, sigue la lógica original
+    return activeWeeks >= 4 && !hasEditedWeeks;
+  }
+
   handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
-    const willBeSelected = !product?.selected;
-
-    // Calculamos el número total de semanas que estarán seleccionadas después del cambio
-    const selectedWeeksCount = attendees.find(a => a.id === attendeeId)?.products.filter(p => 
-      p.category === 'week' && (
-        p.id === product.id ? willBeSelected : p.selected
-      )
-    ).length || 0;
-
-    const willBeSelectMonth = selectedWeeksCount !== 0 && selectedWeeksCount % 4 === 0;
-
     return attendees.map(attendee => {
       if (attendee.id !== attendeeId) return attendee;
-      
-      const monthProduct = attendee.products.find(p => p.category === 'month');
-      
-      return {
-        ...attendee,
-        products: attendee.products.map(p => ({
-          ...p,
-          selected: 
-            p.id === product.id ? willBeSelected :
-            p.id === monthProduct?.id ? willBeSelectMonth :
-            p.selected
-        }))
-      };
-    });
-  }
-}
-
-class EditWeekProductStrategy implements ProductStrategy {
-  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
-    return attendees.map(attendee => {
 
       const willBeSelected = !product.selected;
+      const monthProduct = attendee.products.find(p => p.category === 'month');
+      
+      // Actualizamos el producto seleccionado
+      const updatedProducts = attendee.products.map(p => ({
+        ...p,
+        selected: p.id === product.id ? willBeSelected : p.selected,
+        edit: p.id === product.id ? (product.purchased && willBeSelected) : p.edit
+      }));
 
+      // Calculamos estados después de la actualización
+      const activeWeeks = this.countActiveWeeks(updatedProducts);
+      const hasEdited = this.hasEditedWeeks(updatedProducts);
+      const shouldSelectMonth = this.shouldSelectMonth(
+        activeWeeks, 
+        hasEdited, 
+        monthProduct?.purchased || false
+      );
+
+      // Actualizamos el estado del mes
       return {
         ...attendee,
-        products: attendee.products.map(p => ({
+        products: updatedProducts.map(p => ({
           ...p,
-          selected: p.id === product.id ? willBeSelected : p.selected,
-          edit: p.id === product.id ? willBeSelected : p.edit,
-          disabled: false
+          selected: p.category === 'month' ? shouldSelectMonth : p.selected,
+          edit: p.category === 'month' ? hasEdited : p.edit
         }))
       };
     });
@@ -127,9 +136,6 @@ class EditWeekProductStrategy implements ProductStrategy {
 }
 
 export const getProductStrategy = (product: ProductsPass, isEditing: boolean): ProductStrategy => {
-  if (isEditing && product.category === 'week') {
-    return new EditWeekProductStrategy();
-  }
   
   if (product.exclusive) return new ExclusiveProductStrategy();
   

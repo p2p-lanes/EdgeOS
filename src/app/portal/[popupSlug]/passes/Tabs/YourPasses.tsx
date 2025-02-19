@@ -2,13 +2,13 @@ import TitleTabs from "../components/common/TitleTabs"
 import { usePassesProvider } from '@/providers/passesProvider'
 import AttendeeTicket from "../components/common/AttendeeTicket"
 import ToolbarTop from "../components/ToolbarTop"
-import { usePasses } from "../hooks/usePasses"
 import { Separator } from "@/components/ui/separator"
 import Special from "../components/common/Products/Special"
 
 const YourPasses = () => {
   const { attendeePasses: attendees } = usePassesProvider()
-  const { specialProduct, mainAttendee, specialPurchase } = usePasses(attendees)
+  const mainAttendee = attendees.find(a => a.category === 'main')
+  const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
 
   return (
     <div className="space-y-6">
@@ -26,7 +26,7 @@ const YourPasses = () => {
         }
       </div>
 
-      {(specialProduct && mainAttendee?.id) && (
+      {specialProduct && (
         <div className="p-0 w-full">
           <Separator className="my-4"/>
           <Special product={specialProduct}/>

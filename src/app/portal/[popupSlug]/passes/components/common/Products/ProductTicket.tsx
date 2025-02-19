@@ -26,7 +26,7 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
       disabled={disabled || (purchased && !isEditing)}
       className={cn(
         'flex items-center gap-2 border border-neutral-200 rounded-md p-2',
-        variants[(edit && purchased) ? 'edit' : disabled ? 'disabled' : selected ? 'selected' : purchased ? 'purchased' : 'default']
+        variants[(selected && purchased) ? 'edit' : disabled ? 'disabled' : selected ? 'selected' : purchased ? 'purchased' : 'default']
       )}
     >
       <div className="flex justify-between w-full">

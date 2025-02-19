@@ -4,12 +4,12 @@ import usePurchaseProducts from "../../../hooks/usePurchaseProducts";
 
 const CompletePurchaseButton = () => {
   const { purchaseProducts, loading } = usePurchaseProducts();
-  const { isEditing, attendeePasses: attendees } = usePassesProvider()
-  const someSelected = attendees.some(attendee => attendee.products.some(product => product.selected))
+  const { attendeePasses: attendees } = usePassesProvider()
+  const someSelected = attendees.some(attendee => attendee.products.some(product => product.selected && !product.purchased))
 
   return (
     <ButtonAnimated
-      disabled={loading || !someSelected || isEditing} 
+      disabled={loading || !someSelected} 
       loading={loading} 
       className="w-fit text-white bg-slate-800" 
       onClick={() => purchaseProducts(attendees)}

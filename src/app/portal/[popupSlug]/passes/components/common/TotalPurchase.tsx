@@ -6,8 +6,9 @@ import { AttendeeProps } from "@/types/Attendee"
 import { ProductsPass, ProductsProps } from "@/types/Products"
 import { DiscountProps } from "@/types/discounts"
 import useDiscountCode from "../../hooks/useDiscountCode"
-import { calculateTotal } from "../../helpers/products"
 import ProductCart from "./Products/ProductCart"
+import { useApplication } from "@/providers/applicationProvider"
+import { useTotal } from "@/providers/totalProvider"
 
 const TotalPurchase = ({ attendees, isPatreon, products }: {
   attendees: AttendeeProps[],
@@ -16,7 +17,8 @@ const TotalPurchase = ({ attendees, isPatreon, products }: {
 }) => {
   const [isOpen, setIsOpen] = useState(false)
   const { discountApplied } = useDiscountCode()
-
+  const { originalTotal, total, discountAmount } = useTotal()
+  
   const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected)).sort((a, b) => {
     if (a.category === 'patreon') return -1
     if (b.category === 'patreon') return 1
@@ -26,8 +28,6 @@ const TotalPurchase = ({ attendees, isPatreon, products }: {
   })
 
   const patreonSelected = attendees.some(attendee => attendee.products.some(p => p.selected && p.category === 'patreon'))
-
-  const { originalTotal, total, discountAmount } = calculateTotal(attendees, discountApplied)
 
   const calculateDiscountMonthProduct = (product: ProductsPass) => {
     const category = product.attendee_category
@@ -42,7 +42,7 @@ const TotalPurchase = ({ attendees, isPatreon, products }: {
       className="space-y-4 pt-0"
       data-cart
     >
-      <CollapsibleTrigger className="w-full bg-white rounded-md">
+      <CollapsibleTrigger className="w-full bg-neutral-200 rounded-md">
         <div className="flex justify-between items-center p-3">
           <div className="flex items-center gap-2">
             <ChevronRight 
@@ -60,7 +60,7 @@ const TotalPurchase = ({ attendees, isPatreon, products }: {
                 ${originalTotal.toFixed(2)}
               </span>
             )}
-            <span className="font-medium" data-total={total.toFixed(2)}>${total.toFixed(2)}</span>
+            <span className="font-medium" data-total={total.toFixed(2)}>${total > 0 ? total.toFixed(2) : 0}</span>
           </div>
         </div>
       </CollapsibleTrigger>

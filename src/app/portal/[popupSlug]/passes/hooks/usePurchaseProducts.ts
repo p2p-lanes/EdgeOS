@@ -1,8 +1,6 @@
 import { api } from "@/api"
 import useGetApplications from "@/hooks/useGetApplications"
-import { useCityProvider } from "@/providers/cityProvider"
 import { AttendeeProps } from "@/types/Attendee"
-import { ProductsPass } from "@/types/Products"
 import { useState } from "react"
 import { filterProductsToPurchase } from "../helpers/filter"
 import { useApplication } from "@/providers/applicationProvider"
@@ -13,21 +11,29 @@ const usePurchaseProducts = () => {
   const { getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
   const getApplication = useGetApplications(false)
-  const { discountApplied } = usePassesProvider()
+  const { discountApplied, isEditing, toggleEditing } = usePassesProvider()
 
   const purchaseProducts = async (attendeePasses: AttendeeProps[]) => {
     if(!application) return;
+
+    const editableMode = isEditing || application.credit >= 0
     
     setLoading(true)
 
-    const productsPurchase = attendeePasses.flatMap(p => p.products).filter(p => p.selected)
+    const productsPurchase = attendeePasses.flatMap(p => p.products).filter(p => 
+      editableMode 
+        ? (!p.edit && ((!p.selected && p.purchased) || (p.selected && !p.purchased)))
+        : p.selected
+    )
+
     const filteredProducts = filterProductsToPurchase(productsPurchase)
 
     try{
       const data = {
         application_id: application.id,
         products: filteredProducts,
-        coupon_code: discountApplied.discount_code
+        coupon_code: discountApplied.discount_code,
+        edit_passes: editableMode
       }
       const response = await api.post('payments', data)
       if(response.status === 200){
@@ -35,6 +41,9 @@ const usePurchaseProducts = () => {
           window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
         }else if(response.data.status === 'approved'){
           await getApplication()
+          if(editableMode){
+            toggleEditing()
+          }
         }
         return response.data
       }

@@ -11,7 +11,7 @@ const EditPassesButton = () => {
 
   if(isEditing){
     return(
-      <Button variant="secondary" onClick={toggleEditing}>
+      <Button variant="secondary" className="bg-neutral-200 text-black hover:shadow-md hover:bg-neutral-300 transition-all" onClick={toggleEditing}>
         <XIcon className="w-4 h-4" />
         Cancel Pass Editing
       </Button>
@@ -20,7 +20,7 @@ const EditPassesButton = () => {
   }
 
   return (
-    <Button variant="outline" onClick={toggleEditing}>
+    <Button variant="outline" className="bg-white text-black hover:bg-white hover:shadow-md transition-all" onClick={toggleEditing}>
       <PencilIcon className="w-4 h-4" />
       Edit Passes
     </Button>

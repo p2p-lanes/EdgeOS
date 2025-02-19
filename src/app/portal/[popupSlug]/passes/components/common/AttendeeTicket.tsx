@@ -85,7 +85,12 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
             }
             {
               standardProducts.map((product) => (
-                <Product key={`${product.id}-${attendee.id}`} product={product} defaultDisabled={!toggleProduct && !product.purchased} onClick={() => toggleProduct && toggleProduct(attendee.id, product)}/>
+                <Product 
+                  key={`${product.id}-${attendee.id}`} 
+                  product={product} 
+                  defaultDisabled={!toggleProduct && !product.purchased} 
+                  onClick={() => toggleProduct && toggleProduct(attendee.id, product)}
+                />
               ))
             }
 

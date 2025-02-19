@@ -6,13 +6,14 @@ import TotalPurchase from "../components/common/TotalPurchase"
 import BannerDiscount from "../components/common/BannerDiscount"
 import DiscountCode from "../components/common/DiscountCode"
 import ToolbarTop from "../components/ToolbarTop"
-import { usePasses } from "../hooks/usePasses"
 import { Separator } from "@/components/ui/separator"
 import Special from "../components/common/Products/Special"
+import BalancePasses from "../components/common/BalancePasses"
 
 const BuyPasses = () => {
   const { toggleProduct, attendeePasses: attendees, products } = usePassesProvider()
-  const { specialProduct, mainAttendee, specialPurchase } = usePasses(attendees)
+  const mainAttendee = attendees.find(a => a.category === 'main')
+  const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
 
   return (
     <div className="space-y-6">
@@ -20,9 +21,12 @@ const BuyPasses = () => {
       
       <BannerDiscount isPatreon={false} products={products} />
 
+      <BalancePasses />
+
       <div className="my-4 flex justify-start">
-        <ToolbarTop/>
+        <ToolbarTop canEdit/>
       </div>
+
 
       <div className="flex flex-col gap-4">
         {
