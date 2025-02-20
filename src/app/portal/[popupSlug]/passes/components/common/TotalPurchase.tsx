@@ -1,20 +1,19 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
 import { ChevronRight, Tag } from "lucide-react"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { AttendeeProps } from "@/types/Attendee"
-import { ProductsPass, ProductsProps } from "@/types/Products"
+import { ProductsPass } from "@/types/Products"
 import { DiscountProps } from "@/types/discounts"
 import useDiscountCode from "../../hooks/useDiscountCode"
 import ProductCart from "./Products/ProductCart"
-import { useApplication } from "@/providers/applicationProvider"
 import { useTotal } from "@/providers/totalProvider"
 
-const TotalPurchase = ({ attendees, isModal }: {attendees: AttendeeProps[], isModal?: boolean}) => {
-  const [isOpen, setIsOpen] = useState(false)
+const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: AttendeeProps[], isModal?: boolean, isOpen: boolean, setIsOpen: (prev: boolean) => void}) => {
   const { discountApplied } = useDiscountCode()
   const { originalTotal, total, discountAmount } = useTotal()
   
+
   const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected)).sort((a, b) => {
     if (a.category === 'patreon') return -1
     if (b.category === 'patreon') return 1
@@ -61,7 +60,7 @@ const TotalPurchase = ({ attendees, isModal }: {attendees: AttendeeProps[], isMo
           </div>
         </div>
       </CollapsibleTrigger>
-      <CollapsibleContent className="transition-all duration-300 ease-in-out data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown">
+      <CollapsibleContent className="transition-all duration-100 ease-in-out data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown">
         {productsCart.length > 0 ? (
           <div className="space-y-2 px-3">
             {
@@ -85,8 +84,6 @@ const DiscountCouponTotal = ({ discountAmount, discountApplied, patreonSelected 
   discountApplied: DiscountProps,
   patreonSelected: boolean
 }) => {
-
-  console.log('discountAmount', discountAmount, discountApplied)
 
   if(!discountApplied.discount_value || discountAmount === 0) return null
 

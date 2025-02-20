@@ -29,7 +29,7 @@ export default function RootLayout({children }: Readonly<{ children: React.React
       <body suppressHydrationWarning>
         <GoogleAnalytics />
         <Toaster />
-        <div className={`${GeistSans.className} antialiased w-[100%]`}>
+        <div className={`${GeistSans.className} antialiased w-[100%] bg-neutral-100`}>
           {children}
         </div>
       </body>

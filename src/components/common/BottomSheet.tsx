@@ -1,11 +1,13 @@
+import { cn } from "@/lib/utils"
 import { motion, AnimatePresence } from "framer-motion"
 import { useEffect, useRef, useState } from "react"
 
 interface BottomSheetProps {
   children: (isModal: boolean) => React.ReactNode
+  className?: string
 }
 
-const BottomSheet = ({ children }: BottomSheetProps) => {
+const BottomSheet = ({ children, className }: BottomSheetProps) => {
   const [isVisible, setIsVisible] = useState(true)
   const targetRef = useRef<HTMLDivElement>(null)
 
@@ -32,19 +34,19 @@ const BottomSheet = ({ children }: BottomSheetProps) => {
       <AnimatePresence>
         {isVisible && (
           <motion.div
-            className="fixed bottom-0 left-0 right-0 bg-white shadow-lg border-t border-neutral-200 rounded-t-2xl z-50 p-4"
+            className={cn("fixed bottom-0 left-0 right-0 z-50", className)}
             initial={{ y: "100%" }}
             animate={{ y: 0 }}
-            exit={{ y: "100%" }}
-            transition={{ type: "spring", damping: 20 }}
+            exit={{ y: "180%" }}
+            transition={{ type: "spring", damping:30 }}
           >
-            {children(true)} {/* Indicamos que es modal */}
+            {children(true)}
           </motion.div>
         )}
       </AnimatePresence>
 
       <div ref={targetRef}>
-        {children(false)} {/* Indicamos que no es modal */}
+        {children(false)} 
       </div>
     </>
   )

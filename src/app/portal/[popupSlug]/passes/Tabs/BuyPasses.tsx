@@ -10,9 +10,12 @@ import { Separator } from "@/components/ui/separator"
 import Special from "../components/common/Products/Special"
 import BalancePasses from "../components/common/BalancePasses"
 import BottomSheet from "@/components/common/BottomSheet"
+import TotalFloatingBar from "../components/common/TotalFloatingBar"
+import { useState } from "react"
 
 const BuyPasses = () => {
   const { toggleProduct, attendeePasses: attendees, products, isEditing } = usePassesProvider()
+  const [openCart, setOpenCart] = useState<boolean>(false)
   const mainAttendee = attendees.find(a => a.category === 'main')
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
   const someProductSelected = attendees.some(a => a.products.some(p => p.selected))
@@ -50,33 +53,55 @@ const BuyPasses = () => {
 
       <DiscountCode/>
 
-      <div className="hidden md:flex md:flex-col md:gap-4">
-        <TotalPurchase attendees={attendees} />
-        <div className="flex w-full justify-center">
-          <CompletePurchaseButton />
-        </div>
-      </div>
-
-      {/* Versión mobile con bottom sheet y versión integrada */}
-      {
-        someProductSelected && (
-          <div className="block md:hidden">
-            <BottomSheet>
-              {(isModal) => (
-                <>
+      {/* Versión desktop con FloatingBar */}
+      {someProductSelected && (
+        <div className="hidden md:block">
+          <BottomSheet className="bottom-6 pointer-events-none">
+            {(isFloating) => (
+              isFloating ? (
+                <div className="flex justify-center lg:ml-[255px]">
+                  <div className="bg-white p-4 shadow-lg border border-neutral-200 rounded-lg w-[600px] pointer-events-auto">
+                    <TotalFloatingBar setOpenCart={setOpenCart}/>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col gap-4 w-full pointer-events-auto">
                   <TotalPurchase
                     attendees={attendees}
-                    isModal={isModal}
+                    isModal={isFloating}
+                    isOpen={openCart}
+                    setIsOpen={setOpenCart}
                   />
-                  <div className="flex w-full justify-center mt-4">
+                  <div className="flex w-full justify-center">
                     <CompletePurchaseButton />
                   </div>
-                </>
-              )}
-            </BottomSheet>
-          </div>
-        )
-      }
+                </div>
+              )
+            )}
+          </BottomSheet>
+        </div>
+      )}
+
+      {/* Versión mobile con bottom sheet */}
+      {someProductSelected && (
+        <div className="block md:hidden">
+          <BottomSheet>
+            {(isModal) => (
+              <div className={`${isModal ? 'bg-white p-4 shadow-lg border-t border-neutral-200 rounded-t-2xl' : ''}`}>
+                <TotalPurchase
+                  attendees={attendees}
+                  isModal={isModal}
+                  isOpen={openCart}
+                  setIsOpen={setOpenCart}
+                />
+                <div className="flex w-full justify-center mt-4">
+                  <CompletePurchaseButton />
+                </div>
+              </div>
+            )}
+          </BottomSheet>
+        </div>
+      )}
     </div>
   )
 }

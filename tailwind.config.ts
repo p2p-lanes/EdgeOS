@@ -72,8 +72,8 @@ export default {
         },
       },
       animation: {
-        slideDown: 'slideDown 300ms ease-out',
-        slideUp: 'slideUp 300ms ease-out',
+        slideDown: 'slideDown 200ms ease-out',
+        slideUp: 'slideUp 200ms ease-out',
       },
   		fontWeight: {
   			medium: '500'
