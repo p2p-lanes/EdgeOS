@@ -67,15 +67,13 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
       
       setAttendeePasses(initialAttendees);
     }
-  }, [attendees, products, discountApplied]);
+  }, [attendees, products, discountApplied, isEditing]);
 
   const toggleEditing = () => {
-    if(isEditing) {
-      setAttendeePasses(attendeePasses.map(attendee => ({
-        ...attendee,
-        products: attendee.products.map(product => ({...product, edit: false, selected: false, disabled: false}))
-      })))
-    }
+    setAttendeePasses(attendeePasses.map(attendee => ({
+      ...attendee,
+      products: attendee.products.map(product => ({...product, edit: false, selected: false, disabled: false}))
+    })))
 
     setIsEditing(!isEditing)
   }

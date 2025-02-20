@@ -27,7 +27,8 @@ const TotalPurchase = ({ attendees, isModal }: {attendees: AttendeeProps[], isMo
 
   const calculateDiscountMonthProduct = (product: ProductsPass) => {
     const category = product.attendee_category
-    const totalPrice = attendees.find(att => att.category === category)?.products.filter(p => p.category === 'week' && p.selected).reduce((acc, p) => acc + p.price, 0)
+    const totalPrice = attendees.find(att => att.category === category)?.products.filter(p => p.category === 'week' && p.selected).reduce((acc, p) => acc + (p.original_price ?? 0), 0)
+
     return totalPrice ? totalPrice - product.price : 0
   }
 
@@ -79,13 +80,15 @@ const TotalPurchase = ({ attendees, isModal }: {attendees: AttendeeProps[], isMo
   )
 }
 
-const DiscountCouponTotal = ({ discountAmount, discountApplied, patreonSelected}: {
+const DiscountCouponTotal = ({ discountAmount, discountApplied, patreonSelected }: {
   discountAmount: number,
   discountApplied: DiscountProps,
   patreonSelected: boolean
 }) => {
 
-  if((!discountApplied.discount_value || discountAmount === 0) && !patreonSelected) return null
+  console.log('discountAmount', discountAmount, discountApplied)
+
+  if(!discountApplied.discount_value || discountAmount === 0) return null
 
   const getLabelDiscount = () => {
     if(patreonSelected){

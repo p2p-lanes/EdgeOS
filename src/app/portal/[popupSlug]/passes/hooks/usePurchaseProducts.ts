@@ -16,7 +16,7 @@ const usePurchaseProducts = () => {
   const purchaseProducts = async (attendeePasses: AttendeeProps[]) => {
     if(!application) return;
 
-    const editableMode = isEditing || application.credit >= 0
+    const editableMode = (isEditing || application.credit >= 0) && !attendeePasses.some(p => p.products.some(p => p.category === 'patreon' && p.selected))
     
     setLoading(true)
 

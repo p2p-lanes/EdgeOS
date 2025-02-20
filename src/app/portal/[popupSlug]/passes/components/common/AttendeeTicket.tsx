@@ -91,7 +91,7 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
                 <Product 
                   key={`${product.id}-${attendee.id}`} 
                   product={product} 
-                  defaultDisabled={!toggleProduct && !product.purchased} 
+                  defaultDisabled={!toggleProduct} 
                   onClick={() => toggleProduct && toggleProduct(attendee.id, product)}
                 />
               ))

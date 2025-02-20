@@ -44,15 +44,19 @@ class PatreonProductStrategy implements ProductStrategy {
   handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass, discount?: DiscountProps): AttendeeProps[] {
     const isPatreonSelected = !product?.selected;
 
-    return attendees.map(attendee => ({
-      ...attendee,
-      products: attendee.products.map(p => ({
-        ...p,
+    return attendees.map(attendee => {
+      if (attendee.id !== attendeeId) return attendee;
+
+      return {
+        ...attendee,
+        products: attendee.products.map(p => ({
+          ...p,
         selected: (attendee.id === attendeeId && p.id === product.id) ? !p.selected : p.selected,
         // original_price: p.price,
         price: this.priceStrategy.calculatePrice(p, isPatreonSelected || false, discount?.discount_value || 0)
-      }))
-    }));
+        }))
+      };
+    });
   }
 }
 

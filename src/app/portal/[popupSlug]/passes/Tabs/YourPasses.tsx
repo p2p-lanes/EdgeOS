@@ -11,8 +11,6 @@ const YourPasses = () => {
   const mainAttendee = attendees.find(a => a.category === 'main')
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
 
-  console.log('attendees', attendees)
-
   return (
     <div className="space-y-6">
       <TitleTabs title="Your Passes" subtitle="View and manage your passes here. Need to make changes? You can switch your week closer to the event to match your plans!" />

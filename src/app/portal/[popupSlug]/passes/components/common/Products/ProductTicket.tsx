@@ -17,7 +17,7 @@ const variants: Record<VariantStyles, string> = {
 const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, onClick: () => void, defaultDisabled?: boolean}) => {
   const disabled = product.disabled || defaultDisabled
   const originalPrice = product.compare_price ?? product.price
-  const { edit, purchased, selected } = product
+  const { purchased, selected } = product
   const { isEditing } = usePassesProvider()
 
   return (
@@ -26,7 +26,7 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
       disabled={disabled || (purchased && !isEditing)}
       className={cn(
         'flex items-center gap-2 border border-neutral-200 rounded-md p-2',
-        variants[(selected && purchased) ? 'edit' : disabled ? 'disabled' : selected ? 'selected' : purchased ? 'purchased' : 'default']
+        variants[(selected && purchased && !disabled) ? 'edit' : purchased ? 'purchased' : disabled ? 'disabled' : selected ? 'selected' : 'default']
       )}
     >
       <div className="flex justify-between w-full">

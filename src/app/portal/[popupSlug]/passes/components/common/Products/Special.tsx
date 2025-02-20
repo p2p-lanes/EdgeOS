@@ -76,6 +76,7 @@ const TooltipPatreon = ({ purchased }: { purchased?: boolean }) => (
 interface SpecialProps {
   product: ProductsPass;
   onClick?: () => void;
+  disabled?: boolean;
 }
 
 type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
@@ -92,11 +93,14 @@ const variants: Record<VariantStyles, string> = {
 function SpecialBase({ 
   product, 
   onClick,
-  getStatusIcon
-}: SpecialProps & { getStatusIcon: () => JSX.Element }) {
+  getStatusIcon,
+  disabled
+}: SpecialProps & { getStatusIcon: () => JSX.Element, disabled: boolean }) {
 
-  const { selected, disabled, purchased } = product
-  const hasOnClick = !disabled && onClick && !purchased
+  const { selected, disabled: productDisabled, purchased } = product
+
+  const isDisabled = disabled || productDisabled
+  const hasOnClick = !isDisabled && onClick && !purchased
   return (
     <button
       data-category="patreon"
@@ -105,12 +109,12 @@ function SpecialBase({
       data-price={product.price}
       className={cn(
         'w-full py-1 px-4 flex items-center justify-between gap-2 border border-neutral-200 rounded-md',
-        variants[purchased ? 'purchased' : disabled || !onClick ? 'disabled' : selected ? 'selected' : 'default']
+        variants[purchased ? 'purchased' : isDisabled || !onClick ? 'disabled' : selected ? 'selected' : 'default']
       )}
     >
       <div className="flex items-center gap-2 py-2">
         {getStatusIcon()}
-        <ProductTitle product={product} disabled={disabled || !onClick} selected={selected ?? false} />
+        <ProductTitle product={product} disabled={isDisabled || !onClick} selected={selected ?? false} />
       </div>
       
       <div className="flex items-center gap-4">
