@@ -1,9 +1,7 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
 import { ChevronRight, Tag } from "lucide-react"
-import { useState, useEffect } from "react"
 import { AttendeeProps } from "@/types/Attendee"
-import { ProductsPass } from "@/types/Products"
 import { DiscountProps } from "@/types/discounts"
 import useDiscountCode from "../../hooks/useDiscountCode"
 import ProductCart from "./Products/ProductCart"
@@ -14,22 +12,13 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
   const { originalTotal, total, discountAmount } = useTotal()
   
 
-  const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected)).sort((a, b) => {
+  const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected && p.category !== 'month')).sort((a, b) => {
     if (a.category === 'patreon') return -1
     if (b.category === 'patreon') return 1
-    if (a.category === 'month') return 1
-    if (b.category === 'month') return -1
     return 0
   })
 
   const patreonSelected = attendees.some(attendee => attendee.products.some(p => p.selected && p.category === 'patreon'))
-
-  const calculateDiscountMonthProduct = (product: ProductsPass) => {
-    const category = product.attendee_category
-    const totalPrice = attendees.find(att => att.category === category)?.products.filter(p => p.category === 'week' && p.selected).reduce((acc, p) => acc + (p.original_price ?? 0), 0)
-
-    return totalPrice ? totalPrice - product.price : 0
-  }
 
   return (
     <Collapsible
@@ -64,8 +53,10 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
         {productsCart.length > 0 ? (
           <div className="space-y-2 px-3">
             {
-              productsCart.map(product => <ProductCart key={product.id} product={product} calculateDiscount={calculateDiscountMonthProduct}/>)
+              productsCart.map(product => <ProductCart key={product.id} product={product}/>)
             }
+
+           <DiscountMonth attendees={attendees} total={total}/>
 
             <DiscountCouponTotal discountAmount={discountAmount} discountApplied={discountApplied} patreonSelected={patreonSelected} />
           </div>
@@ -114,4 +105,31 @@ const DiscountCouponTotal = ({ discountAmount, discountApplied, patreonSelected 
   return null
 }
 
+const DiscountMonth = ({ attendees, total }: { attendees: AttendeeProps[], total: number }) => {
+
+  const calculateDiscountMonth = () => {
+    const totalPrice = attendees.reduce((total, attendee) => {
+      return total + attendee.products
+        .filter(p => p.selected && p.category === 'week')
+        .reduce((sum, product) => sum + (product.compare_price ?? 0), 0)
+    }, 0)
+
+    return totalPrice - total
+  }
+
+  const hasMonthSelected = attendees.some(attendee => attendee.products.some(p => p.selected && p.category === 'month'))
+
+  if(!hasMonthSelected) return null
+
+  const discountMonth = calculateDiscountMonth()
+
+  if(discountMonth <= 0) return null
+
+  return (
+     <div className="flex justify-between text-sm text-muted-foreground">
+        <span className="flex items-center gap-2"><Tag className="w-4 h-4" />Discount on Full Month</span>
+        <span data-month-discount={discountMonth}> - ${discountMonth}</span>
+      </div>
+  )
+}
 export default TotalPurchase
