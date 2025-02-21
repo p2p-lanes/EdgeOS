@@ -110,7 +110,7 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
                     </div>
                   </TooltipTrigger>
                   <TooltipContent className="bg-white text-black max-w-[420px] border border-gray-200">
-                    <p className="text-sm text-gray-600">Closer to the event, your check-in code will be able to download your code</p>
+                    <p className="text-sm text-gray-600">Closer to the event, you will be able to download your check-in code here.</p>
                   </TooltipContent>
                 </Tooltip>
               </TooltipProvider>
