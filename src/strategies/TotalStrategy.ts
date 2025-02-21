@@ -25,7 +25,7 @@ class MonthlyPriceStrategy extends BasePriceStrategy {
   calculate(products: ProductsPass[], discount: DiscountProps): TotalResult {
     const monthProduct = products.find(p => p.category === 'month' && p.selected && !p.purchased);
     const monthPrice = monthProduct?.price ?? 0;
-    const totalProductsPurchased = products.reduce((sum, product) => sum + (product.purchased ? product.price : 0), 0)
+    const totalProductsPurchased = products.filter(p => p.category !== 'patreon' && p.category !== 'supporter').reduce((sum, product) => sum + (product.purchased ? product.price : 0), 0)
 
     const originalTotal = this.calculateOriginalTotal(products)
     const discountAmount = discount.discount_value ? originalTotal * (discount.discount_value / 100): 0;

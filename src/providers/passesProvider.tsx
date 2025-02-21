@@ -17,7 +17,7 @@ interface PassesContext_interface {
   setDiscount: (discount: DiscountProps) => void;
   discountApplied: DiscountProps;
   isEditing: boolean;
-  toggleEditing: () => void;
+  toggleEditing: (editing?: boolean) => void;
 }
 
 export const PassesContext = createContext<PassesContext_interface | null>(null);
@@ -43,8 +43,8 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
-      const hasPatreonPurchased = attendees.some(a => a.products.some(p => p.category === 'patreon'));
       const initialAttendees = attendees.map(attendee => {
+        const hasPatreonPurchased = attendee.products.some(p => p.category === 'patreon');
         const priceStrategy = getPriceStrategy();
         const purchaseStrategy = getPurchaseStrategy();
         
@@ -69,13 +69,14 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [attendees, products, discountApplied, isEditing]);
 
-  const toggleEditing = () => {
+  const toggleEditing = (editing?: boolean) => {
     setAttendeePasses(attendeePasses.map(attendee => ({
       ...attendee,
       products: attendee.products.map(product => ({...product, edit: false, selected: false, disabled: false}))
     })))
 
-    setIsEditing(!isEditing)
+    console.log('editing', editing)
+    setIsEditing(editing !== undefined ? editing : !isEditing)
   }
 
   useEffect(() => {

@@ -20,6 +20,13 @@ const YourPasses = () => {
       </div>
 
       <div className="flex flex-col gap-4">
+        {specialProduct && (
+          <div className="p-0 w-full">
+            <Special product={specialProduct}/>
+            <Separator className="my-4"/>
+          </div>
+        )}
+        
         {attendees.length === 0 ? (
           <>
             <Skeleton className="w-full h-[300px] rounded-3xl"/>
@@ -32,13 +39,6 @@ const YourPasses = () => {
           ))
         )}
       </div>
-
-      {specialProduct && (
-        <div className="p-0 w-full">
-          <Separator className="my-4"/>
-          <Special product={specialProduct}/>
-        </div>
-      )}
     </div>
   )
 }

@@ -116,10 +116,10 @@ const DiscountMonth = ({ attendees, total }: { attendees: AttendeeProps[], total
 
     return totalPrice - total
   }
-
+  const hasPatreon = attendees.some(attendee => attendee.products.some(p => p.category === 'patreon' && (p.selected || p.purchased)))
   const hasMonthSelected = attendees.some(attendee => attendee.products.some(p => p.selected && p.category === 'month'))
 
-  if(!hasMonthSelected) return null
+  if(!hasMonthSelected || hasPatreon) return null
 
   const discountMonth = calculateDiscountMonth()
 

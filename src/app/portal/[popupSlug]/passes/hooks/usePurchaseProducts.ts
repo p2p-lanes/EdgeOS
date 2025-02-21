@@ -16,7 +16,7 @@ const usePurchaseProducts = () => {
   const purchaseProducts = async (attendeePasses: AttendeeProps[]) => {
     if(!application) return;
 
-    const editableMode = (isEditing || application.credit >= 0) && !attendeePasses.some(p => p.products.some(p => p.category === 'patreon' && p.selected))
+    const editableMode = (isEditing || application.credit >= 0) && !attendeePasses.some(p => p.products.some(p => p.category === 'patreon' && p.selected ))
     
     setLoading(true)
 
@@ -42,7 +42,7 @@ const usePurchaseProducts = () => {
         }else if(response.data.status === 'approved'){
           await getApplication()
           if(editableMode){
-            toggleEditing()
+            toggleEditing(false)
           }
         }
         return response.data

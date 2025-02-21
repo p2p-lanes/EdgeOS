@@ -20,7 +20,7 @@ const TotalFloatingBar = ({ setOpenCart }: { setOpenCart: (prev: boolean) => voi
       <div className="flex justify-center items-center gap-2">
         <p className="text-sm font-medium">Total</p>
         <span className=" text-muted-foreground line-through">${originalTotal.toFixed(0)}</span>
-        <span className="font-medium">${total.toFixed(0)}</span>
+        <span className="font-medium">{total > 0 ? `$${total.toFixed(0)}` : '$0'}</span>
       </div>
 
       <div className="flex justify-center items-center gap-2">
