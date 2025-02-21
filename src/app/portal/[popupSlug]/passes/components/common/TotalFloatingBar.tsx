@@ -31,8 +31,8 @@ const TotalFloatingBar = ({ setOpenCart }: { setOpenCart: (prev: boolean) => voi
         <Button variant="outline" className="w-[120px]" onClick={handleOnClickReviewOrder}>
           Review Order
         </Button>
-        <ButtonAnimated variant="default" className="w-[120px]" loading={loading} disabled={loading} onClick={() => purchaseProducts(attendees)}>
-          {total <= 0 ? 'Confirm' : 'Pay'}
+        <ButtonAnimated variant="default"  loading={loading} disabled={loading} onClick={() => purchaseProducts(attendees)}>
+          {total <= 0 ? 'Confirm' : 'Confirm and Pay'}
         </ButtonAnimated>
       </div>
     </div>

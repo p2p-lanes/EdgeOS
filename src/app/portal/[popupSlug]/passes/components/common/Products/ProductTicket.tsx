@@ -9,7 +9,7 @@ type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
 const variants: Record<VariantStyles, string> = {
   selected: 'bg-green-200 border-green-400 text-green-800 hover:bg-green-200/80',
   purchased: 'bg-slate-800 text-white border-neutral-700',
-  edit: 'bg-slate-800/30 border-dashed border-slate-200 text-neutral-700',
+  edit: 'bg-slate-800/30 border-dashed border-slate-200 text-neutral-700 border',
   disabled: 'bg-neutral-0 text-neutral-300 cursor-not-allowed ',
   default: 'bg-white border-neutral-300 text-neutral-700 hover:bg-slate-100',
 }

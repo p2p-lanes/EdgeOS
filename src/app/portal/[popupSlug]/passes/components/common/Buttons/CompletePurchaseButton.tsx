@@ -15,7 +15,7 @@ const CompletePurchaseButton = ({edit}: {edit?: boolean}) => {
       onClick={() => purchaseProducts(attendees)}
       data-purchase
     >
-      {loading ? 'Loading...' : edit ? 'Confirm' : 'Proceed to Payment'}
+      {loading ? 'Loading...' : edit ? 'Confirm' : 'Confirm and Pay'}
     </ButtonAnimated>
 
   )
