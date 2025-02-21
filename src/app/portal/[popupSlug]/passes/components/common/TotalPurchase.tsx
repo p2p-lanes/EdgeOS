@@ -6,6 +6,7 @@ import { DiscountProps } from "@/types/discounts"
 import useDiscountCode from "../../hooks/useDiscountCode"
 import ProductCart from "./Products/ProductCart"
 import { useTotal } from "@/providers/totalProvider"
+import { ProductsPass } from "@/types/Products"
 
 const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: AttendeeProps[], isModal?: boolean, isOpen: boolean, setIsOpen: (prev: boolean) => void}) => {
   const { discountApplied } = useDiscountCode()
@@ -56,9 +57,9 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
               productsCart.map(product => <ProductCart key={product.id} product={product}/>)
             }
 
-           <DiscountMonth attendees={attendees} total={total}/>
+            <DiscountMonth attendees={attendees} total={total}/>
 
-            <DiscountCouponTotal discountAmount={discountAmount} discountApplied={discountApplied} patreonSelected={patreonSelected} />
+            <DiscountCouponTotal products={productsCart} discountAmount={discountAmount} discountApplied={discountApplied} patreonSelected={patreonSelected} />
           </div>
         ) : (
           <p className="text-sm text-muted-foreground px-3">
@@ -70,11 +71,14 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
   )
 }
 
-const DiscountCouponTotal = ({ discountAmount, discountApplied, patreonSelected }: {
+const DiscountCouponTotal = ({ discountAmount, discountApplied, patreonSelected, products }: {
   discountAmount: number,
   discountApplied: DiscountProps,
-  patreonSelected: boolean
+  patreonSelected: boolean,
+  products: ProductsPass[]
 }) => {
+
+  console.log(products)
 
   if(!discountApplied.discount_value || discountAmount === 0) return null
 
@@ -116,10 +120,10 @@ const DiscountMonth = ({ attendees, total }: { attendees: AttendeeProps[], total
 
     return totalPrice - total
   }
-  const hasPatreon = attendees.some(attendee => attendee.products.some(p => p.category === 'patreon' && (p.selected || p.purchased)))
+  // const hasPatreon = attendees.some(attendee => attendee.products.some(p => p.category === 'patreon' && (p.selected || p.purchased)))
   const hasMonthSelected = attendees.some(attendee => attendee.products.some(p => p.selected && p.category === 'month'))
 
-  if(!hasMonthSelected || hasPatreon) return null
+  if(!hasMonthSelected) return null
 
   const discountMonth = calculateDiscountMonth()
 
@@ -128,7 +132,7 @@ const DiscountMonth = ({ attendees, total }: { attendees: AttendeeProps[], total
   return (
      <div className="flex justify-between text-sm text-muted-foreground">
         <span className="flex items-center gap-2"><Tag className="w-4 h-4" />Discount on Full Month</span>
-        <span data-month-discount={discountMonth}> - ${discountMonth}</span>
+        <span data-month-discount={discountMonth}> - ${discountMonth.toFixed(2)}</span>
       </div>
   )
 }

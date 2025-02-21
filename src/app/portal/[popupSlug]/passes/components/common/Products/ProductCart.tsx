@@ -4,7 +4,7 @@ import { badgeName } from "../../../constants/multiuse"
 
 const ProductCart = ({ product }: { product: ProductsPass }) => {
 
-  const price = product.compare_price ? product.compare_price : product.original_price ?? 0
+  const price = product.compare_price ? product.compare_price : product.price
 
   return (
     <div className="flex justify-between text-sm text-muted-foreground">
