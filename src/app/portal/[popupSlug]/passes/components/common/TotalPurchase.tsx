@@ -78,8 +78,6 @@ const DiscountCouponTotal = ({ discountAmount, discountApplied, patreonSelected,
   products: ProductsPass[]
 }) => {
 
-  console.log(products)
-
   if(!discountApplied.discount_value || discountAmount === 0) return null
 
   const getLabelDiscount = () => {
