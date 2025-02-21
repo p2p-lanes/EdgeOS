@@ -12,6 +12,7 @@ import BalancePasses from "../components/common/BalancePasses"
 import BottomSheet from "@/components/common/BottomSheet"
 import TotalFloatingBar from "../components/common/TotalFloatingBar"
 import { useState } from "react"
+import { useTotal } from "@/providers/totalProvider"
 
 const BuyPasses = () => {
   const { toggleProduct, attendeePasses: attendees, products, isEditing } = usePassesProvider()
@@ -19,6 +20,7 @@ const BuyPasses = () => {
   const mainAttendee = attendees.find(a => a.category === 'main')
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
   const someProductSelected = attendees.some(a => a.products.some(p => p.selected))
+  const { total } = useTotal()
 
   return (
     <div className="space-y-6 pb-[20px] md:pb-0">
@@ -73,7 +75,7 @@ const BuyPasses = () => {
                     setIsOpen={setOpenCart}
                   />
                   <div className="flex w-full justify-center">
-                    <CompletePurchaseButton />
+                    <CompletePurchaseButton edit={total <= 0} />
                   </div>
                 </div>
               )
@@ -95,7 +97,7 @@ const BuyPasses = () => {
                   setIsOpen={setOpenCart}
                 />
                 <div className="flex w-full justify-center mt-4">
-                  <CompletePurchaseButton />
+                  <CompletePurchaseButton  edit={total <= 0}/>
                 </div>
               </div>
             )}

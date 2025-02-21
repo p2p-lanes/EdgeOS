@@ -2,7 +2,7 @@ import { ButtonAnimated } from "@/components/ui/button"
 import { usePassesProvider } from "@/providers/passesProvider";
 import usePurchaseProducts from "../../../hooks/usePurchaseProducts";
 
-const CompletePurchaseButton = () => {
+const CompletePurchaseButton = ({edit}: {edit?: boolean}) => {
   const { purchaseProducts, loading } = usePurchaseProducts();
   const { attendeePasses: attendees } = usePassesProvider()
   const someSelected = attendees.some(attendee => attendee.products.some(product => product.selected && !product.purchased))
@@ -11,11 +11,11 @@ const CompletePurchaseButton = () => {
     <ButtonAnimated
       disabled={loading || !someSelected} 
       loading={loading} 
-      className="w-full md:w-fit text-white bg-slate-800" 
+      className="w-full md:w-fit md:min-w-[120px] text-white bg-slate-800" 
       onClick={() => purchaseProducts(attendees)}
       data-purchase
     >
-      {loading ? 'Purchasing...' : 'Proceed to Payment'}
+      {loading ? 'Loading...' : edit ? 'Confirm' : 'Proceed to Payment'}
     </ButtonAnimated>
 
   )

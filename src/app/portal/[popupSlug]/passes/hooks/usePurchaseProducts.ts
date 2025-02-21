@@ -5,6 +5,7 @@ import { useState } from "react"
 import { filterProductsToPurchase } from "../helpers/filter"
 import { useApplication } from "@/providers/applicationProvider"
 import { usePassesProvider } from "@/providers/passesProvider"
+import { toast } from "sonner"
 
 const usePurchaseProducts = () => {
   const [loading, setLoading] = useState<boolean>(false)
@@ -44,6 +45,7 @@ const usePurchaseProducts = () => {
           if(editableMode){
             toggleEditing(false)
           }
+          toast.success('Success! Your pass has been successfully updated. No additional payment was required.')
         }
         return response.data
       }
