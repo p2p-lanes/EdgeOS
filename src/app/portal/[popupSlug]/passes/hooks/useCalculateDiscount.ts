@@ -10,7 +10,7 @@ const useCalculateDiscount = (isPatreon: boolean, products: ProductsProps[]) => 
   const productCompare = useMemo(() => products.find(p => p.category === 'week' && p.price !== p.compare_price) ?? {price: 100, compare_price: 100}, [products])
 
   const {discount, label, isEarlyBird} = useMemo(() => {
-    if (isPatreon) return {discount: 100, label: 'As a Patron, you are supporting scholarships for emerging creators.'}
+    if (isPatreon) return {discount: 100, label: 'As a Patron, you are directly supporting the ecosystem.'}
     
     if(!application || !application.discount_assigned && !productCompare.compare_price && !discountApplied.discount_value) return {discount: 0, label: ''}
     

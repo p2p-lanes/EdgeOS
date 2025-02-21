@@ -9,19 +9,20 @@ export default function HomePasses() {
   usePermission()
 
   return (
-    <Tabs defaultValue="your-passes" className="w-full my-12 md:mt-0 mx-auto items-center max-w-3xl">
+    <Tabs defaultValue="buy-passes" className="w-full my-12 md:mt-0 mx-auto items-center max-w-3xl">
       <TabsList className="grid w-full grid-cols-2 mb-4">
-        <TabsTrigger value="your-passes"> <Ticket className="w-4 h-4 mr-2" /> Your Passes</TabsTrigger>
         <TabsTrigger value="buy-passes"> <ShoppingCart className="w-4 h-4 mr-2" /> Buy Passes</TabsTrigger>
+        <TabsTrigger value="your-passes"> <Ticket className="w-4 h-4 mr-2" /> Your Passes</TabsTrigger>
       </TabsList>
+
+      <TabsContent value="buy-passes">
+        <BuyPasses/>
+      </TabsContent>
 
       <TabsContent value="your-passes">
         <YourPasses/>
       </TabsContent>
 
-      <TabsContent value="buy-passes">
-        <BuyPasses/>
-      </TabsContent>
     </Tabs>
   )
 }
