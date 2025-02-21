@@ -10,7 +10,7 @@ const BannerDiscount = ({isPatreon, application, products}: {isPatreon: boolean,
 
   
   const {discount, label} = useMemo(() => {
-    if (isPatreon) return {discount: 100, label: 'As a Patron, enjoy free weekly passes for your entire family group!'}
+    if (isPatreon) return {discount: 100, label: 'As a Patron, you are directly supporting the ecosystem.'}
     
     if(!application || !application.discount_assigned && !productCompare.compare_price && !discountApplied.discount_value) return {discount: 0, label: ''}
     
