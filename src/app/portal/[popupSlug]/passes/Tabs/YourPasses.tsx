@@ -22,7 +22,7 @@ const YourPasses = () => {
       <div className="flex flex-col gap-4">
         {specialProduct && (
           <div className="p-0 w-full">
-            <Special product={specialProduct}/>
+            <Special product={specialProduct} disabled/>
             <Separator className="my-4"/>
           </div>
         )}

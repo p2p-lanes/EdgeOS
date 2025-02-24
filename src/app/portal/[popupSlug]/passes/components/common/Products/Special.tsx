@@ -9,7 +9,7 @@ const withSpecialProductPresentation = (WrappedComponent: React.ComponentType<an
     const { selected, disabled, purchased } = props.product;
     
     const getStatusIcon = () => {
-      if (disabled || purchased) {
+      if (disabled || purchased || props.disabled) {
         return null;
       }
       if (selected) {
@@ -31,7 +31,8 @@ interface ProductTitleProps {
 const ProductTitle = ({ product, selected, disabled }: ProductTitleProps) => (
   <span className={cn(
     "font-semibold flex items-center gap-2",
-    selected && "text-[#005F3A]"
+    selected && "text-[#005F3A]",
+    disabled && "text-neutral-300"
   )}>
     <Crown className={cn("w-5 h-5 text-orange-500", disabled && "text-neutral-300")} />
     {product.name}
@@ -46,12 +47,14 @@ const ProductTitle = ({ product, selected, disabled }: ProductTitleProps) => (
 interface ProductPriceProps {
   product: ProductsPass;
   selected: boolean;
+  disabled: boolean;
 }
 
-const ProductPrice = ({ product, selected }: ProductPriceProps) => (
+const ProductPrice = ({ product, selected, disabled }: ProductPriceProps) => (
   <span className={cn(
     "font-medium",
-    selected && "text-[#005F3A]"
+    selected && "text-[#005F3A]",
+    disabled && "text-neutral-300"
   )}>
     ${product.price.toLocaleString()}
   </span>
@@ -124,7 +127,7 @@ function SpecialBase({
               Purchased
             </span>
           ) : (
-            <ProductPrice product={product} selected={selected ?? false} />
+            <ProductPrice product={product} selected={selected ?? false} disabled={isDisabled || !onClick} />
           )
         }
       </div>
