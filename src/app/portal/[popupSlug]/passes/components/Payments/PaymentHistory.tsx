@@ -48,7 +48,6 @@ const PaymentHistory = ({payments}: {payments: PaymentsProps[]}) => {
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead></TableHead>
             <TableHead>Date</TableHead>
             <TableHead>Currency</TableHead>
             <TableHead>Amount</TableHead>
@@ -58,7 +57,6 @@ const PaymentHistory = ({payments}: {payments: PaymentsProps[]}) => {
         <TableBody>
           {approvedPayments.map((payment) => (
             <TableRow key={payment.id}>
-              <TableCell><Check className="text-green-500 w-4 h-4" /></TableCell>
               <TableCell className="text-left">{formatDate(payment.created_at)}</TableCell>
               <TableCell>{payment.currency}</TableCell>
               <TableCell>$ {payment.amount}</TableCell>

@@ -1,0 +1,13 @@
+.border {
+  height: 100px;
+  width: 200px;
+  background: linear-gradient(90deg, blue 50%, transparent 50%), linear-gradient(90deg, blue 50%, transparent 50%), linear-gradient(0deg, blue 50%, transparent 50%), linear-gradient(0deg, blue 50%, transparent 50%);
+  background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+  background-size: 16px 4px, 16px 4px, 4px 16px, 4px 16px;
+  background-position: 0px 0px, 212px 116px, 0px 116px, 216px 0px;
+  padding: 10px;
+  transition: background-position 2s;
+}
+.border:hover{
+    background-position: 212px 0px, 0px 116px, 0px 0px, 216px 116px;
+}

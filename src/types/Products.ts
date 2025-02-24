@@ -22,6 +22,7 @@ export interface ProductsProps {
 
 export interface ProductsPass extends ProductsProps {
   selected?: boolean,
+  edit?: boolean,
   purchased?: boolean,
   attendee_id?: number;
   quantity?: number;

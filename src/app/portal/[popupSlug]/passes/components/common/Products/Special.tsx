@@ -6,10 +6,10 @@ import { cn } from "@/lib/utils";
 // HOC para manejar la lógica de presentación
 const withSpecialProductPresentation = (WrappedComponent: React.ComponentType<any>) => {
   return function WithSpecialProductPresentation(props: SpecialProps) {
-    const { selected, disabled } = props;
+    const { selected, disabled, purchased } = props.product;
     
     const getStatusIcon = () => {
-      if (disabled) {
+      if (disabled || purchased || props.disabled) {
         return null;
       }
       if (selected) {
@@ -25,38 +25,46 @@ const withSpecialProductPresentation = (WrappedComponent: React.ComponentType<an
 interface ProductTitleProps {
   product: ProductsPass;
   selected: boolean;
+  disabled: boolean;
 }
 
-const ProductTitle = ({ product, selected }: ProductTitleProps) => (
+const ProductTitle = ({ product, selected, disabled }: ProductTitleProps) => (
   <span className={cn(
     "font-semibold flex items-center gap-2",
-    selected && "text-[#005F3A]"
+    selected && "text-[#005F3A]",
+    disabled && "text-neutral-300"
   )}>
-    <Crown className="w-5 h-5 text-orange-500" />
+    <Crown className={cn("w-5 h-5 text-orange-500", disabled && "text-neutral-300")} />
     {product.name}
-    <TooltipPatreon />
+    {
+      !disabled && (
+        <TooltipPatreon purchased={product.purchased}/>
+      )
+    }
   </span>
 );
 
 interface ProductPriceProps {
   product: ProductsPass;
   selected: boolean;
+  disabled: boolean;
 }
 
-const ProductPrice = ({ product, selected }: ProductPriceProps) => (
+const ProductPrice = ({ product, selected, disabled }: ProductPriceProps) => (
   <span className={cn(
     "font-medium",
-    selected && "text-[#005F3A]"
+    selected && "text-[#005F3A]",
+    disabled && "text-neutral-300"
   )}>
     ${product.price.toLocaleString()}
   </span>
 );
 
-const TooltipPatreon = () => (
+const TooltipPatreon = ({ purchased }: { purchased?: boolean }) => (
   <Tooltip>
     <TooltipTrigger asChild>
       <div className="cursor-pointer">
-        <Info className="w-4 h-4 text-gray-500" />
+        <Info className={cn("w-4 h-4 text-neutral-400", purchased && "text-white")} />
       </div>
     </TooltipTrigger>
     <TooltipContent className="bg-white text-black max-w-[420px] border border-gray-200">
@@ -70,47 +78,56 @@ const TooltipPatreon = () => (
 // Interfaces
 interface SpecialProps {
   product: ProductsPass;
-  selected?: boolean;
+  onClick?: () => void;
   disabled?: boolean;
-  onClick: () => void;
+}
+
+type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
+
+const variants: Record<VariantStyles, string> = {
+  selected: 'bg-gradient-to-r from-[#FF7B7B]/30 to-[#E040FB]/30 border-neutral-300',
+  purchased: 'bg-slate-800 text-white border-neutral-700 cursor-not-allowed',
+  edit: 'bg-slate-800/30 border-dashed border-slate-200 text-neutral-700',
+  disabled: 'bg-neutral-0 text-neutral-300 cursor-not-allowed ',
+  default: 'bg-white border-neutral-300 text-neutral-700 hover:bg-gradient-to-r hover:from-[#FF7B7B]/10 hover:to-[#E040FB]/10',
 }
 
 // Componente base
 function SpecialBase({ 
   product, 
-  disabled, 
-  selected = false, 
   onClick,
-  getStatusIcon 
-}: SpecialProps & { getStatusIcon: () => JSX.Element }) {
+  getStatusIcon,
+  disabled
+}: SpecialProps & { getStatusIcon: () => JSX.Element, disabled: boolean }) {
+
+  const { selected, disabled: productDisabled, purchased } = product
+
+  const isDisabled = disabled || productDisabled
+  const hasOnClick = !isDisabled && onClick && !purchased
   return (
     <button
       data-category="patreon"
-      onClick={!disabled ? onClick : undefined}
+      onClick={hasOnClick ? onClick : undefined}
       data-selected={selected}
       data-price={product.price}
       className={cn(
-        "w-full rounded-full flex items-center justify-between py-1 px-4",
-        "transition-all duration-300",
-        selected && "cursor-pointer",
-        selected || disabled 
-          ? "border-2 border-[#16B74A] bg-[#D5F7CC]" 
-          : "cursor-pointer border-2 border-gray-200 bg-transparent hover:bg-gray-100"
+        'w-full py-1 px-4 flex items-center justify-between gap-2 border border-neutral-200 rounded-md',
+        variants[purchased ? 'purchased' : isDisabled || !onClick ? 'disabled' : selected ? 'selected' : 'default']
       )}
     >
       <div className="flex items-center gap-2 py-2">
         {getStatusIcon()}
-        <ProductTitle product={product} selected={selected} />
+        <ProductTitle product={product} disabled={isDisabled || !onClick} selected={selected ?? false} />
       </div>
       
       <div className="flex items-center gap-4">
         {
           product.purchased ? (
-            <span className="text-sm font-medium text-[#005F3A]">
+            <span className="text-sm font-medium text-[white]">
               Purchased
             </span>
           ) : (
-            <ProductPrice product={product} selected={selected} />
+            <ProductPrice product={product} selected={selected ?? false} disabled={isDisabled || !onClick} />
           )
         }
       </div>

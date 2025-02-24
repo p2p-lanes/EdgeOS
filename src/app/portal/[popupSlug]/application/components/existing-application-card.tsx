@@ -30,7 +30,7 @@ export function ExistingApplicationCard({ onImport, onCancel, data }: ExistingAp
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[425px]" onPointerDownOutside={(e) => e.preventDefault()}>
+      <DialogContent className="sm:max-w-[425px] bg-white" onPointerDownOutside={(e) => e.preventDefault()}>
         <DialogHeader>
           <DialogTitle>Existing Application Found</DialogTitle>
           <DialogDescription>We've found a previous application associated with your email.</DialogDescription>
