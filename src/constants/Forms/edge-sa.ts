@@ -1,7 +1,6 @@
 import { DynamicForm } from "..";
 
 export const paymentCapacityOptions = [
-  { value: '500 USD', label: '500 USD' },
   { value: '1000 USD', label: '1000 USD' },
   { value: '1500 USD', label: '1500 USD' },
   { value: '2000 USD', label: '2000 USD' },
@@ -13,7 +12,7 @@ export const edgeSa: DynamicForm = {
   scholarship: {
     title: 'Edge South Africa financial support',
     subtitle: 'We always want to make our trips inclusive and not cost prohibitive, so if you need sponsorship support, let us know :) As a reminder we\'re a 501c3 and all ticket costs go toward covering our expenses for events for the long term.',
-    scholarship_request: 'Are you interested in applying for financial support?'
+    scholarship_request: 'How much can you comfortably cover?'
   },
   fields: [
     "first_name",
