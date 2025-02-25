@@ -2,6 +2,7 @@ import { Button, ButtonAnimated } from "@/components/ui/button"
 import { useTotal } from "@/providers/totalProvider"
 import usePurchaseProducts from "../../hooks/usePurchaseProducts";
 import { usePassesProvider } from "@/providers/passesProvider";
+import { Loader2 } from "lucide-react";
 
 const TotalFloatingBar = ({ setOpenCart }: { setOpenCart: (prev: boolean) => void }) => {
   const { originalTotal, total } = useTotal()
@@ -29,12 +30,15 @@ const TotalFloatingBar = ({ setOpenCart }: { setOpenCart: (prev: boolean) => voi
       </div>
 
       <div className="flex justify-center items-center gap-2">
-        <Button variant="outline" className="p-5" onClick={handleOnClickReviewOrder}>
+        <Button variant="outline" className="p-5 whitespace-nowrap" onClick={handleOnClickReviewOrder}>
           Review Order
         </Button>
-        <ButtonAnimated variant="default" className="p-5" loading={loading} disabled={loading || !someSelected} onClick={() => purchaseProducts(attendees)}>
+        <Button variant="default" className="p-5 whitespace-nowrap" disabled={loading || !someSelected} onClick={() => purchaseProducts(attendees)}>
+          {
+            loading && <Loader2 className="size-4 animate-spin" />
+          }
           {total <= 0 ? 'Confirm' : 'Confirm and Pay'}
-        </ButtonAnimated>
+        </Button>
       </div>
     </div>
   )
