@@ -15,27 +15,35 @@ const HeaderBar = () => {
     router.push(`/portal/${city?.slug}`)
   }
   
-  const splitPath = pathname.split('/').filter(Boolean).slice(2); // Eliminar los dos primeros elementos
+  const splitPath = pathname.split('/').filter(Boolean).slice(1); // Eliminar los dos primeros elementos
 
-  // Si splitPath está vacío, agregar "application"
-  const pathsToDisplay = splitPath.length > 0 ? splitPath : ['application'];
+  console.log(splitPath)
+
 
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-white px-6 w-[100%]">
       <SidebarTrigger />
       <Breadcrumb>
         <BreadcrumbList>
-          <BreadcrumbItem>
+          {/* <BreadcrumbItem>
             <BreadcrumbPage className="cursor-pointer" onClick={handleClickCity}>{city?.name}</BreadcrumbPage>
-          </BreadcrumbItem>
+          </BreadcrumbItem> */}
   
-          {pathsToDisplay.map((path, index) => (
+          {splitPath.map((path, index) => (
             <Fragment key={index}>
               <BreadcrumbSeparator>
                 <ChevronRight className="h-4 w-4" />
               </BreadcrumbSeparator>
               <BreadcrumbItem>
-                <BreadcrumbLink>{path.charAt(0).toUpperCase() + path.slice(1)}</BreadcrumbLink>
+                <BreadcrumbLink>
+                  {
+                    path === city?.slug ? (
+                      <BreadcrumbPage className="cursor-pointer" onClick={handleClickCity}>{city?.name}</BreadcrumbPage>
+                    ) : (
+                      <BreadcrumbPage>{path.charAt(0).toUpperCase() + path.slice(1)}</BreadcrumbPage>
+                    )
+                  }
+                </BreadcrumbLink>
               </BreadcrumbItem>
             </Fragment>
           ))}
