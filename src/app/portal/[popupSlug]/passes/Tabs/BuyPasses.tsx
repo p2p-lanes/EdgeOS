@@ -62,7 +62,7 @@ const BuyPasses = () => {
             {(isFloating) => (
               isFloating ? (
                 <div className="flex justify-center lg:ml-[255px]">
-                  <div className="bg-white p-4 shadow-lg border border-neutral-200 rounded-lg w-[600px] pointer-events-auto">
+                  <div className="bg-white p-4 shadow-lg border border-neutral-200 rounded-lg min-w-[600px] pointer-events-auto">
                     <TotalFloatingBar setOpenCart={setOpenCart}/>
                   </div>
                 </div>
