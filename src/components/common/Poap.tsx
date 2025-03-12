@@ -33,6 +33,12 @@ const Poap = ({ poap }: {poap: PoapProps}) => {
     }
   }
 
+  const handleMint = () => {
+    if(poap.link) {
+      window.open(poap.link, "_blank")
+    }
+  }
+
   return (
     <div className={cn("p-6 rounded-2xl flex flex-col gap-4 relative", variants[poap.status].container)}>
       <div className={cn("rounded-full w-fit p-[2px]", variants[poap.status].containerImage)} style={{zIndex: 2, position: "relative"}} >
@@ -55,7 +61,7 @@ const Poap = ({ poap }: {poap: PoapProps}) => {
       <div className="flex flex-col gap-2 items-center justify-center mt-6">
         <p className="text-xl font-bold">{poap.title}</p>
         <p className="text-sm text-gray-500">{poap.location}</p>
-        <Button className={variants[poap.status].button} disabled={poap.status === 'disabled' || poap.status === 'minted'}>
+        <Button onClick={handleMint} className={variants[poap.status].button} disabled={poap.status === 'disabled' || poap.status === 'minted'}>
           {poap.status === 'minted' && <Check className="w-4 h-4"/>}
           {variants[poap.status].label}
         </Button>

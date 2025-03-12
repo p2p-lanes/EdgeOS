@@ -5,6 +5,7 @@ export interface PoapProps {
   title: string
   location: string
   status: 'mint' | 'minted' | 'disabled',
-  image: string
+  image: string,
+  link?: string
 }
 
