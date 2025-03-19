@@ -41,21 +41,22 @@ const Poap = ({ poap }: {poap: PoapProps}) => {
 
   return (
     <div className={cn("p-6 rounded-2xl flex flex-col gap-4 relative", variants[poap.status].container)}>
-      <div className={cn("rounded-full w-fit p-[2px]", variants[poap.status].containerImage)} style={{zIndex: 2, position: "relative"}} >
-        {
-          poap.status === "mint" && (
-            <div className="absolute top-[-66px] left-[-60px]">
-              <Lottie animationData={poapAnimation} className="w-[330px] h-[330px] object-cover rounded-full" style={{zIndex: 1}} />
-            </div>
-          )
-        }
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img 
-          src={poap.image} 
-          alt={poap.title} 
-          className={cn("w-[210px] h-[210px] object-cover rounded-full relative", variants[poap.status].image)} 
-          style={{zIndex: 2, position: "relative"}} 
-        />
+      <div className="flex items-center justify-center">
+        <div className={cn("rounded-full w-fit p-[2px] relative", variants[poap.status].containerImage)}>
+          {
+            poap.status === "mint" && (
+              <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center" style={{transform: 'translate(-60px, -66px)'}}>
+                <Lottie animationData={poapAnimation} className="w-[330px] h-[330px] object-cover rounded-full" />
+              </div>
+            )
+          }
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src={poap.image} 
+            alt={poap.title} 
+            className={cn("w-[210px] h-[210px] object-cover rounded-full", variants[poap.status].image)} 
+          />
+        </div>
       </div>
 
       <div className="flex flex-col gap-2 items-center justify-center mt-6">

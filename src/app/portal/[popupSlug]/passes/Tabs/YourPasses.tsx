@@ -6,7 +6,7 @@ import { Separator } from "@/components/ui/separator"
 import Special from "../components/common/Products/Special"
 import { Skeleton } from "@/components/ui/skeleton"
 
-const YourPasses = () => {
+const YourPasses = ({ handleChangeTab }: { handleChangeTab: () => void }) => {
   const { attendeePasses: attendees } = usePassesProvider()
   const mainAttendee = attendees.find(a => a.category === 'main')
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
@@ -16,7 +16,7 @@ const YourPasses = () => {
       <TitleTabs title="Your Passes" subtitle="View and manage your passes here. Need to make changes? You can switch your week closer to the event to match your plans!" />
       
       <div className="my-4 flex justify-start">
-        <ToolbarTop/>
+        <ToolbarTop handleChangeTab={handleChangeTab} />
       </div>
 
       <div className="flex flex-col gap-4">
