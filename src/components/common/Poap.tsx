@@ -45,8 +45,8 @@ const Poap = ({ poap }: {poap: PoapProps}) => {
         <div className={cn("rounded-full w-fit p-[2px] relative", variants[poap.status].containerImage)}>
           {
             poap.status === "mint" && (
-              <div className="absolute top-0 left-0 w-full h-full flex items-center justify-center" style={{transform: 'translate(-60px, -66px)'}}>
-                <Lottie animationData={poapAnimation} className="w-[330px] h-[330px] object-cover rounded-full" />
+              <div className="absolute flex items-center justify-center w-[330px] h-[330px]" style={{transform: 'translate(-60px, -66px)'}}>
+                <Lottie animationData={poapAnimation} className="object-cover rounded-full" style={{zIndex: 1}}/>
               </div>
             )
           }
@@ -54,6 +54,7 @@ const Poap = ({ poap }: {poap: PoapProps}) => {
           <img 
             src={poap.image} 
             alt={poap.title} 
+            style={{zIndex: 2, position: "relative"}}
             className={cn("w-[210px] h-[210px] object-cover rounded-full", variants[poap.status].image)} 
           />
         </div>
