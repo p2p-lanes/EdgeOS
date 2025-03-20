@@ -46,16 +46,18 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
       </div>
 
       {fields.has("social_media") && (
-        <InputForm
-          label="Your active social media accounts"
-          id="social_media"
-          value={formData.social_media ?? ''}
-          onChange={(value: string) => handleChange('social_media', value)}
-          error={errors.social_media}
-          isRequired={!isVideoValid}
-          subtitle="e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Please provide the full link[s]."
-        />
-        )}
+        <div className="w-full mt-4">
+          <InputForm
+            label="Your active social media accounts"
+            id="social_media"
+            value={formData.social_media ?? ''}
+            onChange={(value: string) => handleChange('social_media', value)}
+            error={errors.social_media}
+            isRequired={!isVideoValid}
+            subtitle="e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Please provide the full link[s]."
+          />
+        </div>
+      )}
 
         {fields.has("github_profile") && (
           <InputForm
