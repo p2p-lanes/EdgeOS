@@ -34,12 +34,12 @@ const useResources = () => {
       status: application?.status === 'accepted' ? 'active' : 'disabled',
       path: `/portal/${city?.slug}/passes`,
     },
-    {
-      name: 'Attendee Directory', 
-      icon: Users,
-      status: canSeeAttendees ? 'active' : 'hidden',
-      path: `/portal/${city?.slug}/attendees`,
-    },
+    // {
+    //   name: 'Attendee Directory', 
+    //   icon: Users,
+    //   status: canSeeAttendees ? 'active' : 'hidden',
+    //   path: `/portal/${city?.slug}/attendees`,
+    // },
     {
       name: 'Housing',
       icon: Home,
