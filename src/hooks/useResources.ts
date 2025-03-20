@@ -12,7 +12,7 @@ const useResources = () => {
   const isEdge = city?.slug === 'edge-esmeralda' || city?.slug === 'buenos-aires'
   const isEdgeAustin = city?.slug === 'edge-austin'
 
-
+  const canSeeAttendees = application?.status === 'accepted' && isEdge
 
   const resources: Resource[] = [
     {
@@ -37,8 +37,7 @@ const useResources = () => {
     {
       name: 'Attendee Directory', 
       icon: Users,
-      // status: canSeeAttendees ? 'active' : isEdge ? 'disabled' : 'hidden',
-      status: 'hidden',
+      status: canSeeAttendees ? 'active' : 'hidden',
       path: `/portal/${city?.slug}/attendees`,
     },
     {

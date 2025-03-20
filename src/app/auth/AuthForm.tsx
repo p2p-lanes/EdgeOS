@@ -72,9 +72,9 @@ export default function AuthForm() {
           variants={animationFade}
           transition={{ duration: 0.6 }}
         >
-          <div className="text-center max-w-xs mx-auto">
+          <div className="text-center max-w-sm mx-auto">
             <h2 className="mt-6 text-3xl font-bold text-gray-900" style={{ textWrap: 'balance' }}>
-              Sign into Edge Portal
+              Sign Up or Log In to Edge Portal
             </h2>
             <p className="mt-2 text-sm text-gray-600" style={{ textWrap: 'balance' }}>
             If you attended a past event, use the same email to enable application import, saving you some time!
@@ -114,10 +114,10 @@ export default function AuthForm() {
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
                   <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                 </svg>
-              ) : 'Log in'}
+              ) : 'Continue'}
             </ButtonAnimated>
             <p className="mt-2 text-sm text-gray-600" style={{ textAlign: 'center', textWrap: 'balance' }}>
-            You&apos;ll receive a magic link in your email inbox to log in
+            You&apos;ll receive a magic link in your email inbox to log in.
             </p>
           </form>
         </motion.div>
@@ -131,7 +131,7 @@ export default function AuthForm() {
               </div>
               <div className="ml-3">
                 <p className="text-sm text-green-700">
-                  {message}
+                  {message}.
                 </p>
               </div>
             </div>
