@@ -52,7 +52,7 @@ export default function AuthForm() {
 
   return (
     <div className="flex flex-col justify-center w-full md:w-1/2 p-8">
-      <div className="max-w-sm w-full mx-auto space-y-8 my-12">
+      <div className="max-w-md w-full mx-auto space-y-8 my-12">
         <motion.div
           initial={{ y: 0 }}
           animate={{ y: [0, 16, 0] }}
@@ -72,12 +72,12 @@ export default function AuthForm() {
           variants={animationFade}
           transition={{ duration: 0.6 }}
         >
-          <div className="text-center max-w-sm mx-auto">
+          <div className="text-center max-w-md mx-auto">
             <h2 className="mt-6 text-3xl font-bold text-gray-900" style={{ textWrap: 'balance' }}>
               Sign Up or Log In to Edge Portal
             </h2>
             <p className="mt-2 text-sm text-gray-600" style={{ textWrap: 'balance' }}>
-            If you attended a past event, use the same email to enable application import, saving you some time!
+            Welcome! If it’s your first time, sign up below. If you attended a past event, use the same email to import your prior application.
             </p>
           </div>
           <form className="mt-8 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
