@@ -53,7 +53,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
             value={formData.social_media ?? ''}
             onChange={(value: string) => handleChange('social_media', value)}
             error={errors.social_media}
-            isRequired={!isVideoValid}
+            isRequired={false}
             subtitle="e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Please provide the full link[s]."
           />
         </div>
