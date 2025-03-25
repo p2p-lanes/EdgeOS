@@ -20,7 +20,7 @@ const ToolbarTop = ({canEdit = false}: {canEdit?: boolean}) => {
 
   const handleSubmit = async (data: AttendeeProps) => {
     if (modal.category) {
-      await addAttendee({ ...data, category: modal.category })
+      await addAttendee({ ...data })
     }
     handleCloseModal()
   }
