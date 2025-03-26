@@ -25,5 +25,5 @@ export interface AttendeeDirectory {
 export interface CreateAttendee {
   name: string, 
   email: string, 
-  category: 'spouse' | 'kid' | 'main' | 'baby' | 'teen'
+  category: AttendeeCategory
 }
