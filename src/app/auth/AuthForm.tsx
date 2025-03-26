@@ -18,7 +18,7 @@ export default function AuthForm() {
 
   const [email, setEmail] = useState('')
   const [isLoading, setIsLoading] = useState(false)
-  const [message, setMessage] = useState('')
+  const [message, setMessage] = useState({status: '', message: ''})
   const [isValidEmail, setIsValidEmail] = useState(true)
 
   if (!isMounted) {
@@ -39,9 +39,14 @@ export default function AuthForm() {
     setIsValidEmail(true)
     setIsLoading(true)
     
-    api.post(`citizens/authenticate`, {email: encodeURIComponent(email), popup_slug: popupSlug ?? null}).then(() => {
-      setIsLoading(false)
-      setMessage('Check your email inbox for the log in link')
+    api.post(`citizens/authenticate`, {email: encodeURIComponent(email), popup_slug: popupSlug ?? null}).then((e) => {
+      if(e.status === 200) {
+        setIsLoading(false)
+        setMessage({status: 'success', message: 'Check your email inbox for the log in link'})
+      } else {
+        setIsLoading(false)
+        setMessage({status: 'error', message: 'Something went wrong, please try again later'})
+      }
     })
   }
 
@@ -93,9 +98,9 @@ export default function AuthForm() {
                 onChange={(e) => {
                   setEmail(e.target.value)
                   setIsValidEmail(true)
-                  setMessage('')
+                  setMessage({status: '', message: ''})
                 }}
-                disabled={isLoading || !!message}
+                disabled={isLoading || !!message.message}
                 className={`appearance-none rounded-md relative block w-full px-3 py-5 border ${
                   isValidEmail ? 'border-gray-300' : 'border-red-500'
                 } placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm`}
@@ -106,7 +111,7 @@ export default function AuthForm() {
             </div>
             <ButtonAnimated
               type="submit"
-              disabled={isLoading || !!message || !email}
+              disabled={isLoading || message.status === 'success' || !email}
               className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-black hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
             >
               {isLoading ? (
@@ -121,19 +126,21 @@ export default function AuthForm() {
             </p>
           </form>
         </motion.div>
-        {message && (
-          <div className="mt-8 p-4 bg-green-100 border-l-4 border-green-500 rounded-md animate-fade-in-down">
+        {message.message !== '' && (
+          <div className={`mt-8 p-4 bg-${message.status === 'success' ? 'green' : 'red'}-100 border-l-4 border-${message.status === 'success' ? 'green' : 'red'}-500 rounded-md animate-fade-in-down`}>
             <div className="flex">
-              <div className="flex-shrink-0">
-                <svg className="h-5 w-5 text-green-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
-                </svg>
-              </div>
+              {message.status === 'success' && (
+                <div className="flex-shrink-0">
+                  <svg className={`h-5 w-5 ${message.status === 'success' ? 'text-green-400' : 'text-red-400'}`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              )}
               <div className="ml-3">
-                <p className="text-sm text-green-700">
-                  {message}.
+                <p className={`text-sm ${message.status === 'success' ? 'text-green-700' : 'text-red-700'}`}>
+                  {message.message}
                 </p>
-              </div>
+                  </div>
             </div>
           </div>
         )}

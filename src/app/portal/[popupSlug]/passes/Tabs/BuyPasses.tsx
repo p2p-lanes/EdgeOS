@@ -22,6 +22,7 @@ const BuyPasses = () => {
   const someProductSelected = attendees.some(a => a.products.some(p => p.selected))
   const { total } = useTotal()
 
+  console.log('attendees', attendees, products)
   return (
     <div className="space-y-6 pb-[20px] md:pb-0">
       <TitleTabs title="Buy Passes" subtitle="Choose your attendance weeks and get passes for you and your group." />
