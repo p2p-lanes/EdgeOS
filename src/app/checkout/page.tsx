@@ -1,159 +1,164 @@
 "use client"
 
-import { useState } from "react"
-import InputForm from "@/components/ui/Form/Input"
-import SelectForm from "@/components/ui/Form/Select"
-import RadioGroupForm from "@/components/ui/Form/RadioGroup"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { useState, useEffect } from "react"
+import { useSearchParams, useRouter } from "next/navigation"
+import { Loader } from "@/components/ui/Loader"
+import UserInfoForm, { FormDataProps } from "./components/UserInfoForm"
+import PassesCheckout from "./components/PassesCheckout"
+import TransitionScreen from "./components/TransitionScreen"
+import { AnimatePresence, motion } from "framer-motion"
+
+// Mock de datos de aplicación
+const MOCK_APPLICATION_DATA = {
+  id: 123,
+  popup_slug: "devcon",
+  popup_city_id: 1,
+  status: "active",
+  attendees: [
+    {
+      id: 1,
+      name: "Main Attendee",
+      category: "main",
+      email: "",
+      products: []
+    }
+  ],
+  discount_assigned: 0
+}
+
+// Estados posibles del checkout
+type CheckoutState = "form" | "processing" | "success" | "passes"
 
 const CheckoutPage = () => {
-  const [formData, setFormData] = useState({
-    fullName: "",
-    email: "",
-    telegram: "",
-    organization: "",
-    role: "",
-    gender: ""
-  })
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const groupParam = searchParams.get("group")
+  
+  const [checkoutState, setCheckoutState] = useState<CheckoutState>("form")
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [applicationData, setApplicationData] = useState<any>(null)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
-  const [errors, setErrors] = useState<Record<string, string>>({})
-
-  const handleInputChange = (field: string, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      [field]: value
-    }))
-    
-    // Eliminar error cuando el usuario empieza a escribir
-    if (errors[field]) {
-      setErrors(prev => {
-        const newErrors = { ...prev }
-        delete newErrors[field]
-        return newErrors
-      })
+  // Simulación de envío de datos a API
+  const mockApiSubmit = async (formData: FormDataProps): Promise<void> => {
+    try {
+      setIsSubmitting(true)
+      setCheckoutState("processing")
+      
+      // Simulamos un delay para imitar la llamada a la API
+      await new Promise(resolve => setTimeout(resolve, 2000))
+      
+      // Mock de respuesta exitosa
+      const response = {
+        success: true,
+        application: {
+          ...MOCK_APPLICATION_DATA,
+          attendees: [
+            {
+              ...MOCK_APPLICATION_DATA.attendees[0],
+              name: formData.fullName,
+              email: formData.email
+            }
+          ]
+        }
+      }
+      
+      // Si es exitoso, cambiamos a la pantalla de éxito
+      setApplicationData(response.application)
+      setCheckoutState("success")
+      
+      // Después de mostrar el éxito, cambiamos a la pantalla de passes
+      setTimeout(() => {
+        setCheckoutState("passes")
+      }, 2000)
+      
+      // En un caso real, podrías redirigir utilizando router.push
+      // router.push(`/portal/${response.application.popup_slug}/passes`)
+    } catch (error) {
+      console.error("Error submitting form:", error)
+      setErrorMessage("Something went wrong. Please try again.")
+      setCheckoutState("form")
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
-  const validateForm = () => {
-    const newErrors: Record<string, string> = {}
-    
-    if (!formData.fullName) newErrors.fullName = "Full name is required"
-    if (!formData.email) {
-      newErrors.email = "Email is required"
-    } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
-      newErrors.email = "Invalid email"
+  // Renderizado condicional basado en el estado del checkout
+  const renderCheckoutContent = () => {
+    switch (checkoutState) {
+      case "form":
+        return (
+          <motion.div
+            key="form"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <UserInfoForm
+              groupParam={groupParam}
+              onSubmit={mockApiSubmit}
+              isSubmitting={isSubmitting}
+            />
+          </motion.div>
+        )
+      
+      case "processing":
+        return (
+          <TransitionScreen
+            message="Processing your registration"
+            isPending={true}
+            isSuccess={false}
+          />
+        )
+      
+      case "success":
+        return (
+          <TransitionScreen
+            message="Registration successful"
+            isPending={false}
+            isSuccess={true}
+          />
+        )
+      
+      case "passes":
+        return (
+          <motion.div
+            key="passes"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5 }}
+          >
+            <PassesCheckout applicationData={applicationData} />
+          </motion.div>
+        )
+      
+      default:
+        return null
     }
-    if (!formData.telegram) newErrors.telegram = "Telegram is required"
-    if (!formData.organization) newErrors.organization = "Organization is required"
-    if (!formData.role) newErrors.role = "Role is required"
-    if (!formData.gender) newErrors.gender = "Gender is required"
-    
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
   }
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (validateForm()) {
-      // Aquí iría la lógica para procesar el formulario
-      console.log("Formulario enviado:", formData)
-    }
-  }
-
-  const roleOptions = [
-    { value: "developer", label: "Developer" },
-    { value: "designer", label: "Designer" },
-    { value: "manager", label: "Manager" },
-    { value: "other", label: "Other" }
-  ]
-
-  const genderOptions = [
-    { value: "male", label: "Male" },
-    { value: "female", label: "Female" },
-    { value: "non-binary", label: "Non-binary" },
-    { value: "prefer-not-to-say", label: "Prefer not to say" }
-  ]
 
   return (
-    <div className="container mx-auto py-8 min-h-screen">
-      <Card className="max-w-lg mx-auto">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold">Checkout</CardTitle>
-          <CardDescription>Please complete your information to continue</CardDescription>
-        </CardHeader>
-        <form onSubmit={handleSubmit}>
-          <CardContent className="space-y-4">
-            <InputForm
-              label="Full Name"
-              id="fullName"
-              value={formData.fullName}
-              onChange={(value) => handleInputChange("fullName", value)}
-              error={errors.fullName}
-              isRequired
-              placeholder="Enter your full name"
-            />
-            
-            <InputForm
-              label="Email"
-              id="email"
-              type="email"
-              value={formData.email}
-              onChange={(value) => handleInputChange("email", value)}
-              error={errors.email}
-              isRequired
-              placeholder="example@email.com"
-            />
-            
-            <InputForm
-              label="Telegram"
-              id="telegram"
-              value={formData.telegram}
-              onChange={(value) => handleInputChange("telegram", value)}
-              error={errors.telegram}
-              isRequired
-              placeholder="@username"
-            />
-            
-            <InputForm
-              label="Organization"
-              id="organization"
-              value={formData.organization}
-              onChange={(value) => handleInputChange("organization", value)}
-              error={errors.organization}
-              isRequired
-              placeholder="Your organization name"
-            />
-            
-            <InputForm
-              label="Role"
-              id="role"
-              value={formData.role}
-              onChange={(value) => handleInputChange("role", value)}
-              error={errors.role}
-              isRequired
-              placeholder="Your role in the organization"
-            />
-            
-            <RadioGroupForm
-              label="Gender"
-              subtitle="Select your gender"
-              value={formData.gender}
-              onChange={(value) => handleInputChange("gender", value)}
-              error={errors.gender}
-              isRequired
-              options={genderOptions}
-            />
-          </CardContent>
-          
-          <CardFooter>
-            <Button type="submit" className="w-full">
-              Continue
-            </Button>
-          </CardFooter>
-        </form>
-      </Card>
+    <div 
+      className="min-h-screen w-full py-8 flex items-center justify-center"
+      style={{
+        backgroundImage: "url('https://simplefi.s3.us-east-2.amazonaws.com/edge-bg.jpg')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat"
+      }}
+    >
+      <div className="container mx-auto">
+        <AnimatePresence mode="wait">
+          {renderCheckoutContent()}
+        </AnimatePresence>
+        
+        {errorMessage && (
+          <div className="mt-4 p-4 bg-red-100 border border-red-300 text-red-800 rounded-md max-w-lg mx-auto">
+            {errorMessage}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
