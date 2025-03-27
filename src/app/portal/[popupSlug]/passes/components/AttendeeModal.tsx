@@ -59,8 +59,8 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
     }
   }
 
-  const title = editingAttendee ? `Edit ${editingAttendee.name}` : `Add ${badgeName[category]}`
   const isChildCategory = category === 'kid' || (formData.category && ['baby', 'kid', 'teen'].includes(formData.category))
+  const title = editingAttendee ? `Edit ${editingAttendee.name}` : `Add ${isChildCategory ? 'child' : badgeName[category]}`
   const description = `Enter the details of your ${category} here. Click save when you're done.`
 
   if(isDelete) {
@@ -80,7 +80,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
       {isChildCategory && (
         <div className="-mt-4 text-sm text-gray-500">
           <Link href="https://edgeesmeralda2025.substack.com/p/kids-and-families-at-edge-esmeralda" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-            Learn more about kids
+            Learn more about children tickets
           </Link>.
         </div>
       )}
