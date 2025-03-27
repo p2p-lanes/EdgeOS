@@ -9,6 +9,7 @@ import Modal from "@/components/ui/modal"
 import { DialogFooter } from "@/components/ui/dialog"
 import { badgeName } from "../constants/multiuse"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
+import Link from "next/link"
 
 interface AttendeeModalProps {
   open: boolean
@@ -59,6 +60,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
   }
 
   const title = editingAttendee ? `Edit ${editingAttendee.name}` : `Add ${badgeName[category]}`
+  const isChildCategory = category === 'kid' || (formData.category && ['baby', 'kid', 'teen'].includes(formData.category))
   const description = `Enter the details of your ${category} here. Click save when you're done.`
 
   if(isDelete) {
@@ -75,6 +77,13 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
   
   return (
     <Modal open={open} onClose={onClose} title={title} description={description}>
+      {isChildCategory && (
+        <div className="-mt-4 text-sm text-gray-500">
+          <Link href="https://edgeesmeralda2025.substack.com/p/kids-and-families-at-edge-esmeralda" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+            Learn more about kids
+          </Link>.
+        </div>
+      )}
       <form onSubmit={handleSubmit}>
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
@@ -90,7 +99,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
             />
           </div>
           {
-            category !== 'spouse' && (
+            isChildCategory && (
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="age" className="text-right">
                   Age

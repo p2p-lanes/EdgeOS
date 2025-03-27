@@ -62,11 +62,11 @@ export default function AuthForm() {
           initial={{ y: 0 }}
           animate={{ y: [0, 16, 0] }}
           transition={{ duration: 4, repeat: Infinity, repeatType: 'loop', ease: 'easeIn' }}
-          className="relative aspect-square w-24 mx-auto mb-8"
+          className="relative aspect-square w-[180px] mx-auto mb-8"
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src="https://cdn.prod.website-files.com/67475a01312f8d8225a6b46e/6751bee327618c09459204bb_floatin%20city%20-%20icon-min.png"
+            src="https://simplefi.s3.us-east-2.amazonaws.com/isla_edge.png"
             alt="EdgeCity illustration"
             style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0.5rem'}}
           />

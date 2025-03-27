@@ -11,7 +11,7 @@ const fieldsProfessionalDetails = ["organization", "role", "social_media"]
 export function ProfessionalDetailsForm({ formData, errors, handleChange, fields }: SectionProps) {
   const { getCity } = useCityProvider()
   const city = getCity()
-  const isVideoValid = validateVideoUrl(formData.video_url, fields)
+  // const isVideoValid = validateVideoUrl(formData.video_url, fields)
 
   if (!fields || !fields.size || !fieldsProfessionalDetails.some(field => fields.has(field))) return null;
 
@@ -28,7 +28,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
             value={formData.organization ?? ''}
             onChange={(value: string) => handleChange('organization', value)}
             error={errors.organization}
-            isRequired={!isVideoValid}
+            isRequired={true}
             subtitle="If you&apos;re just exploring something independently, note that."
           />
         )}

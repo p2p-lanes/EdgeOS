@@ -6,19 +6,19 @@ import { Toaster } from "sonner";
 import icon from '../../public/icon.png'
 
 export const metadata: Metadata = {
-  title: "Citizen Portal",
-  description: "Your gateway to Citizen Portal",
+  title: "Edge Portal",
+  description: "Welcome to the Edge Portal. Log in or sign up to access Edge City events.",
   icons: {
     icon: icon.src,
   },
   openGraph: {
-    title: "Citizen Portal",
-    description: "Your gateway to Citizen Portal",
+    title: "Edge Portal",
+    description: "Welcome to the Edge Portal. Log in or sign up to access Edge City events.",
     images: [{
       url: "https://simplefi.s3.us-east-2.amazonaws.com/edgecity.png",
       width: 1200,
       height: 630,
-      alt: 'Citizen Portal'
+      alt: 'Edge Portal'
     }]
   }
 };
