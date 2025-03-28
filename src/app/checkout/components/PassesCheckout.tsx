@@ -1,14 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Loader } from "@/components/ui/Loader"
+import { motion } from "framer-motion"
+import MockProviders from "./providers/MockProviders"
+import BuyPasses from "@/app/portal/[popupSlug]/passes/Tabs/BuyPasses"
 
 interface PassesCheckoutProps {
-  applicationData: any // Ajusta según la estructura de datos de tu aplicación
+  applicationData: any
 }
 
+// Componente principal que utiliza los providers originales
 const PassesCheckout = ({ applicationData }: PassesCheckoutProps) => {
   const [isLoading, setIsLoading] = useState(true)
   
@@ -24,29 +25,26 @@ const PassesCheckout = ({ applicationData }: PassesCheckoutProps) => {
   if (isLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-8">
-        <Loader />
-        {/* <p className="mt-4 text-muted-foreground">Loading passes information...</p> */}
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
+        <p className="mt-4 text-muted-foreground">Loading passes information...</p>
       </div>
     )
   }
   
   return (
-    <Card className="max-w-3xl mx-auto backdrop-blur bg-white/90">
-      <CardHeader>
-        <CardTitle className="text-2xl font-bold">Select Your Passes</CardTitle>
-        <CardDescription>Choose the passes that you want to purchase</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="py-8 text-center">
-          <p className="text-lg mb-4">This is a placeholder for the passes checkout component</p>
-          <p className="text-muted-foreground mb-6">Here you would implement the same functionality as in your /portal/passes page</p>
-          
-          <div className="flex justify-center">
-            <Button>Continue to Payment</Button>
-          </div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+      className="max-w-3xl mx-auto backdrop-blur bg-[#F5F5F5] rounded-xl border shadow-md"
+    >
+      <MockProviders applicationData={applicationData}>
+        <div className="p-6">
+          {/* Reutilizando directamente el componente BuyPasses */}
+          <BuyPasses />
         </div>
-      </CardContent>
-    </Card>
+      </MockProviders>
+    </motion.div>
   )
 }
 

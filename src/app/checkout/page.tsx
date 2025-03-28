@@ -7,24 +7,8 @@ import UserInfoForm, { FormDataProps } from "./components/UserInfoForm"
 import PassesCheckout from "./components/PassesCheckout"
 import TransitionScreen from "./components/TransitionScreen"
 import { AnimatePresence, motion } from "framer-motion"
-
-// Mock de datos de aplicación
-const MOCK_APPLICATION_DATA = {
-  id: 123,
-  popup_slug: "devcon",
-  popup_city_id: 1,
-  status: "active",
-  attendees: [
-    {
-      id: 1,
-      name: "Main Attendee",
-      category: "main",
-      email: "",
-      products: []
-    }
-  ],
-  discount_assigned: 0
-}
+import { APPLICATION_DATA } from "./constants/application"
+import { api, instance } from "@/api"
 
 // Estados posibles del checkout
 type CheckoutState = "form" | "processing" | "success" | "passes"
@@ -40,32 +24,26 @@ const CheckoutPage = () => {
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
 
   // Simulación de envío de datos a API
-  const mockApiSubmit = async (formData: FormDataProps): Promise<void> => {
+  const handleSubmit = async (formData: FormDataProps): Promise<void> => {
     try {
+      console.log('handleSubmit')
       setIsSubmitting(true)
       setCheckoutState("processing")
+
+      // Obtenemos la api-key de las variables de entorno
+      const apiKey = process.env.NEXT_PUBLIC_X_API_KEY
       
-      // Simulamos un delay para imitar la llamada a la API
-      await new Promise(resolve => setTimeout(resolve, 2000))
-      
-      // Mock de respuesta exitosa
-      const response = {
-        success: true,
-        application: {
-          ...MOCK_APPLICATION_DATA,
-          attendees: [
-            {
-              ...MOCK_APPLICATION_DATA.attendees[0],
-              name: formData.fullName,
-              email: formData.email
-            }
-          ]
-        }
-      }
+      // Enviamos la solicitud con el header específico para esta petición
+      const response = await instance.post(
+        `/groups/${groupParam}/new_member`, 
+        { ...formData }, 
+        { headers: { 'api-key': apiKey } }
+      )
       
       // Si es exitoso, cambiamos a la pantalla de éxito
-      setApplicationData(response.application)
-      setCheckoutState("success")
+      console.log('response', response)
+      // setApplicationData(mockAppData)
+      // setCheckoutState("success")
       
       // Después de mostrar el éxito, cambiamos a la pantalla de passes
       setTimeout(() => {
@@ -97,7 +75,7 @@ const CheckoutPage = () => {
           >
             <UserInfoForm
               groupParam={groupParam}
-              onSubmit={mockApiSubmit}
+              onSubmit={handleSubmit}
               isSubmitting={isSubmitting}
             />
           </motion.div>
@@ -145,7 +123,8 @@ const CheckoutPage = () => {
         backgroundImage: "url('https://simplefi.s3.us-east-2.amazonaws.com/edge-bg.jpg')",
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat"
+        backgroundRepeat: "no-repeat",
+        backgroundAttachment: "fixed"
       }}
     >
       <div className="container mx-auto">

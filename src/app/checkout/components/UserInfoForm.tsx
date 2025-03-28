@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 
 export interface FormDataProps {
-  fullName: string
+  first_name: string
+  last_name: string
   email: string
   telegram: string
   organization: string
@@ -23,12 +24,13 @@ interface UserInfoFormProps {
 
 const UserInfoForm = ({ groupParam, onSubmit, isSubmitting }: UserInfoFormProps) => {
   const [formData, setFormData] = useState<FormDataProps>({
-    fullName: "",
-    email: "",
-    telegram: "",
-    organization: "",
-    role: "",
-    gender: ""
+    first_name: "choleco",
+    last_name: "choleco",
+    email: "choleco@gmail.com",
+    telegram: "choleco",
+    organization: "choleco",
+    role: "choleco",
+    gender: "male"
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -61,7 +63,8 @@ const UserInfoForm = ({ groupParam, onSubmit, isSubmitting }: UserInfoFormProps)
   const validateForm = () => {
     const newErrors: Record<string, string> = {}
     
-    if (!formData.fullName) newErrors.fullName = "Full name is required"
+    if (!formData.first_name) newErrors.first_name = "First name is required"
+    if (!formData.last_name) newErrors.last_name = "Last name is required"
     if (!formData.email) {
       newErrors.email = "Email is required"
     } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
@@ -114,15 +117,27 @@ const UserInfoForm = ({ groupParam, onSubmit, isSubmitting }: UserInfoFormProps)
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
-          <InputForm
-            label="Full Name"
-            id="fullName"
-            value={formData.fullName}
-            onChange={(value) => handleInputChange("fullName", value)}
-            error={errors.fullName}
-            isRequired
-            placeholder="Enter your full name"
-          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <InputForm
+              label="First Name"
+              id="first_name"
+              value={formData.first_name}
+              onChange={(value) => handleInputChange("first_name", value)}
+              error={errors.first_name}
+              isRequired
+              placeholder="Enter your first name"
+            />
+            
+            <InputForm
+              label="Last Name"
+              id="last_name"
+              value={formData.last_name}
+              onChange={(value) => handleInputChange("last_name", value)}
+              error={errors.last_name}
+              isRequired
+              placeholder="Enter your last name"
+            />
+          </div>
           
           <InputForm
             label="Email"
