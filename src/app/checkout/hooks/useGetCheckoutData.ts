@@ -1,4 +1,5 @@
 import { instance } from "@/api"
+import { useCityProvider } from "@/providers/cityProvider"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -19,7 +20,6 @@ const useGetCheckoutData = () => {
           'api-key': process.env.NEXT_PUBLIC_X_API_KEY
         }
       })
-      console.log(response.data)
       setGroup(response.data)
       setIsLoading(false)
     } catch (error: any) {

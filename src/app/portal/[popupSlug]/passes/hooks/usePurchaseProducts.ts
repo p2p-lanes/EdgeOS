@@ -39,7 +39,11 @@ const usePurchaseProducts = () => {
       const response = await api.post('payments', data)
       if(response.status === 200){
         if(response.data.status === 'pending'){
-          window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
+          const redirectUrl = window.location.href.includes('/checkout') 
+            ? `${window.location.origin}/checkout/success` 
+            : window.location.href;
+            
+          window.location.href = `${response.data.checkout_url}?redirect_url=${redirectUrl}`
         }else if(response.data.status === 'approved'){
           await getApplication()
           if(editableMode){

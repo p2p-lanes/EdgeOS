@@ -38,7 +38,7 @@ const PassesCheckout = () => {
       <Providers>
         <div className="p-6">
           {/* Reutilizando directamente el componente BuyPasses */}
-          <BuyPasses floatingBar={false} viewInvoices={false}/>
+          <BuyPasses floatingBar={false} viewInvoices={false} canEdit={false}/>
         </div>
       </Providers>
     </motion.div>

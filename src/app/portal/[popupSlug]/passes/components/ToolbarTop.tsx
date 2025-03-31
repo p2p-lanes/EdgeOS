@@ -62,21 +62,20 @@ const ToolbarTop = ({canEdit = false, viewInvoices = true}: {canEdit?: boolean, 
         )}
       </div>
 
-      {
-        viewInvoices && (
-          <>
-            <div className="flex gap-2">
-              {canEdit && <EditPassesButton/>}
+      <div className="flex gap-2">
+        {canEdit && <EditPassesButton/>}
+        {
+          viewInvoices && (
+            <>
               <Button variant={'ghost'} onClick={() => setIsInvoiceModalOpen(true)}>
                 <Newspaper className="h-4 w-4" />
                 <p className="text-sm font-medium hidden md:block">View Invoices</p>
               </Button>
-            </div>
-
-            <InvoiceModal isOpen={isInvoiceModalOpen} onClose={() => setIsInvoiceModalOpen(false)} />
-          </>
-        )
-      }
+              <InvoiceModal isOpen={isInvoiceModalOpen} onClose={() => setIsInvoiceModalOpen(false)} />
+            </>
+          )
+        }
+      </div>
 
     </div>
   )
