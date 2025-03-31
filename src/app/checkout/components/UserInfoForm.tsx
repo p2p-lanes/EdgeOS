@@ -5,6 +5,7 @@ import InputForm, { AddonInputForm } from "@/components/ui/Form/Input"
 import RadioGroupForm from "@/components/ui/Form/RadioGroup"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import Cookies from "js-cookie"
 
 export interface FormDataProps {
   first_name: string
@@ -22,18 +23,34 @@ interface UserInfoFormProps {
   isSubmitting: boolean
 }
 
+const COOKIE_NAME = "user_form_data_checkout_edge"
+const COOKIE_EXPIRY = 7 // días
+
 const UserInfoForm = ({ groupParam, onSubmit, isSubmitting }: UserInfoFormProps) => {
   const [formData, setFormData] = useState<FormDataProps>({
-    first_name: "choleco",
-    last_name: "choleco",
-    email: "choleco@gmail.com",
-    telegram: "choleco",
-    organization: "choleco",
-    role: "choleco",
+    first_name: "",
+    last_name: "",
+    email: "",
+    telegram: "",
+    organization: "",
+    role: "",
     gender: "male"
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+
+  // Cargar datos de las cookies al iniciar
+  useEffect(() => {
+    const savedData = Cookies.get(COOKIE_NAME)
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData)
+        setFormData(parsedData)
+      } catch (error) {
+        console.error("Error al cargar datos de cookies:", error)
+      }
+    }
+  }, [])
 
   // Verificar que tenemos un parámetro group
   useEffect(() => {
@@ -82,9 +99,11 @@ const UserInfoForm = ({ groupParam, onSubmit, isSubmitting }: UserInfoFormProps)
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
-    // if (validateForm()) {
+    if (validateForm()) {
+      // Guardar datos en cookies antes de enviar
+      Cookies.set(COOKIE_NAME, JSON.stringify(formData), { expires: COOKIE_EXPIRY, sameSite: 'Lax' })
       await onSubmit(formData)
-    // }
+    }
   }
 
   const genderOptions = [

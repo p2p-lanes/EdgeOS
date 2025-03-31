@@ -2,15 +2,12 @@
 
 import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
-import MockProviders from "./providers/MockProviders"
 import BuyPasses from "@/app/portal/[popupSlug]/passes/Tabs/BuyPasses"
+import Providers from "./providers/Providers"
 
-interface PassesCheckoutProps {
-  applicationData: any
-}
 
 // Componente principal que utiliza los providers originales
-const PassesCheckout = ({ applicationData }: PassesCheckoutProps) => {
+const PassesCheckout = () => {
   const [isLoading, setIsLoading] = useState(true)
   
   // Simular carga de datos
@@ -38,12 +35,12 @@ const PassesCheckout = ({ applicationData }: PassesCheckoutProps) => {
       transition={{ duration: 0.5 }}
       className="max-w-3xl mx-auto backdrop-blur bg-[#F5F5F5] rounded-xl border shadow-md"
     >
-      <MockProviders applicationData={applicationData}>
+      <Providers>
         <div className="p-6">
           {/* Reutilizando directamente el componente BuyPasses */}
-          <BuyPasses />
+          <BuyPasses floatingBar={false}/>
         </div>
-      </MockProviders>
+      </Providers>
     </motion.div>
   )
 }

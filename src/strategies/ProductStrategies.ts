@@ -126,7 +126,6 @@ class WeekProductStrategy implements ProductStrategy {
         monthProduct?.purchased || false
       );
 
-      console.log('shouldSelectMonth', {shouldSelectMonth, hasEdited, activeWeeks})
 
       // Actualizamos el estado del mes
       return {
