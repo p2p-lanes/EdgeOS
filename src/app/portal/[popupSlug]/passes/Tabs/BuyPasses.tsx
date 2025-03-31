@@ -14,7 +14,7 @@ import TotalFloatingBar from "../components/common/TotalFloatingBar"
 import { useState } from "react"
 import { useTotal } from "@/providers/totalProvider"
 
-const BuyPasses = ({floatingBar = true}: {floatingBar?: boolean}) => {
+const BuyPasses = ({floatingBar = true, viewInvoices = true}: {floatingBar?: boolean, viewInvoices?: boolean}) => {
   const { toggleProduct, attendeePasses: attendees, products, isEditing } = usePassesProvider()
   const [openCart, setOpenCart] = useState<boolean>(false)
   const mainAttendee = attendees.find(a => a.category === 'main')
@@ -29,7 +29,7 @@ const BuyPasses = ({floatingBar = true}: {floatingBar?: boolean}) => {
       <BalancePasses />
 
       <div className="my-4 flex justify-start">
-        <ToolbarTop canEdit/>
+        <ToolbarTop canEdit={true} viewInvoices={viewInvoices}/>
       </div>
 
       <BannerDiscount isPatreon={(specialProduct?.selected || specialProduct?.purchased) ?? false} products={products} />

@@ -24,9 +24,6 @@ export const useFormValidation = (initialData: FormData) => {
   const city = getCity()
   const { fields } = useGetFields()
 
-
-  console.log('formData', formData)
-  console.log('fields', fields)
   const validateField = useCallback((name: FieldName, value: FieldValue, formData: FormData) => {
     if (!fields?.has(name)) return ''
 

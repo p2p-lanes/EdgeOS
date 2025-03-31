@@ -9,7 +9,7 @@ import InvoiceModal from "./common/InvoiceModal"
 import { useState } from "react"
 import EditPassesButton from "./common/Buttons/EditPassesButton"
 
-const ToolbarTop = ({canEdit = false}: {canEdit?: boolean}) => {
+const ToolbarTop = ({canEdit = false, viewInvoices = true}: {canEdit?: boolean, viewInvoices?: boolean}) => {
   const { getAttendees } = useApplication()
   const { handleOpenModal, handleCloseModal, modal } = useModal()
   const { addAttendee } = useAttendee()
@@ -62,15 +62,21 @@ const ToolbarTop = ({canEdit = false}: {canEdit?: boolean}) => {
         )}
       </div>
 
-      <div className="flex gap-2">
-        {canEdit && <EditPassesButton/>}
-        <Button variant={'ghost'} onClick={() => setIsInvoiceModalOpen(true)}>
-          <Newspaper className="h-4 w-4" />
-          <p className="text-sm font-medium hidden md:block">View Invoices</p>
-        </Button>
-      </div>
+      {
+        viewInvoices && (
+          <>
+            <div className="flex gap-2">
+              {canEdit && <EditPassesButton/>}
+              <Button variant={'ghost'} onClick={() => setIsInvoiceModalOpen(true)}>
+                <Newspaper className="h-4 w-4" />
+                <p className="text-sm font-medium hidden md:block">View Invoices</p>
+              </Button>
+            </div>
 
-      <InvoiceModal isOpen={isInvoiceModalOpen} onClose={() => setIsInvoiceModalOpen(false)} />
+            <InvoiceModal isOpen={isInvoiceModalOpen} onClose={() => setIsInvoiceModalOpen(false)} />
+          </>
+        )
+      }
 
     </div>
   )

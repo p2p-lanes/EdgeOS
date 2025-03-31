@@ -9,6 +9,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import { instance } from "@/api"
 import { useApplication } from "@/providers/applicationProvider"
 import Cookies from "js-cookie"
+import useGetCheckoutData from "./hooks/useGetCheckoutData"
 
 type CheckoutState = "form" | "processing" | "success" | "passes"
 const COOKIE_NAME = "user_form_data_checkout_edge"
@@ -21,6 +22,7 @@ function CheckoutContent() {
   const [checkoutState, setCheckoutState] = useState<CheckoutState>("form")
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const { data: { group }, error, isLoading } = useGetCheckoutData()
 
   const handleSubmit = async (formData: FormDataProps): Promise<void> => {
     try {
@@ -58,6 +60,10 @@ function CheckoutContent() {
     }
   }
 
+  if (isLoading) {
+    return <LoadingFallback />
+  }
+
   // Renderizado condicional basado en el estado del checkout
   const renderCheckoutContent = () => {
     switch (checkoutState) {
@@ -71,7 +77,9 @@ function CheckoutContent() {
             transition={{ duration: 0.5 }}
           >
             <UserInfoForm
-              groupParam={groupParam}
+              group={group}
+              isLoading={isLoading}
+              error={error}
               onSubmit={handleSubmit}
               isSubmitting={isSubmitting}
             />

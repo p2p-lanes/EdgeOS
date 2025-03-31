@@ -18,7 +18,9 @@ export interface FormDataProps {
 }
 
 interface UserInfoFormProps {
-  groupParam: string | null
+  group: any | null
+  isLoading: boolean
+  error: string | null
   onSubmit: (data: FormDataProps) => Promise<void>
   isSubmitting: boolean
 }
@@ -26,7 +28,7 @@ interface UserInfoFormProps {
 const COOKIE_NAME = "user_form_data_checkout_edge"
 const COOKIE_EXPIRY = 7 // días
 
-const UserInfoForm = ({ groupParam, onSubmit, isSubmitting }: UserInfoFormProps) => {
+const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserInfoFormProps) => {
   const [formData, setFormData] = useState<FormDataProps>({
     first_name: "",
     last_name: "",
@@ -54,12 +56,18 @@ const UserInfoForm = ({ groupParam, onSubmit, isSubmitting }: UserInfoFormProps)
 
   // Verificar que tenemos un parámetro group
   useEffect(() => {
-    if (!groupParam) {
+    if (error) {
+      setErrors({
+        general: error
+      })
+      return;
+    }
+    if (!group && !isLoading) {
       setErrors({
         general: "Please use a valid invitation link."
       })
     }
-  }, [groupParam])
+  }, [group, isLoading, error])
 
   const handleInputChange = (field: string, value: string) => {
     setFormData(prev => ({
@@ -131,8 +139,8 @@ const UserInfoForm = ({ groupParam, onSubmit, isSubmitting }: UserInfoFormProps)
   return (
     <Card className="max-w-lg mx-auto backdrop-blur bg-white/90">
       <CardHeader>
-        <CardTitle className="text-2xl font-bold">Checkout</CardTitle>
-        <CardDescription>Please complete your information to continue</CardDescription>
+        <CardTitle className="text-2xl font-bold">Express Checkout</CardTitle>
+        <CardDescription>You've been invited to join <span className="font-bold">{group?.name}</span> group for <span className="font-bold">{group?.popup_name}</span>, skipping the application process and saving you time. Secure your spot now!</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">
