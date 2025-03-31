@@ -14,7 +14,7 @@ import TotalFloatingBar from "../components/common/TotalFloatingBar"
 import { useState } from "react"
 import { useTotal } from "@/providers/totalProvider"
 
-const BuyPasses = () => {
+const BuyPasses = ({floatingBar = true}: {floatingBar?: boolean}) => {
   const { toggleProduct, attendeePasses: attendees, products, isEditing } = usePassesProvider()
   const [openCart, setOpenCart] = useState<boolean>(false)
   const mainAttendee = attendees.find(a => a.category === 'main')
@@ -22,7 +22,6 @@ const BuyPasses = () => {
   const someProductSelected = attendees.some(a => a.products.some(p => p.selected))
   const { total } = useTotal()
 
-  console.log('attendees', attendees, products)
   return (
     <div className="space-y-6 pb-[20px] md:pb-0">
       <TitleTabs title="Buy Passes" subtitle="Choose your attendance weeks and get passes for you and your group." />
@@ -56,12 +55,28 @@ const BuyPasses = () => {
 
       <DiscountCode/>
 
+      {
+        !floatingBar && someProductSelected && (
+          <div className="flex flex-col gap-4 w-full pointer-events-auto">
+            <TotalPurchase
+              attendees={attendees}
+              isModal={false}
+              isOpen={openCart}
+              setIsOpen={setOpenCart}
+            />
+            <div className="flex w-full justify-center">
+              <CompletePurchaseButton edit={total <= 0} />
+            </div>
+          </div>
+        )
+      }
+
       {/* Versión desktop con FloatingBar */}
-      {someProductSelected && (
+      {someProductSelected && floatingBar && (
         <div className="hidden md:block">
-          <BottomSheet className="bottom-6 pointer-events-none">
+          <BottomSheet className="bottom-6 pointer-events-none ">
             {(isFloating) => (
-              isFloating ? (
+              (isFloating) ? (
                 <div className="flex justify-center lg:ml-[255px]">
                   <div className="bg-white p-4 shadow-lg border border-neutral-200 rounded-lg min-w-[600px] pointer-events-auto">
                     <TotalFloatingBar setOpenCart={setOpenCart}/>
