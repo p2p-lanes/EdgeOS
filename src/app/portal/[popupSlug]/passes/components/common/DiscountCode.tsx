@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input"
 import { Loader2, XCircle } from "lucide-react"
 import { CheckCircle } from "lucide-react"
 
-const DiscountCode = () => {
-  const [open, setOpen] = useState(false)
+const DiscountCode = ({defaultOpen = false}: {defaultOpen?: boolean}) => {
+  const [open, setOpen] = useState(defaultOpen)
   const [discountCode, setDiscountCode] = useState('')
   const { getDiscountCode, loading, discountMsg, validDiscount, clearDiscountMessage } = useDiscountCode()
 

@@ -96,8 +96,11 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
                 />
               ))
             }
-
-            <OptionsMenu onEdit={handleEditAttendee} onDelete={hasPurchased ? undefined : handleRemoveAttendee} className="absolute top-2 right-3 hidden xl:flex"/>
+            {
+              !hasPurchased && (
+                <OptionsMenu onEdit={handleEditAttendee} onDelete={handleRemoveAttendee} className="absolute top-2 right-3 hidden xl:flex"/>
+              )
+            }
 
 
         {

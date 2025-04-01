@@ -14,7 +14,7 @@ import TotalFloatingBar from "../components/common/TotalFloatingBar"
 import { useState } from "react"
 import { useTotal } from "@/providers/totalProvider"
 
-const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true}: {floatingBar?: boolean, viewInvoices?: boolean, canEdit?: boolean}) => {
+const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, defaultOpenDiscount = false}: {floatingBar?: boolean, viewInvoices?: boolean, canEdit?: boolean, defaultOpenDiscount?: boolean}) => {
   const { toggleProduct, attendeePasses: attendees, products, isEditing } = usePassesProvider()
   const [openCart, setOpenCart] = useState<boolean>(false)
   const mainAttendee = attendees.find(a => a.category === 'main')
@@ -24,7 +24,7 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true}: {f
 
   return (
     <div className="space-y-6 pb-[20px] md:pb-0">
-      <TitleTabs title="Buy Passes" subtitle="Choose your attendance weeks and get passes for you and your group." />
+      <TitleTabs title="Buy Passes" subtitle="Choose your passes below. Don't forget to add tickets for family members who want to join you." />
 
       <BalancePasses />
 
@@ -53,7 +53,7 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true}: {f
         }
       </div>
 
-      <DiscountCode/>
+      <DiscountCode defaultOpen={defaultOpenDiscount}/>
 
       {
         !floatingBar && someProductSelected && (

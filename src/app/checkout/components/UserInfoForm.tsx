@@ -209,7 +209,23 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
     
     // Si está verificado, validar y enviar formulario
     if (validateForm()) {
-      await onSubmit(formData)
+      try {
+        await onSubmit(formData)
+      } catch (error: any) {
+        console.error("Error submitting form:", error)
+        // Establecer error general o específico según la respuesta
+        if (error.response?.data?.message) {
+          setErrors(prev => ({
+            ...prev,
+            general: error.response.data.message
+          }))
+        } else {
+          setErrors(prev => ({
+            ...prev,
+            general: "An error occurred while submitting the form. Please try again."
+          }))
+        }
+      }
     }
   }
 
@@ -338,8 +354,7 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Express Checkout</CardTitle>
         <CardDescription>
-          You've been invited to join <span className="font-bold">{group?.name}</span> group for <span className="font-bold">{group?.popup_name}</span>, 
-          skipping the application process and saving you time. Secure your spot now!
+          You&apos;re invited to <span className="font-bold">{group?.name}</span> at <span className="font-bold">{group?.popup_name}</span>. Please provide your information below to proceed to check-out and secure your ticket(s)
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
@@ -400,6 +415,17 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
           {/* Additional form fields - only visible after email verification */}
           {formData.email_verified && (
             <div className="space-y-4 animate-in fade-in duration-500">
+              {/* Mostrar email en modo disabled */}
+              <InputForm
+                label="Email"
+                id="email-verified"
+                type="email"
+                value={formData.email}
+                onChange={() => {}} // No se puede cambiar
+                disabled={true}
+                isRequired
+              />
+              
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <InputForm
                   label="First Name"
@@ -485,6 +511,12 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
                   ? "Verify Code"
                   : "Send Code"}
           </Button>
+          
+          {errors.general && (
+            <div className="w-full mt-3 p-3 bg-red-100 border border-red-300 text-red-800 rounded-md text-sm">
+              {errors.general}
+            </div>
+          )}
         </CardFooter>
       </form>
     </Card>

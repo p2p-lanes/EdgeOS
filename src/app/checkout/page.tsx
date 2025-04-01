@@ -34,7 +34,7 @@ function CheckoutContent() {
       setCookie(JSON.stringify({...formData, group_id: group.id, popup_city_id: group.popup_city_id}))
       
       // Enviamos la solicitud con el header específico para esta petición
-      const response = await api.post(
+      const response = await instance.post(
         `/groups/${groupParam}/new_member`, 
         { ...formData }, 
       )
