@@ -15,7 +15,20 @@ const useGetPassesData = () => {
 
     setLoading(true)
 
-    const response = await api.get(`products?popup_city_id=${city.id}`)
+    const isFastCheckout = window.location.href.includes('/checkout')
+    
+    const endpoint = isFastCheckout ? "/products/fast_checkout" : "products";
+    const params = `?popup_city_id=${city.id}`;
+    
+    const apiOptions = isFastCheckout 
+      ? {
+          headers: {
+            'api-key': process.env.NEXT_PUBLIC_X_API_KEY
+          }
+        } 
+      : undefined;
+
+    const response = await api.get(`${endpoint}${params}`, apiOptions)
 
     if(response.status === 200){
       setProducts(response.data)

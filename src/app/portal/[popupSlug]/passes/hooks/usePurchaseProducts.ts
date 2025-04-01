@@ -30,19 +30,30 @@ const usePurchaseProducts = () => {
     const filteredProducts = filterProductsToPurchase(productsPurchase)
 
     try{
+      const isFastCheckout = window.location.href.includes('/checkout')
+
       const data = {
         application_id: application.id,
         products: filteredProducts,
         coupon_code: discountApplied.discount_code,
         edit_passes: editableMode
       }
-      const response = await api.post('payments', data)
+
+      const apiOptions = isFastCheckout 
+        ? {
+            headers: {
+              'api-key': process.env.NEXT_PUBLIC_X_API_KEY
+            }
+          } 
+        : undefined;
+      
+      const endpoint = isFastCheckout ? '/payments/fast_checkout' : 'payments';
+      
+      const response = await api.post(endpoint, data, apiOptions)
+
       if(response.status === 200){
         if(response.data.status === 'pending'){
-          const redirectUrl = window.location.href.includes('/checkout') 
-            ? `${window.location.origin}/checkout/success` 
-            : window.location.href;
-            
+          const redirectUrl = isFastCheckout ? `${window.location.origin}/checkout/success` : window.location.href;
           window.location.href = `${response.data.checkout_url}?redirect_url=${redirectUrl}`
         }else if(response.data.status === 'approved'){
           await getApplication()

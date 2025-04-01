@@ -43,11 +43,10 @@ function CheckoutContent() {
         { headers: { 'api-key': apiKey } }
       )
       
-      const token = response.data.authorization.access_token
-      instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      window?.localStorage?.setItem('token', token)
+      // const token = response.data.authorization.access_token
+      // instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      // window?.localStorage?.setItem('token', token)
       const application = response.data
-      delete application.authorization
 
       setApplications([application])
       setCheckoutState("passes")

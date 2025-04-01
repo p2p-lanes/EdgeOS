@@ -1,5 +1,4 @@
 import { instance } from "@/api"
-import { useCityProvider } from "@/providers/cityProvider"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
