@@ -10,10 +10,10 @@ import { instance } from "@/api"
 import { useApplication } from "@/providers/applicationProvider"
 import Cookies from "js-cookie"
 import useGetCheckoutData from "./hooks/useGetCheckoutData"
+import useCookies from "./hooks/useCookies"
 
 type CheckoutState = "form" | "processing" | "success" | "passes"
-const COOKIE_NAME = "user_form_data_checkout_edge"
-const COOKIE_EXPIRY = 7 // días
+
 
 function CheckoutContent() {
   const searchParams = useSearchParams()
@@ -23,6 +23,7 @@ function CheckoutContent() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const { data: { group }, error, isLoading } = useGetCheckoutData()
+  const { setCookie } = useCookies()
 
   const handleSubmit = async (formData: FormDataProps): Promise<void> => {
     try {
@@ -30,7 +31,7 @@ function CheckoutContent() {
       setCheckoutState("processing")
 
       // Guardar datos en cookies
-      Cookies.set(COOKIE_NAME, JSON.stringify(formData), { expires: COOKIE_EXPIRY, sameSite: 'Lax' })
+      setCookie(JSON.stringify({...formData, group_id: group.id, popup_city_id: group.popup_city_id}))
 
       // Obtenemos la api-key de las variables de entorno
       const apiKey = process.env.NEXT_PUBLIC_X_API_KEY

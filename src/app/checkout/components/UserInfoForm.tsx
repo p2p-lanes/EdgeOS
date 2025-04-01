@@ -6,6 +6,7 @@ import RadioGroupForm from "@/components/ui/Form/RadioGroup"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import Cookies from "js-cookie"
+import useCookies from "../hooks/useCookies"
 
 export interface FormDataProps {
   first_name: string
@@ -25,9 +26,6 @@ interface UserInfoFormProps {
   isSubmitting: boolean
 }
 
-const COOKIE_NAME = "user_form_data_checkout_edge"
-const COOKIE_EXPIRY = 7 // días
-
 const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserInfoFormProps) => {
   const [formData, setFormData] = useState<FormDataProps>({
     first_name: "",
@@ -40,10 +38,11 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const { getCookie } = useCookies()
 
   // Cargar datos de las cookies al iniciar
   useEffect(() => {
-    const savedData = Cookies.get(COOKIE_NAME)
+    const savedData = getCookie()
     if (savedData) {
       try {
         const parsedData = JSON.parse(savedData)
@@ -108,8 +107,6 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
     e.preventDefault()
     
     if (validateForm()) {
-      // Guardar datos en cookies antes de enviar
-      Cookies.set(COOKIE_NAME, JSON.stringify(formData), { expires: COOKIE_EXPIRY, sameSite: 'Lax' })
       await onSubmit(formData)
     }
   }

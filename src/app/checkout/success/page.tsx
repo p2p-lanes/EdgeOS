@@ -1,35 +1,22 @@
 "use client"
 
-import { useEffect, useState } from "react"
-import Link from "next/link"
+import { useEffect } from "react"
 import { motion } from "framer-motion"
-import Image from "next/image"
-import { ArrowLeft, CheckCircle, Download, Home } from "lucide-react"
+import { CheckCircle, Home } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useRouter, useSearchParams } from "next/navigation"
+import { useRouter } from "next/navigation"
 import useGetApplications from "@/hooks/useGetApplications"
-import { useApplication } from "@/providers/applicationProvider"
 
 const SuccessPage = () => {
   const router = useRouter()
-  const searchParams = useSearchParams()
   const getApplication = useGetApplications()
-  const { getRelevantApplication, applications } = useApplication()
-  
+
   useEffect(() => {
     const fetchApplication = async () => {
       await getApplication()
     }
     fetchApplication()
   }, []);
-  
-  useEffect(() => {
-    if(!applications) return
-
-    console.log('applications', applications)
-    const application = getRelevantApplication()
-    console.log('application', application)
-  }, [applications]);
 
 
   const handleDownloadReceipt = () => {
