@@ -6,7 +6,7 @@ import UserInfoForm, { FormDataProps } from "./components/UserInfoForm"
 import PassesCheckout from "./components/PassesCheckout"
 import TransitionScreen from "./components/TransitionScreen"
 import { AnimatePresence, motion } from "framer-motion"
-import { instance } from "@/api"
+import { api, instance } from "@/api"
 import { useApplication } from "@/providers/applicationProvider"
 import Cookies from "js-cookie"
 import useGetCheckoutData from "./hooks/useGetCheckoutData"
@@ -32,20 +32,13 @@ function CheckoutContent() {
 
       // Guardar datos en cookies
       setCookie(JSON.stringify({...formData, group_id: group.id, popup_city_id: group.popup_city_id}))
-
-      // Obtenemos la api-key de las variables de entorno
-      const apiKey = process.env.NEXT_PUBLIC_X_API_KEY
       
       // Enviamos la solicitud con el header específico para esta petición
-      const response = await instance.post(
+      const response = await api.post(
         `/groups/${groupParam}/new_member`, 
         { ...formData }, 
-        { headers: { 'api-key': apiKey } }
       )
-      
-      // const token = response.data.authorization.access_token
-      // instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
-      // window?.localStorage?.setItem('token', token)
+
       const application = response.data
 
       setApplications([application])

@@ -38,18 +38,8 @@ const usePurchaseProducts = () => {
         coupon_code: discountApplied.discount_code,
         edit_passes: editableMode
       }
-
-      const apiOptions = isFastCheckout 
-        ? {
-            headers: {
-              'api-key': process.env.NEXT_PUBLIC_X_API_KEY
-            }
-          } 
-        : undefined;
       
-      const endpoint = isFastCheckout ? '/payments/fast_checkout' : 'payments';
-      
-      const response = await api.post(endpoint, data, apiOptions)
+      const response = await api.post('payments', data)
 
       if(response.status === 200){
         if(response.data.status === 'pending'){
