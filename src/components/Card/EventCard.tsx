@@ -53,7 +53,9 @@ export function EventCard({ name, tagline, location, start_date, end_date, image
                       {status === 'not_started' ? 'Apply' : 
                       status === 'draft' ? 'Continue Application' :
                       status === 'in review' ? 'Edit Application' :
-                      status === 'accepted' ? 'Go to Passes' : 'Modify Ticket'}
+                      status === 'accepted' ? 'Go to Passes' :
+                      status === 'withdrawn' ? 'Resume Application' :
+                      'Modify Ticket'}
                     </ButtonAnimated>
                   </div>
                 )}
