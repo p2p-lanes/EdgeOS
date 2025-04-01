@@ -53,6 +53,13 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
   const [countdown, setCountdown] = useState(0)
   const timerRef = useRef<NodeJS.Timeout | null>(null)
 
+  // Enviar código automáticamente cuando se completan los 6 dígitos
+  useEffect(() => {
+    if (verificationCode.length === 6 && showVerificationInput && !formData.email_verified && !isVerifyingCode) {
+      handleVerifyCode()
+    }
+  }, [verificationCode])
+
   // Cargar datos de las cookies al iniciar y verificar token
   useEffect(() => {
     // Verificar si hay un token en localStorage
