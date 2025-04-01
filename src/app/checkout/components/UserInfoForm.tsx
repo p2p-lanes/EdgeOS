@@ -9,6 +9,8 @@ import Cookies from "js-cookie"
 import useCookies from "../hooks/useCookies"
 import { OtpInput } from "@/components/ui/otp-input"
 import { api, instance } from "@/api"
+import useGetTokenAuth from "@/hooks/useGetTokenAuth"
+import { jwtDecode } from "jwt-decode"
 
 export interface FormDataProps {
   first_name: string
@@ -37,12 +39,13 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
     telegram: "",
     organization: "",
     role: "",
-    gender: "male",
+    gender: "",
     email_verified: false
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const { getCookie } = useCookies()
+  const { user } = useGetTokenAuth()
   
   // Estados para la verificación de email
   const [showVerificationInput, setShowVerificationInput] = useState(false)
@@ -67,29 +70,31 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
     if (token) {
       // Configurar el token en el header
       instance.defaults.headers.common['Authorization'] = `Bearer ${token}`
+      const decodedToken = jwtDecode(token) as { email: string }
       // Marcar el email como verificado para saltar ese paso
       setFormData(prev => ({
         ...prev,
+        email: decodedToken.email,
         email_verified: true
       }))
     }
     
     // Cargar datos de las cookies
-    const savedData = getCookie()
-    if (savedData) {
-      try {
-        const parsedData = JSON.parse(savedData)
-        setFormData(prev => ({
-          // Mantener email_verified si viene del paso anterior (token)
-          ...prev,
-          ...parsedData,
-          // Si encontramos un token, siempre mantener email_verified en true
-          email_verified: token ? true : parsedData.email_verified || false
-        }))
-      } catch (error) {
-        console.error("Error al cargar datos de cookies:", error)
-      }
-    }
+    // const savedData = getCookie()
+    // if (savedData) {
+    //   try {
+    //     const parsedData = JSON.parse(savedData)
+    //     setFormData(prev => ({
+    //       // Mantener email_verified si viene del paso anterior (token)
+    //       ...prev,
+    //       ...parsedData,
+    //       // Si encontramos un token, siempre mantener email_verified en true
+    //       email_verified: token ? true : parsedData.email_verified || false
+    //     }))
+    //   } catch (error) {
+    //     console.error("Error al cargar datos de cookies:", error)
+    //   }
+    // }
   }, [])
 
   // Limpiar timer al desmontar
@@ -167,7 +172,7 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
     
     if (!formData.first_name) newErrors.first_name = "First name is required"
     if (!formData.last_name) newErrors.last_name = "Last name is required"
-    if (!formData.email) {
+    if (!formData.email && !formData.email_verified) {
       newErrors.email = "Email is required"
     } else if (!/^\S+@\S+\.\S+$/.test(formData.email)) {
       newErrors.email = "Invalid email"
@@ -185,6 +190,7 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
     
     // Si no está verificado y tiene email válido, enviar código
     if (!formData.email_verified && formData.email && !/^\S+@\S+\.\S+$/.test(formData.email)) {
@@ -206,7 +212,6 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
       }
       return
     }
-    
     // Si está verificado, validar y enviar formulario
     if (validateForm()) {
       try {
@@ -349,6 +354,8 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
     )
   }
 
+  console.log(formData)
+
   return (
     <Card className="max-w-lg mx-auto backdrop-blur bg-white/90">
       <CardHeader>
@@ -423,7 +430,6 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
                 value={formData.email}
                 onChange={() => {}} // No se puede cambiar
                 disabled={true}
-                isRequired
               />
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
