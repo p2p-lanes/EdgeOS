@@ -67,7 +67,7 @@ const AttendeesTable = ({
                   <CommonCell value={attendee.email ?? ''} />
                   <CommonCell value={attendee.telegram ?? ''} />
                   <ParticipationTickets participation={attendee.participation} passes={productsPasses}/>
-                  <CommonCell value={attendee.bring_kids === '*' ? '*' : attendee.bring_kids ? "Yes" : "No"} />
+                  <CommonCell value={attendee.brings_kids === '*' ? '*' : attendee.brings_kids ? "Yes" : "No"} />
                   <CommonCell value={attendee.role && attendee.role?.length > 60 ? `${attendee.role.slice(0, 60)}...` : attendee.role ?? ''} />
                   <CommonCell value={attendee.organization && attendee.organization?.length > 80 ? `${attendee.organization.slice(0, 80)}...` : attendee.organization ?? ''} />
                 </TableRow>

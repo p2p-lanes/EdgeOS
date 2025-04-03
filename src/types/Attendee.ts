@@ -12,7 +12,7 @@ export interface AttendeeProps {
 }
 
 export interface AttendeeDirectory {
-  bring_kids: string | boolean | null;
+  brings_kids: string | boolean | null;
   email: string | null;
   first_name: string | null;
   last_name: string | null;
