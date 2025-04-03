@@ -6,10 +6,10 @@ const AttendeeCell = ({attendee, className}: {attendee: AttendeeDirectory, class
   return (
     <TableCell className={className}>
       <div className="flex items-center gap-1">
-        <CellControl className="font-medium text-gray-900" value={attendee.first_name}>
+        <CellControl className="font-medium text-gray-900" value={attendee.first_name ?? ''}>
           {attendee.first_name}
       </CellControl>
-      <CellControl className="font-medium text-gray-900" value={attendee.last_name}>
+      <CellControl className="font-medium text-gray-900" value={attendee.last_name ?? ''}>
         {attendee.last_name}
         </CellControl>
       </div>
