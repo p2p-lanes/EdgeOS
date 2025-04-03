@@ -101,6 +101,23 @@ export const useUserForm = ({ initialData = {}, applicationData }: UseUserFormPr
     }));
   };
 
+  const resetForm = () => {
+    setFormData({
+      first_name: "",
+      last_name: "",
+      email: "",
+      telegram: "",
+      organization: "",
+      role: "",
+      gender: "",
+      email_verified: false
+    });
+    setErrors({});
+    
+    // Eliminar la autorización del header
+    delete instance.defaults.headers.common['Authorization'];
+  };
+
   return {
     formData,
     errors,
@@ -108,6 +125,7 @@ export const useUserForm = ({ initialData = {}, applicationData }: UseUserFormPr
     handleInputChange,
     validateForm,
     setEmailVerified,
-    setFormData
+    setFormData,
+    resetForm
   };
 }; 

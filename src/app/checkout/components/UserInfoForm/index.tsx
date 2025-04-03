@@ -36,7 +36,8 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
     setErrors, 
     handleInputChange, 
     validateForm, 
-    setEmailVerified 
+    setEmailVerified,
+    resetForm
   } = useUserForm({
     applicationData
   });
@@ -62,7 +63,8 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
     countdown, 
     handleSendVerificationCode, 
     handleVerifyCode, 
-    handleResendCode 
+    handleResendCode,
+    handleChangeEmail
   } = useEmailVerification({
     email: formData.email,
     onVerificationSuccess: (token) => {
@@ -73,6 +75,21 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
       refreshApplicationData();
     }
   });
+
+  // Función para cambiar el email desde cualquier parte del formulario
+  const handleEmailChange = () => {
+    // Resetear estado de verificación de email
+    handleChangeEmail();
+    
+    // Resetear datos del formulario
+    resetForm();
+    
+    // Resetear estado de autocompletado
+    setIsAutoFilled(false);
+    
+    // Eliminar token si existe
+    window?.localStorage?.removeItem('token');
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -153,7 +170,7 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Express Checkout</CardTitle>
         <CardDescription>
-          You&apos;re invited to <span className="font-bold">{group?.name}</span> at <span className="font-bold">{group?.popup_name}</span>. Please provide your information below to proceed to check-out and secure your ticket(s)
+          You&apos;re invited to <span className="font-bold">{group?.name}</span> at <span className="font-bold">{group?.popup_name}</span>. Please provide your information below to proceed to check-out and secure your ticket(s).
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
@@ -170,6 +187,7 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
               handleEmailChange={(value) => handleInputChange("email", value)}
               handleSendCode={handleSendVerificationCode}
               handleResendCode={handleResendCode}
+              handleChangeEmail={handleChangeEmail}
               isDisabled={isSendingCode || isVerifyingCode}
               emailError={errors.email}
             />
@@ -180,6 +198,7 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
             <PersonalInfoForm
               formData={formData}
               handleInputChange={handleInputChange}
+              handleChangeEmail={handleEmailChange}
               errors={errors}
             />
           )}

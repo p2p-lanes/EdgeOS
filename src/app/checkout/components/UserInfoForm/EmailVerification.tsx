@@ -1,6 +1,8 @@
 import { OtpInput } from "@/components/ui/otp-input";
 import { Button } from "@/components/ui/button";
 import InputForm from "@/components/ui/Form/Input";
+import { Input } from "@/components/ui/input";
+import { LabelRequired } from "@/components/ui/label";
 
 interface EmailVerificationProps {
   email: string;
@@ -12,6 +14,7 @@ interface EmailVerificationProps {
   handleEmailChange: (value: string) => void;
   handleSendCode: () => void;
   handleResendCode: () => void;
+  handleChangeEmail: () => void;
   isDisabled: boolean;
   emailError?: string;
 }
@@ -26,22 +29,42 @@ const EmailVerification = ({
   handleEmailChange,
   handleSendCode,
   handleResendCode,
+  handleChangeEmail,
   isDisabled,
   emailError
 }: EmailVerificationProps) => {
   return (
     <div className="space-y-4">
-      <InputForm
-        label="Email"
-        id="email"
-        type="email"
-        value={email}
-        onChange={handleEmailChange}
-        error={emailError}
-        isRequired
-        placeholder="example@email.com"
-        disabled={showVerificationInput && isDisabled}
-      />
+      <div className="w-full flex items-center justify-between">
+        <div className="w-full flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
+            <LabelRequired isRequired={true}>Email</LabelRequired>
+          </div>
+          <Input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => handleEmailChange(e.target.value)}
+            error={emailError}
+            required
+            placeholder="example@email.com"
+            disabled={showVerificationInput}
+            className="w-full"
+          />
+        </div>
+        
+        {showVerificationInput && (
+          <Button
+            type="button"
+            variant="link"
+            size="default"
+            className="mt-[21px]"
+            onClick={handleChangeEmail}
+          >
+            Change email
+          </Button>
+        )}
+      </div>
       
       {showVerificationInput && (
         <div className="space-y-2">

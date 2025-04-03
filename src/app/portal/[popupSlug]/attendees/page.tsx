@@ -5,7 +5,15 @@ import AttendeesTable from "./components/AttendeesTable"
 import Permissions from "@/components/Permissions"
 
 const Page = () => {
-  const { attendees } = useGetData()
+  const { 
+    attendees, 
+    loading, 
+    totalAttendees, 
+    currentPage, 
+    pageSize, 
+    handlePageChange, 
+    handlePageSizeChange 
+  } = useGetData()
 
   return (
     <Permissions>
@@ -19,7 +27,15 @@ const Page = () => {
           </p>
         </div>
 
-        <AttendeesTable attendees={attendees} />
+        <AttendeesTable 
+          attendees={attendees} 
+          loading={loading}
+          totalAttendees={totalAttendees}
+          currentPage={currentPage}
+          pageSize={pageSize}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+        />
       </div>
     </Permissions>
   )

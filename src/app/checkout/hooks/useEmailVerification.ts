@@ -143,6 +143,19 @@ export const useEmailVerification = ({ email, onVerificationSuccess }: UseEmailV
     }
   };
 
+  const handleChangeEmail = () => {
+    // Reset all verification states
+    setShowVerificationInput(false);
+    setVerificationCode("");
+    setVerificationError(null);
+    
+    if (timerRef.current) {
+      clearInterval(timerRef.current);
+      timerRef.current = null;
+    }
+    setCountdown(0);
+  };
+
   return {
     showVerificationInput,
     verificationCode,
@@ -153,6 +166,7 @@ export const useEmailVerification = ({ email, onVerificationSuccess }: UseEmailV
     countdown,
     handleSendVerificationCode,
     handleVerifyCode,
-    handleResendCode
+    handleResendCode,
+    handleChangeEmail
   };
 }; 

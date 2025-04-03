@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Loader2, XCircle } from "lucide-react"
 import { CheckCircle } from "lucide-react"
 
-const DiscountCode = ({defaultOpen = false}: {defaultOpen?: boolean}) => {
+const DiscountCode = ({defaultOpen = false, label = true}: {defaultOpen?: boolean, label?: boolean}) => {
   const [open, setOpen] = useState(defaultOpen)
   const [discountCode, setDiscountCode] = useState('')
   const { getDiscountCode, loading, discountMsg, validDiscount, clearDiscountMessage } = useDiscountCode()
@@ -21,7 +21,11 @@ const DiscountCode = ({defaultOpen = false}: {defaultOpen?: boolean}) => {
 
   return (
     <div className="flex px-0 gap-4">
-      <p className="text-sm font-medium underline whitespace-nowrap cursor-pointer my-2" onClick={() => setOpen(!open)}>Have a coupon?</p>
+      {
+        label && (
+          <p className="text-sm font-medium underline whitespace-nowrap cursor-pointer my-2" onClick={() => setOpen(!open)}>Have a coupon?</p>
+        )
+      }
       {
         open ? (
           <div className="flex flex-col items-start gap-2">

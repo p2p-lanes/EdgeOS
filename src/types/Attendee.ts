@@ -12,14 +12,14 @@ export interface AttendeeProps {
 }
 
 export interface AttendeeDirectory {
-  bring_kids: string | boolean;
-  email: string;
-  first_name: string;
-  last_name: string;
-  telegram: string;
+  bring_kids: string | boolean | null;
+  email: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  telegram: string | null;
   participation: string | ProductsProps[];
-  role: string;
-  organization: string;
+  role: string | null;
+  organization: string | null;
 }
 
 export interface CreateAttendee {
