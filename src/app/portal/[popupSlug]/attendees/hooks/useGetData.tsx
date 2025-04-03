@@ -23,7 +23,6 @@ const useGetData = () => {
         }
       })
       if (response.status === 200) {
-        console.log('response', response.data)
         setAttendees(response.data.items)
         setTotalAttendees(response.data.pagination.total)
       }

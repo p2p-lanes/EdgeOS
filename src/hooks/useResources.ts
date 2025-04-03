@@ -40,12 +40,12 @@ const useResources = () => {
       status: canSeeAttendees ? 'active' : 'hidden',
       path: `/portal/${city?.slug}/attendees`,
     },
-    // {
-    //   name: 'Groups',
-    //   icon: Users,
-    //   status: 'active',
-    //   path: `/portal/${city?.slug}/groups`,
-    // },
+    {
+      name: 'Groups',
+      icon: Users,
+      status: 'active',
+      path: `/portal/${city?.slug}/groups`,
+    },
     {
       name: 'Housing',
       icon: Home,
