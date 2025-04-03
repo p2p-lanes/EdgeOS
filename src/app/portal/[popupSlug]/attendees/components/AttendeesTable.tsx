@@ -29,10 +29,18 @@ const AttendeesTable = ({
 }: AttendeesTableProps) => {
   const { products: productsPasses } = useGetPassesData()
 
-  if(loading) {
+  // if(loading) {
+  //   return (
+  //     <div className="flex justify-center items-center h-full">
+  //       <div className="w-6 h-6 border-2 border-gray-400 border-t-primary rounded-full animate-spin"></div>
+  //     </div>
+  //   )
+  // }
+
+  if(attendees.length === 0 && !loading) {
     return (
       <div className="flex justify-center items-center h-full">
-        <div className="w-6 h-6 border-2 border-gray-400 border-t-primary rounded-full animate-spin"></div>
+        <p className="text-center text-muted-foreground">No attendees found</p>
       </div>
     )
   }
@@ -43,18 +51,19 @@ const AttendeesTable = ({
         <Table>
           <Header />
           <TableBody>
-           {attendees.length === 0 ? (
-              <TableRow>
-                <TableCell className="h-24 text-center">
-                  <p className="h-24 text-center">
-                    No hay asistentes disponibles
-                  </p>
-                </TableCell>
-              </TableRow>
-            ) : (
-              attendees.map((attendee, index) => (
-                <TableRow key={index} className="border-b border-gray-100 hover:bg-gray-50 bg-white">
-                  <AttendeeCell attendee={attendee} />
+           {
+              loading ? (
+                <TableRow>
+                  <TableCell colSpan={6} className="h-[530px]">
+                    <div className="flex justify-center items-center h-full">
+                      <div className="w-6 h-6 border-2 border-gray-400 border-t-primary rounded-full animate-spin"></div>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                attendees.map((attendee, index) => (
+                  <TableRow key={index} className="border-b border-gray-100 hover:bg-gray-50 bg-white">
+                    <AttendeeCell attendee={attendee} />
                   <CommonCell value={attendee.email ?? ''} />
                   <CommonCell value={attendee.telegram ?? ''} />
                   <ParticipationTickets participation={attendee.participation} passes={productsPasses}/>
@@ -63,7 +72,8 @@ const AttendeesTable = ({
                   <CommonCell value={attendee.organization && attendee.organization?.length > 80 ? `${attendee.organization.slice(0, 80)}...` : attendee.organization ?? ''} />
                 </TableRow>
               ))
-            )}
+            )
+          }
           </TableBody>
         </Table>
         <ScrollBar orientation="horizontal" className="w-[80%]"/>
@@ -72,7 +82,7 @@ const AttendeesTable = ({
       <Pagination
         currentPage={currentPage}
         onPageChange={onPageChange}
-        totalPages={totalAttendees / pageSize}
+        totalPages={Math.ceil(totalAttendees / pageSize)}
       />
     </div>
   )

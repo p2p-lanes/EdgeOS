@@ -1,3 +1,7 @@
+import { ChevronLeftIcon } from "lucide-react"
+import { ChevronRightIcon } from "lucide-react"
+import { Button } from "../ui/button"
+
 interface PaginationProps {
   currentPage: number
   totalPages: number
@@ -9,25 +13,25 @@ const Pagination = ({ currentPage, totalPages, onPageChange }: PaginationProps) 
   
   return (
     <div className="flex justify-center items-center gap-2 mt-8 py-2">
-      <button 
+      <Button 
         onClick={() => onPageChange(Math.max(currentPage - 1, 1))}
         disabled={currentPage === 1}
-        className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 hover:bg-gray-100"
+        variant="outline"
         aria-label="Previous page"
       >
-        Previous
-      </button>
+        <ChevronLeftIcon className="w-4 h-4" />
+      </Button>
       <span className="text-sm font-medium px-2">
         Page {currentPage}/{totalPages}
       </span>
-      <button 
+      <Button 
         onClick={() => onPageChange(Math.min(currentPage + 1, totalPages))}
         disabled={currentPage === totalPages}
-        className="px-3 py-1 text-sm border rounded-md disabled:opacity-50 hover:bg-gray-100"
         aria-label="Next page"
+        variant="outline"
       >
-        Next
-      </button>
+        <ChevronRightIcon className="w-4 h-4" />
+      </Button>
     </div>
   )
 }

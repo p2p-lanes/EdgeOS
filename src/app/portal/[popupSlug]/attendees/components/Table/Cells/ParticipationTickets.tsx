@@ -11,12 +11,13 @@ const ParticipationTickets = ({participation, className, passes}: {participation
   if(typeof participation === 'string') return;
 
   const isPatreon = participation.some(product => product.category === 'patreon')
+  const hasMonthPass = participation.some(product => product.category === 'month')
   const products = passes.filter(product => product.category === 'week' && product.attendee_category === 'main')
 
   const weeks: (ProductsPass | null)[] = [null, null, null, null];
 
   products.forEach((product, index) => {
-    if(participation.find(p => p.name.toLowerCase() === product.name.toLowerCase())) {
+    if(hasMonthPass || participation.find(p => p.name.toLowerCase() === product.name.toLowerCase())) {
       weeks[index] = {...product, purchased: true}
       return;
     }

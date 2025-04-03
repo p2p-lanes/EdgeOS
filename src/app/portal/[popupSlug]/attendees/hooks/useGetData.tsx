@@ -23,8 +23,9 @@ const useGetData = () => {
         }
       })
       if (response.status === 200) {
-        setAttendees(response.data.results || response.data)
-        setTotalAttendees(response.data.count || response.data.length)
+        console.log('response', response.data)
+        setAttendees(response.data.items)
+        setTotalAttendees(response.data.pagination.total)
       }
     } catch (error) {
       console.error("Error fetching attendees:", error)
