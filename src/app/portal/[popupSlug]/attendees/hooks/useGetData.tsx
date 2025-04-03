@@ -18,8 +18,8 @@ const useGetData = () => {
     try {
       const response = await api.get(`applications/attendees_directory/${city?.id}`, {
         params: {
-          page,
-          page_size: size
+          skip: (page - 1) * size,
+          limit: pageSize
         }
       })
       if (response.status === 200) {
