@@ -1,6 +1,9 @@
 import InputForm, { AddonInputForm } from "@/components/ui/Form/Input";
 import RadioGroupForm from "@/components/ui/Form/RadioGroup";
 import { GenderOption } from "../../types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { LabelRequired } from "@/components/ui/label";
 
 interface PersonalInfoFormProps {
   formData: {
@@ -13,6 +16,7 @@ interface PersonalInfoFormProps {
     email: string;
   };
   handleInputChange: (field: string, value: string) => void;
+  handleChangeEmail?: () => void;
   errors: Record<string, string>;
 }
 
@@ -23,19 +27,42 @@ const genderOptions: GenderOption[] = [
   { value: "prefer-not-to-say", label: "Prefer not to say" }
 ];
 
-const PersonalInfoForm = ({ formData, handleInputChange, errors }: PersonalInfoFormProps) => {
+const PersonalInfoForm = ({ 
+  formData, 
+  handleInputChange, 
+  handleChangeEmail, 
+  errors
+}: PersonalInfoFormProps) => {
   return (
-    <div className="space-y-4 animate-in fade-in duration-500">
-      
-      {/* Email (solo lectura) */}
-      <InputForm
-        label="Email"
-        id="email-verified"
-        type="email"
-        value={formData.email}
-        onChange={() => {}} // No se puede cambiar
-        disabled={true}
-      />
+    <div className="space-y-4 animate-in fade-in duration-500">      
+      {/* Email con botón para cambiar */}
+      <div className="w-full flex items-center justify-between">
+        <div className="w-full flex flex-col gap-2">
+          <div className="flex flex-col gap-2">
+            <LabelRequired isRequired={false}>Email</LabelRequired>
+          </div>
+          <Input
+            id="email-verified"
+            type="email"
+            value={formData.email}
+            onChange={() => {}} // No se puede cambiar
+            disabled={true}
+            className="w-full"
+          />
+        </div>
+        
+        {handleChangeEmail && (
+          <Button
+            type="button"
+            variant="link"
+            size="default"
+            className="mt-[21px]"
+            onClick={handleChangeEmail}
+          >
+            Change email
+          </Button>
+        )}
+      </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         <InputForm

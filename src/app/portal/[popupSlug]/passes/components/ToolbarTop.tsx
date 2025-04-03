@@ -8,8 +8,9 @@ import { AttendeeModal } from "./AttendeeModal"
 import InvoiceModal from "./common/InvoiceModal"
 import { useState } from "react"
 import EditPassesButton from "./common/Buttons/EditPassesButton"
+import DiscountCode from "./common/DiscountCode"
 
-const ToolbarTop = ({canEdit = false, viewInvoices = true}: {canEdit?: boolean, viewInvoices?: boolean}) => {
+const ToolbarTop = ({canEdit = false, viewInvoices = true, positionCoupon = 'bottom'}: {canEdit?: boolean, viewInvoices?: boolean, positionCoupon?: 'top' | 'bottom' | 'right'}) => {
   const { getAttendees } = useApplication()
   const { handleOpenModal, handleCloseModal, modal } = useModal()
   const { addAttendee } = useAttendee()
@@ -28,7 +29,7 @@ const ToolbarTop = ({canEdit = false, viewInvoices = true}: {canEdit?: boolean, 
 
   return (
     <div className="flex justify-between w-full flex-wrap gap-2">
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {!hasSpouse && (
           <Button
             variant="outline"
@@ -62,7 +63,7 @@ const ToolbarTop = ({canEdit = false, viewInvoices = true}: {canEdit?: boolean, 
         )}
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center">
         {canEdit && <EditPassesButton/>}
         {
           viewInvoices && (
@@ -75,8 +76,15 @@ const ToolbarTop = ({canEdit = false, viewInvoices = true}: {canEdit?: boolean, 
             </>
           )
         }
-      </div>
 
+        {
+          positionCoupon === 'right' && (
+            <div className="ml-2">
+              <DiscountCode defaultOpen={true} label={false}/>
+            </div>
+          )
+        }
+      </div>
     </div>
   )
 }

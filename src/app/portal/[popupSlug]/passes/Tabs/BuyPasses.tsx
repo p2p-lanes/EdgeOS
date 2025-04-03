@@ -14,7 +14,7 @@ import TotalFloatingBar from "../components/common/TotalFloatingBar"
 import { useState } from "react"
 import { useTotal } from "@/providers/totalProvider"
 
-const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, defaultOpenDiscount = false}: {floatingBar?: boolean, viewInvoices?: boolean, canEdit?: boolean, defaultOpenDiscount?: boolean}) => {
+const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, defaultOpenDiscount = false, positionCoupon = 'bottom'}: {floatingBar?: boolean, viewInvoices?: boolean, canEdit?: boolean, defaultOpenDiscount?: boolean, positionCoupon?: 'top' | 'bottom' | 'right'}) => {
   const { toggleProduct, attendeePasses: attendees, products, isEditing } = usePassesProvider()
   const [openCart, setOpenCart] = useState<boolean>(false)
   const mainAttendee = attendees.find(a => a.category === 'main')
@@ -29,8 +29,14 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
       <BalancePasses />
 
       <div className="my-4 flex justify-start">
-        <ToolbarTop canEdit={canEdit} viewInvoices={viewInvoices}/>
+        <ToolbarTop canEdit={canEdit} viewInvoices={viewInvoices} positionCoupon={positionCoupon}/>
       </div>
+
+      {
+        positionCoupon === 'top' && (
+          <DiscountCode defaultOpen={defaultOpenDiscount}/>
+        )
+      }
 
       <BannerDiscount isPatreon={(specialProduct?.selected || specialProduct?.purchased) ?? false} products={products} />
 
@@ -45,6 +51,7 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
         </div>
       )}
 
+
       <div className="flex flex-col gap-4">
         {
           attendees.map(attendee => (
@@ -53,7 +60,11 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
         }
       </div>
 
-      <DiscountCode defaultOpen={defaultOpenDiscount}/>
+      {
+        positionCoupon === 'bottom' && (
+          <DiscountCode defaultOpen={defaultOpenDiscount}/>
+        )
+      }
 
       {
         !floatingBar && someProductSelected && (
