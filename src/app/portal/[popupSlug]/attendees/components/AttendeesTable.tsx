@@ -7,6 +7,7 @@ import CommonCell from "./Table/Cells/CommonCell"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 import useGetPassesData from "@/hooks/useGetPassesData"
 import PaginationControls from "./Pagination"
+import Pagination from "@/components/common/Pagination"
 
 type AttendeesTableProps = {
   attendees: AttendeeDirectory[]
@@ -24,8 +25,7 @@ const AttendeesTable = ({
   totalAttendees, 
   currentPage, 
   pageSize, 
-  onPageChange, 
-  onPageSizeChange 
+  onPageChange,
 }: AttendeesTableProps) => {
   const { products: productsPasses } = useGetPassesData()
 
@@ -66,15 +66,13 @@ const AttendeesTable = ({
             )}
           </TableBody>
         </Table>
-        <ScrollBar orientation="horizontal" />
+        <ScrollBar orientation="horizontal" className="w-[80%]"/>
       </ScrollArea>
 
-      <PaginationControls
+      <Pagination
         currentPage={currentPage}
-        totalItems={totalAttendees}
-        pageSize={pageSize}
         onPageChange={onPageChange}
-        onPageSizeChange={onPageSizeChange}
+        totalPages={totalAttendees / pageSize}
       />
     </div>
   )

@@ -4,14 +4,14 @@ import { useState } from 'react'
 import TeamHeader from './components/TeamHeader'
 import SearchBar from './components/SearchBar'
 import MembersList from './components/MembersList'
-import Pagination from './components/Pagination'
 import { teamMembers } from './data/teamMembers'
+import Pagination from '@/components/common/Pagination'
 
 // Componente principal de la página de grupos
 const GroupsPage = () => {
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
-  const membersPerPage = 4 // Reducido para mostrar paginación con menos datos
+  const membersPerPage = 10 // Reducido para mostrar paginación con menos datos
 
   // Filtrado de miembros basado en el término de búsqueda
   const filteredMembers = teamMembers.filter(member => 
@@ -41,7 +41,7 @@ const GroupsPage = () => {
       
       <MembersList members={currentMembers} />
       
-      <Pagination 
+      <Pagination
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={handlePageChange}
