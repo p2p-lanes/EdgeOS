@@ -2,7 +2,7 @@ import { Resource } from "@/types/resources"
 import { SidebarMenuButton } from "../SidebarComponents"
 import { cn } from "@/lib/utils"
 
-const ActiveResource = ({ resource, handleClickPath, level, color }: { resource: Resource, handleClickPath: (path: string) => void, level: number, color: string }) => {
+const ActiveResource = ({ resource, handleClickPath, level, color, isGroup = false }: { resource: Resource, handleClickPath: (path: string) => void, level: number, color: string, isGroup?: boolean }) => {
   const isActive = resource.status === 'active'
   
   const handleClick = () => {
@@ -14,7 +14,7 @@ const ActiveResource = ({ resource, handleClickPath, level, color }: { resource:
   return (
     <SidebarMenuButton
       onClick={handleClick}
-      className={cn('py-5', !isActive && 'opacity-50', level > 0 && 'pl-6')}
+      className={cn(isGroup ? 'py-2' : 'py-5', !isActive && 'opacity-50', level > 0 && 'pl-6')}
     >
       {resource.icon && <resource.icon className="size-4 mr-2" />}
       <span className="group-data-[collapsible=icon]:hidden">{resource.name}</span>

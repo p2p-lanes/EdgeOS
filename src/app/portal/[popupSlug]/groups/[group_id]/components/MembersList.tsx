@@ -1,3 +1,4 @@
+
 import { Member } from '../types'
 import MemberItem from './MemberItem'
 
@@ -13,6 +14,8 @@ const MembersList = ({ members }: MembersListProps) => {
       </div>
     )
   }
+
+  console.log(members)
 
   return (
     <div className="space-y-2">

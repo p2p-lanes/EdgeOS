@@ -7,6 +7,8 @@ import ActiveResource from "./StatusResource/ActiveResource"
 import SoonResource from "./StatusResource/SoonResource"
 import InactiveResource from "./StatusResource/InactiveResource"
 import DisabledResource from "./StatusResource/DisabledResource"
+import { Separator } from "../ui/separator"
+import GroupsResources from "./Groups/GroupsResources"
 
 const statusColor = (status: string) => {
   if(status === 'pending') return 'bg-yellow-100 text-yellow-800'
@@ -68,6 +70,8 @@ const ResourcesMenu = () => {
             {resources.map((resource) => (
               <ResourceMenuItem key={resource.name} resource={resource} />
             ))}
+            <Separator className="my-4" />
+            <GroupsResources />
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>

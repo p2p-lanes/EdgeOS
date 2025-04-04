@@ -41,12 +41,6 @@ const useResources = () => {
       path: `/portal/${city?.slug}/attendees`,
     },
     {
-      name: 'Groups',
-      icon: Users,
-      status: 'active',
-      path: `/portal/${city?.slug}/groups`,
-    },
-    {
       name: 'Housing',
       icon: Home,
       status: isEdgeAustin ? 'hidden' : 'soon' as const
