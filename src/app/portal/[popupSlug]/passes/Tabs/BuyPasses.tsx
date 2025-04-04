@@ -24,7 +24,13 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
 
   return (
     <div className="space-y-6 pb-[20px] md:pb-0">
-      <TitleTabs title="Buy Passes" subtitle="Choose your passes below. Don't forget to add tickets for family members who want to join you." />
+      <TitleTabs title="Buy Passes">
+        <p>
+          Choose your passes below and make sure to add tickets for any family members who will be joining you. You can explore more about the event's programming
+           <a href="https://edgeesmeralda2025.substack.com/p/programming-philosophy-and-preview" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline"> here</a>.
+           Please note that tickets <span className="font-bold">do not include accommodation</span>.
+        </p>
+      </TitleTabs>
 
       <BalancePasses />
 
