@@ -80,7 +80,6 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded }: TeamHeaderProps) => 
             variant="outline" 
             className="bg-white"
             onClick={() => setIsImportModalOpen(true)}
-            disabled
           >
             <Import className="w-4 h-4" /> Import
           </Button>

@@ -18,7 +18,11 @@ const GroupsResources = () => {
   
   return (
     <div className="flex flex-col ml-2">
-      <p className="text-xs font-medium text-gray-500 mb-2">Groups</p>
+      {
+        groups.length > 0 && (
+          <p className="text-xs font-medium text-gray-500 mb-2">Groups</p>
+        )
+      }
       {groups.map((group) => (
         <ActiveResource 
           key={group.id} 

@@ -78,6 +78,7 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
           const sheetName = workbook.SheetNames[0]
           const worksheet = workbook.Sheets[sheetName]
           const json = utils.sheet_to_json<MemberData>(worksheet)
+          console.log('json', json)
           resolve(json)
         } catch (error) {
           reject(error)
@@ -197,7 +198,7 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
     setIsSubmitting(true)
 
     try {
-      await api.post(`/groups/${group_id}/import_members`, { members: parsedData })
+      await api.post(`/groups/${group_id}/members/batch`, { members: parsedData })
       toast.success(`Successfully imported ${parsedData.length} members`)
       
       if (onSuccess) {
