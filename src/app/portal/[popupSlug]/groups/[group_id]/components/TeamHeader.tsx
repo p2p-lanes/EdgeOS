@@ -72,7 +72,7 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded }: TeamHeaderProps) => 
       <div className="flex flex-wrap gap-3 justify-between">
 
         <div className="flex items-center justify-between">
-          <p className="text-sm text-gray-500">{totalMembers}/20 members</p>
+          <p className="text-sm text-gray-500">{totalMembers} members</p>
         </div>
 
         <div className="flex gap-3 flex-wrap">

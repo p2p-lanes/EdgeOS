@@ -128,6 +128,7 @@ const MemberFormModal = ({ open, onClose, onSuccess, member }: MemberFormModalPr
           if (res.status === 200) {
             toast.success('Member updated successfully')
           } else {
+            console.log('ress', res)
             toast.error('Failed to update member')
           }
         })
@@ -137,7 +138,8 @@ const MemberFormModal = ({ open, onClose, onSuccess, member }: MemberFormModalPr
           if (res.status === 200) {
             toast.success('Member added successfully')
           } else {
-            toast.error('Failed to add member')
+            console.log('ress', res)
+            toast.error(res.data.detail || 'Failed to add member')
           }
         })
       }

@@ -4,8 +4,14 @@ import { Button } from '@/components/ui/button'
 import { api } from '@/api'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/modal'
-import { FileUp, Upload, AlertCircle, Check, X, Info } from 'lucide-react'
+import { FileUp, Upload, AlertCircle, Check, X, Info, HelpCircle } from 'lucide-react'
 import { read, utils } from 'xlsx'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
 
 interface ImportMembersModalProps {
   open: boolean
@@ -31,6 +37,7 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
   const [validationError, setValidationError] = useState<string | null>(null)
   const [parsedData, setParsedData] = useState<MemberData[]>([])
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'validating' | 'validated' | 'error'>('idle')
+  const [updateExisting, setUpdateExisting] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const resetState = () => {
@@ -198,14 +205,41 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
     setIsSubmitting(true)
 
     try {
-      await api.post(`/groups/${group_id}/members/batch`, { members: parsedData })
-      toast.success(`Successfully imported ${parsedData.length} members`)
-      
-      if (onSuccess) {
-        onSuccess()
-      } else {
-        onClose()
-      }
+      await api.post(`/groups/${group_id}/members/batch`, { 
+        members: parsedData,
+        update_existing: updateExisting 
+      }).then((res) => {  
+        console.log('res', res)
+        if (res.status >= 200 && res.status < 300) {
+          // Verificar si hay miembros con error en la respuesta
+          console.log('res', res.data)
+          const failedMembers = Array.isArray(res.data) ? res.data.filter((member: any) => member.success === false) : [];
+          
+          if (failedMembers.length > 0) {
+            // Mostrar errores para cada miembro fallido
+            failedMembers.forEach((member: any) => {
+              toast.error(`Error for ${member.email}: ${member.err_msg}`);
+            });
+            
+            // Mostrar toast de éxito para los miembros importados correctamente
+            const successCount = parsedData.length - failedMembers.length;
+            if (successCount > 0) {
+              toast.success(`Successfully imported ${successCount} members`);
+            }
+          } else {
+            // Todos los miembros fueron importados exitosamente
+            toast.success(`Successfully imported ${parsedData.length} members`);
+          }
+          
+          if (onSuccess) {
+            onSuccess();
+          } else {
+            onClose();
+          }
+        } else {
+          toast.error(res.data.detail || 'Failed to import members')
+        }
+      })
     } catch (error: any) {
       console.error('Error importing members:', error)
       toast.error(error.response?.data?.message || 'Failed to import members')
@@ -316,6 +350,28 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
             </div>
           </div>
         )}
+
+        {/* Update existing members checkbox */}
+        <div className="flex items-center space-x-2">
+          <input
+            type="checkbox"
+            id="updateExisting"
+            checked={updateExisting}
+            onChange={(e) => setUpdateExisting(e.target.checked)}
+            className="rounded border-gray-300 text-primary focus:ring-primary"
+          />
+          <label htmlFor="updateExisting" className="text-sm font-medium text-gray-700">
+            Update existing members
+          </label>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <HelpCircle className="h-4 w-4 text-gray-400 cursor-help" />
+            </TooltipTrigger>
+            <TooltipContent className="max-w-xs">
+              <p>If checked, existing members will be updated with new data from the file. If unchecked, existing members will be skipped.</p>
+            </TooltipContent>
+          </Tooltip>
+        </div>
 
         {/* Action buttons */}
         <div className="flex justify-between gap-3">

@@ -1,5 +1,5 @@
 import { SidebarGroupContent, SidebarGroup, SidebarContent, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuSub, SidebarMenuSubItem } from "./SidebarComponents"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 import { Resource } from "@/types/resources"
 import useResources from "@/hooks/useResources"
@@ -9,6 +9,8 @@ import InactiveResource from "./StatusResource/InactiveResource"
 import DisabledResource from "./StatusResource/DisabledResource"
 import { Separator } from "../ui/separator"
 import GroupsResources from "./Groups/GroupsResources"
+import { useState, useEffect, useCallback } from "react"
+import { Loader2 } from "lucide-react"
 
 const statusColor = (status: string) => {
   if(status === 'pending') return 'bg-yellow-100 text-yellow-800'
@@ -21,17 +23,37 @@ const statusColor = (status: string) => {
 
 const ResourceMenuItem: React.FC<{ resource: Resource, level?: number }> = ({ resource, level = 0 }) => {
   const router = useRouter()
+  const pathname = usePathname()
+  const [isLoading, setIsLoading] = useState(false)
+  const [targetPath, setTargetPath] = useState<string | null>(null)
 
-  const handleClickPath = (path?: string) => {
-    if(path) router.push(path)
-  }
+  // Reset loading state when route changes
+  useEffect(() => {
+    if (isLoading && targetPath && pathname !== targetPath) {
+      setIsLoading(false)
+      setTargetPath(null)
+    }
+  }, [pathname, isLoading, targetPath])
+
+  const handleClickPath = useCallback((path?: string) => {
+    if (path) {
+      setIsLoading(true)
+      setTargetPath(path)
+      router.push(path)
+    }
+  }, [router])
 
   return(
-    <SidebarMenuItem>
+    <SidebarMenuItem className={isLoading ? "opacity-70 pointer-events-none" : ""}>
       <Tooltip>
         <TooltipTrigger asChild>
           {
-            resource.status === 'active' ? (
+            isLoading ? (
+              <div className="flex items-center gap-2 px-3 py-2">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                <span>Loading...</span>
+              </div>
+            ) : resource.status === 'active' ? (
               <ActiveResource resource={resource} handleClickPath={handleClickPath} level={level} color={statusColor(resource.value as string)} />
             ) : resource.status === 'soon' ? (
               <SoonResource resource={resource} level={level} color={statusColor(resource.value as string)} />
