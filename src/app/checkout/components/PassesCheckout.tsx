@@ -8,25 +8,6 @@ import Providers from "./providers/Providers"
 
 // Componente principal que utiliza los providers originales
 const PassesCheckout = () => {
-  const [isLoading, setIsLoading] = useState(true)
-  
-  // Simular carga de datos
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false)
-    }, 1500)
-    
-    return () => clearTimeout(timer)
-  }, [])
-  
-  if (isLoading) {
-    return (
-      <div className="flex flex-col items-center justify-center p-8">
-        <div className="h-12 w-12 animate-spin rounded-full border-4 border-primary border-t-transparent"></div>
-        <p className="mt-4 text-muted-foreground">Loading passes information...</p>
-      </div>
-    )
-  }
   
   return (
     <motion.div
@@ -37,7 +18,6 @@ const PassesCheckout = () => {
     >
       <Providers>
         <div className="p-6">
-          {/* Reutilizando directamente el componente BuyPasses */}
           <BuyPasses floatingBar={false} viewInvoices={false} canEdit={false} defaultOpenDiscount={true} positionCoupon={'right'}/>
         </div>
       </Providers>
