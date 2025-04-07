@@ -3,8 +3,8 @@ import { useParams } from 'next/navigation'
 import { Button } from '@/components/ui/button'
 import { api } from '@/api'
 import { toast } from 'sonner'
-import { Member } from '../types'
 import Modal from '@/components/ui/modal'
+import { Member } from '@/types/Group'
 
 interface ConfirmDeleteModalProps {
   open: boolean
