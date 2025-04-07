@@ -1,12 +1,12 @@
-
 import { Member } from '../types'
 import MemberItem from './MemberItem'
 
 interface MembersListProps {
   members: Member[]
+  onMemberUpdated?: () => void
 }
 
-const MembersList = ({ members }: MembersListProps) => {
+const MembersList = ({ members, onMemberUpdated }: MembersListProps) => {
   if (members.length === 0) {
     return (
       <div className="p-8 text-center text-gray-500">
@@ -15,12 +15,14 @@ const MembersList = ({ members }: MembersListProps) => {
     )
   }
 
-  console.log(members)
-
   return (
     <div className="space-y-2">
       {members.map((member) => (
-        <MemberItem key={member.id} member={member} />
+        <MemberItem 
+          key={member.id} 
+          member={member} 
+          onMemberUpdated={onMemberUpdated}
+        />
       ))}
     </div>
   )

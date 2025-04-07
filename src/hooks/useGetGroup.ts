@@ -2,24 +2,18 @@ import { useState, useEffect } from "react"
 import { api } from "@/api"
 import useGetTokenAuth from "./useGetTokenAuth"
 import useAuthentication from "./useAuthentication"
-import { Member } from "@/app/portal/[popupSlug]/groups/[group_id]/types"
 import { ApplicationProps } from "@/types/Application"
 
-interface GroupData {
-  id: string
-  name: string
-  members: Member[]
-}
-
+import { GroupProps } from "@/types/Group"
 interface UseGetGroupResult {
-  group: GroupData | null
+  group: GroupProps | null
   loading: boolean
   error: string | null
   refetch: () => Promise<void>
 }
 
 const useGetGroup = (groupId: string | null): UseGetGroupResult => {
-  const [group, setGroup] = useState<GroupData | null>(null)
+  const [group, setGroup] = useState<GroupProps | null>(null)
   const [loading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<string | null>(null)
   

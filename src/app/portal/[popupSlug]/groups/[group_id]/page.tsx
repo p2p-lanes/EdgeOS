@@ -12,7 +12,7 @@ import { Loader } from '@/components/ui/Loader'
 // Componente principal de la página de grupos
 const GroupPage = () => {
   const { group_id } = useParams() as { group_id: string }
-  const { group, loading, error } = useGetGroup(group_id)
+  const { group, loading, error, refetch } = useGetGroup(group_id)
   
   const [searchTerm, setSearchTerm] = useState('')
   const [currentPage, setCurrentPage] = useState(1)
@@ -59,7 +59,7 @@ const GroupPage = () => {
     return (
       <div className="max-w-[820px] mx-auto py-8 text-center">
         <h2 className="text-xl font-semibold text-red-600 mb-2">Error</h2>
-        <p className="text-gray-600">{error || 'No se pudo cargar el grupo'}</p>
+        <p className="text-gray-600">{error || 'No group found'}</p>
       </div>
     )
   }
@@ -68,7 +68,8 @@ const GroupPage = () => {
     <div className="max-w-[820px] mx-auto space-y-6">
       <TeamHeader 
         totalMembers={group.members.length} 
-        groupName={group.name}
+        group={group}
+        onMemberAdded={() => refetch()}
       />
       
       <SearchBar 
@@ -78,11 +79,14 @@ const GroupPage = () => {
       
       {filteredMembers.length === 0 ? (
         <div className="p-8 text-center bg-white rounded-md border">
-          <p className="text-gray-500">No se encontraron miembros con ese término de búsqueda.</p>
+          <p className="text-gray-500">No members found</p>
         </div>
       ) : (
         <>
-          <MembersList members={currentMembers } />
+          <MembersList 
+            members={currentMembers} 
+            onMemberUpdated={refetch}
+          />
           
           <Pagination
             currentPage={currentPage}

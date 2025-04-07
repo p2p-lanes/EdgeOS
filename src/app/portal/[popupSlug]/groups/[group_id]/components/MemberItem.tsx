@@ -4,9 +4,58 @@ import { ChevronDown, Pencil, Trash2, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Member } from '../types'
+import useGetPassesData from '@/hooks/useGetPassesData'
+import ParticipationTickets from '@/components/common/ParticipationTickets'
+import MemberFormModal from './AddMemberModal'
+import ConfirmDeleteModal from './ConfirmDeleteModal'
 
-const MemberItem = ({ member }: { member: Member }) => {
+interface MemberItemProps {
+  member: Member
+  onMemberUpdated?: () => void
+}
+
+const MemberItem = ({ member, onMemberUpdated }: MemberItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const { products: passes } = useGetPassesData()
+  const mainAttendee = member.attendees.find(attendee => attendee.category === 'main')
+
+  const handleEditClick = (e: React.MouseEvent) => {
+    e.stopPropagation() // Evitar que se expanda/colapse al hacer clic en editar
+    setIsEditModalOpen(true)
+  }
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.stopPropagation() // Evitar que se expanda/colapse al hacer clic en eliminar
+    setIsDeleteModalOpen(true)
+  }
+
+  const handleModalClose = () => {
+    setIsEditModalOpen(false)
+  }
+
+  const handleDeleteModalClose = () => {
+    setIsDeleteModalOpen(false)
+  }
+
+  const handleUpdateSuccess = () => {
+    handleModalClose()
+    
+    // Llamar a la función de actualización pasada desde el componente padre
+    if (onMemberUpdated) {
+      onMemberUpdated()
+    }
+  }
+
+  const handleDeleteSuccess = () => {
+    handleDeleteModalClose()
+    
+    // Llamar a la función de actualización pasada desde el componente padre
+    if (onMemberUpdated) {
+      onMemberUpdated()
+    }
+  }
 
   return (
     <div className="border rounded-md overflow-hidden bg-white">
@@ -67,15 +116,7 @@ const MemberItem = ({ member }: { member: Member }) => {
                 {/* Columna derecha con PASSES */}
                 <div>
                   <p className="text-xs text-gray-500 uppercase font-medium mb-1">PASSES</p>
-                  {/* <div className="flex gap-2 mt-1">
-                    {member.passes.map((pass, idx) => (
-                      <span 
-                        key={idx}
-                        className={`inline-block w-8 h-8 rounded-md border border-gray-200 ${getPassColorClass(pass.color)}`} 
-                        title={pass.type}
-                      />
-                    ))}
-                  </div> */}
+                  <ParticipationTickets participation={mainAttendee?.products || []} passes={passes}/>
                 </div>
               </div>
               
@@ -83,6 +124,7 @@ const MemberItem = ({ member }: { member: Member }) => {
                 <Button 
                   variant={'outline'}
                   aria-label="Edit member"
+                  onClick={handleEditClick}
                 >
                   <Pencil size={16} className="mr-2" /> Edit
                 </Button>
@@ -90,7 +132,8 @@ const MemberItem = ({ member }: { member: Member }) => {
                 <Button 
                   variant={'outline'}
                   aria-label="Remove member"
-                  className='text-red-600'
+                  className='text-red-500 border-red-500 hover:bg-red-500 hover:text-white'
+                  onClick={handleDeleteClick}
                 >
                   <Trash2 size={16} className="mr-2" /> Remove
                 </Button>
@@ -99,6 +142,22 @@ const MemberItem = ({ member }: { member: Member }) => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Modal para editar miembro */}
+      <MemberFormModal
+        open={isEditModalOpen}
+        onClose={handleModalClose}
+        member={member}
+        onSuccess={handleUpdateSuccess}
+      />
+
+      {/* Modal para confirmar eliminación */}
+      <ConfirmDeleteModal
+        open={isDeleteModalOpen}
+        onClose={handleDeleteModalClose}
+        member={member}
+        onSuccess={handleDeleteSuccess}
+      />
     </div>
   )
 }

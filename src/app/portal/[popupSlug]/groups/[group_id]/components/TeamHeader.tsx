@@ -1,16 +1,55 @@
 import { Button } from '@/components/ui/button'
-import { Plus, Share2 } from 'lucide-react'
+import { Check, Copy, Plus, Share2 } from 'lucide-react'
+import { useState } from 'react'
+import { toast } from 'sonner'
+import { getBaseUrl } from '@/utils/environment'
+import { GroupProps } from '@/types/Group'
+import MemberFormModal from './AddMemberModal'
 
 interface TeamHeaderProps {
   totalMembers: number
-  groupName: string
+  group: GroupProps
+  onMemberAdded?: () => void
 }
 
-const TeamHeader = ({ totalMembers, groupName }: TeamHeaderProps) => {
+const TeamHeader = ({ totalMembers, group, onMemberAdded }: TeamHeaderProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [isCopied, setIsCopied] = useState(false)
+
+  const handleModalClose = () => {
+    setIsModalOpen(false)
+  }
+
+  const handleMemberAdded = () => {
+    if (onMemberAdded) {
+      onMemberAdded()
+    }
+    handleModalClose()
+  }
+
+  const handleCopyCheckoutLink = async () => {
+    const baseUrl = getBaseUrl()
+    const checkoutLink = `${baseUrl}/checkout?group=${group.slug}`
+    
+    try {
+      await navigator.clipboard.writeText(checkoutLink)
+      setIsCopied(true)
+      toast.success('Express Checkout link copied to clipboard!')
+      
+      // Reset copied state after 2 seconds
+      setTimeout(() => {
+        setIsCopied(false)
+      }, 2000)
+    } catch (error) {
+      console.error('Failed to copy:', error)
+      toast.error('Failed to copy link to clipboard')
+    }
+  }
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold mb-2">{groupName}</h1>
+        <h1 className="text-2xl font-bold mb-2">{group.name}</h1>
         <p className="text-gray-500 text-sm">
           View and manage your group members here. Need to make changes? You can click on a member and edit
           or remove them from the group.
@@ -24,16 +63,36 @@ const TeamHeader = ({ totalMembers, groupName }: TeamHeaderProps) => {
         </div>
 
         <div className="flex gap-3">
-          <Button variant="outline" className="bg-white">
-            <Plus className="w-4 h-4" /> Add a new member
+          <Button 
+            variant="outline" 
+            className="bg-white"
+            onClick={() => setIsModalOpen(true)}
+          >
+            <Plus className="w-4 h-4 mr-2" /> Add a new member
           </Button>
           
-          <Button>
-            <Share2 className="w-4 h-4" /> Share Express Checkout link
+          <Button
+            onClick={handleCopyCheckoutLink}
+          >
+            {isCopied ? (
+              <>
+                <Check className="w-4 h-4 mr-2" /> Copied
+              </>
+            ) : (
+              <>
+                <Share2 className="w-4 h-4 mr-2" /> Share Express Checkout link
+              </>
+            )}
           </Button>
         </div>
 
       </div>
+
+      <MemberFormModal
+        open={isModalOpen} 
+        onClose={handleModalClose}
+        onSuccess={handleMemberAdded}
+      />
       
     </div>
   )

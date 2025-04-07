@@ -1,13 +1,13 @@
 import {Table, TableBody, TableCell, TableRow} from "@/components/ui/table"
 import { AttendeeDirectory } from "@/types/Attendee"
-import ParticipationTickets from "./Table/Cells/ParticipationTickets"
 import Header from "./Table/Header"
 import AttendeeCell from "./Table/Cells/AttendeeCell"
 import CommonCell from "./Table/Cells/CommonCell"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
-import useGetPassesData from "@/hooks/useGetPassesData"
-import PaginationControls from "./Pagination"
 import Pagination from "@/components/common/Pagination"
+import ParticipationTickets from "@/components/common/ParticipationTickets"
+import CellControl from "./Table/Cells/CellControl"
+import { useProductsData } from "@/providers/productsProvider"
 
 type AttendeesTableProps = {
   attendees: AttendeeDirectory[]
@@ -27,7 +27,7 @@ const AttendeesTable = ({
   pageSize, 
   onPageChange,
 }: AttendeesTableProps) => {
-  const { products: productsPasses } = useGetPassesData()
+  const { products, loading: productsLoading, refreshProductsData } = useProductsData()
 
   // if(loading) {
   //   return (
@@ -66,7 +66,11 @@ const AttendeesTable = ({
                     <AttendeeCell attendee={attendee} />
                   <CommonCell value={attendee.email ?? ''} />
                   <CommonCell value={attendee.telegram ?? ''} />
-                  <ParticipationTickets participation={attendee.participation} passes={productsPasses}/>
+                  <TableCell>                         
+                    <CellControl value={attendee.participation}>
+                      <ParticipationTickets participation={attendee.participation} passes={products}/>
+                    </CellControl>
+                  </TableCell>
                   <CommonCell value={attendee.brings_kids === '*' ? '*' : attendee.brings_kids ? "Yes" : "No"} />
                   <CommonCell value={attendee.role && attendee.role?.length > 60 ? `${attendee.role.slice(0, 60)}...` : attendee.role ?? ''} />
                   <CommonCell value={attendee.organization && attendee.organization?.length > 80 ? `${attendee.organization.slice(0, 80)}...` : attendee.organization ?? ''} />
