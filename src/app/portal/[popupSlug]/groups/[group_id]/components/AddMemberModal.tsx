@@ -9,6 +9,7 @@ import { api } from '@/api'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/modal'
 import { Member } from '@/types/Group'
+import { GENDER_OPTIONS } from '@/constants/util'
 
 interface MemberFormModalProps {
   open: boolean
@@ -26,14 +27,6 @@ interface FormData {
   role: string | null
   gender: string | null
 }
-
-const GENDER_OPTIONS = [
-  { value: 'male', label: 'Male' },
-  { value: 'female', label: 'Female' },
-  { value: 'non-binary', label: 'Non-binary' },
-  { value: 'prefer-not-to-say', label: 'Prefer not to say' },
-  { value: 'other', label: 'Other' }
-]
 
 const MemberFormModal = ({ open, onClose, onSuccess, member }: MemberFormModalProps) => {
   const { group_id } = useParams() as { group_id: string }

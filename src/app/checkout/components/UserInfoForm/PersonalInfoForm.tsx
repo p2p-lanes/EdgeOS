@@ -4,6 +4,7 @@ import { GenderOption } from "../../types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LabelRequired } from "@/components/ui/label";
+import { GENDER_OPTIONS } from "@/constants/util";
 
 interface PersonalInfoFormProps {
   formData: {
@@ -19,13 +20,6 @@ interface PersonalInfoFormProps {
   handleChangeEmail?: () => void;
   errors: Record<string, string>;
 }
-
-const genderOptions: GenderOption[] = [
-  { value: "Male", label: "Male" },
-  { value: "Female", label: "Female" },
-  { value: "Non-binary", label: "Non-binary" },
-  { value: "Prefer not to say", label: "Prefer not to say" }
-];
 
 const PersonalInfoForm = ({ 
   formData, 
@@ -124,7 +118,7 @@ const PersonalInfoForm = ({
         onChange={(value) => handleInputChange("gender", value)}
         error={errors.gender}
         isRequired
-        options={genderOptions}
+        options={GENDER_OPTIONS}
       />
     </div>
   );

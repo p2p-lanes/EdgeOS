@@ -6,6 +6,7 @@ import { toast } from 'sonner'
 import Modal from '@/components/ui/modal'
 import { FileUp, Upload, AlertCircle, Check, X, Info, HelpCircle } from 'lucide-react'
 import { read, utils } from 'xlsx'
+import { GENDER_OPTIONS } from '@/constants/util'
 import {
   Tooltip,
   TooltipContent,
@@ -104,6 +105,9 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
 
     const validatedData: MemberData[] = []
     const errors: string[] = []
+    
+    // Get valid gender values
+    const validGenderValues = GENDER_OPTIONS.map(option => option.value);
 
     data.forEach((row, index) => {
       // Check required fields
@@ -113,6 +117,11 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
         errors.push(`Row ${index + 1}: Missing email`)
       } else if (!/^\S+@\S+\.\S+$/.test(row.email)) {
         errors.push(`Row ${index + 1}: Invalid email format - ${row.email}`)
+      }
+
+      // Validate gender if provided
+      if (row.gender && !validGenderValues.includes(row.gender)) {
+        errors.push(`Row ${index + 1}: Invalid gender value "${row.gender}". Valid options are: ${validGenderValues.join(', ')}`)
       }
 
       // Validate data types
@@ -209,10 +218,7 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
         members: parsedData,
         update_existing: updateExisting 
       }).then((res) => {  
-        console.log('res', res)
         if (res.status >= 200 && res.status < 300) {
-          // Verificar si hay miembros con error en la respuesta
-          console.log('res', res.data)
           const failedMembers = Array.isArray(res.data) ? res.data.filter((member: any) => member.success === false) : [];
           
           if (failedMembers.length > 0) {
@@ -220,12 +226,6 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
             failedMembers.forEach((member: any) => {
               toast.error(`Error for ${member.email}: ${member.err_msg}`);
             });
-            
-            // Mostrar toast de éxito para los miembros importados correctamente
-            const successCount = parsedData.length - failedMembers.length;
-            if (successCount > 0) {
-              toast.success(`Successfully imported ${successCount} members`);
-            }
           } else {
             // Todos los miembros fueron importados exitosamente
             toast.success(`Successfully imported ${parsedData.length} members`);
