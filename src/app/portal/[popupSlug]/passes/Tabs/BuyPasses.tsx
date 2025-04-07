@@ -13,6 +13,7 @@ import BottomSheet from "@/components/common/BottomSheet"
 import TotalFloatingBar from "../components/common/TotalFloatingBar"
 import { useState } from "react"
 import { useTotal } from "@/providers/totalProvider"
+import { Loader2 } from "lucide-react"
 
 const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, defaultOpenDiscount = false, positionCoupon = 'bottom'}: {floatingBar?: boolean, viewInvoices?: boolean, canEdit?: boolean, defaultOpenDiscount?: boolean, positionCoupon?: 'top' | 'bottom' | 'right'}) => {
   const { toggleProduct, attendeePasses: attendees, products, isEditing } = usePassesProvider()
@@ -21,6 +22,16 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
   const someProductSelected = attendees.some(a => a.products.some(p => p.selected))
   const { total } = useTotal()
+
+  if (!attendees.length || !products.length) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p className="text-muted-foreground">Loading passes information...</p>
+      </div>
+    )
+  }
+  
 
   return (
     <div className="space-y-6 pb-[20px] md:pb-0">
