@@ -3,11 +3,17 @@ import DetailItem from './DetailItem'
 import { ChevronDown, Pencil, Trash2, User } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Member } from '../types'
 import useGetPassesData from '@/hooks/useGetPassesData'
 import ParticipationTickets from '@/components/common/ParticipationTickets'
 import MemberFormModal from './AddMemberModal'
 import ConfirmDeleteModal from './ConfirmDeleteModal'
+import { Member } from '@/types/Group'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 interface MemberItemProps {
   member: Member
@@ -19,7 +25,6 @@ const MemberItem = ({ member, onMemberUpdated }: MemberItemProps) => {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
   const { products: passes } = useGetPassesData()
-  const mainAttendee = member.attendees.find(attendee => attendee.category === 'main')
 
   const handleEditClick = (e: React.MouseEvent) => {
     e.stopPropagation() // Evitar que se expanda/colapse al hacer clic en editar
@@ -69,7 +74,7 @@ const MemberItem = ({ member, onMemberUpdated }: MemberItemProps) => {
         <div className="flex items-center gap-3">
           <User size={20} />
           <span className="font-medium">{member.first_name} {member.last_name}</span>
-          {member.attendees[0].products.length > 0 && (
+          {member.products.length > 0 && (
             <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">
               pass holder
             </span>
@@ -116,7 +121,7 @@ const MemberItem = ({ member, onMemberUpdated }: MemberItemProps) => {
                 {/* Columna derecha con PASSES */}
                 <div>
                   <p className="text-xs text-gray-500 uppercase font-medium mb-1">PASSES</p>
-                  <ParticipationTickets participation={mainAttendee?.products || []} passes={passes}/>
+                  <ParticipationTickets participation={member.products} passes={passes}/>
                 </div>
               </div>
               
@@ -129,14 +134,28 @@ const MemberItem = ({ member, onMemberUpdated }: MemberItemProps) => {
                   <Pencil size={16} className="mr-2" /> Edit
                 </Button>
                 
-                <Button 
-                  variant={'outline'}
-                  aria-label="Remove member"
-                  className='text-red-500 border-red-500 hover:bg-red-500 hover:text-white'
-                  onClick={handleDeleteClick}
-                >
-                  <Trash2 size={16} className="mr-2" /> Remove
-                </Button>
+                <TooltipProvider delayDuration={100}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <div className="inline-block">
+                        <Button 
+                          variant={'outline'}
+                          aria-label="Remove member"
+                          className='text-red-500 border-red-500 hover:bg-red-500 hover:text-white'
+                          onClick={handleDeleteClick}
+                          disabled={member.products.length > 0}
+                        >
+                          <Trash2 size={16} className="mr-2" /> Remove
+                        </Button>
+                      </div>
+                    </TooltipTrigger>
+                    {member.products.length > 0 && (
+                      <TooltipContent side="top" className="bg-gray-800 text-white px-3 py-2 rounded shadow-lg z-50">
+                        <p>This family group already has a purchased ticket</p>
+                      </TooltipContent>
+                    )}
+                  </Tooltip>
+                </TooltipProvider>
               </div>
             </div>
           </motion.div>
@@ -160,17 +179,6 @@ const MemberItem = ({ member, onMemberUpdated }: MemberItemProps) => {
       />
     </div>
   )
-}
-
-// Función para obtener la clase de color de TailwindCSS para los pases
-const getPassColorClass = (color: string) => {
-  const colorMap: Record<string, string> = {
-    green: 'bg-green-500',
-    blue: 'bg-blue-500',
-    red: 'bg-red-500',
-  }
-  
-  return colorMap[color] || 'bg-gray-500'
 }
 
 export default MemberItem 

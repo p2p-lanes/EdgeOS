@@ -1,4 +1,4 @@
-import { Member } from '../types'
+import { Member } from '@/types/Group'
 import MemberItem from './MemberItem'
 
 interface MembersListProps {

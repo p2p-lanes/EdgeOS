@@ -1,9 +1,18 @@
-import { ApplicationProps } from "./Application"
+import { ProductsProps } from "@/types/Products"
 
-export type Member = ApplicationProps & {
+// Tipo para representar un miembro
+export type Member = {
+  id: number,
+  email: string,
+  first_name: string,
+  last_name: string,
+  telegram: string | null,
+  organization: string | null,
+  role: string | null,
+  gender: string | null,
+  products: ProductsProps[]
   isPassHolder: boolean
 } 
-
 export interface GroupProps {
   id: string
   name: string

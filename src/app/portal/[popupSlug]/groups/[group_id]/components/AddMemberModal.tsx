@@ -7,8 +7,8 @@ import { FormInputWrapper } from '@/components/ui/form-input-wrapper'
 import { LabelRequired } from '@/components/ui/label'
 import { api } from '@/api'
 import { toast } from 'sonner'
-import { Member } from '../types'
 import Modal from '@/components/ui/modal'
+import { Member } from '@/types/Group'
 
 interface MemberFormModalProps {
   open: boolean
@@ -21,10 +21,10 @@ interface FormData {
   first_name: string
   last_name: string
   email: string
-  telegram: string
-  organization: string
-  role: string
-  gender: string
+  telegram: string | null
+  organization: string | null
+  role: string | null
+  gender: string | null
 }
 
 const GENDER_OPTIONS = [
@@ -43,10 +43,10 @@ const MemberFormModal = ({ open, onClose, onSuccess, member }: MemberFormModalPr
     first_name: '',
     last_name: '',
     email: '',
-    telegram: '',
-    organization: '',
-    role: '',
-    gender: ''
+    telegram: null,
+    organization: null,
+    role: null,
+    gender: null
   })
   
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -114,14 +114,32 @@ const MemberFormModal = ({ open, onClose, onSuccess, member }: MemberFormModalPr
     setIsSubmitting(true)
     
     try {
+      // Convertir campos vacíos a null
+      const processedData = Object.entries(formData).reduce((acc, [key, value]) => {
+        acc[key as keyof FormData] = typeof value === 'string' && value.trim().length === 0 
+          ? null 
+          : value;
+        return acc;
+      }, {} as FormData);
+      
       if (isEditMode && member) {
         // Editar miembro existente (PUT request)
-        await api.put(`/groups/${group_id}/members/${member.id}`, formData)
-        toast.success('Member updated successfully')
+        await api.put(`/groups/${group_id}/members/${member.id}`, processedData).then((res) => {
+          if (res.status === 200) {
+            toast.success('Member updated successfully')
+          } else {
+            toast.error('Failed to update member')
+          }
+        })
       } else {
         // Añadir nuevo miembro (POST request)
-        await api.post(`/groups/${group_id}/new_member`, formData)
-        toast.success('Member added successfully')
+        await api.post(`/groups/${group_id}/new_member`, processedData).then((res) => {
+          if (res.status === 200) {
+            toast.success('Member added successfully')
+          } else {
+            toast.error('Failed to add member')
+          }
+        })
       }
       
       // Reset form
@@ -130,10 +148,10 @@ const MemberFormModal = ({ open, onClose, onSuccess, member }: MemberFormModalPr
           first_name: '',
           last_name: '',
           email: '',
-          telegram: '',
-          organization: '',
-          role: '',
-          gender: ''
+          telegram: null,
+          organization: null,
+          role: null,
+          gender: null
         })
       }
       
@@ -196,6 +214,7 @@ const MemberFormModal = ({ open, onClose, onSuccess, member }: MemberFormModalPr
             value={formData.email}
             onChange={(e) => handleInputChange('email', e.target.value)}
             error={errors.email}
+            disabled={isEditMode}
           />
           {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
         </FormInputWrapper>
@@ -205,7 +224,7 @@ const MemberFormModal = ({ open, onClose, onSuccess, member }: MemberFormModalPr
           <LabelRequired htmlFor="telegram" isRequired={false}>Telegram</LabelRequired>
           <Input
             id="telegram"
-            value={formData.telegram}
+            value={formData.telegram || ''}
             onChange={(e) => handleInputChange('telegram', e.target.value)}
           />
         </FormInputWrapper>
@@ -215,7 +234,7 @@ const MemberFormModal = ({ open, onClose, onSuccess, member }: MemberFormModalPr
           <LabelRequired htmlFor="organization" isRequired={false}>Organization</LabelRequired>
           <Input
             id="organization"
-            value={formData.organization}
+            value={formData.organization || ''}
             onChange={(e) => handleInputChange('organization', e.target.value)}
           />
         </FormInputWrapper>
@@ -225,7 +244,7 @@ const MemberFormModal = ({ open, onClose, onSuccess, member }: MemberFormModalPr
           <LabelRequired htmlFor="role" isRequired={false}>Role</LabelRequired>
           <Input
             id="role"
-            value={formData.role}
+            value={formData.role || ''}
             onChange={(e) => handleInputChange('role', e.target.value)}
           />
         </FormInputWrapper>
@@ -234,7 +253,7 @@ const MemberFormModal = ({ open, onClose, onSuccess, member }: MemberFormModalPr
         <FormInputWrapper>
           <LabelRequired htmlFor="gender" isRequired={false}>Gender</LabelRequired>
           <Select
-            value={formData.gender}
+            value={formData.gender || ''}
             onValueChange={(value) => handleInputChange('gender', value)}
           >
             <SelectTrigger>
