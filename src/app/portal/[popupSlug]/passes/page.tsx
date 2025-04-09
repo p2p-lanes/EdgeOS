@@ -17,7 +17,7 @@ export default function HomePasses() {
   const someProductPurchased = attendees.some(a => a.products.some(p => p.purchased))
 
   return (
-    <Tabs defaultValue={someProductPurchased ? "your-passes" : "buy-passes"} className="w-full my-12 md:mt-0 mx-auto items-center max-w-3xl">
+    <Tabs defaultValue={someProductPurchased ? "your-passes" : "buy-passes"} className="w-full md:mt-0 mx-auto items-center max-w-5xl p-6">
       <TabsList className="grid w-full grid-cols-2 mb-4">
         <TabsTrigger value="your-passes"> <Ticket className="w-4 h-4 mr-2" /> Your Passes</TabsTrigger>
         <TabsTrigger value="buy-passes"> <ShoppingCart className="w-4 h-4 mr-2" /> Buy Passes</TabsTrigger>

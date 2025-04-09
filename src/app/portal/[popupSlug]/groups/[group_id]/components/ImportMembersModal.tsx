@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button'
 import { api } from '@/api'
 import { toast } from 'sonner'
 import Modal from '@/components/ui/modal'
-import { FileUp, Upload, AlertCircle, Check, X, Info, HelpCircle } from 'lucide-react'
+import { FileUp, Upload, AlertCircle, Check, X, Info, HelpCircle, Download } from 'lucide-react'
 import { read, utils } from 'xlsx'
 import { GENDER_OPTIONS } from '@/constants/util'
 import {
@@ -13,6 +13,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip'
+import { Checkbox } from '@/components/ui/checkbox'
 
 interface ImportMembersModalProps {
   open: boolean
@@ -70,6 +71,9 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
     const validTypes = [
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', // .xlsx
       'application/vnd.ms-excel', // .xls
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.macroEnabled.12', // .xlsm
+      'application/vnd.oasis.opendocument.spreadsheet', // .ods
+      'application/vnd.oasis.opendocument.spreadsheet-template', // .ots
       'text/csv' // .csv
     ]
     return validTypes.includes(file.type)
@@ -255,6 +259,29 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
     }
   }
 
+  const handleDownloadTemplate = () => {
+    // Define required and optional columns
+    const headers = ['first_name', 'last_name', 'email', 'telegram', 'organization', 'role', 'gender'];
+    
+    // Create CSV content
+    const csvContent = headers.join(',') + '\n' + 
+                       'John,Doe,john.doe@example.com,@johndoe,Company Name,Member,male';
+    
+    // Create blob and download link
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    
+    // Set download attributes
+    link.href = url;
+    link.setAttribute('download', 'members_template.csv');
+    
+    // Append to document, click and clean up
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <Modal
       open={open}
@@ -263,7 +290,29 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
         onClose()
       }}
       title="Import Members"
-      description="Upload a CSV or Excel file with member data to quickly add multiple members at once."
+      description={
+        <div className="flex items-center gap-2">
+          <span>Upload a CSV or Excel file with member data to quickly add multiple members at once. 
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <a 
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleDownloadTemplate();
+                  }}
+                  className="text-primary hover:underline inline-flex items-center text-sm font-medium cursor-pointer ml-1"
+                >
+                  Download template file.
+                </a>
+              </TooltipTrigger>
+              <TooltipContent className="max-w-xs">
+                <p>Download a CSV template with all required columns (first_name, last_name, email) and optional fields.</p>
+              </TooltipContent>
+            </Tooltip>
+          </span>
+        </div>
+      }
     >
       <div className="space-y-6">
         {/* File upload area */}
@@ -281,7 +330,7 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
             type="file"
             ref={fileInputRef}
             className="hidden"
-            accept=".csv,.xlsx,.xls"
+            accept=".csv,.xlsx,.xls,.xlsm,.ods,.ots"
             onChange={handleFileInputChange}
           />
           
@@ -289,9 +338,9 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
             <div className="flex flex-col items-center justify-center gap-2">
               <Upload className="h-10 w-10 text-gray-400 mb-2" />
               <p className="text-sm font-medium">
-                Drag and drop your file here, or <span className="text-primary">click to browse</span>
+                Drop your document here, or <span className="text-primary">click to browse</span>
               </p>
-              <p className="text-xs text-gray-500">Supported formats: CSV, Excel (.csv, .xlsx, .xls)</p>
+              <p className="text-xs text-gray-500">Supported formats: .csv, .xls, .xlsx, .xlsm, .ods, .ots</p>
             </div>
           )}
 
@@ -316,28 +365,6 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
           )}
         </div>
         
-        {/* File format guide */}
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <div className="flex items-start gap-2">
-            <Info className="h-5 w-5 text-blue-500 mt-0.5" />
-            <div>
-              <h3 className="text-sm font-medium mb-1">Required file format</h3>
-              <p className="text-xs text-gray-600 mb-2">
-                Your file must include these required columns:
-              </p>
-              <ul className="text-xs text-gray-600 list-disc pl-5 space-y-1">
-                <li><strong>first_name</strong> - Required</li>
-                <li><strong>last_name</strong> - Required</li>
-                <li><strong>email</strong> - Required</li>
-                <li>telegram - Optional</li>
-                <li>organization - Optional</li>
-                <li>role - Optional</li>
-                <li>gender - Optional</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-
         {/* Validation error message */}
         {validationError && (
           <div className="bg-red-50 border border-red-200 rounded-lg p-4">
@@ -353,12 +380,10 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
 
         {/* Update existing members checkbox */}
         <div className="flex items-center space-x-2">
-          <input
-            type="checkbox"
+          <Checkbox 
             id="updateExisting"
             checked={updateExisting}
-            onChange={(e) => setUpdateExisting(e.target.checked)}
-            className="rounded border-gray-300 text-primary focus:ring-primary"
+            onCheckedChange={(checked: boolean) => setUpdateExisting(checked)}
           />
           <label htmlFor="updateExisting" className="text-sm font-medium text-gray-700">
             Update existing members

@@ -14,15 +14,33 @@ import TotalFloatingBar from "../components/common/TotalFloatingBar"
 import { useState } from "react"
 import { useTotal } from "@/providers/totalProvider"
 import { Loader2 } from "lucide-react"
+import { useCityProvider } from "@/providers/cityProvider"
+
+// Función temporal para convertir markdown básico a HTML
+const parseMarkdown = (markdown: string) => {
+  if (!markdown) return "";
+  
+  // Convertir links en formato [texto](url)
+  const linkRegex = /\[(.*?)\]\((.*?)\)/g;
+  let parsedText = markdown.replace(linkRegex, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">$1</a>');
+  
+  // Convertir texto en negrita **texto**
+  const boldRegex = /\*\*(.*?)\*\*/g;
+  parsedText = parsedText.replace(boldRegex, '<span class="font-bold">$1</span>');
+  
+  return parsedText;
+};
 
 const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, defaultOpenDiscount = false, positionCoupon = 'bottom'}: {floatingBar?: boolean, viewInvoices?: boolean, canEdit?: boolean, defaultOpenDiscount?: boolean, positionCoupon?: 'top' | 'bottom' | 'right'}) => {
-  const { toggleProduct, attendeePasses: attendees, products, isEditing } = usePassesProvider()
+  const { toggleProduct, attendeePasses: attendees, products, isEditing} = usePassesProvider()
   const [openCart, setOpenCart] = useState<boolean>(false)
   const mainAttendee = attendees.find(a => a.category === 'main')
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
   const someProductSelected = attendees.some(a => a.products.some(p => p.selected))
   const { total } = useTotal()
-
+  const { getCity } = useCityProvider()
+  const city = getCity()
+  
   if (!attendees.length || !products.length) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
@@ -36,11 +54,7 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
   return (
     <div className="space-y-6 pb-[20px] md:pb-0">
       <TitleTabs title="Buy Passes">
-        <p>
-          Choose your passes below and make sure to add tickets for any family members who will be joining you. You can explore more about the event's programming
-           <a href="https://edgeesmeralda2025.substack.com/p/programming-philosophy-and-preview" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline"> here</a>.
-           Please note that tickets <span className="font-bold">do not include accommodation</span>.
-        </p>
+        <div dangerouslySetInnerHTML={{ __html: parseMarkdown(city?.passes_description || "") }} />
       </TitleTabs>
 
       <BalancePasses />

@@ -42,7 +42,7 @@ const ConfirmDeleteModal = ({ open, onClose, onSuccess, member }: ConfirmDeleteM
       open={open}
       onClose={onClose}
       title="Delete Member"
-      description={`Are you sure you want to delete ${member.first_name} ${member.last_name} from the group? This action cannot be undone.`}
+      description={`Are you sure you want to delete ${member.first_name} ${member.last_name} from the group?`}
     >
       <div className="flex justify-end space-x-2 pt-4">
         <Button 

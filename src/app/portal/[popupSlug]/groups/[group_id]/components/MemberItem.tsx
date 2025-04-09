@@ -113,15 +113,18 @@ const MemberItem = ({ member, onMemberUpdated }: MemberItemProps) => {
                   
                   <DetailItem label="TELEGRAM" value={member.telegram || ''} />
                   
-                  <DetailItem label="ORGANIZATION" value={member.organization || ''} />
-                  
-                  <DetailItem label="ROLE" value={member.role || ''} />
                 </div>
                 
                 {/* Columna derecha con PASSES */}
-                <div>
+                <div className="space-y-4">
+                  <DetailItem label="ORGANIZATION" value={member.organization || ''} />
+                  
+                  <DetailItem label="ROLE" value={member.role || ''} />
+                  <div>
+
                   <p className="text-xs text-gray-500 uppercase font-medium mb-1">PASSES</p>
                   <ParticipationTickets participation={member.products} passes={passes}/>
+                  </div>
                 </div>
               </div>
               
@@ -151,7 +154,7 @@ const MemberItem = ({ member, onMemberUpdated }: MemberItemProps) => {
                     </TooltipTrigger>
                     {member.products.length > 0 && (
                       <TooltipContent side="top" className="bg-gray-800 text-white px-3 py-2 rounded shadow-lg z-50">
-                        <p>This family group already has a purchased ticket</p>
+                        <p>This member already has a purchased ticket.</p>
                       </TooltipContent>
                     )}
                   </Tooltip>

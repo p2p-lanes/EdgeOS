@@ -65,7 +65,7 @@ const GroupPage = () => {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 p-6">
+    <div className=" mx-auto space-y-6 max-w-5xl p-6">
       <TeamHeader 
         totalMembers={group.members.length} 
         group={group}

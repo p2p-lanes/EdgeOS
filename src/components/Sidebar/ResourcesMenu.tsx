@@ -23,37 +23,19 @@ const statusColor = (status: string) => {
 
 const ResourceMenuItem: React.FC<{ resource: Resource, level?: number }> = ({ resource, level = 0 }) => {
   const router = useRouter()
-  const pathname = usePathname()
-  const [isLoading, setIsLoading] = useState(false)
-  const [targetPath, setTargetPath] = useState<string | null>(null)
-
-  // Reset loading state when route changes
-  useEffect(() => {
-    if (isLoading && targetPath && pathname !== targetPath) {
-      setIsLoading(false)
-      setTargetPath(null)
-    }
-  }, [pathname, isLoading, targetPath])
 
   const handleClickPath = useCallback((path?: string) => {
     if (path) {
-      setIsLoading(true)
-      setTargetPath(path)
       router.push(path)
     }
   }, [router])
 
   return(
-    <SidebarMenuItem className={isLoading ? "opacity-70 pointer-events-none" : ""}>
+    <SidebarMenuItem>
       <Tooltip>
         <TooltipTrigger asChild>
           {
-            isLoading ? (
-              <div className="flex items-center gap-2 px-3 py-2">
-                <Loader2 className="h-4 w-4 animate-spin" />
-                <span>Loading...</span>
-              </div>
-            ) : resource.status === 'active' ? (
+            resource.status === 'active' ? (
               <ActiveResource resource={resource} handleClickPath={handleClickPath} level={level} color={statusColor(resource.value as string)} />
             ) : resource.status === 'soon' ? (
               <SoonResource resource={resource} level={level} color={statusColor(resource.value as string)} />

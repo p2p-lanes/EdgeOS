@@ -16,6 +16,7 @@ export type Member = {
 export interface GroupProps {
   id: string
   name: string
-  members: Member[]
+  members: Member[],
+  max_members: number,
   slug: string
 }
