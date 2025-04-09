@@ -9,12 +9,13 @@ const GroupsResources = () => {
   const { getCity } = useCityProvider()
   const city = getCity()
   const router = useRouter()
+  const isEdge = city?.slug === 'edge-esmeralda' || city?.slug === 'buenos-aires'
   
   const handleClickPath = (path?: string) => {
     if(path) router.push(path)
   }
   
-  if(isLoading) return;
+  if(isLoading || !isEdge) return;
   
   return (
     <div className="flex flex-col ml-2">

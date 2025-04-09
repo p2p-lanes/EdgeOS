@@ -33,8 +33,8 @@ export default function Home() {
   const canApply = dynamicForm[city?.slug ?? ''] !== null
   
   return (
-    <section className="container mx-auto px-4 py-8">
-      <div className="space-y-6">
+    <section className="container mx-auto p-6">
+      <div className="space-y-6 max-w-7xl mx-auto">
         <EventCard
           {...city!}
           onApply={onClickApply}

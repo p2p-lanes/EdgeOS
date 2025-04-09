@@ -36,7 +36,7 @@ const useResources = () => {
       children: [
         {
           name: 'ZK Email discounts',
-          status: applicationAccepted ? 'active' : 'disabled',
+          status: isEdge && applicationAccepted ? 'active' : !applicationAccepted ? 'disabled' : 'hidden',
           path: `/portal/${city?.slug}/coupons`
         }
       ]
