@@ -1,9 +1,9 @@
 const page = () => {
   return (
-    <div className="w-full h-screen">
+    <div className="w-full h-full overflow-hidden">
       <iframe
         src="https://edge-city-coupons.onrender.com/"
-        title="Página embebida"
+        title="ZK Coupons"
         className="w-full h-full border-0"
         allowFullScreen
       />

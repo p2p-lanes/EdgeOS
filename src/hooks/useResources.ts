@@ -11,8 +11,8 @@ const useResources = () => {
 
   const isEdge = city?.slug === 'edge-esmeralda' || city?.slug === 'buenos-aires'
   const isEdgeAustin = city?.slug === 'edge-austin'
-
-  const canSeeAttendees = application?.status === 'accepted' && isEdge
+  const applicationAccepted = application?.status === 'accepted'
+  const canSeeAttendees = applicationAccepted && isEdge
 
   const resources: Resource[] = [
     {
@@ -31,12 +31,12 @@ const useResources = () => {
     {
       name: 'Passes',
       icon: Ticket,
-      status: application?.status === 'accepted' ? 'active' : 'disabled',
+      status: applicationAccepted ? 'active' : 'disabled',
       path: `/portal/${city?.slug}/passes`,
       children: [
         {
           name: 'ZK Email discounts',
-          status: 'active',
+          status: applicationAccepted ? 'active' : 'disabled',
           path: `/portal/${city?.slug}/coupons`
         }
       ]
