@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { api } from '@/api'
 import { motion } from 'framer-motion'
 import { useSearchParams } from 'next/navigation'
+import { config } from '@/constants/config'
 
 export default function AuthForm() {
   const [isMounted, setIsMounted] = useState(false)
@@ -79,7 +80,7 @@ export default function AuthForm() {
         >
           <div className="text-center max-w-md mx-auto">
             <h2 className="mt-6 text-3xl font-bold text-gray-900" style={{ textWrap: 'balance' }}>
-              Sign Up or Log In to Edge Portal
+              Sign Up or Log In to {config.name}
             </h2>
             <p className="mt-2 text-sm text-gray-600" style={{ textWrap: 'balance' }}>
             Welcome! If it’s your first time, sign up below. If you attended a past event, use the same email to import your prior application.

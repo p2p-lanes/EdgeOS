@@ -1,24 +1,25 @@
-import type { Metadata } from "next";
+import { Metadata } from "next";
 import "../styles/globals.css";
 import { GeistSans } from 'geist/font/sans';
 import GoogleAnalytics from "@/components/utils/GoogleAnalytics";
 import { Toaster } from "sonner";
-import icon from '../../public/icon.png'
+import { config } from "@/constants/config";
+
 
 export const metadata: Metadata = {
-  title: "Edge Portal",
-  description: "Welcome to the Edge Portal. Log in or sign up to access Edge City events.",
+  title: config.metadata.title,
+  description: config.metadata.description,
   icons: {
-    icon: icon.src,
+    icon: config.metadata.icon,
   },
   openGraph: {
-    title: "Edge Portal",
-    description: "Welcome to the Edge Portal. Log in or sign up to access Edge City events.",
+    title: config.metadata.openGraph.title,
+    description: config.metadata.openGraph.description,
     images: [{
-      url: "https://simplefi.s3.us-east-2.amazonaws.com/edgecity.png",
-      width: 1200,
-      height: 630,
-      alt: 'Edge Portal'
+      url: config.metadata.openGraph.images[0].url,
+      width: config.metadata.openGraph.images[0].width,
+      height: config.metadata.openGraph.images[0].height,
+      alt: config.metadata.openGraph.images[0].alt,
     }]
   }
 };
