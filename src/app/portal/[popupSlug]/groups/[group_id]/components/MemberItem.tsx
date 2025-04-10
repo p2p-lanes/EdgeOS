@@ -154,7 +154,7 @@ const MemberItem = ({ member, onMemberUpdated }: MemberItemProps) => {
                     </TooltipTrigger>
                     {member.products.length > 0 && (
                       <TooltipContent side="top" className="bg-gray-800 text-white px-3 py-2 rounded shadow-lg z-50">
-                        <p>This member already has a purchased ticket.</p>
+                        <p>This member already has an active ticket.</p>
                       </TooltipContent>
                     )}
                   </Tooltip>

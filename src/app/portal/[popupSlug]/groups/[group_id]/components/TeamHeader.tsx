@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { Check, Copy, Import, Plus, Share2 } from 'lucide-react'
+import { Check, Import, Plus, Share2, Users } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { getBaseUrl } from '@/utils/environment'
@@ -72,6 +72,7 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded }: TeamHeaderProps) => 
       <div className="flex flex-wrap gap-3 justify-between">
 
         <div className="flex items-center justify-between">
+          <Users size={16} className="mr-2" />
           <p className="text-sm text-gray-500">{totalMembers}{group.max_members ? `/${group.max_members}` : ''} members</p>
         </div>
 
