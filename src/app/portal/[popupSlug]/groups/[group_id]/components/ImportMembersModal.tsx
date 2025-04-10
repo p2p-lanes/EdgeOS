@@ -290,7 +290,7 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
       }}
       title="Import Members"
       description={
-        <div className="flex items-center gap-2">
+        <>
           <span>Upload a CSV or Excel file with member data to quickly add multiple members at once. 
             <Tooltip>
               <TooltipTrigger asChild>
@@ -310,7 +310,7 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
               </TooltipContent>
             </Tooltip>
           </span>
-        </div>
+        </>
       }
     >
       <div className="space-y-6">
