@@ -1,6 +1,6 @@
 import { ProductsPass, ProductsProps } from "./Products";
 
-export type AttendeeCategory = "main" | "spouse" | 'kid'
+export type AttendeeCategory = "main" | "spouse" | 'kid' | 'baby' | 'teen'
 
 export interface AttendeeProps {
   id: number;
@@ -12,18 +12,18 @@ export interface AttendeeProps {
 }
 
 export interface AttendeeDirectory {
-  bring_kids: string | boolean;
-  email: string;
-  first_name: string;
-  last_name: string;
-  telegram: string;
+  brings_kids: string | boolean | null;
+  email: string | null;
+  first_name: string | null;
+  last_name: string | null;
+  telegram: string | null;
   participation: string | ProductsProps[];
-  role: string;
-  organization: string;
+  role: string | null;
+  organization: string | null;
 }
 
 export interface CreateAttendee {
   name: string, 
   email: string, 
-  category: 'spouse' | 'kid' | 'main'
+  category: AttendeeCategory
 }

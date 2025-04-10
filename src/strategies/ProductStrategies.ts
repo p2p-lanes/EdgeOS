@@ -126,6 +126,7 @@ class WeekProductStrategy implements ProductStrategy {
         monthProduct?.purchased || false
       );
 
+
       // Actualizamos el estado del mes
       return {
         ...attendee,
@@ -150,7 +151,9 @@ export const getProductStrategy = (product: ProductsPass, isEditing: boolean): P
       return new MonthProductStrategy();
     case 'week':
       return new WeekProductStrategy();
-    default:
+    case 'exclusive':
       return new ExclusiveProductStrategy();
+    default:
+      return new WeekProductStrategy();
   }
 }; 

@@ -8,8 +8,9 @@ import { AttendeeModal } from "./AttendeeModal"
 import InvoiceModal from "./common/InvoiceModal"
 import { useState } from "react"
 import EditPassesButton from "./common/Buttons/EditPassesButton"
+import DiscountCode from "./common/DiscountCode"
 
-const ToolbarTop = ({canEdit = false}: {canEdit?: boolean}) => {
+const ToolbarTop = ({canEdit = false, viewInvoices = true, positionCoupon = 'bottom'}: {canEdit?: boolean, viewInvoices?: boolean, positionCoupon?: 'top' | 'bottom' | 'right'}) => {
   const { getAttendees } = useApplication()
   const { handleOpenModal, handleCloseModal, modal } = useModal()
   const { addAttendee } = useAttendee()
@@ -20,7 +21,7 @@ const ToolbarTop = ({canEdit = false}: {canEdit?: boolean}) => {
 
   const handleSubmit = async (data: AttendeeProps) => {
     if (modal.category) {
-      await addAttendee({ ...data, category: modal.category })
+      await addAttendee({ ...data })
     }
     handleCloseModal()
   }
@@ -28,7 +29,7 @@ const ToolbarTop = ({canEdit = false}: {canEdit?: boolean}) => {
 
   return (
     <div className="flex justify-between w-full flex-wrap gap-2">
-      <div className="flex gap-2">
+      <div className="flex gap-2 flex-wrap">
         {!hasSpouse && (
           <Button
             variant="outline"
@@ -62,16 +63,28 @@ const ToolbarTop = ({canEdit = false}: {canEdit?: boolean}) => {
         )}
       </div>
 
-      <div className="flex gap-2">
+      <div className="flex gap-2 items-center">
         {canEdit && <EditPassesButton/>}
-        <Button variant={'ghost'} onClick={() => setIsInvoiceModalOpen(true)}>
-          <Newspaper className="h-4 w-4" />
-          <p className="text-sm font-medium hidden md:block">View Invoices</p>
-        </Button>
+        {
+          viewInvoices && (
+            <>
+              <Button variant={'ghost'} onClick={() => setIsInvoiceModalOpen(true)}>
+                <Newspaper className="h-4 w-4" />
+                <p className="text-sm font-medium hidden md:block">View Invoices</p>
+              </Button>
+              <InvoiceModal isOpen={isInvoiceModalOpen} onClose={() => setIsInvoiceModalOpen(false)} />
+            </>
+          )
+        }
+
+        {
+          positionCoupon === 'right' && (
+            <div className="ml-2">
+              <DiscountCode defaultOpen={true} label={false}/>
+            </div>
+          )
+        }
       </div>
-
-      <InvoiceModal isOpen={isInvoiceModalOpen} onClose={() => setIsInvoiceModalOpen(false)} />
-
     </div>
   )
 }

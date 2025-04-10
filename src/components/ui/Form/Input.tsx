@@ -17,9 +17,11 @@ interface InputFormProps {
   multiple?: boolean,
   accept?: string
   className?: string
+  maxLength?: number
+  disabled?: boolean
 }
 
-const InputForm = ({ label, id, value, onChange, error, subtitle, isRequired = false, type = 'text', ...rest }: InputFormProps) => {
+const InputForm = ({ label, id, value, onChange, error, subtitle, isRequired = false, type = 'text', maxLength, ...rest }: InputFormProps) => {
   return (
     <FormInputWrapper>
       <div className="flex flex-col gap-2">
@@ -33,6 +35,7 @@ const InputForm = ({ label, id, value, onChange, error, subtitle, isRequired = f
         onChange={(e) => onChange(e.target.value)}
         error={error}
         {...rest}
+        maxLength={maxLength}
       />
       {error && <p className="text-red-500 text-sm">{error}</p>}
     </FormInputWrapper>

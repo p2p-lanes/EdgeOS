@@ -13,24 +13,61 @@ import BottomSheet from "@/components/common/BottomSheet"
 import TotalFloatingBar from "../components/common/TotalFloatingBar"
 import { useState } from "react"
 import { useTotal } from "@/providers/totalProvider"
+import { Loader2 } from "lucide-react"
+import { useCityProvider } from "@/providers/cityProvider"
 
-const BuyPasses = () => {
-  const { toggleProduct, attendeePasses: attendees, products, isEditing } = usePassesProvider()
+// Función temporal para convertir markdown básico a HTML
+const parseMarkdown = (markdown: string) => {
+  if (!markdown) return "";
+  
+  // Convertir links en formato [texto](url)
+  const linkRegex = /\[(.*?)\]\((.*?)\)/g;
+  let parsedText = markdown.replace(linkRegex, '<a href="$2" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">$1</a>');
+  
+  // Convertir texto en negrita **texto**
+  const boldRegex = /\*\*(.*?)\*\*/g;
+  parsedText = parsedText.replace(boldRegex, '<span class="font-bold">$1</span>');
+  
+  return parsedText;
+};
+
+const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, defaultOpenDiscount = false, positionCoupon = 'bottom'}: {floatingBar?: boolean, viewInvoices?: boolean, canEdit?: boolean, defaultOpenDiscount?: boolean, positionCoupon?: 'top' | 'bottom' | 'right'}) => {
+  const { toggleProduct, attendeePasses: attendees, products, isEditing} = usePassesProvider()
   const [openCart, setOpenCart] = useState<boolean>(false)
   const mainAttendee = attendees.find(a => a.category === 'main')
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
   const someProductSelected = attendees.some(a => a.products.some(p => p.selected))
   const { total } = useTotal()
+  const { getCity } = useCityProvider()
+  const city = getCity()
+  
+  if (!attendees.length || !products.length) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[50vh] space-y-4">
+        <Loader2 className="h-10 w-10 animate-spin text-primary" />
+        <p className="text-muted-foreground">Loading passes information...</p>
+      </div>
+    )
+  }
+  
 
   return (
     <div className="space-y-6 pb-[20px] md:pb-0">
-      <TitleTabs title="Buy Passes" subtitle="Choose your attendance weeks and get passes for you and your group." />
+      <TitleTabs title="Buy Passes">
+        <div dangerouslySetInnerHTML={{ __html: parseMarkdown(city?.passes_description || "") }} />
+      </TitleTabs>
 
       <BalancePasses />
 
       <div className="my-4 flex justify-start">
-        <ToolbarTop canEdit/>
+        <ToolbarTop canEdit={canEdit} viewInvoices={viewInvoices} positionCoupon={positionCoupon}/>
       </div>
+
+      {
+        positionCoupon === 'top' && (
+          <DiscountCode defaultOpen={defaultOpenDiscount}/>
+        )
+      }
 
       <BannerDiscount isPatreon={(specialProduct?.selected || specialProduct?.purchased) ?? false} products={products} />
 
@@ -45,6 +82,7 @@ const BuyPasses = () => {
         </div>
       )}
 
+
       <div className="flex flex-col gap-4">
         {
           attendees.map(attendee => (
@@ -53,14 +91,34 @@ const BuyPasses = () => {
         }
       </div>
 
-      <DiscountCode/>
+      {
+        positionCoupon === 'bottom' && (
+          <DiscountCode defaultOpen={defaultOpenDiscount}/>
+        )
+      }
+
+      {
+        !floatingBar && someProductSelected && (
+          <div className="flex flex-col gap-4 w-full pointer-events-auto">
+            <TotalPurchase
+              attendees={attendees}
+              isModal={false}
+              isOpen={openCart}
+              setIsOpen={setOpenCart}
+            />
+            <div className="flex w-full justify-center">
+              <CompletePurchaseButton edit={total <= 0} />
+            </div>
+          </div>
+        )
+      }
 
       {/* Versión desktop con FloatingBar */}
-      {someProductSelected && (
+      {someProductSelected && floatingBar && (
         <div className="hidden md:block">
-          <BottomSheet className="bottom-6 pointer-events-none">
+          <BottomSheet className="bottom-6 pointer-events-none ">
             {(isFloating) => (
-              isFloating ? (
+              (isFloating) ? (
                 <div className="flex justify-center lg:ml-[255px]">
                   <div className="bg-white p-4 shadow-lg border border-neutral-200 rounded-lg min-w-[600px] pointer-events-auto">
                     <TotalFloatingBar setOpenCart={setOpenCart}/>

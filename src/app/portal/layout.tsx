@@ -19,7 +19,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
           <BackofficeSidebar collapsible="icon" />
           <SidebarInset>
             <HeaderBar/>
-            <main className="flex-1 p-6 w-[100%] bg-neutral-100">
+            <main className="flex-1 w-[100%] bg-neutral-100">
               {children}
             </main>
           </SidebarInset>

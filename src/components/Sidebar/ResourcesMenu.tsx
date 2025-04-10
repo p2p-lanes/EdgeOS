@@ -1,5 +1,5 @@
 import { SidebarGroupContent, SidebarGroup, SidebarContent, SidebarGroupLabel, SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarMenuSub, SidebarMenuSubItem } from "./SidebarComponents"
-import { useRouter } from "next/navigation"
+import { useRouter, usePathname } from "next/navigation"
 import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip"
 import { Resource } from "@/types/resources"
 import useResources from "@/hooks/useResources"
@@ -7,21 +7,28 @@ import ActiveResource from "./StatusResource/ActiveResource"
 import SoonResource from "./StatusResource/SoonResource"
 import InactiveResource from "./StatusResource/InactiveResource"
 import DisabledResource from "./StatusResource/DisabledResource"
+import { Separator } from "../ui/separator"
+import GroupsResources from "./Groups/GroupsResources"
+import { useState, useEffect, useCallback } from "react"
+import { Loader2 } from "lucide-react"
 
 const statusColor = (status: string) => {
   if(status === 'pending') return 'bg-yellow-100 text-yellow-800'
   if(status === 'in review') return 'bg-blue-100 text-blue-800'
   if(status === 'accepted') return 'bg-green-100 text-green-800'
   if(status === 'rejected') return 'bg-red-100 text-red-800'
+  if(status === 'withdrawn') return 'bg-slate-300 text-slate-700'
   return 'bg-gray-100 text-gray-800'
 }
 
 const ResourceMenuItem: React.FC<{ resource: Resource, level?: number }> = ({ resource, level = 0 }) => {
   const router = useRouter()
 
-  const handleClickPath = (path?: string) => {
-    if(path) router.push(path)
-  }
+  const handleClickPath = useCallback((path?: string) => {
+    if (path) {
+      router.push(path)
+    }
+  }, [router])
 
   return(
     <SidebarMenuItem>
@@ -67,6 +74,8 @@ const ResourcesMenu = () => {
             {resources.map((resource) => (
               <ResourceMenuItem key={resource.name} resource={resource} />
             ))}
+            <Separator className="my-4" />
+            <GroupsResources />
           </SidebarMenu>
         </SidebarGroupContent>
       </SidebarGroup>

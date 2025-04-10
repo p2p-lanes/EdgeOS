@@ -11,8 +11,9 @@ import { useCityProvider } from "@/providers/cityProvider";
 import { dynamicForm } from "@/constants";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
-import { ageOptions, genderOptions, shareableInfo } from "../constants/forms";
+import { ageOptions, shareableInfo } from "../constants/forms";
 import { useEffect } from 'react';
+import { GENDER_OPTIONS } from "@/constants/util";
 
 const fieldsPersonalInformation = ["first_name", "last_name", "email", "gender", "age", "telegram", "residence", "eth_address", "referral", "local_resident", "info_not_shared"]
 
@@ -21,7 +22,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
   const city = getCity()
 
   useEffect(() => {
-    if (formData.gender && formData.gender !== '' && !genderOptions.some(opt => opt.value === formData.gender)) {
+    if (formData.gender && formData.gender !== '' && !GENDER_OPTIONS.some(opt => opt.value === formData.gender)) {
       handleChange('gender_specify', formData.gender);
       handleChange('gender', 'Specify');
     }
@@ -101,11 +102,11 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             <SelectForm 
               label="Gender"
               id="gender"
-              value={(formData.gender && formData.gender !== '' && !genderOptions.some(opt => opt.value === formData.gender)) ? 'Specify' : formData.gender}
+              value={(formData.gender && formData.gender !== '' && !GENDER_OPTIONS.some(opt => opt.value === formData.gender)) ? 'Specify' : formData.gender}
               onChange={(value) => handleChange('gender', value)}
               error={errors.gender}
               isRequired={true}
-              options={genderOptions}
+              options={GENDER_OPTIONS}
             />
           )}
 

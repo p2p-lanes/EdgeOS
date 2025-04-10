@@ -6,7 +6,7 @@ import { Ticket } from "lucide-react"
 const Header = () => {
   return (
    <TableHeader>
-      <TableRow className="border-b border-gray-200">
+      <TableRow className="border-b border-gray-200 bg-white">
         <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap min-w-[200px]" >Attendee</TableHead>
         <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap min-w-[200px]" >Email</TableHead>
         <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap min-w-[150px]" >Telegram Username</TableHead>

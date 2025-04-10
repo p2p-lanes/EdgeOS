@@ -8,7 +8,7 @@ interface BottomSheetProps {
 }
 
 const BottomSheet = ({ children, className }: BottomSheetProps) => {
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(false)
   const targetRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {

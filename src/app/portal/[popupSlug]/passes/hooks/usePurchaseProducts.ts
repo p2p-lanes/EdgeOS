@@ -30,20 +30,29 @@ const usePurchaseProducts = () => {
     const filteredProducts = filterProductsToPurchase(productsPurchase)
 
     try{
+      const isFastCheckout = window.location.href.includes('/checkout')
+
       const data = {
         application_id: application.id,
         products: filteredProducts,
         coupon_code: discountApplied.discount_code,
         edit_passes: editableMode
       }
+      
       const response = await api.post('payments', data)
+
       if(response.status === 200){
+        const redirectUrl = isFastCheckout ? `${window.location.origin}/checkout/success` : window.location.href;
         if(response.data.status === 'pending'){
-          window.location.href = `${response.data.checkout_url}?redirect_url=${window.location.href}`
+          window.location.href = `${response.data.checkout_url}?redirect_url=${redirectUrl}`
         }else if(response.data.status === 'approved'){
           await getApplication()
           if(editableMode){
             toggleEditing(false)
+          }
+          if(isFastCheckout){
+            window.location.href = redirectUrl
+            return;
           }
           toast.success('Success! Your pass has been successfully updated. No additional payment was required.')
         }

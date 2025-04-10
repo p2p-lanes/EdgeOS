@@ -1,7 +1,7 @@
 import { useApplication } from "@/providers/applicationProvider"
 import { useCityProvider } from "@/providers/cityProvider"
 import { Resource } from "@/types/resources"
-import { CircleDot, FileText, Home, Tag, Ticket, User, Users } from "lucide-react"
+import { FileText, Home, Ticket, Users } from "lucide-react"
 
 const useResources = () => {
   const { getCity } = useCityProvider()
@@ -11,8 +11,8 @@ const useResources = () => {
 
   const isEdge = city?.slug === 'edge-esmeralda' || city?.slug === 'buenos-aires'
   const isEdgeAustin = city?.slug === 'edge-austin'
-
-
+  const applicationAccepted = application?.status === 'accepted'
+  const canSeeAttendees = applicationAccepted && isEdge
 
   const resources: Resource[] = [
     {
@@ -31,14 +31,20 @@ const useResources = () => {
     {
       name: 'Passes',
       icon: Ticket,
-      status: application?.status === 'accepted' ? 'active' : 'disabled',
+      status: applicationAccepted ? 'active' : 'disabled',
       path: `/portal/${city?.slug}/passes`,
+      children: [
+        {
+          name: 'ZK Email discounts',
+          status: isEdge && applicationAccepted ? 'active' : !applicationAccepted ? 'disabled' : 'hidden',
+          path: `/portal/${city?.slug}/coupons`
+        }
+      ]
     },
     {
       name: 'Attendee Directory', 
       icon: Users,
-      // status: canSeeAttendees ? 'active' : isEdge ? 'disabled' : 'hidden',
-      status: 'hidden',
+      status: canSeeAttendees ? 'active' : 'hidden',
       path: `/portal/${city?.slug}/attendees`,
     },
     {

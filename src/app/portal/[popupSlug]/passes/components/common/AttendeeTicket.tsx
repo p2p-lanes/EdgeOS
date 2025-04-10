@@ -1,6 +1,5 @@
 import { AttendeeProps } from "@/types/Attendee"
 import { Pencil, QrCode, Trash, User } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { badgeName } from "../../constants/multiuse"
 import { ProductsPass } from "@/types/Products"
 import { useCityProvider } from "@/providers/cityProvider"
@@ -21,6 +20,7 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
   const { handleEdit, handleCloseModal, modal, handleDelete } = useModal()
   const { removeAttendee, editAttendee } = useAttendee()
   const hasPurchased = attendee.products.some((product) => product.purchased)
+
 
   const handleEditAttendee = () => {
     handleEdit(attendee)
@@ -82,7 +82,7 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
             {
               standardProducts.length === 0 && (
                 <div className="flex w-full h-full justify-center items-center">
-                  <p className="text-sm font-medium text-neutral-500">Tickets included in your pass</p>
+                  <p className="text-sm font-medium text-neutral-500">No tickets available.</p>
                 </div>
               )
             }
@@ -96,10 +96,15 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
                 />
               ))
             }
+            {
+              !hasPurchased && (
+                <OptionsMenu onEdit={handleEditAttendee} onDelete={handleRemoveAttendee} className="absolute top-2 right-3 hidden xl:flex"/>
+              )
+            }
 
-            <OptionsMenu onEdit={handleEditAttendee} onDelete={hasPurchased ? undefined : handleRemoveAttendee} className="absolute top-2 right-3 hidden xl:flex"/>
 
-
+        {
+          hasPurchased && (
             <div className="flex w-full justify-end">
               <TooltipProvider>
                 <Tooltip>
@@ -115,8 +120,8 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
                 </Tooltip>
               </TooltipProvider>
             </div>
-
-
+          )
+        }
           </div>
         </div>
       </div>

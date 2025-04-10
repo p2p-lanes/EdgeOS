@@ -10,7 +10,7 @@ type FormData = Record<FieldName, FieldValue>
 
 const requiredFields = {
   personalInformation: ['first_name', 'last_name', 'telegram', 'gender', 'age', 'email', 'gender_specify'],
-  professionalDetails: ['organization', 'social_media'],
+  professionalDetails: ['organization'],
   participation: ['duration', 'builder_description'],
   childrenPlusOnes: ['spouse_info', 'spouse_email', 'kids_info'],
   scholarship: ['scholarship_video_url', 'scholarship_details'],
@@ -24,9 +24,6 @@ export const useFormValidation = (initialData: FormData) => {
   const city = getCity()
   const { fields } = useGetFields()
 
-
-  console.log('formData', formData)
-  console.log('fields', fields)
   const validateField = useCallback((name: FieldName, value: FieldValue, formData: FormData) => {
     if (!fields?.has(name)) return ''
 
@@ -34,6 +31,7 @@ export const useFormValidation = (initialData: FormData) => {
     
     if (formData.video_url && validateVideo) {
       const requiredWithVideo = [
+        ...requiredFields.professionalDetails,
         ...requiredFields.personalInformation,
         ...requiredFields.childrenPlusOnes,
         ...requiredFields.scholarship

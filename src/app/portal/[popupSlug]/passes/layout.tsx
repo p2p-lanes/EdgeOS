@@ -22,7 +22,9 @@ const Layout = ({ children }: { children: ReactNode }) => {
   return (
     <PassesProvider>
       <TotalProvider>
-        {children}
+        <div className="py-6">
+          {children}
+        </div>
       </TotalProvider>
     </PassesProvider>
   )

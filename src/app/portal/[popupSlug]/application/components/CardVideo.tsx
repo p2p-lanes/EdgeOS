@@ -43,7 +43,7 @@ const CardVideo = ({ videoUrl, setVideoUrl }: { videoUrl: string, setVideoUrl: (
               <p className="text-sm text-black">Paste link here</p>
               <Input
                 id="video_url" 
-                value={videoUrl}
+                value={videoUrl ?? ''}
                 onChange={(e) => setVideoUrl(e.target.value)}
                 className=" text-black border border-slate-400"
                 placeholder="Video URL"
