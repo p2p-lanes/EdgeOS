@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LabelRequired } from "@/components/ui/label";
 import { GENDER_OPTIONS } from "@/constants/util";
+import { useEffect, useState } from "react";
 
 interface PersonalInfoFormProps {
   formData: {
@@ -27,6 +28,31 @@ const PersonalInfoForm = ({
   handleChangeEmail, 
   errors
 }: PersonalInfoFormProps) => {
+  // Estado para almacenar el valor de género normalizado
+  const [genderValue, setGenderValue] = useState<string>("");
+
+  // Efecto para normalizar el valor de género cuando cambia formData
+  useEffect(() => {
+    // Si hay un valor de género
+    if (formData.gender) {
+      // Verificar si coincide con alguna de las opciones disponibles (comparación insensible a mayúsculas/minúsculas)
+      const matchingOption = GENDER_OPTIONS.find(opt => 
+        opt.value.toLowerCase() === formData.gender.toLowerCase()
+      );
+      
+      // Si hay coincidencia, usar el valor exacto de la opción
+      if (matchingOption) {
+        setGenderValue(matchingOption.value);
+      } else {
+        // Si no hay coincidencia, usar el valor original
+        setGenderValue(formData.gender);
+      }
+    } else {
+      // Si no hay valor, asegurarse de que genderValue esté vacío
+      setGenderValue("");
+    }
+  }, [formData.gender]);
+
   return (
     <div className="space-y-4 animate-in fade-in duration-500">      
       {/* Email con botón para cambiar */}
@@ -114,7 +140,7 @@ const PersonalInfoForm = ({
       <RadioGroupForm
         label="Gender"
         subtitle="Select your gender"
-        value={formData.gender}
+        value={genderValue}
         onChange={(value) => handleInputChange("gender", value)}
         error={errors.gender}
         isRequired
