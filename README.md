@@ -1,7 +1,7 @@
 ## 🌟 What is this?
 
 The resident portal is an open source project actively developed by SimpleFi (aka p2planes) jointly with the support of EdgeCity and Esmeralda and (hopefully) you!
-
+ 
 ## 🚀 Our Story
 
 We build technology to accelerate the experimentation rate of new forms of human cooperation. We do this by leveraging frontier technologies such as cryptocurrencies, ZK and AI as part of the tool stack of orgs doing the groundwork. After working closely with EdgeCity and Crecimiento, we understood that current tools, both closed and open source were not optimized for our desired use case, so we decided to build our own.
