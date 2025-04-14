@@ -90,7 +90,6 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
           const sheetName = workbook.SheetNames[0]
           const worksheet = workbook.Sheets[sheetName]
           const json = utils.sheet_to_json<MemberData>(worksheet)
-          console.log('json', json)
           resolve(json)
         } catch (error) {
           reject(error)
@@ -265,7 +264,7 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
     
     // Create CSV content
     const csvContent = headers.join(',') + '\n' + 
-                       'John,Doe,john.doe@example.com,@johndoe,Company Name,Member,male';
+                       'John,Doe,john.doe@example.com,@johndoe,Company Name,Member,Male';
     
     // Create blob and download link
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
@@ -291,7 +290,7 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
       }}
       title="Import Members"
       description={
-        <div className="flex items-center gap-2">
+        <>
           <span>Upload a CSV or Excel file with member data to quickly add multiple members at once. 
             <Tooltip>
               <TooltipTrigger asChild>
@@ -311,7 +310,7 @@ const ImportMembersModal = ({ open, onClose, onSuccess }: ImportMembersModalProp
               </TooltipContent>
             </Tooltip>
           </span>
-        </div>
+        </>
       }
     >
       <div className="space-y-6">
