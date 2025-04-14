@@ -41,12 +41,13 @@ const FooterMenu = ({handleLogout, user}: {handleLogout: () => void, user: User}
               href={repoUrl}
               target="_blank" 
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-xs px-4 py-2 hover:bg-muted/50 rounded-md transition-colors duration-200 mx-2 mb-2"
+              className="group-data-[collapsible=icon]:px-0 flex items-center gap-2 text-xs px-2 py-2 hover:bg-muted/50 rounded-md transition-colors duration-200 mx-2 mb-2"
             >
               <div className="flex items-center gap-1">
                 <Github className="size-4 text-muted-foreground" />
+                <span className="text-xs font-semibold text-muted-foreground group-data-[collapsible=icon]:hidden ml-3">EdgeOS</span>
               </div>
-              <div className="flex items-center gap-1 ml-auto">
+              <div className="flex items-center gap-1 ml-auto group-data-[collapsible=icon]:hidden">
                 <Star className="size-3.5 fill-amber-400 text-amber-400" />
                 <span className="font-medium">{stars}</span>
               </div>

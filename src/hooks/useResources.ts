@@ -47,11 +47,11 @@ const useResources = () => {
       status: canSeeAttendees ? 'active' : 'hidden',
       path: `/portal/${city?.slug}/attendees`,
     },
-    {
-      name: 'Housing',
-      icon: Home,
-      status: isEdgeAustin ? 'hidden' : 'soon' as const
-    }
+    // {
+    //   name: 'Housing',
+    //   icon: Home,
+    //   status: isEdgeAustin ? 'hidden' : 'soon' as const
+    // }
   ]
 
   return ({resources})
