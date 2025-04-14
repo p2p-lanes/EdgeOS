@@ -1,18 +1,45 @@
 import { useCityProvider } from '@/providers/cityProvider';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { api } from '@/api';
 
 const PoapMint = () => {
-  const { getCity } = useCityProvider()
-  const router = useRouter()
-  const city = getCity()
+  const { getCity } = useCityProvider();
+  const router = useRouter();
+  const [poaps, setPoaps] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const checkPoaps = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('citizens/my-poaps');
+        console.log(response);
+        if (response.status === 200 && response.data?.results && response.data.results.length > 0) {
+          setPoaps(response.data.results);
+        } else {
+          setPoaps(null);
+        }
+      } catch (error) {
+        console.error('Error checking poaps:', error);
+        setPoaps(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    checkPoaps();
+  }, []);
 
   const handleClick = () => {
-    router.push(`/portal/poaps`)
+    router.push(`/portal/poaps`);
   };
 
+  if (loading || !poaps) return null;
+
   return (
-    <div onClick={handleClick} className=' w-full bg-gradient-to-r from-[#FF8181] to-[#DE00F1] p-[2px] hover:shadow-lg hover:shadow-pink-300/30 transition-all duration-300 rounded-lg cursor-pointer flex justify-between items-center'>
+    <div onClick={handleClick} className='w-full bg-gradient-to-r from-[#FF8181] to-[#DE00F1] p-[2px] hover:shadow-lg hover:shadow-pink-300/30 transition-all duration-300 rounded-lg cursor-pointer flex justify-between items-center'>
       <div className='group-data-[collapsible=icon]:hidden bg-white hover:bg-gradient-to-r hover:from-[#FF8181]/10 hover:to-[#DE00F1]/10 rounded-lg rounded-r-none w-full h-full flex items-center gap-2 justify-center'>
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={'https://simplefi.s3.us-east-2.amazonaws.com/logo_base.png'} alt='poap' width={18} height={18} />
