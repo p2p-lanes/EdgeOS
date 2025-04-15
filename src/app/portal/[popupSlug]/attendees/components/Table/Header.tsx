@@ -12,7 +12,7 @@ const Header = () => {
         <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap min-w-[150px]" >Telegram Username</TableHead>
         <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap flex items-center gap-2 min-w-[150px]" >
           <Ticket className="h-5 w-5" />
-          Passes
+          Weeks joining
         </TableHead>
         <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap min-w-[100px]" >I'm bringing kids</TableHead>
         <TableHead className="text-md font-semibold text-gray-900 whitespace-nowrap min-w-[150px]" >Role</TableHead>
