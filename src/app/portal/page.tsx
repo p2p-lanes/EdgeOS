@@ -14,6 +14,7 @@ const Page = () => {
 
   useEffect(() => {
     if(popupSlug){
+      console.log("popupSlug", popupSlug)
       router.push(`/portal/${popupSlug}`)
       return;
     }

@@ -8,6 +8,8 @@ const Authentication = ({children}: {children: ReactNode}) => {
   const { isLoading, isAuthenticated, logout } = useAuthentication()
   
   useEffect(() => {
+    console.log("isAuthenticated", isAuthenticated)
+    console.log("isLoading", isLoading)
     if(!isAuthenticated && !isLoading) {
       logout()
     }

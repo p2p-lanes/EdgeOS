@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { useEffect } from "react"
 
 const Page = () => {
-  const { isLoading, isAuthenticated, logout } = useAuthentication()
+  const { isLoading, isAuthenticated } = useAuthentication()
   const router = useRouter()
 
    useEffect(() => {
