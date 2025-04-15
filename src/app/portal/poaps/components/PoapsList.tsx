@@ -18,7 +18,7 @@ const PoapsList = () => {
   if (!poaps || poaps.length === 0) {
     return (
       <div className="flex justify-center items-center h-40">
-        <p className="text-gray-500">No POAPs available right now</p>
+        <p className="text-gray-500">No POAPs available right now.</p>
       </div>
     );
   }

@@ -1,13 +1,12 @@
-import { PoapProps } from "@/types/Poaps"
-import Poap from "./components/Poap"
 import PoapsList from "./components/PoapsList"
 
 const PoapsPage = () => {
   return (
-    <main className="container p-4 md:py-6 mb-8">
-      <div className="flex w-full justify-between">
-        <div className="flex flex-col md:flex-row md:gap-4 items-center">
-          <h1 className='text-2xl font-semibold'>Your Collectibles ·</h1>
+    <main className="container max-w-5xl mx-auto p-6">
+      <div className="flex flex-col xl:flex-row gap-4 xl:justify-between">
+        <div className="flex flex-col xl:flex-row gap-2 xl:items-center xl:gap-4">
+          <h1 className='text-2xl font-semibold'>Your Collectibles</h1>
+          <h1 className='text-2xl font-semibold xl:block hidden'>·</h1>
           <p className='text-sm text-gray-500'>
             Collect POAPs and other collectibles from Edge City events.
           </p>

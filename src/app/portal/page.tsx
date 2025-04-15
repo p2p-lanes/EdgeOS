@@ -18,9 +18,9 @@ const Page = () => {
       return;
     }
     
-    if(city){
-      router.push(`/portal/${city.slug}`)
-    }
+    // if(city){
+    //   router.push(`/portal/${city.slug}`)
+    // }
   }, [city, popupSlug])
 
   return (
