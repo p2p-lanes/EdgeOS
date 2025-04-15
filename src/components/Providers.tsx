@@ -3,6 +3,7 @@
 import { SidebarProvider } from "@/components/Sidebar/SidebarComponents"
 import ApplicationProvider from "@/providers/applicationProvider"
 import CityProvider from "@/providers/cityProvider"
+import { PoapsProvider } from "@/providers/poapsProvider"
 import PassesDataProvider from "@/providers/productsProvider"
 import PassesProvider from "@/providers/passesProvider"
 
@@ -12,9 +13,11 @@ const Providers = ({children}: {children: React.ReactNode}) => {
       <ApplicationProvider>
         <PassesDataProvider>
           <PassesProvider>
-            <SidebarProvider>
-              {children}
-            </SidebarProvider>
+            <PoapsProvider>
+              <SidebarProvider>
+                {children}
+              </SidebarProvider>
+            </PoapsProvider>
           </PassesProvider>
         </PassesDataProvider>
       </ApplicationProvider>

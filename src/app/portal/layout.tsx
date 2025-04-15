@@ -8,6 +8,7 @@ import useGetApplications from "@/hooks/useGetApplications"
 import { BackofficeSidebar } from "@/components/Sidebar/Sidebar"
 import HeaderBar from "@/components/Sidebar/HeaderBar"
 import Providers from "../../components/Providers"
+import { useGetPoaps } from "@/hooks/useGetPoaps"
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
 
@@ -32,6 +33,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
 const RootGets = () => {
   useGetApplications()
   useGetPopups()
+  useGetPoaps()
   return null
 }
 

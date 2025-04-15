@@ -1,42 +1,17 @@
-import { useCityProvider } from '@/providers/cityProvider';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { api } from '@/api';
+import { usePoapsProvider } from '@/providers/poapsProvider';
+import { PoapProps } from '@/types/Poaps';
 
 const PoapMint = () => {
-  const { getCity } = useCityProvider();
   const router = useRouter();
-  const [poaps, setPoaps] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    const checkPoaps = async () => {
-      try {
-        setLoading(true);
-        const response = await api.get('citizens/my-poaps');
-        console.log(response);
-        if (response.status === 200 && response.data?.results && response.data.results.length > 0) {
-          setPoaps(response.data.results);
-        } else {
-          setPoaps(null);
-        }
-      } catch (error) {
-        console.error('Error checking poaps:', error);
-        setPoaps(null);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    checkPoaps();
-  }, []);
+  const { poaps, loading } = usePoapsProvider();
 
   const handleClick = () => {
     router.push(`/portal/poaps`);
   };
 
-  if (loading || !poaps) return null;
+  if (loading || !poaps || !poaps.some((poap: PoapProps) => poap.poap_is_active && !poap.poap_claimed)) return null;
 
   return (
     <div onClick={handleClick} className='w-full bg-gradient-to-r from-[#FF8181] to-[#DE00F1] p-[2px] hover:shadow-lg hover:shadow-pink-300/30 transition-all duration-300 rounded-lg cursor-pointer flex justify-between items-center'>

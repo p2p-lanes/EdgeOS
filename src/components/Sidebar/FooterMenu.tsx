@@ -1,4 +1,4 @@
-import { LogOut, ChevronDown, Star, Github } from "lucide-react"
+import { LogOut, ChevronDown, Star, Github, Medal } from "lucide-react"
 import { useState, useEffect } from "react"
 
 import { DropdownMenuItem, DropdownMenuContent, DropdownMenu, DropdownMenuTrigger } from "./DropdownMenu"
@@ -7,10 +7,13 @@ import { SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "
 
 import { User } from "@/types/User"
 import PoapMint from "./Poap/PoapMint"
+import { usePoapsProvider } from "@/providers/poapsProvider"
+import { useRouter } from "next/navigation"
 
 const FooterMenu = ({handleLogout, user}: {handleLogout: () => void, user: User}) => {
   const [stars, setStars] = useState<number | null>(null)
   const repoUrl = "https://github.com/p2p-lanes/EdgeOS"
+  const router = useRouter()
 
   async function getGitHubStars() {
     try {
@@ -70,7 +73,11 @@ const FooterMenu = ({handleLogout, user}: {handleLogout: () => void, user: User}
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-[--radix-dropdown-menu-trigger-width]">
-                <DropdownMenuItem onClick={handleLogout}>
+                <DropdownMenuItem onClick={() => router.push('/portal/poaps')} className="cursor-pointer my-2 py-2">
+                  <Medal className="mr-2 size-4" />
+                  <span>My Collectibles</span>
+                </DropdownMenuItem>
+                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer my-2 py-2">
                   <LogOut className="mr-2 size-4" />
                   <span>Log out</span>
                 </DropdownMenuItem>
