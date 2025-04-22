@@ -4,7 +4,7 @@ import { useApplication } from "@/providers/applicationProvider";
 import { FormDataProps, CheckoutState } from "../types";
 import useCookies from "./useCookies";
 
-export const useCheckoutState = (groupParam: string | null) => {
+const useCheckoutState = (groupParam: string | null) => {
   const { setApplications } = useApplication();
   const [checkoutState, setCheckoutState] = useState<CheckoutState>("form");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -91,6 +91,9 @@ export const useCheckoutState = (groupParam: string | null) => {
     checkoutState,
     isSubmitting,
     errorMessage,
-    handleSubmit
+    handleSubmit,
+    setCheckoutState
   };
-}; 
+};
+
+export default useCheckoutState; 

@@ -6,8 +6,8 @@ import UserInfoForm from "./UserInfoForm";
 import PassesCheckout from "./PassesCheckout";
 import TransitionScreen from "./TransitionScreen";
 import useGetCheckoutData from "../hooks/useGetCheckoutData";
-import { useCheckoutState } from "../hooks/useCheckoutState";
 import { FormDataProps } from "../types";
+import useCheckoutState from "../hooks/useCheckoutState";
 
 const LoadingFallback = () => (
   <div className="flex items-center justify-center h-screen">
@@ -19,7 +19,7 @@ export const CheckoutContent = () => {
   const searchParams = useSearchParams();
   const groupParam = searchParams.get("group");
   const { data: { group }, error, isLoading } = useGetCheckoutData();
-  const { checkoutState, isSubmitting, errorMessage, handleSubmit } = useCheckoutState(groupParam);
+  const { checkoutState, isSubmitting, errorMessage, handleSubmit, setCheckoutState } = useCheckoutState(groupParam);
 
   // Función que maneja el envío del formulario
   const handleFormSubmit = async (formData: FormDataProps): Promise<void> => {
@@ -69,7 +69,7 @@ export const CheckoutContent = () => {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.5 }}
           >
-            <PassesCheckout /> 
+            <PassesCheckout onBack={() => setCheckoutState("form")} /> 
           </motion.div>
         );
       
