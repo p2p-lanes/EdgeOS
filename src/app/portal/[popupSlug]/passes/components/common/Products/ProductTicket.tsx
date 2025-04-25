@@ -1,8 +1,11 @@
 import { ProductsPass } from "@/types/Products"
-import { Plus, Ticket } from "lucide-react"
+import { Plus, Ticket, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatDate } from "@/helpers/dates"
 import { usePassesProvider } from "@/providers/passesProvider"
+import { useState } from "react"
+import { TooltipContent } from "@/components/ui/tooltip"
+import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 
 type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
 
@@ -19,13 +22,27 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
   const originalPrice = product.compare_price ?? product.price
   const { purchased, selected } = product
   const { isEditing } = usePassesProvider()
+  const [showTooltip, setShowTooltip] = useState(false)
+
+  const handleTooltipClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShowTooltip(!showTooltip);
+  }
+
+  const handleTooltipKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      e.stopPropagation();
+      setShowTooltip(!showTooltip);
+    }
+  }
 
   return (
     <button 
       onClick={disabled || (purchased && !isEditing) ? undefined : onClick}
       disabled={disabled || (purchased && !isEditing)}
       className={cn(
-        'flex items-center gap-2 border border-neutral-200 rounded-md p-2',
+        'flex items-center gap-2 border border-neutral-200 rounded-md p-2 relative',
         variants[(selected && purchased && !disabled) ? 'edit' : purchased ? 'purchased' : disabled ? 'disabled' : selected ? 'selected' : 'default']
       )}
     >
@@ -50,20 +67,37 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
           }
         </div>
 
-      {
-        !product.purchased && (
-          <div className="flex items-center gap-2">
-            {
-              originalPrice !== product.price && (
-                <p className={cn("text-xs text-muted-foreground line-through", disabled && 'text-neutral-300')}>
-                  ${originalPrice.toLocaleString()}
-                </p>
-              )
-            }
-            <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price.toLocaleString()}</p>
-          </div>
-        )
-      }
+        <div className="flex items-center gap-2">
+
+          {
+            product.description && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Info className={cn(`w-4 h-4 text-slate-500 hover:text-slate-700`, product.purchased && 'text-white hover:text-white')} />
+                </TooltipTrigger>
+                <TooltipContent className="bg-white text-black shadow-md border border-gray-200 max-w-sm">
+                  {product.description}
+                </TooltipContent>
+              </Tooltip>
+            )
+          }
+          
+          {
+            !product.purchased && (
+              <>
+                {
+                  originalPrice !== product.price && (
+                    <p className={cn("text-xs text-muted-foreground line-through", disabled && 'text-neutral-300')}>
+                      ${originalPrice.toLocaleString()}
+                    </p>
+                  )
+                }
+                <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price.toLocaleString()}</p>
+              </>
+            )
+          }
+
+        </div>
       </div>
     </button>
   )
