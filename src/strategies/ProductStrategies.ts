@@ -140,6 +140,24 @@ class WeekProductStrategy implements ProductStrategy {
   }
 }
 
+class DayProductStrategy implements ProductStrategy {
+  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
+    
+    return attendees.map(attendee => {
+      if (attendee.id !== attendeeId) return attendee;
+
+      return {
+        ...attendee,
+        products: attendee.products.map(p => ({
+          ...p,
+          selected: p.id === product.id ? product.quantity && product.quantity > 0 ? true : false : p.selected,
+          quantity: p.id === product.id ? product.quantity : p.quantity
+        }))
+      };
+    });
+  }
+}
+
 export const getProductStrategy = (product: ProductsPass, isEditing: boolean): ProductStrategy => {
   
   if (product.exclusive) return new ExclusiveProductStrategy();
@@ -153,6 +171,8 @@ export const getProductStrategy = (product: ProductsPass, isEditing: boolean): P
       return new WeekProductStrategy();
     case 'exclusive':
       return new ExclusiveProductStrategy();
+    case 'day':
+      return new DayProductStrategy();
     default:
       return new WeekProductStrategy();
   }

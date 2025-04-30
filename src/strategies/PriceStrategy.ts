@@ -10,13 +10,14 @@ class DefaultPriceStrategy implements PriceStrategy {
   calculatePrice(product: ProductsPass, hasPatreonPurchased: boolean, discount: number): number {
     const isSpecialProduct = product.category === 'patreon' || product.category === 'supporter';
     const originalPrice = product.original_price || product.price || 0;
+    console.log('product', product)
 
     if (!isSpecialProduct && hasPatreonPurchased) {
       return 0;
     }
 
     if (product.category !== 'patreon' && product.category !== 'supporter' && discount > 0) {
-      return originalPrice * (1 - discount / 100);
+      return originalPrice * (1 - discount / 100) * (product.quantity || 1);
       // if (discount.discount_type === 'percentage') {
       //   return originalPrice * (1 - discount.discount_value / 100);
       // } else if (discount.discount_type === 'fixed') {

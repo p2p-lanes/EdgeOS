@@ -1,11 +1,10 @@
 import { ProductsPass } from "@/types/Products"
-import { Plus, Ticket, Info } from "lucide-react"
+import { Plus, Minus, Ticket, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatDate } from "@/helpers/dates"
 import { usePassesProvider } from "@/providers/passesProvider"
 import { TooltipContent } from "@/components/ui/tooltip"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
-import ProductDay from "./ProductDay"
 
 type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
 
@@ -21,31 +20,32 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
   const disabled = product.disabled || defaultDisabled
   const originalPrice = product.compare_price ?? product.price
   const { purchased, selected } = product
-  const { isEditing } = usePassesProvider()
 
-  if (product.category === 'day') { 
-    return (
-      <ProductDay product={product} onClick={onClick} defaultDisabled={defaultDisabled} />
-    )
+  const handleSumQuantity = () => {
+    const productAux = {...product, quantity: product.quantity ? product.quantity + 1 : 1}
+    onClick(productAux.attendee_id, productAux)
   }
+
+  const handleSubtractQuantity = () => {
+    const productAux = {...product, quantity: product.quantity ? product.quantity - 1 : 0}
+    onClick(productAux.attendee_id, productAux)
+  }
+
+  const showQuantityControls = product.quantity && product.quantity > 0;
 
   return (
     <button 
-      onClick={disabled || (purchased && !isEditing) ? undefined : () => onClick(product.attendee_id, product)}
-      disabled={disabled || (purchased && !isEditing)}
+      onClick={disabled || showQuantityControls ? undefined : handleSumQuantity}
+      disabled={disabled}
       className={cn(
         'flex items-center gap-2 border border-neutral-200 rounded-md p-2 relative',
-        variants[(selected && purchased && !disabled) ? 'edit' : purchased ? 'purchased' : disabled ? 'disabled' : selected ? 'selected' : 'default']
+        variants[ purchased ? 'purchased' : disabled ? 'disabled' : selected ? 'selected' : 'default']
       )}
     >
       <div className="flex justify-between w-full">
         <div className="flex md:items-center md:gap-2 flex-col md:flex-row">
           <div className="flex items-center gap-2 pl-2">
-            {/* {
-              !product.selected && !product.purchased && (
-                <Plus className="w-4 h-4" />
-              )
-            } */}
+            
             <Ticket className="w-4 h-4" />
             <p className="font-semibold text-sm">{product.name}</p>
           </div>
@@ -85,9 +85,38 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
                   )
                 }
                 <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price.toLocaleString()}</p>
+
               </>
             )
           }
+
+          <div className="flex items-center">
+              {showQuantityControls ? ( 
+                <>
+                  <button 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSubtractQuantity();
+                    }} 
+                    className="transition-all duration-200 ease-in-out flex items-center justify-center w-6 h-6 rounded  focus:outline-none"
+                    disabled={disabled}
+                    aria-label="Decrease quantity"
+                    tabIndex={0}
+                  >
+                    <Minus className="w-4 h-4" />
+                  </button>
+                  <span className="transition-all duration-200 ease-in-out w-6 text-center font-medium">
+                    {product.quantity || 0}
+                  </span>
+                  <Plus className="w-4 h-4" onClick={(e) => {
+                  e.stopPropagation();
+                  handleSumQuantity();
+                }}/>
+                </>
+              ) : null}
+              
+                
+            </div>
 
         </div>
       </div>

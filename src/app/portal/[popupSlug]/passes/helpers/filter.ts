@@ -45,5 +45,5 @@ export const filterProductsToPurchase = (products: ProductsPass[]) => {
         return [...acc, product];
       }
       return acc;
-    }, []).map(p => ({product_id: p.id, attendee_id: p.attendee_id, quantity: 1}))
+    }, []).map(p => ({product_id: p.id, attendee_id: p.attendee_id, quantity: p.quantity ?? 1}))
 }
