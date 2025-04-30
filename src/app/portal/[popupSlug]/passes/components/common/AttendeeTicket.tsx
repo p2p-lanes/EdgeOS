@@ -14,7 +14,14 @@ import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { TooltipProvider } from "@/components/ui/tooltip"
 
 const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void}) => {
-  const standardProducts = attendee.products.filter((product) => product.category !== 'patreon' && product.category !== 'month')
+  const standardProducts = attendee.products
+    .filter((product) => product.category !== 'patreon' && product.category !== 'month')
+    .sort((a, b) => {
+      // Move products with category "day" to the end
+      if (a.category === 'day' && b.category !== 'day') return 1;
+      if (a.category !== 'day' && b.category === 'day') return -1;
+      return 0;
+    });
   const { getCity } = useCityProvider()
   const city = getCity()
   const { handleEdit, handleCloseModal, modal, handleDelete } = useModal()

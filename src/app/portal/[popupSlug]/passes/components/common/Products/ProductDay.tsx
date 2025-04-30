@@ -45,7 +45,6 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
       <div className="flex justify-between w-full">
         <div className="flex md:items-center md:gap-2 flex-col md:flex-row">
           <div className="flex items-center gap-2 pl-2">
-            
             <Ticket className="w-4 h-4" />
             <p className="font-semibold text-sm">{product.name}</p>
           </div>
@@ -85,43 +84,67 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
                   )
                 }
                 <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price.toLocaleString()}</p>
-
               </>
             )
           }
 
-          <div className="flex items-center">
+          <div className="flex items-center relative h-6 overflow-hidden">
               {showQuantityControls ? ( 
-                <>
+                <div className="flex items-center animate-fade-in-right">
                   <button 
                     onClick={(e) => {
                       e.stopPropagation();
                       handleSubtractQuantity();
                     }} 
-                    className="transition-all duration-200 ease-in-out flex items-center justify-center w-6 h-6 rounded  focus:outline-none"
+                    className="transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded"
                     disabled={disabled}
                     aria-label="Decrease quantity"
                     tabIndex={0}
                   >
                     <Minus className="w-4 h-4" />
                   </button>
-                  <span className="transition-all duration-200 ease-in-out w-6 text-center font-medium">
+                  <span className="transition-all duration-300 ease-in-out w-6 text-center font-medium">
                     {product.quantity || 0}
                   </span>
-                  <Plus className="w-4 h-4" onClick={(e) => {
-                  e.stopPropagation();
-                  handleSumQuantity();
-                }}/>
-                </>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSumQuantity();
+                    }}
+                    className="transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded"
+                    disabled={disabled}
+                    aria-label="Increase quantity"
+                    tabIndex={0}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </button>
+                </div>
               ) : null}
-              
-                
-            </div>
-
+          </div>
         </div>
       </div>
     </button>
   )
 }
+
+// Añadimos las clases de animación a Tailwind mediante CSS
+const style = document.createElement('style');
+style.textContent = `
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .animate-fade-in-right {
+    animation: fadeInRight 0.3s ease-out forwards;
+  }
+`;
+document.head.appendChild(style);
 
 export default Product

@@ -6,6 +6,7 @@ import { usePassesProvider } from "@/providers/passesProvider"
 import { TooltipContent } from "@/components/ui/tooltip"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import ProductDay from "./ProductDay"
+import { Separator } from "@/components/ui/separator"
 
 type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
 
@@ -25,7 +26,10 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
 
   if (product.category === 'day') { 
     return (
-      <ProductDay product={product} onClick={onClick} defaultDisabled={defaultDisabled} />
+      <>
+        <Separator className="my-1"/>
+        <ProductDay product={product} onClick={onClick} defaultDisabled={defaultDisabled} />
+      </>
     )
   }
 
