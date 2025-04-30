@@ -2,7 +2,6 @@ import { ProductsPass } from "@/types/Products"
 import { Plus, Minus, Ticket, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatDate } from "@/helpers/dates"
-import { usePassesProvider } from "@/providers/passesProvider"
 import { TooltipContent } from "@/components/ui/tooltip"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 
@@ -21,9 +20,26 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
   const originalPrice = product.compare_price ?? product.price
   const { purchased, selected } = product
 
+  const calculateMaxQuantity = () => {
+    if (!product.start_date || !product.end_date) return 1;
+    const startDate = new Date(product.start_date);
+    const endDate = new Date(product.end_date);
+    const diffTime = Math.abs(endDate.getTime() - startDate.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Añadir 1 para incluir ambos días (start y end)
+    return diffDays + 1;
+  }
+
+  const maxQuantity = calculateMaxQuantity();
+
   const handleSumQuantity = () => {
-    const productAux = {...product, quantity: product.quantity ? product.quantity + 1 : 1}
-    onClick(productAux.attendee_id, productAux)
+    if (product.quantity && product.quantity >= maxQuantity) {
+      return;
+    }
+    
+    const productAux = {...product, quantity: product.quantity ? product.quantity + 1 : 1};
+    onClick(productAux.attendee_id, productAux);
   }
 
   const handleSubtractQuantity = () => {
@@ -31,16 +47,26 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
     onClick(productAux.attendee_id, productAux)
   }
 
+  const handleMainClick = () => {
+    if (!disabled && !showQuantityControls) {
+      handleSumQuantity();
+    }
+  }
+
   const showQuantityControls = product.quantity && product.quantity > 0;
+  const isMaxQuantityReached = product.quantity && product.quantity >= maxQuantity ? true : false;
 
   return (
-    <button 
-      onClick={disabled || showQuantityControls ? undefined : handleSumQuantity}
-      disabled={disabled}
+    <div 
+      onClick={handleMainClick}
       className={cn(
-        'flex items-center gap-2 border border-neutral-200 rounded-md p-2 relative',
-        variants[ purchased ? 'purchased' : disabled ? 'disabled' : selected ? 'selected' : 'default']
+        'flex items-center gap-2 border border-neutral-200 rounded-md p-2 relative cursor-pointer',
+        variants[ purchased ? 'purchased' : disabled ? 'disabled' : selected ? 'selected' : 'default'],
+        disabled && 'cursor-not-allowed'
       )}
+      role="button"
+      tabIndex={disabled ? -1 : 0}
+      aria-disabled={disabled}
     >
       <div className="flex justify-between w-full">
         <div className="flex md:items-center md:gap-2 flex-col md:flex-row">
@@ -88,12 +114,11 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
             )
           }
 
-          <div className="flex items-center relative h-6 overflow-hidden">
+          <div className="flex items-center relative h-6 overflow-hidden" onClick={(e) => e.stopPropagation()}>
               {showQuantityControls ? ( 
                 <div className="flex items-center animate-fade-in-right">
                   <button 
                     onClick={(e) => {
-                      e.stopPropagation();
                       handleSubtractQuantity();
                     }} 
                     className="transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded"
@@ -108,22 +133,36 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
                   </span>
                   <button
                     onClick={(e) => {
-                      e.stopPropagation();
                       handleSumQuantity();
                     }}
-                    className="transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded"
-                    disabled={disabled}
+                    className={cn(
+                      "transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded",
+                      isMaxQuantityReached && "opacity-50 cursor-not-allowed"
+                    )}
+                    disabled={disabled || isMaxQuantityReached}
                     aria-label="Increase quantity"
                     tabIndex={0}
                   >
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
-              ) : null}
+              ) : (
+                <button
+                  onClick={(e) => {
+                    handleSumQuantity();
+                  }}
+                  className="transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded"
+                  disabled={disabled}
+                  aria-label="Add item"
+                  tabIndex={0}
+                >
+                  <Plus className="w-4 h-4" />
+                </button>
+              )}
           </div>
         </div>
       </div>
-    </button>
+    </div>
   )
 }
 
