@@ -61,7 +61,7 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
         <div className="flex items-center gap-2">
 
           {
-            product.description && (
+            product.description && !product.purchased && (
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Info className={cn(`w-4 h-4 text-slate-500 hover:text-slate-700`, product.purchased && 'text-white hover:text-white')} />
