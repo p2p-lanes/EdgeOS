@@ -25,12 +25,7 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
   const { isEditing } = usePassesProvider()
 
   if (product.category === 'day') { 
-    return (
-      <>
-        <Separator className="my-1"/>
-        <ProductDay product={product} onClick={onClick} defaultDisabled={defaultDisabled} />
-      </>
-    )
+    return <ProductDay product={product} onClick={onClick} defaultDisabled={defaultDisabled} />
   }
 
   return (

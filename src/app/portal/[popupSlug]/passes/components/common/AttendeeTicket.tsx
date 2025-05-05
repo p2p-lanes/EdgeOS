@@ -12,6 +12,8 @@ import OptionsMenu from "./Buttons/OptionsMenu"
 import { TooltipContent } from "@/components/ui/tooltip"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { Separator } from "@/components/ui/separator"
+import React from "react"
 
 const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void}) => {
   const standardProducts = attendee.products
@@ -28,6 +30,10 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
   const { removeAttendee, editAttendee } = useAttendee()
   const hasPurchased = attendee.products.some((product) => product.purchased)
 
+  // Check if there are any day products
+  const hasDayProducts = standardProducts.some(product => product.category === 'day');
+  // Find index of first day product
+  const firstDayProductIndex = standardProducts.findIndex(product => product.category === 'day');
 
   const handleEditAttendee = () => {
     handleEdit(attendee)
@@ -94,13 +100,18 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
               )
             }
             {
-              standardProducts.map((product) => (
-                <Product 
-                  key={`${product.id}-${attendee.id}`} 
-                  product={product} 
-                  defaultDisabled={!toggleProduct} 
-                  onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
-                />
+              standardProducts.map((product, index) => (
+                <React.Fragment key={`${product.id}-${attendee.id}`}>
+                  {/* Add separator before the first day product */}
+                  {index === firstDayProductIndex && hasDayProducts && (
+                    <Separator className="my-1" />
+                  )}
+                  <Product 
+                    product={product} 
+                    defaultDisabled={!toggleProduct} 
+                    onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
+                  />
+                </React.Fragment>
               ))
             }
             {
