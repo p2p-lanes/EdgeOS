@@ -1,9 +1,12 @@
+"use client"
+
 import { ProductsPass } from "@/types/Products"
 import { Plus, Minus, Ticket, Info } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { formatDate } from "@/helpers/dates"
 import { TooltipContent } from "@/components/ui/tooltip"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
+import { useEffect } from "react"
 
 type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
 
@@ -19,6 +22,42 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
   const disabled = product.disabled || defaultDisabled
   const originalPrice = product.compare_price ?? product.price
   const { purchased, selected } = product
+
+  // Añadimos las clases de animación a Tailwind mediante CSS
+  useEffect(() => {
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes fadeInRight {
+        from {
+          opacity: 0;
+          transform: translateX(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateX(0);
+        }
+      }
+      
+      .animate-fade-in-right {
+        animation: fadeInRight 0.3s ease-out forwards;
+      }
+    `;
+    
+    // Verificamos si el estilo ya existe para evitar duplicados
+    const existingStyle = document.querySelector('style[data-fade-animation]');
+    if (!existingStyle) {
+      style.setAttribute('data-fade-animation', 'true');
+      document.head.appendChild(style);
+    }
+    
+    // Limpieza al desmontar
+    return () => {
+      const styleToRemove = document.querySelector('style[data-fade-animation]');
+      if (styleToRemove && styleToRemove.parentNode) {
+        styleToRemove.parentNode.removeChild(styleToRemove);
+      }
+    };
+  }, []);
 
   const calculateMaxQuantity = () => {
     if (!product.start_date || !product.end_date) return 1;
@@ -165,25 +204,5 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
     </div>
   )
 }
-
-// Añadimos las clases de animación a Tailwind mediante CSS
-const style = document.createElement('style');
-style.textContent = `
-  @keyframes fadeInRight {
-    from {
-      opacity: 0;
-      transform: translateX(10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateX(0);
-    }
-  }
-  
-  .animate-fade-in-right {
-    animation: fadeInRight 0.3s ease-out forwards;
-  }
-`;
-document.head.appendChild(style);
 
 export default Product

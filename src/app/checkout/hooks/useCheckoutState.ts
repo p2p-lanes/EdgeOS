@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { api, instance } from "@/api";
 import { useApplication } from "@/providers/applicationProvider";

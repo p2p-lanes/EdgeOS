@@ -1,3 +1,5 @@
+"use client";
+
 import { instance } from "@/api"
 import { useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"

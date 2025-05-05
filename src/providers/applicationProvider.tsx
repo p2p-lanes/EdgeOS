@@ -1,3 +1,5 @@
+"use client";
+
 import { ApplicationProps } from "@/types/Application";
 import { AttendeeProps } from "@/types/Attendee";
 import { createContext, ReactNode, useContext, useState } from "react"

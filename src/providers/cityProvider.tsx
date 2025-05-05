@@ -1,3 +1,5 @@
+"use client";
+
 import { PopupsProps } from '@/types/Popup';
 import { useParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useState } from 'react';
