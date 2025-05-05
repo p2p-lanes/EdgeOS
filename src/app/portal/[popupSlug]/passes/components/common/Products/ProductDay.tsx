@@ -146,7 +146,7 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
                     <Plus className="w-4 h-4" />
                   </button>
                 </div>
-              ) : (
+              ) : !disabled && (
                 <button
                   onClick={(e) => {
                     handleSumQuantity();
