@@ -36,6 +36,7 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
   const firstDayProductIndex = standardProducts.findIndex(product => product.category === 'day');
 
   const handleEditAttendee = () => {
+    console.log('attendee', attendee)
     handleEdit(attendee)
   }
 

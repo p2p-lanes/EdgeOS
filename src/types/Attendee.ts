@@ -8,6 +8,7 @@ export interface AttendeeProps {
   email: string;
   category: AttendeeCategory;
   application_id: number;
+  gender: string;
   products: ProductsPass[]
 }
 
@@ -25,5 +26,6 @@ export interface AttendeeDirectory {
 export interface CreateAttendee {
   name: string, 
   email: string, 
-  category: AttendeeCategory
+  category: AttendeeCategory,
+  gender: string
 }

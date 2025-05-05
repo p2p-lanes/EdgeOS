@@ -74,7 +74,6 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
       products: attendee.products.map(product => ({...product, edit: false, selected: false, disabled: false}))
     })))
 
-    console.log('editing', editing)
     setIsEditing(editing !== undefined ? editing : !isEditing)
   }
 

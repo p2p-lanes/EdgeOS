@@ -10,7 +10,6 @@ class DefaultPriceStrategy implements PriceStrategy {
   calculatePrice(product: ProductsPass, hasPatreonPurchased: boolean, discount: number): number {
     const isSpecialProduct = product.category === 'patreon' || product.category === 'supporter';
     const originalPrice = product.original_price || product.price || 0;
-    console.log('product', product)
 
     if (!isSpecialProduct && hasPatreonPurchased) {
       return 0;

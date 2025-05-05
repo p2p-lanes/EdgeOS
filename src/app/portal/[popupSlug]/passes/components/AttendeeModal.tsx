@@ -23,12 +23,14 @@ interface AttendeeModalProps {
 const defaultFormData = {
   name: "",
   email: "",
+  gender: "",
 }
 
 type FormDataProps = {
   name: string
   email: string
   category?: string
+  gender?: string
 }
 
 const kidsAgeOptions = [{label: 'Baby (<2)', value: 'baby'}, {label: 'Kid (2-12)', value: 'kid'}, {label: 'Teen (13-18)', value: 'teen'}]
@@ -39,8 +41,8 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
 
   useEffect(() => {
     if (editingAttendee) {
-      const {name, email, category} = editingAttendee
-      setFormData({ name, email, category })
+      const {name, email, category, gender} = editingAttendee
+      setFormData({ name, email, category, gender })
     } else {
       setFormData(defaultFormData)
     }
@@ -49,11 +51,8 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
-
-    console.log('formData', formData)
-    
     try {
-      await onSubmit({...formData,category: formData.category ?? category, id: editingAttendee?.id} as AttendeeProps)
+      await onSubmit({...formData, category: formData.category ?? category, id: editingAttendee?.id, gender: formData.gender ?? editingAttendee?.gender } as AttendeeProps)
     } finally {
       setLoading(false)
     }
@@ -138,6 +137,25 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
               </div>
             )
           }
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="gender" className="text-right">
+              Gender
+            </Label>
+            <Select
+              value={formData.gender}
+              onValueChange={(value) => setFormData(prev => ({...prev, gender: value}))}
+            >
+              <SelectTrigger className="col-span-3">
+                <SelectValue placeholder="Select gender" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="male">Male</SelectItem>
+                <SelectItem value="female">Female</SelectItem>
+                <SelectItem value="prefer not to say">Prefer not to say</SelectItem>
+                <SelectItem value="other">Other</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
         <DialogFooter>
           <ButtonAnimated loading={loading} type="submit">

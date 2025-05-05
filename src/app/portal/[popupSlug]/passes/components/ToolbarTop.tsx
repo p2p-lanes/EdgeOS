@@ -10,7 +10,19 @@ import { useState } from "react"
 import EditPassesButton from "./common/Buttons/EditPassesButton"
 import DiscountCode from "./common/DiscountCode"
 
-const ToolbarTop = ({canEdit = false, viewInvoices = true, positionCoupon = 'bottom'}: {canEdit?: boolean, viewInvoices?: boolean, positionCoupon?: 'top' | 'bottom' | 'right'}) => {
+interface ToolbarTopProps {
+  canEdit?: boolean;
+  viewInvoices?: boolean;
+  positionCoupon?: 'top' | 'bottom' | 'right';
+  onSwitchToBuy?: () => void;
+}
+
+const ToolbarTop = ({
+  canEdit = false, 
+  viewInvoices = true, 
+  positionCoupon = 'bottom',
+  onSwitchToBuy
+}: ToolbarTopProps) => {
   const { getAttendees } = useApplication()
   const { handleOpenModal, handleCloseModal, modal } = useModal()
   const { addAttendee } = useAttendee()
@@ -64,7 +76,7 @@ const ToolbarTop = ({canEdit = false, viewInvoices = true, positionCoupon = 'bot
       </div>
 
       <div className="flex gap-2 items-center">
-        {canEdit && <EditPassesButton/>}
+        {canEdit && <EditPassesButton onSwitchToBuy={onSwitchToBuy} />}
         {
           viewInvoices && (
             <>
