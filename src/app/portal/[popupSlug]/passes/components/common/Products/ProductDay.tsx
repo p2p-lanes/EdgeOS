@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 import { formatDate } from "@/helpers/dates"
 import { TooltipContent } from "@/components/ui/tooltip"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
-import { useEffect, useState } from "react"
+import { useEffect, useState } from "react" 
 import { useSearchParams } from "next/navigation"
 import { usePassesProvider } from "@/providers/passesProvider"
 
@@ -148,7 +148,7 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
               }
               
               {
-                !product.purchased && (
+                !disabled && (
                   <>
                     {
                       originalPrice !== product.price && (
