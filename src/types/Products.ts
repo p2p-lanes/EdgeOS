@@ -28,4 +28,5 @@ export interface ProductsPass extends ProductsProps {
   quantity?: number;
   original_price?: number;
   disabled?: boolean;
+  original_quantity?: number;
 }

@@ -23,7 +23,7 @@ const usePurchaseProducts = () => {
 
     const productsPurchase = attendeePasses.flatMap(p => p.products).filter(p => 
       editableMode 
-        ? (!p.edit && ((!p.selected && p.purchased) || (p.selected && !p.purchased)))
+        ? (!p.edit && (((!p.selected && p.purchased) || (p.selected && !p.purchased)) || (p.category === 'day' && p.selected && (p.quantity || 1) > (p.original_quantity || 1))))
         : p.selected
     )
 

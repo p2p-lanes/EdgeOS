@@ -6,20 +6,23 @@ import { cn } from "@/lib/utils"
 import { formatDate } from "@/helpers/dates"
 import { TooltipContent } from "@/components/ui/tooltip"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
+import { useSearchParams } from "next/navigation"
+import { usePassesProvider } from "@/providers/passesProvider"
 
 type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
 
 const variants: Record<VariantStyles, string> = {
   selected: 'bg-green-200 border-green-400 text-green-800 hover:bg-green-200/80',
   purchased: 'bg-slate-800 text-white border-neutral-700',
-  edit: 'bg-slate-800/30 border-dashed border-slate-200 text-neutral-700 border',
+  edit: 'bg-slate-800/30 border-dashed border-slate-200 text-neutral-700 border', 
   disabled: 'bg-neutral-0 text-neutral-300 cursor-not-allowed ',
   default: 'bg-white border-neutral-300 text-neutral-700 hover:bg-slate-100',
 }
 
-const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, onClick: (attendeeId: number | undefined, product: ProductsPass) => void, defaultDisabled?: boolean}) => {
-  const disabled = product.disabled || defaultDisabled
+const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {product: ProductsPass, onClick: (attendeeId: number | undefined, product: ProductsPass) => void, defaultDisabled?: boolean, hasMonthPurchased?: boolean}) => {
+  const { isEditing } = usePassesProvider()
+  const disabled = product.disabled || defaultDisabled || hasMonthPurchased || isEditing
   const originalPrice = product.compare_price ?? product.price
   const { purchased, selected } = product
 
@@ -82,7 +85,9 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
   }
 
   const handleSubtractQuantity = () => {
-    const productAux = {...product, quantity: product.quantity ? product.quantity - 1 : 0}
+    const currentQuantity = product.quantity || 0;
+    
+    const productAux = {...product, quantity: currentQuantity - 1}
     onClick(productAux.attendee_id, productAux)
   }
 
@@ -94,114 +99,138 @@ const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, on
 
   const showQuantityControls = product.quantity && product.quantity > 0;
   const isMaxQuantityReached = product.quantity && product.quantity >= maxQuantity ? true : false;
+  // Determinar si el botón de reducir cantidad debe estar deshabilitado
+  const isMinQuantityReached = purchased && product.quantity && product.quantity <= (product.original_quantity ?? 1);
 
   return (
-    <div 
-      onClick={handleMainClick}
-      className={cn(
-        'flex items-center gap-2 border border-neutral-200 rounded-md p-2 relative cursor-pointer',
-        variants[ purchased ? 'purchased' : disabled ? 'disabled' : selected ? 'selected' : 'default'],
-        disabled && 'cursor-not-allowed'
-      )}
-      role="button"
-      tabIndex={disabled ? -1 : 0}
-      aria-disabled={disabled}
-    >
-      <div className="flex justify-between w-full">
-        <div className="flex md:items-center md:gap-2 flex-col md:flex-row">
-          <div className="flex items-center gap-2 pl-2">
-            <Ticket className="w-4 h-4" />
-            <p className="font-semibold text-sm">{product.name}</p>
-          </div>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div 
+          onClick={handleMainClick}
+          className={cn(
+            'flex items-center gap-2 border border-neutral-200 rounded-md p-2 relative cursor-pointer',
+            variants[ purchased ? 'purchased' : disabled ? 'disabled' : selected ? 'selected' : 'default'],
+            disabled && 'cursor-not-allowed'
+          )}
+          role="button"
+          tabIndex={disabled ? -1 : 0}
+          aria-disabled={disabled}
+        >
+          <div className="flex justify-between w-full">
+            <div className="flex md:items-center md:gap-2 flex-col md:flex-row">
+              <div className="flex items-center gap-2 pl-2">
+                <Ticket className="w-4 h-4" />
+                <p className="font-semibold text-sm">{product.name}</p>
+              </div>
 
-          {
-            product.start_date && product.end_date && (
-              <span className={cn(`text-xs text-muted-foreground ${product.purchased ? 'text-white' : ''}`, disabled && 'text-neutral-300')}>
-                {formatDate(product.start_date, {day: 'numeric', month: 'short'})} to {formatDate(product.end_date, {day: 'numeric', month: 'short'})}
-              </span>
-            )
-          }
-        </div>
-
-        <div className="flex items-center gap-2">
-
-          {
-            product.description && (
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Info className={cn(`w-4 h-4 text-slate-500 hover:text-slate-700`, product.purchased && 'text-white hover:text-white')} />
-                </TooltipTrigger>
-                <TooltipContent className="bg-white text-black shadow-md border border-gray-200 max-w-sm">
-                  {product.description}
-                </TooltipContent>
-              </Tooltip>
-            )
-          }
-          
-          {
-            !product.purchased && (
-              <>
-                {
-                  originalPrice !== product.price && (
-                    <p className={cn("text-xs text-muted-foreground line-through", disabled && 'text-neutral-300')}>
-                      ${originalPrice.toLocaleString()}
-                    </p>
-                  )
-                }
-                <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price.toLocaleString()}</p>
-              </>
-            )
-          }
-
-          <div className="flex items-center relative h-6 overflow-hidden" onClick={(e) => e.stopPropagation()}>
-              {showQuantityControls ? ( 
-                <div className="flex items-center animate-fade-in-right">
-                  <button 
-                    onClick={(e) => {
-                      handleSubtractQuantity();
-                    }} 
-                    className="transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded"
-                    disabled={disabled}
-                    aria-label="Decrease quantity"
-                    tabIndex={0}
-                  >
-                    <Minus className="w-4 h-4" />
-                  </button>
-                  <span className="transition-all duration-300 ease-in-out w-6 text-center font-medium">
-                    {product.quantity || 0}
+              {
+                product.start_date && product.end_date && (
+                  <span className={cn(`text-xs text-muted-foreground ${product.purchased ? 'text-white' : ''}`, disabled && 'text-neutral-300')}>
+                    {formatDate(product.start_date, {day: 'numeric', month: 'short'})} to {formatDate(product.end_date, {day: 'numeric', month: 'short'})}
                   </span>
-                  <button
-                    onClick={(e) => {
-                      handleSumQuantity();
-                    }}
-                    className={cn(
-                      "transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded",
-                      isMaxQuantityReached && "opacity-50 cursor-not-allowed"
-                    )}
-                    disabled={disabled || isMaxQuantityReached}
-                    aria-label="Increase quantity"
-                    tabIndex={0}
-                  >
-                    <Plus className="w-4 h-4" />
-                  </button>
-                </div>
-              ) : !disabled && (
-                <button
-                  onClick={(e) => {
-                    handleSumQuantity();
-                  }}
-                  className="transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded"
-                  disabled={disabled}
-                  aria-label="Add item"
-                  tabIndex={0}
-                >
-                  <Plus className="w-4 h-4" />
-                </button>
-              )}
+                )
+              }
+            </div>
+
+            <div className="flex items-center gap-2">
+
+              {
+                product.description && (
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Info className={cn(`w-4 h-4 text-slate-500 hover:text-slate-700`, product.purchased && 'text-white hover:text-white')} />
+                    </TooltipTrigger>
+                    <TooltipContent className="bg-white text-black shadow-md border border-gray-200 max-w-sm">
+                      {product.description}
+                    </TooltipContent>
+                  </Tooltip>
+                )
+              }
+              
+              {
+                !product.purchased && (
+                  <>
+                    {
+                      originalPrice !== product.price && (
+                        <p className={cn("text-xs text-muted-foreground line-through", disabled && 'text-neutral-300')}>
+                          ${originalPrice.toLocaleString()}
+                        </p>
+                      )
+                    }
+                    <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price.toLocaleString()}</p>
+                  </>
+                )
+              }
+
+
+              <div className="flex items-center relative h-6 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+                  {showQuantityControls ? ( 
+                    <div className="flex items-center animate-fade-in-right">
+                      {
+                        !disabled && (
+                          <button 
+                            onClick={(e) => {
+                              handleSubtractQuantity();
+                            }} 
+                            className={cn(
+                              "transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded",
+                              isMinQuantityReached && "opacity-50 cursor-not-allowed"
+                            )}
+                            disabled={disabled || !!isMinQuantityReached}
+                            aria-label="Decrease quantity"
+                            tabIndex={0}
+                          >
+                            <Minus className="w-4 h-4" />
+                          </button>
+                        )
+                      }
+                      <span className="transition-all duration-300 ease-in-out w-6 text-center font-medium">
+                        {product.quantity || 0}
+                      </span>
+
+                      {
+                        !disabled && (
+                          <button
+                            onClick={(e) => {
+                              handleSumQuantity();
+                            }}
+                            className={cn(
+                              "transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded",
+                              isMaxQuantityReached && "opacity-50 cursor-not-allowed"
+                            )}
+                            disabled={disabled || isMaxQuantityReached}
+                            aria-label="Increase quantity"
+                            tabIndex={0}
+                          >
+                            <Plus className="w-4 h-4" />
+                          </button>
+                        )
+                      }
+                    </div>
+                  ) : !disabled && (
+                    <button
+                      onClick={(e) => {
+                        handleSumQuantity();
+                      }}
+                      className="transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded"
+                      disabled={disabled}
+                      aria-label="Add item"
+                      tabIndex={0}
+                    >
+                      <Plus className="w-4 h-4" />
+                    </button>
+                  )}
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </TooltipTrigger>
+      {hasMonthPurchased && (
+        <TooltipContent className="bg-white text-black shadow-md border border-gray-200 max-w-sm">
+          You already have a monthly pass. No need to buy a day ticket.
+        </TooltipContent>
+      )}
+    </Tooltip>
   )
 }
 

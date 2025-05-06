@@ -1,6 +1,5 @@
 "use client"
 
-import { useEffect, useState } from "react"
 import { motion } from "framer-motion"
 import BuyPasses from "@/app/portal/[popupSlug]/passes/Tabs/BuyPasses"
 import Providers from "./providers/Providers"

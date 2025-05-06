@@ -5,7 +5,7 @@ import ToolbarTop from "../components/ToolbarTop"
 import { Separator } from "@/components/ui/separator"
 import Special from "../components/common/Products/Special"
 import { Skeleton } from "@/components/ui/skeleton"
-
+import { useSearchParams } from "next/navigation"
 interface YourPassesProps {
   onSwitchToBuy: () => void;
 }
@@ -14,6 +14,8 @@ const YourPasses = ({ onSwitchToBuy }: YourPassesProps) => {
   const { attendeePasses: attendees } = usePassesProvider()
   const mainAttendee = attendees.find(a => a.category === 'main')
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
+  const searchParams = useSearchParams();
+  const isDayCheckout = searchParams.has("day-passes");
 
   return (
     <div className="space-y-6">
@@ -39,7 +41,7 @@ const YourPasses = ({ onSwitchToBuy }: YourPassesProps) => {
           </>
         ) : (
           attendees.map(attendee => (
-            <AttendeeTicket key={attendee.id} attendee={attendee}/>
+            <AttendeeTicket key={attendee.id} attendee={attendee} isDayCheckout={isDayCheckout}/>
           ))
         )}
       </div>

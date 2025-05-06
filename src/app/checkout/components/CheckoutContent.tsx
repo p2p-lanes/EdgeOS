@@ -16,10 +16,8 @@ const LoadingFallback = () => (
 );
 
 export const CheckoutContent = () => {
-  const searchParams = useSearchParams();
-  const groupParam = searchParams.get("group");
   const { data: { group }, error, isLoading } = useGetCheckoutData();
-  const { checkoutState, isSubmitting, errorMessage, handleSubmit, setCheckoutState } = useCheckoutState(groupParam);
+  const { checkoutState, isSubmitting, errorMessage, handleSubmit, setCheckoutState } = useCheckoutState();
 
   // Función que maneja el envío del formulario
   const handleFormSubmit = async (formData: FormDataProps): Promise<void> => {

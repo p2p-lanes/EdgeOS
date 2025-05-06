@@ -6,14 +6,15 @@ import { Input } from "@/components/ui/input";
 import { LabelRequired } from "@/components/ui/label";
 import { GENDER_OPTIONS } from "@/constants/util";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface PersonalInfoFormProps {
   formData: {
     first_name: string;
     last_name: string;
     telegram: string;
-    organization: string;
-    role: string;
+    organization: string | null;
+    role: string | null;
     gender: string;
     email: string;
   };
@@ -28,6 +29,8 @@ const PersonalInfoForm = ({
   handleChangeEmail, 
   errors
 }: PersonalInfoFormProps) => {
+  const searchParams = useSearchParams();
+  const isDayCheckout = searchParams.has("day-passes");
   // Estado para almacenar el valor de género normalizado
   const [genderValue, setGenderValue] = useState<string>("");
 
@@ -117,25 +120,31 @@ const PersonalInfoForm = ({
         placeholder="username"
       />
       
-      <InputForm
-        label="Organization"
-        id="organization"
-        value={formData.organization}
-        onChange={(value) => handleInputChange("organization", value)}
-        error={errors.organization}
-        isRequired
-        placeholder="Your organization name"
-      />
+      {
+        !isDayCheckout && (
+          <>
+            <InputForm
+              label="Organization"
+              id="organization"
+              value={formData.organization || ""}
+              onChange={(value) => handleInputChange("organization", value)}
+              error={errors.organization}
+              isRequired
+              placeholder="Your organization name"
+            />
       
-      <InputForm
-        label="Role"
-        id="role"
-        value={formData.role}
-        onChange={(value) => handleInputChange("role", value)}
-        error={errors.role}
-        isRequired
-        placeholder="Your role in the organization"
-      />
+            <InputForm
+              label="Role"
+              id="role"
+              value={formData.role || ""}
+              onChange={(value) => handleInputChange("role", value)}
+              error={errors.role}
+              isRequired
+              placeholder="Your role in the organization"
+            />
+          </>
+        )
+      }
       
       <RadioGroupForm
         label="Gender"

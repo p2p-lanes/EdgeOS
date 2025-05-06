@@ -15,6 +15,7 @@ import { useState } from "react"
 import { useTotal } from "@/providers/totalProvider"
 import { Loader2 } from "lucide-react"
 import { useCityProvider } from "@/providers/cityProvider"
+import { useSearchParams } from "next/navigation"
 
 // Función temporal para convertir markdown básico a HTML
 const parseMarkdown = (markdown: string) => {
@@ -34,9 +35,11 @@ const parseMarkdown = (markdown: string) => {
 const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, defaultOpenDiscount = false, positionCoupon = 'bottom'}: {floatingBar?: boolean, viewInvoices?: boolean, canEdit?: boolean, defaultOpenDiscount?: boolean, positionCoupon?: 'top' | 'bottom' | 'right'}) => {
   const { toggleProduct, attendeePasses: attendees, products, isEditing} = usePassesProvider()
   const [openCart, setOpenCart] = useState<boolean>(false)
+  const searchParams = useSearchParams();
+  const isDayCheckout = searchParams.has("day-passes");
   const mainAttendee = attendees.find(a => a.category === 'main')
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
-  const someProductSelected = attendees.some(a => a.products.some(p => p.selected))
+  const someProductSelected = attendees.some(a => a.products.some(p => p.selected && (p.category === 'day' ? (p.quantity ?? 0) >(p.original_quantity ?? 0) : true)))
   const { total } = useTotal()
   const { getCity } = useCityProvider()
   const city = getCity()
@@ -71,7 +74,7 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
 
       <BannerDiscount isPatreon={(specialProduct?.selected || specialProduct?.purchased) ?? false} products={products} />
 
-      {(specialProduct && mainAttendee?.id) && (
+      {(specialProduct && mainAttendee?.id && !isDayCheckout) && (
         <div className="p-0 w-full">
           <Special
             disabled={isEditing}
@@ -86,7 +89,7 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
       <div className="flex flex-col gap-4">
         {
           attendees.map(attendee => (
-            <AttendeeTicket key={attendee.id} attendee={attendee} toggleProduct={toggleProduct}/>
+            <AttendeeTicket key={attendee.id} attendee={attendee} toggleProduct={toggleProduct} isDayCheckout={isDayCheckout}/>
           ))
         }
       </div>

@@ -15,11 +15,10 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import React from "react"
 
-const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void}) => {
+const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void, isDayCheckout?: boolean  }) => {
   const standardProducts = attendee.products
-    .filter((product) => product.category !== 'patreon' && product.category !== 'month')
+    .filter((product) => product.category !== 'patreon' && product.category !== 'month' && (isDayCheckout ? product.category === 'day' : true))
     .sort((a, b) => {
-      // Move products with category "day" to the end
       if (a.category === 'day' && b.category !== 'day') return 1;
       if (a.category !== 'day' && b.category === 'day') return -1;
       return 0;
@@ -34,9 +33,9 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
   const hasDayProducts = standardProducts.some(product => product.category === 'day');
   // Find index of first day product
   const firstDayProductIndex = standardProducts.findIndex(product => product.category === 'day');
+  const hasMonthPurchased = attendee.products.some(product => product.category === 'month' && (product.purchased || product.selected))
 
   const handleEditAttendee = () => {
-    console.log('attendee', attendee)
     handleEdit(attendee)
   }
 
@@ -104,12 +103,13 @@ const AttendeeTicket = ({attendee, toggleProduct}: {attendee: AttendeeProps, tog
               standardProducts.map((product, index) => (
                 <React.Fragment key={`${product.id}-${attendee.id}`}>
                   {/* Add separator before the first day product */}
-                  {index === firstDayProductIndex && hasDayProducts && (
+                  {index === firstDayProductIndex && hasDayProducts && !isDayCheckout && (
                     <Separator className="my-1" />
                   )}
                   <Product 
                     product={product} 
                     defaultDisabled={!toggleProduct} 
+                    hasMonthPurchased={hasMonthPurchased}
                     onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
                   />
                 </React.Fragment>

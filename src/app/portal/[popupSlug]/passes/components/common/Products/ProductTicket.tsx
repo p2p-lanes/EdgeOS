@@ -18,14 +18,14 @@ const variants: Record<VariantStyles, string> = {
   default: 'bg-white border-neutral-300 text-neutral-700 hover:bg-slate-100',
 }
 
-const Product = ({product, onClick, defaultDisabled}: {product: ProductsPass, onClick: (attendeeId: number | undefined, product: ProductsPass) => void, defaultDisabled?: boolean}) => {
+const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {product: ProductsPass, onClick: (attendeeId: number | undefined, product: ProductsPass) => void, defaultDisabled?: boolean, hasMonthPurchased?: boolean}) => {
   const disabled = product.disabled || defaultDisabled
   const originalPrice = product.compare_price ?? product.price
   const { purchased, selected } = product
   const { isEditing } = usePassesProvider()
 
   if (product.category === 'day') { 
-    return <ProductDay product={product} onClick={onClick} defaultDisabled={defaultDisabled} />
+    return <ProductDay product={product} onClick={onClick} defaultDisabled={defaultDisabled} hasMonthPurchased={hasMonthPurchased}/>
   }
 
   return (

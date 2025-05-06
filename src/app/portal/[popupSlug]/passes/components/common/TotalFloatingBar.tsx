@@ -8,7 +8,9 @@ const TotalFloatingBar = ({ setOpenCart }: { setOpenCart: (prev: boolean) => voi
   const { originalTotal, total } = useTotal()
   const { purchaseProducts, loading } = usePurchaseProducts();
   const { attendeePasses: attendees } = usePassesProvider()
-  const someSelected = attendees.some(attendee => attendee.products.some(product => product.selected && !product.purchased))
+  const someSelected = attendees.some(attendee => attendee.products.some(product => 
+    product.selected && (product.purchased ? product.category === 'day' && (product.quantity || 1) > (product.original_quantity || 1) : true)
+  ))
 
   const handleOnClickReviewOrder = () => {
     setOpenCart(true)

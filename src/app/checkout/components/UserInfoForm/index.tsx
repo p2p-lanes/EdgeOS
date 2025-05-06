@@ -9,6 +9,7 @@ import EmailVerification from "./EmailVerification";
 import PersonalInfoForm from "./PersonalInfoForm";
 import { FormDataProps, GroupData } from "../../types";
 import { useEffect, useState } from "react";
+import { useSearchParams } from "next/navigation";
 
 interface UserInfoFormProps {
   group: GroupData | null;
@@ -20,6 +21,8 @@ interface UserInfoFormProps {
 
 const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserInfoFormProps) => {
   const [isAutoFilled, setIsAutoFilled] = useState(false);
+  const searchParams = useSearchParams();
+  const isDayCheckout = searchParams.has("day-passes");
   
   // Get application data based on group's popup_city_id
   const { 
@@ -118,6 +121,10 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
     // If verified, validate and submit form
     if (validateForm()) {
       try {
+        if(isDayCheckout) {
+          formData.organization = null;
+          formData.role = null;
+        }
         await onSubmit(formData);
       } catch (error: any) {
         console.error("Error submitting form:", error);

@@ -5,8 +5,11 @@ import { api, instance } from "@/api";
 import { useApplication } from "@/providers/applicationProvider";
 import { FormDataProps, CheckoutState } from "../types";
 import useCookies from "./useCookies";
+import { useSearchParams } from "next/navigation";
 
-const useCheckoutState = (groupParam: string | null) => {
+const useCheckoutState = () => {
+  const searchParams = useSearchParams();
+  const groupParam = searchParams.get("group");
   const { setApplications } = useApplication();
   const [checkoutState, setCheckoutState] = useState<CheckoutState>("form");
   const [isSubmitting, setIsSubmitting] = useState(false);

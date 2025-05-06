@@ -13,9 +13,9 @@ interface PriceCalculationStrategy {
 
 abstract class BasePriceStrategy implements PriceCalculationStrategy {
   protected calculateOriginalTotal(products: ProductsPass[]): number {
-    return products
-      .filter(p => p.selected && !p.purchased)
-      .reduce((sum, product) => sum + (product.compare_price ?? product.original_price ?? 0) * (product.quantity ?? 1), 0);
+    const filteredProducts = products.filter(p => p.selected && (p.purchased ? p.category === 'day' && (p.quantity || 1) > (p.original_quantity || 1) : true))
+    const reducedProducts = filteredProducts.reduce((sum, product) => sum + (product.compare_price ?? product.original_price ?? 0) * ((product.quantity || 1) - (product.original_quantity || 1)), 0);
+    return reducedProducts
   }
 
   abstract calculate(products: ProductsPass[], discount: DiscountProps): TotalResult;
@@ -49,10 +49,10 @@ class WeeklyPriceStrategy extends BasePriceStrategy {
     const weekSelectedProducts = products.filter(p => (p.category === 'week' || p.category === 'day') && p.selected);
     
     const totalSelected = weekSelectedProducts.reduce((sum, product) => {
-      if (product.purchased) {
-        return sum - ((product.price ?? 0) * (product.quantity ?? 1));
+      if (product.purchased && product.category !== 'day') {
+        return sum - ((product.price ?? 0) * ((product.quantity || 1) - (product.original_quantity || 1)));
       }
-      return sum + ((product.price ?? 0) * (product.quantity ?? 1));
+      return sum + ((product.price ?? 0) * ((product.quantity || 1) - (product.original_quantity || 1)));
     }, 0);
     
     const originalTotal = this.calculateOriginalTotal(products)
@@ -110,6 +110,29 @@ class MonthlyPurchasedPriceStrategy extends BasePriceStrategy {
   }
 }
 
+class DayPriceStrategy extends BasePriceStrategy {
+  calculate(products: ProductsPass[], discount: DiscountProps): TotalResult {
+     const daySelectedProducts = products.filter(p => (p.category === 'day') && p.selected);
+    
+    const totalSelected = daySelectedProducts.reduce((sum, product) => {
+      if (product.purchased) {
+        return sum - ((product.price ?? 0) * (product.quantity ?? 1));
+      }
+      return sum + ((product.price ?? 0) * (product.quantity ?? 1));
+    }, 0);
+    
+    const originalTotal = this.calculateOriginalTotal(products)
+    const discountAmount = discount.discount_value ? originalTotal * (discount.discount_value / 100): 0;
+
+    return {
+      total: totalSelected,
+      originalTotal: originalTotal,
+      discountAmount: discountAmount
+    };
+  }
+}
+
+
 // Calculadora de totales
 export class TotalCalculator {
   calculate(attendees: AttendeeProps[], discount: DiscountProps): TotalResult {
@@ -128,6 +151,7 @@ export class TotalCalculator {
   private getStrategy(products: ProductsPass[]): PriceCalculationStrategy {
     const hasPatreon = products.some(p => (p.category === 'patreon' || p.category === 'supporter') && p.selected);
     const hasMonthly = products.some(p => p.category === 'month' && p.selected);
+    const hasDay = products.some(p => p.category === 'day' && p.selected);
     const hasMonthPurchased = products.some(p => p.category === 'month' && p.purchased);
 
     if(hasPatreon) return new PatreonPriceStrategy()

@@ -5,7 +5,9 @@ import usePurchaseProducts from "../../../hooks/usePurchaseProducts";
 const CompletePurchaseButton = ({edit}: {edit?: boolean}) => {
   const { purchaseProducts, loading } = usePurchaseProducts();
   const { attendeePasses: attendees } = usePassesProvider()
-  const someSelected = attendees.some(attendee => attendee.products.some(product => product.selected && !product.purchased))
+  const someSelected = attendees.some(attendee => attendee.products.some(product => 
+    product.selected && (product.purchased ? product.category === 'day' : true))
+  )
 
   return (
     <ButtonAnimated

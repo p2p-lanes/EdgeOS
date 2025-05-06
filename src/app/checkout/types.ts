@@ -3,8 +3,8 @@ export interface FormDataProps {
   last_name: string;
   email: string;
   telegram: string;
-  organization: string;
-  role: string;
+  organization: string | null;
+  role: string | null;
   gender: string;
   email_verified: boolean;
 }

@@ -49,14 +49,19 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         
         const attendeeProducts = products
           .filter((product: ProductsPass) => product.attendee_category === attendee.category && product.is_active)
-          .map((product: ProductsPass) => ({
-            ...product,
-            selected: attendeePasses.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.selected || false,
-            attendee_id: attendee.id,
-            original_price: product.price,
-            disabled: false,
-            price: priceStrategy.calculatePrice(product, hasPatreonPurchased, discountApplied.discount_value)
-          }));
+          .map((product: ProductsPass) => {
+            const originalQuantity = attendees.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.quantity ?? 1
+            return {
+              ...product,
+              original_quantity: originalQuantity,
+              quantity: originalQuantity,
+              selected: attendeePasses.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.selected || false,
+              attendee_id: attendee.id,
+              original_price: product.price,
+              disabled: false,
+              price: priceStrategy.calculatePrice(product, hasPatreonPurchased, discountApplied.discount_value)
+            }
+          });
 
         return {
           ...attendee,

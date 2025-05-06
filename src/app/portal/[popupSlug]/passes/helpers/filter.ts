@@ -41,6 +41,10 @@ export const filterProductsToPurchase = (products: ProductsPass[]) => {
         p.attendee_category === product.attendee_category
       );
       
+      if(product.category === 'day'){
+        return [...acc, product];
+      }
+      
       if (!hasMonthProduct) {
         return [...acc, product];
       }

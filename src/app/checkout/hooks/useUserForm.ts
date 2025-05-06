@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { jwtDecode } from "jwt-decode";
 import { instance } from "@/api";
 import { FormDataProps } from "../types";
+import { useSearchParams } from "next/navigation";
 
 interface UseUserFormProps {
   initialData?: Partial<FormDataProps>;
@@ -9,13 +10,15 @@ interface UseUserFormProps {
 }
 
 export const useUserForm = ({ initialData = {}, applicationData }: UseUserFormProps = {}) => {
+  const searchParams = useSearchParams();
+  const isDayCheckout = searchParams.has("day-passes");
   const [formData, setFormData] = useState<FormDataProps>({
     first_name: "",
     last_name: "",
     email: "",
     telegram: "",
-    organization: "",
-    role: "",
+    organization: !isDayCheckout ? "" : null,
+    role: !isDayCheckout ? "" : null,
     gender: "",
     email_verified: false,
     ...initialData
@@ -85,8 +88,8 @@ export const useUserForm = ({ initialData = {}, applicationData }: UseUserFormPr
       newErrors.email = "Email verification is required. Please verify your email before continuing.";
     }
     if (!formData.telegram) newErrors.telegram = "Telegram is required";
-    if (!formData.organization) newErrors.organization = "Organization is required";
-    if (!formData.role) newErrors.role = "Role is required";
+    if (!formData.organization && !isDayCheckout) newErrors.organization = "Organization is required";
+    if (!formData.role && !isDayCheckout) newErrors.role = "Role is required";
     if (!formData.gender) newErrors.gender = "Gender is required";
     
     setErrors(newErrors);
@@ -107,8 +110,8 @@ export const useUserForm = ({ initialData = {}, applicationData }: UseUserFormPr
       last_name: "",
       email: "",
       telegram: "",
-      organization: "",
-      role: "",
+      organization: isDayCheckout ? "" : null,
+      role: isDayCheckout ? "" : null,
       gender: "",
       email_verified: false
     });
