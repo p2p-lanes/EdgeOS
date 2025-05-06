@@ -39,7 +39,7 @@ const FooterMenu = ({handleLogout, user}: {handleLogout: () => void, user: User}
 
   return (
     <SidebarFooter>
-        <PoapMint />
+        {/* <PoapMint /> */}
         <SidebarMenu>
           {stars !== null && (
             <a 

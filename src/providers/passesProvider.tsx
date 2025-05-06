@@ -46,11 +46,11 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         const hasPatreonPurchased = attendee.products.some(p => p.category === 'patreon');
         const priceStrategy = getPriceStrategy();
         const purchaseStrategy = getPurchaseStrategy();
-        
+      
         const attendeeProducts = products
           .filter((product: ProductsPass) => product.attendee_category === attendee.category && product.is_active)
           .map((product: ProductsPass) => {
-            const originalQuantity = attendees.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.quantity ?? 1
+            const originalQuantity = product.category === 'day' ? attendees.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.quantity ?? 0 : 1
             return {
               ...product,
               original_quantity: originalQuantity,

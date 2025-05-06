@@ -13,9 +13,18 @@ interface PriceCalculationStrategy {
 
 abstract class BasePriceStrategy implements PriceCalculationStrategy {
   protected calculateOriginalTotal(products: ProductsPass[]): number {
-    const filteredProducts = products.filter(p => p.selected && (p.purchased ? p.category === 'day' && (p.quantity || 1) > (p.original_quantity || 1) : true))
-    const reducedProducts = filteredProducts.reduce((sum, product) => sum + (product.compare_price ?? product.original_price ?? 0) * ((product.quantity || 1) - (product.original_quantity || 1)), 0);
-    return reducedProducts
+    return products.filter(p => p.selected).reduce((sum, product) => {
+      const price = product.compare_price ?? product.original_price ?? 0;
+      
+      if (product.purchased) {
+        // Para productos comprados, solo contamos la diferencia adicional
+        const diff = ((product.quantity || 1) - (product.original_quantity || 1));
+        return diff > 0 ? sum + (price * diff) : sum;
+      }
+      
+      // Para productos no comprados, contamos el precio total
+      return sum + (price * (product.quantity || 1));
+    }, 0);
   }
 
   abstract calculate(products: ProductsPass[], discount: DiscountProps): TotalResult;
@@ -52,7 +61,16 @@ class WeeklyPriceStrategy extends BasePriceStrategy {
       if (product.purchased && product.category !== 'day') {
         return sum - ((product.price ?? 0) * ((product.quantity || 1) - (product.original_quantity || 1)));
       }
-      return sum + ((product.price ?? 0) * ((product.quantity || 1) - (product.original_quantity || 1)));
+      
+      if (product.category === 'day') {
+        if (product.purchased) {
+          const diff = ((product.quantity || 1) - (product.original_quantity || 1));
+          return diff > 0 ? sum + ((product.price ?? 0) * diff) : sum;
+        } 
+        return sum + ((product.price ?? 0) * (product.quantity || 1));
+      }
+      
+      return sum + ((product.price ?? 0) * (product.quantity || 1));
     }, 0);
     
     const originalTotal = this.calculateOriginalTotal(products)
@@ -151,7 +169,6 @@ export class TotalCalculator {
   private getStrategy(products: ProductsPass[]): PriceCalculationStrategy {
     const hasPatreon = products.some(p => (p.category === 'patreon' || p.category === 'supporter') && p.selected);
     const hasMonthly = products.some(p => p.category === 'month' && p.selected);
-    const hasDay = products.some(p => p.category === 'day' && p.selected);
     const hasMonthPurchased = products.some(p => p.category === 'month' && p.purchased);
 
     if(hasPatreon) return new PatreonPriceStrategy()
