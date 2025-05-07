@@ -16,18 +16,16 @@ const usePurchaseProducts = () => {
 
   const purchaseProducts = async (attendeePasses: AttendeeProps[]) => {
     if(!application) return;
-
-    const editableMode = (isEditing || application.credit >= 0) && !attendeePasses.some(p => p.products.some(p => p.category === 'patreon' && p.selected ))
+    
+    //Si tiene un mes seleccionado y tiene semanas o dias comprados
+    const monthSelectedWithWeekOrDay = attendeePasses.some(p => p.products.some(p => p.category === 'month' && p.selected) && (p.products.some(p => p.category === 'week' && p.purchased) || p.products.some(p => p.category === 'day' && p.purchased)))
+    
+    const editableMode = (isEditing || application.credit > 0 || monthSelectedWithWeekOrDay) && !attendeePasses.some(p => p.products.some(p => p.category === 'patreon' && p.selected ))
     
     setLoading(true)
 
-    const productsPurchase = attendeePasses.flatMap(p => p.products).filter(p => 
-      editableMode 
-        ? (!p.edit && (((!p.selected && p.purchased) || (p.selected && !p.purchased)) || (p.category === 'day' && p.selected && (p.quantity || 1) > (p.original_quantity || 1))))
-        : p.selected
-    )
-
-    const filteredProducts = filterProductsToPurchase(productsPurchase)
+    const productsPurchase = attendeePasses.flatMap(p => p.products)
+    const filteredProducts = filterProductsToPurchase(productsPurchase, editableMode)
 
     try{
       const isFastCheckout = window.location.href.includes('/checkout')

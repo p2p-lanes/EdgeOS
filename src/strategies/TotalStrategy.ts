@@ -32,6 +32,7 @@ abstract class BasePriceStrategy implements PriceCalculationStrategy {
 
 class MonthlyPriceStrategy extends BasePriceStrategy {
   calculate(products: ProductsPass[], discount: DiscountProps): TotalResult {
+    const hasPatreon = products.some(p => (p.category === 'patreon' || p.category === 'supporter') && p.selected);
     const monthProduct = products.find(p => p.category === 'month' && p.selected && !p.purchased);
     const monthPrice = (monthProduct?.price ?? 0) * (monthProduct?.quantity ?? 1);
     const totalProductsPurchased = products.filter(p => p.category !== 'patreon' && p.category !== 'supporter').reduce((sum, product) => sum + (product.purchased ? product.price * (product.quantity ?? 1) : 0), 0)
@@ -40,7 +41,7 @@ class MonthlyPriceStrategy extends BasePriceStrategy {
     const discountAmount = discount.discount_value ? originalTotal * (discount.discount_value / 100): 0;
 
     return {
-      total: monthPrice - totalProductsPurchased,
+      total: monthPrice - (hasPatreon && monthProduct?.attendee_category !== 'main' ? 0 : totalProductsPurchased),
       originalTotal: originalTotal,
       discountAmount: discountAmount
     };

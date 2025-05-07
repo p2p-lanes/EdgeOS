@@ -31,23 +31,37 @@ export const sortAttendees = (attendees: AttendeeProps[]) => {
     });
 }
 
-export const filterProductsToPurchase = (products: ProductsPass[]) => {
-  return products.reduce((acc: ProductsPass[], product) => {
-      if (product.category === 'month' || product.category === 'patreon') {
-        return [...acc, product];
-      }
-      const hasMonthProduct = products.some(p => 
-        p.category === 'month' && 
-        p.attendee_category === product.attendee_category
-      );
-      
-      if(product.category === 'day'){
-        return [...acc, product];
-      }
-      
-      if (!hasMonthProduct) {
-        return [...acc, product];
-      }
-      return acc;
-    }, []).map(p => ({product_id: p.id, attendee_id: p.attendee_id, quantity: p.quantity ?? 1}))
+export const filterProductsToPurchase = (products: ProductsPass[], editableMode: boolean) => {
+
+  const reducedProducts = products.reduce((acc: ProductsPass[], product) => {
+    const isDayProduct = product.category === 'day'
+    const isWeekProduct = product.category === 'week'
+    const isMonthProduct = product.category === 'month'
+    const isPatreonProduct = product.category === 'patreon'
+
+    const hasMonth = products.some(p => p.category === 'month' && (p.selected || p.purchased) && !p.edit && p.attendee_category === product.attendee_category)
+    
+    if((!editableMode && !product.selected) || (!product.purchased && !product.selected)) return acc
+
+    if(product.selected){
+      if(product.purchased && !isDayProduct) return acc
+      if(isWeekProduct && hasMonth) return acc
+      if(isDayProduct && (product.quantity === product.original_quantity || hasMonth)) return acc
+      return [...acc, product]
+    }
+
+    if(editableMode){
+      if(isMonthProduct && product.purchased && !product.edit) return [...acc, product]
+  
+      if(isPatreonProduct && product.purchased) return [...acc, product]
+  
+      if(isWeekProduct && !hasMonth) return [...acc, product]
+    }
+
+    return acc
+  }, [])
+
+  // console.log('reducedProducts', reducedProducts, {editableMode})
+
+  return reducedProducts.map(p => ({product_id: p.id, attendee_id: p.attendee_id, quantity: p.quantity ?? 1}))
 }

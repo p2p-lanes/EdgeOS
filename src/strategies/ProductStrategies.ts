@@ -132,7 +132,8 @@ class WeekProductStrategy implements ProductStrategy {
         ...attendee,
         products: updatedProducts.map(p => ({
           ...p,
-          selected: p.category === 'month' ? shouldSelectMonth : p.selected,
+          quantity: p.category === 'day' && shouldSelectMonth && !p.purchased ? 0 : p.quantity,
+          selected: p.category === 'month' ? shouldSelectMonth : p.category === 'day' && shouldSelectMonth ? false : p.selected,
           edit: p.category === 'month' ? hasEdited : p.edit
         }))
       };
