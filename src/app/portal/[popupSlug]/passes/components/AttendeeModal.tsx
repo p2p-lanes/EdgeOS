@@ -156,7 +156,12 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
               </SelectContent>
             </Select>
           </div>
-          <p className="text-sm text-gray-500">Please note: Parents are asked to contribute at least 4 hours/week, with those of kids under 7 volunteering one full day (or two half days). Scheduling is flexible.</p>
+
+          {
+            category !== 'spouse' && category !== 'main' && (
+              <p className="text-sm text-gray-500">Please note: Parents are asked to contribute at least 4 hours/week, with those of kids under 7 volunteering one full day (or two half days). Scheduling is flexible.</p>
+            ) 
+          }
         </div>
         <DialogFooter>
           <ButtonAnimated loading={loading} type="submit">
