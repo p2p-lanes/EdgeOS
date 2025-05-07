@@ -60,7 +60,7 @@ class WeeklyPriceStrategy extends BasePriceStrategy {
     
     const totalSelected = weekSelectedProducts.reduce((sum, product) => {
       if (product.purchased && product.category !== 'day') {
-        return sum - ((product.price ?? 0) * ((product.quantity || 1) - (product.original_quantity || 1)));
+        return sum - ((product.price ?? 0) * (product.quantity || 1));
       }
       
       if (product.category === 'day') {
