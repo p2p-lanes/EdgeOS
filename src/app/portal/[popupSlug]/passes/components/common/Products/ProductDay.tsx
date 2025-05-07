@@ -123,13 +123,6 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
                 <p className="font-semibold text-sm">{product.name}</p>
               </div>
 
-              {
-                product.start_date && product.end_date && (
-                  <span className={cn(`text-xs text-muted-foreground ${product.purchased ? 'text-white' : ''}`, disabled && 'text-neutral-300')}>
-                    {formatDate(product.start_date, {day: 'numeric', month: 'short'})} to {formatDate(product.end_date, {day: 'numeric', month: 'short'})}
-                  </span>
-                )
-              }
             </div>
 
             <div className="flex items-center gap-2">

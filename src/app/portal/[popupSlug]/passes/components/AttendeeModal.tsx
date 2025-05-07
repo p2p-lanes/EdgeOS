@@ -87,7 +87,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
         <div className="grid gap-4 py-4">
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="name" className="text-right">
-              Full Name
+              Full Name <span className="text-red-500">*</span>
             </Label>
             <Input
               id="name"
@@ -101,7 +101,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
             isChildCategory && (
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="age" className="text-right">
-                  Age
+                  Age <span className="text-red-500">*</span>
                 </Label>
                 <Select
                   value={formData.category}
@@ -124,7 +124,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
             category === 'spouse' && (
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="email" className="text-right">
-                  Email
+                  Email <span className="text-red-500">*</span>
                 </Label>
                 <Input
                   id="email"
@@ -139,11 +139,12 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
           }
           <div className="grid grid-cols-4 items-center gap-4">
             <Label htmlFor="gender" className="text-right">
-              Gender
+              Gender <span className="text-red-500">*</span>
             </Label>
             <Select
               value={formData.gender}
               onValueChange={(value) => setFormData(prev => ({...prev, gender: value}))}
+              required
             >
               <SelectTrigger className="col-span-3">
                 <SelectValue placeholder="Select gender" />
