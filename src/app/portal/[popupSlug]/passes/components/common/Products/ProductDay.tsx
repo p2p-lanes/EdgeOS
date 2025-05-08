@@ -116,103 +116,58 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
           tabIndex={disabled ? -1 : 0}
           aria-disabled={disabled}
         >
-          <div className="flex justify-between w-full">
+          <div className="flex justify-between w-full flex-wrap">
             <div className="flex md:items-center md:gap-2 flex-col md:flex-row">
               <div className="flex items-center gap-2 pl-2">
-                <Ticket className="w-4 h-4" />
+                <Ticket className="w-4 h-4 hidden md:block" />
                 <p className="font-semibold text-sm">{product.name}</p>
               </div>
 
             </div>
 
-            <div className="flex items-center gap-2">
-
-              {
-                product.description && (
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Info className={cn(`w-4 h-4 text-slate-500 hover:text-slate-700`, product.purchased && 'text-white hover:text-white')} />
-                    </TooltipTrigger>
-                    <TooltipContent className="bg-white text-black shadow-md border border-gray-200 max-w-sm">
-                      {product.description}
-                    </TooltipContent>
-                  </Tooltip>
-                )
-              }
-              
-              {
-                !disabled && (
-                  <>
-                    {
-                      originalPrice !== product.price && (
-                        <p className={cn("text-xs text-muted-foreground line-through", disabled && 'text-neutral-300')}>
-                          ${originalPrice.toLocaleString()}
-                        </p>
-                      )
-                    }
-                    <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price.toLocaleString()}</p>
-                  </>
-                )
-              }
-
-
-              <div className="flex items-center relative h-6 overflow-hidden" onClick={(e) => e.stopPropagation()}>
-                  {showQuantityControls ? ( 
-                    <div className="flex items-center animate-fade-in-right">
+            {/* Right Side: This container will manage Price/Info and QuantityControls layout */}
+            {/* On mobile: column, items aligned to end (right). On desktop: row, items centered vertically. */}
+            <div className="flex flex-col items-end justify-center md:flex-row md:items-center md:gap-2">
+              {/* Sub-container for Info Icon and Price to keep them in a row and allow them to be a single item in the flex-col layout for mobile */}
+              <div className="flex items-center gap-2">
+                {
+                  product.description && (
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Info className={cn(`w-4 h-4 text-slate-500 hover:text-slate-700`, product.purchased && 'text-white hover:text-white')} />
+                      </TooltipTrigger>
+                      <TooltipContent className="bg-white text-black shadow-md border border-gray-200 max-w-sm">
+                        {product.description}
+                      </TooltipContent>
+                    </Tooltip>
+                  )
+                }
+                
+                {
+                  !disabled && (
+                    <>
                       {
-                        !disabled && (
-                          <button 
-                            onClick={(e) => {
-                              handleSubtractQuantity();
-                            }} 
-                            className={cn(
-                              "transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded",
-                              isMinQuantityReached && "opacity-50 cursor-not-allowed"
-                            )}
-                            disabled={disabled || !!isMinQuantityReached}
-                            aria-label="Decrease quantity"
-                            tabIndex={0}
-                          >
-                            <Minus className="w-4 h-4" />
-                          </button>
+                        originalPrice !== product.price && (
+                          <p className={cn("text-xs text-muted-foreground line-through", disabled && 'text-neutral-300')}>
+                            ${originalPrice.toLocaleString()}
+                          </p>
                         )
                       }
-                      <span className="transition-all duration-300 ease-in-out w-6 text-center font-medium">
-                        {product.quantity || 0}
-                      </span>
+                      <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price.toLocaleString()}</p>
+                    </>
+                  )
+                }
+              </div>
 
-                      {
-                        !disabled && (
-                          <button
-                            onClick={(e) => {
-                              handleSumQuantity();
-                            }}
-                            className={cn(
-                              "transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded",
-                              isMaxQuantityReached && "opacity-50 cursor-not-allowed"
-                            )}
-                            disabled={disabled || isMaxQuantityReached}
-                            aria-label="Increase quantity"
-                            tabIndex={0}
-                          >
-                            <Plus className="w-4 h-4" />
-                          </button>
-                        )
-                      }
-                    </div>
-                  ) : !disabled && (
-                    <button
-                      onClick={(e) => {
-                        handleSumQuantity();
-                      }}
-                      className="transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded"
-                      disabled={disabled}
-                      aria-label="Add item"
-                      tabIndex={0}
-                    >
-                      <Plus className="w-4 h-4" />
-                    </button>
-                  )}
+              {/* Container for both Desktop and Mobile QuantityControls */}
+              {/* This div ensures quantity controls are treated as a distinct block for flex layout */}
+              <div className={cn(!showQuantityControls && 'hidden')}>
+                <div className="hidden md:block">
+                  <QuantityControls product={product} handleSumQuantity={handleSumQuantity} handleSubtractQuantity={handleSubtractQuantity} disabled={disabled} isMinQuantityReached={!!isMinQuantityReached} isMaxQuantityReached={!!isMaxQuantityReached} />
+                </div>
+                <div className="flex justify-center md:hidden">
+                  <QuantityControls product={product} handleSumQuantity={handleSumQuantity} handleSubtractQuantity={handleSubtractQuantity} disabled={disabled} isMinQuantityReached={!!isMinQuantityReached} isMaxQuantityReached={!!isMaxQuantityReached} />
+                </div>
               </div>
             </div>
           </div>
@@ -224,6 +179,71 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
         </TooltipContent>
       )}
     </Tooltip>
+  )
+}
+
+
+const QuantityControls = ({product, handleSumQuantity, handleSubtractQuantity, disabled, isMinQuantityReached, isMaxQuantityReached}: {product: ProductsPass, handleSumQuantity: () => void, handleSubtractQuantity: () => void, disabled: boolean, isMinQuantityReached: boolean, isMaxQuantityReached: boolean}) => {
+  const showQuantityControls = product.quantity && product.quantity > 0;
+  return (
+    <div className="flex items-center relative h-6 overflow-hidden" onClick={(e) => e.stopPropagation()}>
+      {showQuantityControls ? ( 
+        <div className="flex items-center animate-fade-in-right">
+          {
+            !disabled && (
+              <button 
+                onClick={(e) => {
+                  handleSubtractQuantity();
+                }} 
+                className={cn(
+                  "transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded",
+                  isMinQuantityReached && "opacity-50 cursor-not-allowed"
+                )}
+                disabled={disabled || !!isMinQuantityReached}
+                aria-label="Decrease quantity"
+                tabIndex={0}
+              >
+                <Minus className="w-4 h-4" />
+              </button>
+            )
+          }
+          <span className="transition-all duration-300 ease-in-out w-6 text-center font-medium">
+            {product.quantity || 0}
+          </span>
+
+          {
+            !disabled && (
+              <button
+                onClick={(e) => {
+                  handleSumQuantity();
+                }}
+                className={cn(
+                  "transition-all duration-300 ease-in-out transform hover:scale-110 flex items-center justify-center w-6 h-6 rounded",
+                  isMaxQuantityReached && "opacity-50 cursor-not-allowed"
+                )}
+                disabled={disabled || isMaxQuantityReached}
+                aria-label="Increase quantity"
+                tabIndex={0}
+              >
+                <Plus className="w-4 h-4" />
+              </button>
+            )
+          }
+        </div>
+      ) : !disabled && (
+        <button
+          onClick={(e) => {
+            handleSumQuantity();
+          }}
+          className="hidden transition-all duration-300 ease-in-out transform hover:scale-110 md:flex items-center justify-center w-6 h-6 rounded"
+          disabled={disabled}
+          aria-label="Add item"
+          tabIndex={0}
+        >
+          <Plus className="w-4 h-4" />
+        </button>
+      )}
+    </div>
   )
 }
 

@@ -118,7 +118,7 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
 
       {/* Versión desktop con FloatingBar */}
       {someProductSelected && floatingBar && (
-        <div className="hidden md:block">
+        <div className="max-md:hidden">
           <BottomSheet className="bottom-6 pointer-events-none ">
             {(isFloating) => (
               (isFloating) ? (
@@ -146,7 +146,7 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
       )}
 
       {/* Versión mobile con bottom sheet */}
-      {someProductSelected && (
+      {someProductSelected && floatingBar && (
         <div className="block md:hidden">
           <BottomSheet>
             {(isModal) => (
