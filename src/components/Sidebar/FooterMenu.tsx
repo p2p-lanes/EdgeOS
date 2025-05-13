@@ -39,7 +39,7 @@ const FooterMenu = ({handleLogout, user}: {handleLogout: () => void, user: User}
 
   return (
     <SidebarFooter>
-        {/* <PoapMint /> */}
+        <PoapMint />
         <SidebarMenu>
           {stars !== null && (
             <a 
@@ -73,10 +73,10 @@ const FooterMenu = ({handleLogout, user}: {handleLogout: () => void, user: User}
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-[--radix-dropdown-menu-trigger-width]">
-                {/* <DropdownMenuItem onClick={() => router.push('/portal/poaps')} className="cursor-pointer my-2 py-2">
+                <DropdownMenuItem onClick={() => router.push('/portal/poaps')} className="cursor-pointer my-2 py-2">
                   <Medal className="mr-2 size-4" />
                   <span>My Collectibles</span>
-                </DropdownMenuItem> */}
+                </DropdownMenuItem>
                 <DropdownMenuItem onClick={handleLogout} className="cursor-pointer my-2 py-2">
                   <LogOut className="mr-2 size-4" />
                   <span>Log out</span>
