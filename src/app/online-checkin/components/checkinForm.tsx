@@ -63,6 +63,15 @@ export function CheckInForm() {
     setIsSuccess(true)
   }
 
+  if (!email || !code || !application_id) {
+    return <div className="bg-white rounded-lg shadow-lg p-6 md:p-8">
+      <h1 className="text-2xl font-bold mb-2">Invalid URL</h1>
+      <p className="text-gray-600 mb-6">
+        Please use the correct URL to check in.
+      </p>
+    </div>
+  }
+
   if (isSuccess && arrivalDate && departureDate && email) {
     return <Success arrivalDate={arrivalDate} departureDate={departureDate} />
   }
