@@ -8,12 +8,14 @@ interface CityContext_interface {
   getCity: () => PopupsProps | null;
   getPopups: () => PopupsProps[];
   setPopups: (popups: PopupsProps[]) => void;
+  setCityPreselected: (cityId: number) => void;
 }
 
 export const CityContext = createContext<CityContext_interface | null>(null);
 
 const CityProvider = ({ children }: {children: ReactNode}) => {
   const [popups, setPopupsState] = useState<PopupsProps[]>([]);
+  const [cityPreselected, setCityPreselected] = useState<number | null>(null);
   const params = useParams()
 
   const getValidCity = (): PopupsProps | null => {
@@ -23,7 +25,11 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
 
   const getCity = (): PopupsProps | null => {
     const city = getValidCity()
-    if(!city){
+    if(cityPreselected) {
+      const selectedCity = popups.find((popup: PopupsProps) => popup.id === cityPreselected)
+      if(selectedCity) return selectedCity
+    }
+    else if(!city){
       const selectedCity = popups.find((popup: PopupsProps) => popup.clickable_in_portal && popup.visible_in_portal)
       if(selectedCity) return selectedCity
     }
@@ -51,6 +57,7 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
         getCity,
         getPopups,
         setPopups,
+        setCityPreselected
       }}
     >
       {children}
