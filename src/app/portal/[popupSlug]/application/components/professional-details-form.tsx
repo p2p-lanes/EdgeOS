@@ -69,6 +69,18 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
             subtitle="Show us what you are working on!"
           />
         )}
+
+        {fields.has("area_of_expertise") && (
+          <InputForm
+            label="Areas of Expertise"
+            id="area_of_expertise"
+            value={formData.area_of_expertise ?? ''}
+            onChange={(value: string) => handleChange('area_of_expertise', value)}
+            error={errors.area_of_expertise}
+            isRequired={false}
+            subtitle=" Please list your top professional skills, areas of expertise, and/or spheres of influence (i.e. sustainable energy, AI R&D, neuropsychology and BMIs, cryptocurrency and blockchain development, etc)."
+          />
+        )}
       </SectionWrapper>
       <SectionSeparator />
     </>

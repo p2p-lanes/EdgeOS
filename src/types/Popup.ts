@@ -13,4 +13,7 @@ export type PopupsProps = {
   clickable_in_portal?: boolean;
   slug?: string;
   passes_description?: string;
+  allows_spouse?: boolean;
+  allows_children?: boolean;
+  allows_coupons?: boolean;
 }

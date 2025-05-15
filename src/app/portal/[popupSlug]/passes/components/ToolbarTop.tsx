@@ -15,13 +15,19 @@ interface ToolbarTopProps {
   viewInvoices?: boolean;
   positionCoupon?: 'top' | 'bottom' | 'right';
   onSwitchToBuy?: () => void;
+  canAddSpouse?: boolean;
+  canAddChildren?: boolean;
+  allows_coupons?: boolean;
 }
 
 const ToolbarTop = ({
   canEdit = false, 
   viewInvoices = true, 
   positionCoupon = 'bottom',
-  onSwitchToBuy
+  onSwitchToBuy,
+  canAddSpouse = true,
+  canAddChildren = true,
+  allows_coupons = true
 }: ToolbarTopProps) => {
   const { getAttendees } = useApplication()
   const { handleOpenModal, handleCloseModal, modal } = useModal()
@@ -42,7 +48,7 @@ const ToolbarTop = ({
   return (
     <div className="flex justify-between w-full flex-wrap gap-2">
       <div className="flex gap-2 flex-wrap">
-        {!hasSpouse && (
+        {canAddSpouse && !hasSpouse && (
           <Button
             variant="outline"
             className="bg-white text-black hover:bg-white hover:shadow-md transition-all"
@@ -54,15 +60,17 @@ const ToolbarTop = ({
           </Button>
         )}
 
-        <Button
-          variant="default"
-          className="bg-white text-black hover:bg-white hover:shadow-md transition-all"
-          disabled={!attendees.length}
-          onClick={() => handleOpenModal('kid')}
+        {canAddChildren && (
+          <Button
+            variant="default"
+            className="bg-white text-black hover:bg-white hover:shadow-md transition-all"
+            disabled={!attendees.length}
+            onClick={() => handleOpenModal('kid')}
         >
-          <PlusIcon className="h-4 w-4 mr-2" />
-          Add children
-        </Button>
+            <PlusIcon className="h-4 w-4 mr-2" />
+            Add children
+          </Button>
+        )}
 
         {modal.isOpen && (
           <AttendeeModal
@@ -90,7 +98,7 @@ const ToolbarTop = ({
         }
 
         {
-          positionCoupon === 'right' && (
+          positionCoupon === 'right' && allows_coupons && (
             <div className="ml-2">
               <DiscountCode defaultOpen={true} label={false}/>
             </div>

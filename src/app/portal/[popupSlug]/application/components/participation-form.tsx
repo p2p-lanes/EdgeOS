@@ -38,6 +38,11 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
     { value: "full length", label: `The full time (${dates})` },
   ]
 
+  const durationBhutan = [
+    { value: "full length", label: "Full trip (Sept 14-21, 2025)" },
+    { value: "1 week", label: "8-day trip in Sept, but not during those dates." },
+  ]
+
   if (!fields || !fields.size || !fieldsParticipation.some(field => fields.has(field))) return null;
 
   return (
@@ -46,8 +51,33 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
         title={form?.participation?.title ?? 'Your participation'} 
         subtitle={form?.participation?.subtitle ?? 'We understand that your plans may change. We are collecting the following information just to get a sense of capacity of each day/week.'}
       >
+
         {
-          fields.has('duration') && (
+          city?.slug === 'edge-bhutan-2025' && (
+            <RadioGroupForm
+              label="Duration"
+              subtitle="Please share how long you intend to come."
+              value={formData.duration}
+              onChange={(value) => handleChange('duration', value)}
+              options={durationBhutan}
+            />
+          )
+        }
+
+        {
+          city?.slug === 'edge-bhutan-2025' && formData.duration === '1 week' && (
+            <TextAreaForm
+              label="Please share your preferred/alternative dates."
+              id="preferred_dates"
+              value={formData.preferred_dates ?? ''}
+              error={errors.preferred_dates}
+              handleChange={(value) => handleChange('preferred_dates', value)}
+            />
+          )
+        }
+
+        {
+          city?.slug !== 'edge-bhutan-2025' && fields.has('duration') && (
             <RadioGroupForm
               label="Duration"
               subtitle="Please share how long you intend to come."

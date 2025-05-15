@@ -43,6 +43,8 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
   const { total } = useTotal()
   const { getCity } = useCityProvider()
   const city = getCity()
+
+  console.log('city', city)
   
   if (!attendees.length || !products.length) {
     return (
@@ -63,11 +65,11 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
       <BalancePasses />
 
       <div className="my-4 flex justify-start">
-        <ToolbarTop canEdit={canEdit} viewInvoices={viewInvoices} positionCoupon={positionCoupon}/>
+        <ToolbarTop canEdit={canEdit} viewInvoices={viewInvoices} positionCoupon={positionCoupon} canAddSpouse={city?.allows_spouse ?? false} canAddChildren={city?.allows_children ?? false} allows_coupons={city?.allows_coupons ?? false}/>
       </div>
 
       {
-        positionCoupon === 'top' && (
+        positionCoupon === 'top' && city && city?.allows_coupons && (
           <DiscountCode defaultOpen={defaultOpenDiscount}/>
         )
       }
@@ -95,7 +97,7 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
       </div>
 
       {
-        positionCoupon === 'bottom' && (
+        positionCoupon === 'bottom' && city && city?.allows_coupons && (
           <DiscountCode defaultOpen={defaultOpenDiscount}/>
         )
       }
