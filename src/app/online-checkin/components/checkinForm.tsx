@@ -15,6 +15,7 @@ import Success from "./success"
 import { useSearchParams } from "next/navigation"
 import { toast } from "sonner"
 import axios from "axios"
+import { Checkbox } from "@/components/ui/checkbox"
 
 const api_key_prod = "62f8e186b8946b524ebdb53215b4a6dbcd5e4b14203edab8383cd533156d8af8"
 const api_key_dev = "e37e643784490aea0ac732101f38d8431f2420e0d8690faed1aa2df8bffe65e5"
@@ -24,6 +25,7 @@ export function CheckInForm() {
   const [departureDate, setDepartureDate] = useState<Date | undefined>()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
+  const [waiverSigned, setWaiverSigned] = useState(false)
   const [arrivalPopoverOpen, setArrivalPopoverOpen] = useState(false)
   const [departurePopoverOpen, setDeparturePopoverOpen] = useState(false)
   const params = useSearchParams()
@@ -89,7 +91,9 @@ export function CheckInForm() {
         <p className="text-gray-600 mb-6">
           We are excited to welcome you in Healdsburg and share this special time ahead. Please
           <strong> enter your (estimated) arrival and departure dates</strong> to help us create an amazing
-          experience.
+          experience. 
+          <br />
+          Before submitting the form, please sign this <a href="https://waiver.smartwaiver.com/w/bgnpvra597aqdukktfwyss/web/" target="_blank" rel="noopener noreferrer" className="text-blue-500">waiver</a>.
           <br />
           <br />
           Note: <strong>Wristband pick-up is mandatory.</strong>
@@ -166,13 +170,19 @@ export function CheckInForm() {
                   </PopoverContent>
                 </Popover>
               </div>
+
+               {/* Waiver Field */}
+            <div className="my-2 flex items-center gap-2">
+              <Checkbox id="waiver" required checked={waiverSigned} onCheckedChange={(checked) => setWaiverSigned(checked === true)} />
+              <Label htmlFor="waiver" className="cursor-pointer"> I signed the <a href="https://waiver.smartwaiver.com/w/bgnpvra597aqdukktfwyss/web/" target="_blank" rel="noopener noreferrer" className="text-blue-500">waiver</a>.<span className="text-red-500 ml-1">*</span></Label>
+            </div>
             </div>
 
             {/* Submit Button */}
             <Button
               type="submit"
               className="w-full bg-[#0f172a] hover:bg-[#1e293b] text-white py-3"
-              disabled={isSubmitting || !arrivalDate || !departureDate}
+              disabled={isSubmitting || !arrivalDate || !departureDate || !waiverSigned}
             >
               {isSubmitting ? (
                 <>
