@@ -174,7 +174,7 @@ export function CheckInForm() {
                {/* Waiver Field */}
             <div className="my-2 flex items-center gap-2">
               <Checkbox id="waiver" required checked={waiverSigned} onCheckedChange={(checked) => setWaiverSigned(checked === true)} />
-              <Label htmlFor="waiver" className="cursor-pointer"> I signed the <a href="https://waiver.smartwaiver.com/w/bgnpvra597aqdukktfwyss/web/" target="_blank" rel="noopener noreferrer" className="text-blue-500">waiver</a>.<span className="text-red-500 ml-1">*</span></Label>
+              <Label htmlFor="waiver" className="cursor-pointer"> I confirm I have understood and signed the <a href="https://waiver.smartwaiver.com/w/bgnpvra597aqdukktfwyss/web/" target="_blank" rel="noopener noreferrer" className="text-blue-500">waiver</a>.<span className="text-red-500 ml-1">*</span></Label>
             </div>
             </div>
 
