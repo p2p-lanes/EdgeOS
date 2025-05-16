@@ -39,7 +39,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
   ]
 
   const durationBhutan = [
-    { value: "full length", label: "Full trip (Sept 14-21, 2025)" },
+    { value: "full length", label: "I can attend Sept 14-21, 2025" },
     { value: "1 week", label: "8-day trip in Sept, but not during those dates." },
   ]
 
@@ -55,8 +55,8 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
         {
           city?.slug === 'edge-bhutan-2025' && (
             <RadioGroupForm
-              label="Duration"
-              subtitle="Please share how long you intend to come."
+              label={form?.participation?.duration_label ?? "Duration"}
+              subtitle={form?.participation?.duration_subtitle ?? "Please share how long you intend to come."}
               value={formData.duration}
               onChange={(value) => handleChange('duration', value)}
               options={durationBhutan}

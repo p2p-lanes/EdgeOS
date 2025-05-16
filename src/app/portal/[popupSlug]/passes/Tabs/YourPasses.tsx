@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator"
 import Special from "../components/common/Products/Special"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useSearchParams } from "next/navigation"
+import { useCityProvider } from "@/providers/cityProvider"
 interface YourPassesProps {
   onSwitchToBuy: () => void;
 }
@@ -16,13 +17,15 @@ const YourPasses = ({ onSwitchToBuy }: YourPassesProps) => {
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
   const searchParams = useSearchParams();
   const isDayCheckout = searchParams.has("day-passes");
+  const { getCity } = useCityProvider()
+  const city = getCity()
 
   return (
     <div className="space-y-6">
       <TitleTabs title="Your Passes" subtitle="View and manage your passes here. Need to make changes? You can switch your week closer to the event to match your plans!" />
       
       <div className="my-4 flex justify-start">
-        <ToolbarTop canEdit={true} onSwitchToBuy={onSwitchToBuy} />
+        <ToolbarTop canEdit={true} onSwitchToBuy={onSwitchToBuy}  canAddSpouse={city?.allows_spouse ?? false} canAddChildren={city?.allows_children ?? false} allows_coupons={city?.allows_coupons ?? false}/>
       </div>
 
       <div className="flex flex-col gap-4">

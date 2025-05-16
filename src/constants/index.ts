@@ -17,6 +17,8 @@ export type DynamicForm = {
   participation?:{
     title?: string,
     subtitle?: string,
+    duration_label?: string,
+    duration_subtitle?: string,
   },
   scholarship?: {
     title?: string,

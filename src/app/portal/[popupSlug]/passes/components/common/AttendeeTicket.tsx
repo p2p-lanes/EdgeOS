@@ -52,6 +52,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
     handleDelete(attendee)
   }
 
+
   return (
     <div className="relative h-full w-full">
       <div className="w-full overflow-hidden">

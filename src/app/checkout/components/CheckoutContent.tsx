@@ -15,8 +15,7 @@ const LoadingFallback = () => (
   </div>
 );
 
-export const CheckoutContent = () => {
-  const { data: { group }, error, isLoading } = useGetCheckoutData();
+export const CheckoutContent = ({ group, isLoading, error }: { group: any, isLoading: boolean, error: any }) => {
   const { checkoutState, isSubmitting, errorMessage, handleSubmit, setCheckoutState } = useCheckoutState();
 
   // Función que maneja el envío del formulario
