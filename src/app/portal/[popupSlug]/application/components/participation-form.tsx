@@ -52,19 +52,22 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
         subtitle={form?.participation?.subtitle ?? 'We understand that your plans may change. We are collecting the following information just to get a sense of capacity of each day/week.'}
       >
 
+        
         {
           city?.slug === 'edge-bhutan-2025' && (
-            <RadioGroupForm
-              label={form?.participation?.duration_label ?? "Duration"}
-              subtitle={form?.participation?.duration_subtitle ?? "Please share how long you intend to come."}
-              value={formData.duration}
-              onChange={(value) => handleChange('duration', value)}
-              options={durationBhutan}
+            <CheckboxForm
+              title="Availability"
+              label="I confirm my availability for Sept 14-21, 2025"
+              subtitle="We can only accept participants who are able to join for the entire trip length from September 14-21. Please confirm your availability for these dates."
+              id="duration"
+              required={true}
+              checked={formData.duration === 'full length' || false}
+              onCheckedChange={(checked) => handleChange('duration', checked ? 'full length' : '')}
             />
           )
         }
 
-        {
+        {/* {
           city?.slug === 'edge-bhutan-2025' && formData.duration === '1 week' && (
             <TextAreaForm
               label="Please share your preferred/alternative dates."
@@ -74,7 +77,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
               handleChange={(value) => handleChange('preferred_dates', value)}
             />
           )
-        }
+        } */}
 
         {
           city?.slug !== 'edge-bhutan-2025' && fields.has('duration') && (

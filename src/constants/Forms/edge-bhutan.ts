@@ -8,9 +8,12 @@ export const edgeBhutan2025: DynamicForm = {
   },
   participation: {
     title: 'Your participation',
-    subtitle: 'We can only accept applicants who can commit to the entire 8-day, 7-night experience.',
+    subtitle: '',
     duration_label: 'Availability',
     duration_subtitle: 'Are you available for the current excursion dates (Sept-14-21). If not, please tell us September dates would work for you. Priority will be given to applications who can commit to the current dates.',
+  },
+  personal_information: {
+    residence_placeholder: 'City, State, Country'
   },
   fields: [
     "first_name",
