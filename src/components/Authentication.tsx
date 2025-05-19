@@ -3,13 +3,13 @@
 import { ReactNode, useEffect } from "react"
 import useAuthentication from "@/hooks/useAuthentication"
 import { Loader } from "@/components/ui/Loader"
+import { useParams, useSearchParams } from "next/navigation"
 
 const Authentication = ({children}: {children: ReactNode}) => {
   const { isLoading, isAuthenticated, logout } = useAuthentication()
   
+  
   useEffect(() => {
-    console.log("isAuthenticated", isAuthenticated)
-    console.log("isLoading", isLoading)
     if(!isAuthenticated && !isLoading) {
       logout()
     }

@@ -3,7 +3,7 @@
 import { api, instance } from "@/api"
 import { User } from "@/types/User"
 import { jwtDecode } from "jwt-decode"
-import { useRouter } from "next/navigation"
+import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 
@@ -25,6 +25,8 @@ const useAuthentication = (): UseAuthenticationReturn => {
   const token = typeof window === 'undefined' ? null : window?.localStorage?.getItem('token')
   const searchParams = typeof window === 'undefined' ? null : new URLSearchParams(window.location.search)
   const tokenUrl = searchParams?.get('token_url') ?? null;
+  const params = useParams()
+  const popupSlug = params.popupSlug as string
 
   //TODO: validate token
   const validateToken = (token: string): boolean => {
@@ -88,7 +90,12 @@ const useAuthentication = (): UseAuthenticationReturn => {
     setUser(null)
     setIsAuthenticated(false)
     setIsLoading(false)
-    router.push('/auth')
+
+    if(popupSlug) {
+      router.push(`/auth?popup=${popupSlug}`)
+    } else {
+      router.push('/auth')
+    }
   }
 
   useEffect(() => {
