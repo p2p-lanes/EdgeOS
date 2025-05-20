@@ -20,6 +20,10 @@ import { Checkbox } from "@/components/ui/checkbox"
 const api_key_prod = "62f8e186b8946b524ebdb53215b4a6dbcd5e4b14203edab8383cd533156d8af8"
 const api_key_dev = "e37e643784490aea0ac732101f38d8431f2420e0d8690faed1aa2df8bffe65e5"
 
+const isDev = process.env.NEXT_PUBLIC_DEVELOP === "true"
+const api_key = isDev ? api_key_dev : api_key_prod
+const api_url = isDev ? "https://portaldev.simplefi.tech" : "https://api-citizen-portal.simplefi.tech"
+
 export function CheckInForm() {
   const [arrivalDate, setArrivalDate] = useState<Date | undefined>()
   const [departureDate, setDepartureDate] = useState<Date | undefined>()
@@ -48,9 +52,9 @@ export function CheckInForm() {
       departure_date: departureDate,
     }
 
-    const response = await axios.post("https://portaldev.simplefi.tech/check-in/virtual", body, {
+    const response = await axios.post(`${api_url}/check-in/virtual`, body, {
       headers: {
-        "x-api-key": process.env.NEXT_PUBLIC_DEVELOP === "true" ? api_key_dev : api_key_prod,
+        "x-api-key": api_key,
       },
     })
 
