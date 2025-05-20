@@ -22,7 +22,8 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
 
   const form = dynamicForm[city?.slug ?? '']
   const dates = `${formatDate(city?.start_date, {day: 'numeric', month: 'short'})} - ${formatDate(city?.end_date, {day: 'numeric', month: 'short', year: 'numeric'})}`
-
+  const isBhutan = city?.slug === 'edge-bhutan-2025'
+  
   const animationProps = {
     initial: { opacity: 0, height: 0 },
     animate: { opacity: 1, height: "auto" },
@@ -38,11 +39,6 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
     { value: "full length", label: `The full time (${dates})` },
   ]
 
-  const durationBhutan = [
-    { value: "full length", label: "I can attend Sept 14-21, 2025" },
-    { value: "1 week", label: "8-day trip in Sept, but not during those dates." },
-  ]
-
   if (!fields || !fields.size || !fieldsParticipation.some(field => fields.has(field))) return null;
 
   return (
@@ -54,7 +50,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
 
         
         {
-          city?.slug === 'edge-bhutan-2025' && (
+          isBhutan && (
             <CheckboxForm
               title="Availability"
               label="I confirm my availability for Sept 14-21, 2025"
@@ -67,20 +63,8 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
           )
         }
 
-        {/* {
-          city?.slug === 'edge-bhutan-2025' && formData.duration === '1 week' && (
-            <TextAreaForm
-              label="Please share your preferred/alternative dates."
-              id="preferred_dates"
-              value={formData.preferred_dates ?? ''}
-              error={errors.preferred_dates}
-              handleChange={(value) => handleChange('preferred_dates', value)}
-            />
-          )
-        } */}
-
         {
-          city?.slug !== 'edge-bhutan-2025' && fields.has('duration') && (
+          !isBhutan && fields.has('duration') && (
             <RadioGroupForm
               label="Duration"
               subtitle="Please share how long you intend to come."
@@ -161,6 +145,31 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
             />
           )
         }
+
+        {
+          isBhutan && (
+            <TextAreaForm
+              label={'What are your goals for Edge Bhutan 2025 and why do you want to join?'}
+              id="goals"
+              value={formData.personal_goals ?? ''}
+              error={errors.personal_goals}
+              handleChange={(value) => handleChange('personal_goals', value)}
+            />
+          )
+        }
+
+        {
+          isBhutan && (
+            <TextAreaForm
+              label={`What is something you could contribute? A workshop, a talk, an area of expertise. Get creative!`}
+              id="host_session"
+              value={formData.host_session ?? ''}
+              error={errors.host_session}
+              handleChange={(value) => handleChange('host_session', value)}
+            />
+          )
+        }
+
 
         {
           fields.has("host_session") && (

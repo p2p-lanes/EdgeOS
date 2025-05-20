@@ -32,6 +32,5 @@ export const edgeBhutan2025: DynamicForm = {
     "social_media",
     "duration",
     "video_url",
-    "personal_goals",
   ]
 }
