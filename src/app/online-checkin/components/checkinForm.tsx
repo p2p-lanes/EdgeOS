@@ -97,8 +97,6 @@ export function CheckInForm() {
           <strong> enter your (estimated) arrival and departure dates</strong> to help us create an amazing
           experience. 
           <br />
-          Before submitting the form, please sign this <a href="https://waiver.smartwaiver.com/w/bgnpvra597aqdukktfwyss/web/" target="_blank" rel="noopener noreferrer" className="text-blue-500">waiver</a>.
-          <br />
           <br />
           Note: <strong>Wristband pick-up is mandatory.</strong>
         </p>
@@ -174,12 +172,14 @@ export function CheckInForm() {
                   </PopoverContent>
                 </Popover>
               </div>
-
-               {/* Waiver Field */}
             </div>
-            <div className="my-2 flex items-center gap-2 ">
-              <Checkbox id="waiver" required checked={waiverSigned} onCheckedChange={(checked) => setWaiverSigned(checked === true)} />
-              <Label htmlFor="waiver" className="cursor-pointer"> I confirm I have understood and signed the <a href="https://waiver.smartwaiver.com/w/bgnpvra597aqdukktfwyss/web/" target="_blank" rel="noopener noreferrer" className="text-blue-500">waiver</a>.<span className="text-red-500 ml-1">*</span></Label>
+            
+            <div className="my-2 flex flex-col gap-4 ">
+              <p className="text-gray-600">To complete your online check-in, you have to <strong>sign the following <a href="https://waiver.smartwaiver.com/w/bgnpvra597aqdukktfwyss/web/" target="_blank" rel="noopener noreferrer" className="text-blue-500">waiver</a></strong>.</p>
+              <div className="flex items-center gap-2 ">
+                <Checkbox id="waiver" required checked={waiverSigned} onCheckedChange={(checked) => setWaiverSigned(checked === true)} />
+                <Label htmlFor="waiver" className="cursor-pointer"> I confirm I have understood and signed the <a href="https://waiver.smartwaiver.com/w/bgnpvra597aqdukktfwyss/web/" target="_blank" rel="noopener noreferrer" className="text-blue-500">waiver</a>.<span className="text-red-500 ml-1">*</span></Label>
+              </div>
             </div>
 
             {/* Submit Button */}
