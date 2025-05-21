@@ -15,6 +15,23 @@ npm install
 npm run dev
 ```
 
+## How to run with Docker Compose
+
+1. Create a `.env` file in the root directory with the following variables:
+```bash
+NEXT_PUBLIC_API_URL=your_api_url
+NEXT_PUBLIC_ACCESS_KEY=your_access_key
+NEXT_PUBLIC_SECRET_KEY=your_secret_key
+NEXT_PUBLIC_DEVELOP=your_develop_value
+```
+
+2. Build and start the containers:
+```bash
+docker compose up --build
+```
+
+The application will be available at http://localhost:3000
+
 ## Looking to contribute?
 
 We'd love to have you!

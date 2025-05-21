@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+      - NEXT_PUBLIC_ACCESS_KEY=${NEXT_PUBLIC_ACCESS_KEY}
+      - NEXT_PUBLIC_SECRET_KEY=${NEXT_PUBLIC_SECRET_KEY}
+      - NEXT_PUBLIC_DEVELOP=${NEXT_PUBLIC_DEVELOP}
+    env_file:
+      - .env
+    restart: unless-stopped 
