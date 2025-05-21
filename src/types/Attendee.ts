@@ -6,6 +6,7 @@ export interface AttendeeProps {
   id: number;
   name: string;
   email: string;
+  check_in_code?: string;
   category: AttendeeCategory;
   application_id: number;
   gender: string;

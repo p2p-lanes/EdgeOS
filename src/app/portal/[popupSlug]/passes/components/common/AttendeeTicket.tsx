@@ -13,7 +13,10 @@ import { TooltipContent } from "@/components/ui/tooltip"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
-import React from "react"
+import React, { useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import QRcode from "./QRcode"
 
 const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void, isDayCheckout?: boolean  }) => {
   const standardProducts = attendee.products
@@ -28,6 +31,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
   const { handleEdit, handleCloseModal, modal, handleDelete } = useModal()
   const { removeAttendee, editAttendee } = useAttendee()
   const hasPurchased = attendee.products.some((product) => product.purchased)
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false)
 
   // Check if there are any day products
   const hasDayProducts = standardProducts.some(product => product.category === 'day');
@@ -51,6 +55,16 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
   const handleRemoveAttendee = () => {
     handleDelete(attendee)
   }
+
+  const handleOpenQrModal = () => {
+    setIsQrModalOpen(true)
+  }
+
+  const handleCloseQrModal = () => {
+    setIsQrModalOpen(false)
+  }
+
+  console.log(attendee)
 
 
   return (
@@ -123,25 +137,21 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
             }
 
 
-        {
-          hasPurchased && (
-            <div className="flex w-full justify-end">
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <div className="flex items-center gap-2 p-2">
-                      <p className="text-sm font-medium text-muted-foreground">Check-in Code</p>
-                      <QrCode className="w-5 h-5 text-gray-500"/>
-                    </div>
-                  </TooltipTrigger>
-                  <TooltipContent className="bg-white text-black max-w-[420px] border border-gray-200">
-                    <p className="text-sm text-gray-600">Closer to the event, you will be able to download your check-in code here.</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-          )
-        }
+            {
+              hasPurchased && (
+                <div className="flex w-full justify-end">
+                  <Button 
+                    variant="ghost" 
+                    className="flex items-center gap-2 p-2" 
+                    onClick={handleOpenQrModal}
+                    aria-label="Show check-in code"
+                  >
+                    <p className="text-sm font-medium">Check-in Code</p>
+                    <QrCode className="w-5 h-5"/>
+                  </Button>
+                </div>
+              )
+            }
           </div>
         </div>
       </div>
@@ -156,6 +166,8 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
           isDelete={modal.isDelete}
         />
       )}
+
+      <QRcode check_in_code={attendee.check_in_code || ""} isOpen={isQrModalOpen} onOpenChange={setIsQrModalOpen}/>
     </div>
   )
 }

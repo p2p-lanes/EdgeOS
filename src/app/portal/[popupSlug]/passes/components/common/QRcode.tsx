@@ -1,0 +1,91 @@
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useEffect, useRef, useState } from "react"
+import { Button } from "@/components/ui/button"
+import { Download } from "lucide-react"
+import QRCodeReact from "react-qr-code"
+
+const QRcode = ({check_in_code, isOpen, onOpenChange}: {check_in_code: string, isOpen: boolean, onOpenChange: (open: boolean) => void}) => {
+  const qrCodeRef = useRef<HTMLDivElement>(null)
+  const [qrValue, setQrValue] = useState("")
+  
+  useEffect(() => {
+    if (check_in_code) {
+      setQrValue(JSON.stringify({ code: check_in_code }))
+    }
+  }, [check_in_code])
+
+  const handleDownload = () => {
+    if (!qrCodeRef.current) return
+    
+    const canvas = document.createElement("canvas")
+    const svg = qrCodeRef.current.querySelector("svg")
+    
+    if (!svg) return
+    
+    const svgData = new XMLSerializer().serializeToString(svg)
+    const svgBlob = new Blob([svgData], { type: "image/svg+xml;charset=utf-8" })
+    const DOMURL = window.URL || window.webkitURL || window
+    const svgUrl = DOMURL.createObjectURL(svgBlob)
+    
+    const img = new Image()
+    img.onload = () => {
+      canvas.width = img.width
+      canvas.height = img.height
+      const ctx = canvas.getContext("2d")
+      if (!ctx) return
+      
+      ctx.drawImage(img, 0, 0)
+      DOMURL.revokeObjectURL(svgUrl)
+      
+      const imgURI = canvas.toDataURL("image/png").replace("image/png", "image/octet-stream")
+      
+      const downloadLink = document.createElement("a")
+      downloadLink.href = imgURI
+      downloadLink.download = `check-in-code-${check_in_code}.png`
+      document.body.appendChild(downloadLink)
+      downloadLink.click()
+      document.body.removeChild(downloadLink)
+    }
+    img.src = svgUrl
+  }
+
+  return (
+    <Dialog open={isOpen} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md bg-white">
+        <DialogHeader>
+          <DialogTitle>Check-in Code</DialogTitle>
+        </DialogHeader>
+        <div className="flex flex-col items-center justify-center py-4">
+          {check_in_code ? (
+            <div className="flex flex-col items-center gap-4">
+              <div ref={qrCodeRef} className="bg-white p-4 rounded-md border border-gray-200">
+                <QRCodeReact
+                  value={qrValue}
+                  size={200}
+                  level="H"
+                />
+              </div>
+              <div className="text-center space-y-2">
+                <p className="text-lg font-mono">{check_in_code}</p>
+                <p className="text-sm text-gray-500">Use este código para registrarse en el evento</p>
+              </div>
+              <Button 
+                onClick={handleDownload}
+                className="flex items-center gap-2"
+                variant="outline"
+                aria-label="Descargar código QR"
+              >
+                <Download className="h-4 w-4" />
+                <span>Descargar QR</span>
+              </Button>
+            </div>
+          ) : (
+            <p className="text-lg text-gray-500 text-center">No hay código disponible</p>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+export default QRcode
