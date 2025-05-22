@@ -6,23 +6,35 @@ The resident portal is an open source project actively developed by SimpleFi (ak
 
 We build technology to accelerate the experimentation rate of new forms of human cooperation. We do this by leveraging frontier technologies such as cryptocurrencies, ZK and AI as part of the tool stack of orgs doing the groundwork. After working closely with EdgeCity and Crecimiento, we understood that current tools, both closed and open source were not optimized for our desired use case, so we decided to build our own.
 
-e hope that builders and companies within the pop-up city movement will recognize the value of this project and choose to contribute. We openly welcome the likes of Cursive, ZuPass, RaveApp, Sovs/Consensys, SocialLayer, etc. to join us in this effort.
+We hope that builders and companies within the pop-up city movement will recognize the value of this project and choose to contribute. We openly welcome the likes of Cursive, ZuPass, RaveApp, Sovs/Consensys, SocialLayer, etc. to join us in this effort.
+
+---
 
 ## How to run locally
 
+1. (Optional) Clone and run the backend locally from [EdgeOS_API](https://github.com/p2p-lanes/EdgeOS_API)
+2. Install dependencies and start the frontend:
 ```bash
 npm install
 npm run dev
+```
+3. If running the backend locally, set the following environment variable:
+```bash
+NEXT_PUBLIC_API_URL=http://localhost:8000
 ```
 
 ## How to run with Docker Compose
 
 1. Create a `.env` file in the root directory with the following variables:
 ```bash
-NEXT_PUBLIC_API_URL=your_api_url
-NEXT_PUBLIC_ACCESS_KEY=your_access_key
-NEXT_PUBLIC_SECRET_KEY=your_secret_key
-NEXT_PUBLIC_DEVELOP=your_develop_value
+# Development Mode
+NEXT_PUBLIC_DEVELOP = true
+
+# API URL for Portal
+NEXT_PUBLIC_API_URL = http://localhost:8000  # Set this if running backend locally
+
+# API Key for Portal
+NEXT_PUBLIC_X_API_KEY =
 ```
 
 2. Build and start the containers:
@@ -76,7 +88,7 @@ The administrative system, based on **NocoDB**, allows organizers to manage all 
 - Management of database tables with the ability for staff users to create filtered views for their convenience.
 
 ### Backend API
-The system's backend serves as the **core infrastructure**, connecting the user portal with the backoffice. Its main functions include:
+The system's backend ([EdgeOS_API](https://github.com/p2p-lanes/EdgeOS_API)) serves as the **core infrastructure**, connecting the user portal with the backoffice. Its main functions include:
 - Business logic management and process validation to ensure data consistency.
 - Integration with **NocoDB** and the **PostgreSQL** database for efficient data handling.
 - Payment processing via **Stripe** and **cryptocurrencies**, ensuring secure transactions and ticket issuance.
@@ -118,7 +130,7 @@ This feature aims to increase customer engagement, boost sales, and provide prom
 - Management through Noco
 
 #### Not Included:
-- Discounts for VIPs / companies / groups, which don’t require an application. This will be a separate feature.
+- Discounts for VIPs / companies / groups, which don't require an application. This will be a separate feature.
 - Fixed-based coupon codes.
 
 ### User Stories
@@ -170,7 +182,7 @@ For example, if he has been awarded with a 20% off in his application, but then 
 This documentation explains how an application's final status is determined. The process involves two key steps:
 
 1. **Calculated Status**: This status is derived from what the approvers have voted. In other words, it reflects the outcome of the review process based solely on the decisions made by the reviewers.
-2. **Final Status**: Beyond the calculated status, additional logic is applied. This extra step takes into account factors such as whether the applicant requested a discount, if the city requires approval, and whether the application has been submitted. This ensures that the final status accurately reflects both the approvers’ decision and any supplementary criteria.
+2. **Final Status**: Beyond the calculated status, additional logic is applied. This extra step takes into account factors such as whether the applicant requested a discount, if the city requires approval, and whether the application has been submitted. This ensures that the final status accurately reflects both the approvers' decision and any supplementary criteria.
 
 The sections below provide a detailed, easy-to-understand explanation of how these statuses are determined.
 
@@ -203,13 +215,13 @@ The system checks for acceptance first. This means that even if there are negati
 ## Final Status
 
 ### When the City Does Not Require Approval
-The final status of an application is determined by combining the calculated status from the reviewers’ votes with additional logic based on discount requests and approval requirements. Here’s how it works:
+The final status of an application is determined by combining the calculated status from the reviewers' votes with additional logic based on discount requests and approval requirements. Here's how it works:
 
 #### **Rejection Takes Precedence**
 - If the calculated status is marked as **REJECTED** (meaning the reviewers have strongly voted against the application), then the final status is immediately set to **REJECTED**, regardless of any discount considerations.
 
 #### **Handling Cities That Do Not Require Approval**
-- In some cities (“pop-up cities”), discount approval isn’t needed.
+- In some cities ("pop-up cities"), discount approval isn't needed.
 - If **no discount was requested** in these cases, the application is **automatically set to ACCEPTED**.
 
 #### **Handling Discount Requests and Missing Discounts**
@@ -219,8 +231,8 @@ When approval is required:
   - For cities that **do not require approval**: Being a **renter** or requesting a **scholarship discount** qualifies as a discount request.
 
 #### **Missing Discount Scenario**
-- If a discount was requested but **has not yet been assigned**, it is considered **“missing.”**
-- When a discount is missing, even if there’s no definitive reviewer outcome yet, the application status is set to:
+- If a discount was requested but **has not yet been assigned**, it is considered **"missing."**
+- When a discount is missing, even if there's no definitive reviewer outcome yet, the application status is set to:
   - **IN REVIEW** if the application **has been submitted**.
   - **DRAFT** if the application **has not been submitted**.
 
