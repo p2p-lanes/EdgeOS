@@ -43,8 +43,6 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
   const { total } = useTotal()
   const { getCity } = useCityProvider()
   const city = getCity()
-
-  console.log('city', city)
   
   if (!attendees.length || !products.length) {
     return (
