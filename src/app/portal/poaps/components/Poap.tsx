@@ -5,9 +5,14 @@ import { PoapProps } from "@/types/Poaps"
 import Lottie from "lottie-react";
 import poapAnimation from "../../../../assets/lotties/poap_lottie.json"
 import { Button } from "../../../../components/ui/button";
-import { Check } from "lucide-react";
+import { Check, ExternalLink } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 const Poap = ({ poap }: {poap: PoapProps}) => {
+  const [isPopupBlocked, setIsPopupBlocked] = useState(false);
   // Determinar el estado del POAP basado en las propiedades de la API
   const getPoapStatus = () => {
     if (!poap.poap_is_active) return "disabled";
@@ -42,11 +47,35 @@ const Poap = ({ poap }: {poap: PoapProps}) => {
   }
 
   const handleMintPoap = () => {
-    window.open(poap.poap_url, "_blank");
+    // Intenta abrir la ventana al momento del clic del usuario
+    const newWindow = window.open(poap.poap_url, "_blank", "noopener,noreferrer");
+    
+    // Verifica si la ventana se abrió correctamente
+    if (!newWindow || newWindow.closed || typeof newWindow.closed === 'undefined') {
+      setIsPopupBlocked(true);
+      toast.error("Tu navegador bloqueó la ventana emergente. Haz clic en el enlace directo.");
+    } else {
+      // Asegúrate de que la ventana tenga foco
+      newWindow.focus();
+    }
   }
 
   return (
-    <div className={cn("rounded-2xl flex flex-col gap-4 relative max-w-[272px] py-6 justify-center items-center", variants[status].container)}>
+    <div className={cn("rounded-2xl flex flex-col gap-4 relative max-w-[272px] py-6 justify-center items-center overflow-hidden", variants[status].container)}>
+      <div className="absolute top-0 right-0 overflow-hidden">
+        <TooltipProvider>
+          <Tooltip>
+            <TooltipTrigger>
+              <div onClick={handleMintPoap} className="rounded-full p-2 cursor-pointer">
+                <ExternalLink className="w-4 h-4" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Open POAP</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
       <div className={cn("rounded-full w-fit p-[2px]", variants[status].containerImage)} style={{zIndex: 2, position: "relative"}} >
         {
           status === "mint" && (
@@ -75,6 +104,17 @@ const Poap = ({ poap }: {poap: PoapProps}) => {
           {status === 'minted' && <Check className="w-4 h-4"/>}
           {variants[status].label}
         </Button>
+        
+        {isPopupBlocked && status === 'mint' && (
+          <a 
+            href={poap.poap_url} 
+            target="_blank" 
+            rel="noopener noreferrer" 
+            className="flex items-center gap-1 text-sm text-blue-600 hover:underline mt-2"
+          >
+            Abrir enlace directo <ExternalLink className="w-3 h-3" />
+          </a>
+        )}
       </div>
     </div>
   )
