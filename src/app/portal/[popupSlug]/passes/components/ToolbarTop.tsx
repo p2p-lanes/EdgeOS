@@ -9,6 +9,7 @@ import InvoiceModal from "./common/InvoiceModal"
 import { useState } from "react"
 import EditPassesButton from "./common/Buttons/EditPassesButton"
 import DiscountCode from "./common/DiscountCode"
+import { useCityProvider } from "@/providers/cityProvider"
 
 interface ToolbarTopProps {
   canEdit?: boolean;
@@ -33,9 +34,14 @@ const ToolbarTop = ({
   const { handleOpenModal, handleCloseModal, modal } = useModal()
   const { addAttendee } = useAttendee()
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
+  const { getCity } = useCityProvider()
+  const city = getCity()
 
   const attendees = getAttendees()
   const hasSpouse = attendees.some(a => a.category === 'spouse')
+
+  // Check if current date is before city start_date
+  const canEditDate = city?.start_date ? new Date() < new Date(city.start_date) : true
 
   const handleSubmit = async (data: AttendeeProps) => {
     if (modal.category) {
@@ -84,7 +90,7 @@ const ToolbarTop = ({
       </div>
 
       <div className="flex gap-2 items-center">
-        {canEdit && <EditPassesButton onSwitchToBuy={onSwitchToBuy} />}
+        {canEdit && canEditDate && <EditPassesButton onSwitchToBuy={onSwitchToBuy} />}
         {
           viewInvoices && (
             <>
