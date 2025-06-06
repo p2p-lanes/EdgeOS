@@ -177,8 +177,7 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserI
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Express Checkout</CardTitle>
         <CardDescription>
-          You&apos;re invited to the <span className="font-bold">{group?.name}</span> group at <span className="font-bold">{group?.popup_name}</span>. 
-          As a member, you can skip the application process and proceed directly to checkout. Provide your information below to secure your ticket(s).
+          You&apos;re invited to skip the application process and proceed directly to checkout. Provide your information below to secure your ticket(s) to {group?.popup_name}!
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
