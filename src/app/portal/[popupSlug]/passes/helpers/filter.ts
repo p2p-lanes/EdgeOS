@@ -33,6 +33,8 @@ export const sortAttendees = (attendees: AttendeeProps[]) => {
 
 export const filterProductsToPurchase = (products: ProductsPass[], editableMode: boolean) => {
 
+  console.log('products', products, {editableMode})
+
   const reducedProducts = products.reduce((acc: ProductsPass[], product) => {
     const isDayProduct = product.category === 'day'
     const isWeekProduct = product.category === 'week'
@@ -47,6 +49,13 @@ export const filterProductsToPurchase = (products: ProductsPass[], editableMode:
       if(product.purchased && !isDayProduct) return acc
       if(isWeekProduct && hasMonth) return acc
       if(isDayProduct && (product.quantity === product.original_quantity || hasMonth)) return acc
+      if(isDayProduct && (product.quantity ?? 0) > (product.original_quantity ?? 0) && !hasMonth){
+        const newProduct = {
+          ...product,
+          quantity: editableMode ? (product.quantity ?? 0) : (product.quantity ?? 0) - (product.original_quantity ?? 0),
+        }
+        return [...acc, newProduct]
+      }
       return [...acc, product]
     }
 
