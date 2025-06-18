@@ -26,7 +26,7 @@ const useSignInWorldApp = () => {
       return { status: 'error', code: 1, message: 'Error wallet auth' }
     } else {
       const signMessagePayload: SignMessageInput = {
-        message: "",
+        message: "1",
       };
 
       const {finalPayload} = await MiniKit.commandsAsync.signMessage(signMessagePayload);
