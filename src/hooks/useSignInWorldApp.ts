@@ -1,6 +1,6 @@
 import { MiniKit, SignMessageInput } from "@worldcoin/minikit-js"
 import { useEffect, useState } from "react"
-import Safe, { hashSafeMessage } from "@safe-global/protocol-kit";
+import { hashSafeMessage } from "@safe-global/protocol-kit";
 
 const useSignInWorldApp = () => {
   const [address, setAddress] = useState<string | null>(null)
