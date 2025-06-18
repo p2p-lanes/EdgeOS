@@ -64,21 +64,25 @@ const Poap = ({ poap }: {poap: PoapProps}) => {
   }
 
   return (
-    <div className={cn("rounded-2xl flex flex-col gap-4 relative max-w-[272px] py-6 justify-center items-center overflow-hidden", variants[status].container)}>
-      <div className="absolute top-0 right-0 overflow-hidden">
-        <TooltipProvider>
-          <Tooltip>
-            <TooltipTrigger>
-              <div onClick={handleMintPoap} className="rounded-full p-2 cursor-pointer">
-                <ExternalLink className="w-4 h-4" />
-              </div>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Open POAP</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      </div>
+    <div className={cn("rounded-2xl flex flex-col gap-4 relative w-[272px] py-6 justify-center items-center overflow-hidden", variants[status].container)}>
+      {
+        status === "minted" && (
+          <div className="absolute top-0 right-0 overflow-hidden">
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger>
+                  <div onClick={handleMintPoap} className="rounded-full p-2 cursor-pointer">
+                    <ExternalLink className="w-4 h-4" />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Open POAP</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          </div>
+        )
+      }
       <div className={cn("rounded-full w-fit p-[2px]", variants[status].containerImage)} style={{zIndex: 2, position: "relative"}} >
         {
           status === "mint" && (
