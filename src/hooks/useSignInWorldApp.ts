@@ -1,5 +1,6 @@
 import { MiniKit, SignMessageInput } from "@worldcoin/minikit-js"
 import { useEffect, useState } from "react"
+import Safe, { hashSafeMessage } from "@safe-global/protocol-kit";
 
 const useSignInWorldApp = () => {
   const [address, setAddress] = useState<string | null>(null)
@@ -26,10 +27,14 @@ const useSignInWorldApp = () => {
       return { status: 'error', code: 1, message: 'Error wallet auth' }
     } else {
       const signMessagePayload: SignMessageInput = {
-        message: "1",
+        message: "test",
       };
 
       const {finalPayload} = await MiniKit.commandsAsync.signMessage(signMessagePayload);
+
+      const messageHash = hashSafeMessage("test");
+
+      console.log('messageHash', messageHash)
 
       if(finalPayload.status === 'success') {
         console.log("finalPayload", JSON.stringify(finalPayload))
