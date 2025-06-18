@@ -34,7 +34,7 @@ const useSignInWorldApp = () => {
 
       const messageHash = hashSafeMessage("test");
 
-      console.log('messageHash', messageHash)
+      console.log('messageHash', JSON.stringify(messageHash))
 
       if(finalPayload.status === 'success') {
         console.log("finalPayload", JSON.stringify(finalPayload))
