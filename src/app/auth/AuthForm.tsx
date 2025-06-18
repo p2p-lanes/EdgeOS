@@ -36,12 +36,7 @@ export default function AuthForm() {
 
   const handleSignIn = async () => {
     const result = await signIn()
-    console.log("result", JSON.stringify(result))
-    // if(result.finalPayload?.status === 'success') {
-    //   setMessage({status: 'success', message: 'Check your email inbox for the log in link'})
-    // } else {
-    //   setMessage({status: 'error', message: 'Something went wrong, please try again later'})
-    // }
+    
   }
 
   const handleSubmit = async (e: React.FormEvent) => {

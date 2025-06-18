@@ -6,7 +6,7 @@ const useSignInWorldApp = () => {
 
   const signIn = async () => {
     if (!MiniKit.isInstalled()) {
-      return { error: 'Wallet not installed' }
+      return { status: 'error', code: 0, message: 'Wallet not installed' }
     }
 
     // if(MiniKit.user?.walletAddress) {
@@ -23,16 +23,20 @@ const useSignInWorldApp = () => {
     })
 
     if (finalPayload.status === 'error') {
-      return { error: '' }
+      return { status: 'error', code: 1, message: 'Error wallet auth' }
     } else {
       const signMessagePayload: SignMessageInput = {
-        message: "Hello world",
+        message: "",
       };
 
       const {finalPayload} = await MiniKit.commandsAsync.signMessage(signMessagePayload);
 
-      console.log("finalPayload", JSON.stringify(finalPayload))
-      return { generateMessageResult, finalPayload: { address: '0x0000000000000000000000000000000000000000', status: 'success' } }
+      if(finalPayload.status === 'success') {
+        console.log("finalPayload", JSON.stringify(finalPayload))
+        return { status: 'success', signature: finalPayload.signature, address: finalPayload.address }
+      } else {
+        return { status: 'error', code: 2, message: 'Error sign message' }
+      }
     }
   }
 
