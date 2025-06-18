@@ -1,6 +1,6 @@
 import { MiniKit, SignMessageInput } from "@worldcoin/minikit-js"
 import { useEffect, useState } from "react"
-import { hashSafeMessage } from "@safe-global/protocol-kit";
+import Safe, { hashSafeMessage } from "@safe-global/protocol-kit";
 
 const useSignInWorldApp = () => {
   const [address, setAddress] = useState<string | null>(null)
@@ -16,14 +16,14 @@ const useSignInWorldApp = () => {
 
     const nonce = crypto.randomUUID().replace(/-/g, "");
 
-    const {commandPayload: generateMessageResult, finalPayload} = await MiniKit.commandsAsync.walletAuth({
+    const {commandPayload: generateMessageResult, finalPayload: walletAuthFinalPayload} = await MiniKit.commandsAsync.walletAuth({
       nonce: nonce,
       expirationTime: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000),
       notBefore: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
       statement: 'This is my statement and here is a link https://worldcoin.com/apps',
     })
 
-    if (finalPayload.status === 'error') {
+    if (walletAuthFinalPayload.status === 'error') {
       return { status: 'error', code: 1, message: 'Error wallet auth' }
     } else {
       const signMessagePayload: SignMessageInput = {
@@ -32,7 +32,23 @@ const useSignInWorldApp = () => {
 
       const {finalPayload} = await MiniKit.commandsAsync.signMessage(signMessagePayload);
 
+      if (finalPayload.status === 'error') {
+        return { status: 'error', code: 2, message: 'Error sign message' }
+      }
+
       const messageHash = hashSafeMessage("test");
+
+      const isValid = await (
+      await Safe.init({
+        provider:
+          "https://worldchain-mainnet.g.alchemy.com/v2/your-api-key",
+        safeAddress: finalPayload.address,
+      })
+    ).isValidSignature(messageHash, finalPayload.signature);
+
+      if (isValid) {
+        console.log("Signature is valid");
+      }
 
       console.log('messageHash', JSON.stringify(messageHash))
 
