@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { ButtonAnimated } from '@/components/ui/button'
+import { Button, ButtonAnimated } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { api } from '@/api'
 import { motion } from 'framer-motion'
@@ -36,7 +36,7 @@ export default function AuthForm() {
 
   const handleSignIn = async () => {
     const result = await signIn()
-    console.log("result", result)
+    console.log("result", JSON.stringify(result))
     // if(result.finalPayload?.status === 'success') {
     //   setMessage({status: 'success', message: 'Check your email inbox for the log in link'})
     // } else {
@@ -107,6 +107,10 @@ export default function AuthForm() {
               </div>
             )
           } */}
+
+          <Button onClick={handleSignIn} className="w-full">
+            Sign In with World App
+          </Button>
 
           <form className="mt-8 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
             <div>
