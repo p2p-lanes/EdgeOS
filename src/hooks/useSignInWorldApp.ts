@@ -26,13 +26,13 @@ const useSignInWorldApp = () => {
       return { error: '' }
     } else {
       const signMessagePayload: SignMessageInput = {
-        message: "Hello world",
+        message: "",
       };
 
       const {finalPayload} = await MiniKit.commandsAsync.signMessage(signMessagePayload);
 
       console.log("finalPayload", JSON.stringify(finalPayload))
-      return { generateMessageResult, finalPayload: { address: '0x0000000000000000000000000000000000000000', status: 'success' } }
+      return { status: 'success' }
     }
   }
 
