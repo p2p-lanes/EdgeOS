@@ -7,12 +7,15 @@ import { api } from '@/api'
 import { motion } from 'framer-motion'
 import { useSearchParams } from 'next/navigation'
 import { config } from '@/constants/config'
+import { MiniKit, VerifyCommandInput, VerificationLevel, ISuccessResult } from '@worldcoin/minikit-js'
+import useSignInWorldApp from '@/hooks/useSignInWorldApp'
 
 export default function AuthForm() {
   const [isMounted, setIsMounted] = useState(false)
   const params = useSearchParams()
   const popupSlug = params.get('popup')
-
+  const { signIn } = useSignInWorldApp()
+  
   useEffect(() => {
     setIsMounted(true)
   }, [])
@@ -31,6 +34,16 @@ export default function AuthForm() {
     return re.test(email)
   }
 
+  const handleSignIn = async () => {
+    const result = await signIn()
+    console.log("result", result)
+    // if(result.finalPayload?.status === 'success') {
+    //   setMessage({status: 'success', message: 'Check your email inbox for the log in link'})
+    // } else {
+    //   setMessage({status: 'error', message: 'Something went wrong, please try again later'})
+    // }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!validateEmail(email)) {
@@ -40,7 +53,7 @@ export default function AuthForm() {
     setIsValidEmail(true)
     setIsLoading(true)
     
-    api.post(`citizens/authenticate`, {email: encodeURIComponent(email), popup_slug: popupSlug ?? null}).then((e) => {
+    api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null}).then((e) => {
       if(e.status === 200) {
         setIsLoading(false)
         setMessage({status: 'success', message: 'Check your email inbox for the log in link'})
@@ -86,6 +99,15 @@ export default function AuthForm() {
             Welcome! If it’s your first time, sign up below. If you attended a past event, use the same email to import your prior application.
             </p>
           </div>
+
+          {/* {
+            isInstalled && (
+              <div>
+
+              </div>
+            )
+          } */}
+
           <form className="mt-8 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
             <div>
               <Input

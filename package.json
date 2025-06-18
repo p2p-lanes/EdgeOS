@@ -30,6 +30,8 @@
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.7.1",
     "@types/js-cookie": "^3.0.6",
+    "@worldcoin/minikit-js": "^1.9.6",
+    "@worldcoin/minikit-react": "^1.9.7",
     "aws-sdk": "^2.1692.0",
     "axios": "^1.7.8",
     "class-variance-authority": "^0.7.1",

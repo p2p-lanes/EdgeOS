@@ -7,6 +7,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 import { useCallback, useEffect } from 'react'
 import dynamic from 'next/dynamic'
 import { Suspense } from 'react'
+import ConsoleLogger from '@/components/ConsoleLogger'
 
 // Dynamically import AuthForm with no SSR
 const AuthForm = dynamic(() => import('@/app/auth/AuthForm'), {
@@ -53,6 +54,7 @@ export default function AuthPage() {
         <Loader/>
       </div>
     }>
+      <ConsoleLogger />
       <AuthContent />
     </Suspense>
   )
