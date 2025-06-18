@@ -41,7 +41,7 @@ const useSignInWorldApp = () => {
       const isValid = await (
       await Safe.init({
         provider:
-          "https://worldchain-mainnet.g.alchemy.com/v2/your-api-key",
+          "https://worldchain-mainnet.g.alchemy.com/v2/UMfeLyPi588EQ35Q3hNpilN65kiUB5VY",
         safeAddress: finalPayload.address,
       })
     ).isValidSignature(messageHash, finalPayload.signature);
