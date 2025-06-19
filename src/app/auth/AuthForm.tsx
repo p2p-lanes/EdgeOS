@@ -41,7 +41,6 @@ export default function AuthForm() {
   const handleSignInWorldID = async () => {
     const result = await signIn()
     if(result.status === 'success') {
-      setIsLoading(true)
       setOpen(true)
       setWorldData({signature: result.signature ?? null, address: result.address ?? null})
     }

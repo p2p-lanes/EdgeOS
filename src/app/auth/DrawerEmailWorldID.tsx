@@ -16,7 +16,7 @@ const DrawerEmailWorldID = ({ open, setOpen, handleCancel, handleSubmit, isLoadi
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent className="mx-4 mb-4 rounded-3xl overflow-hidden">
+      <DrawerContent className="mx-4 pb-4 rounded-t-3xl overflow-hidden">
         <DrawerHeader className="text-left pb-4 px-6 bg-white pt-6">
           <div className="flex justify-between">
             <div>
@@ -50,13 +50,13 @@ const DrawerEmailWorldID = ({ open, setOpen, handleCancel, handleSubmit, isLoadi
               <Input
                 id="email"
                 type="email"
-                placeholder="tu@email.com"
+                placeholder="john@example.com"
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value)
                   setIsValidEmail(validateEmail(e.target.value))
                 }}
-                className="w-full"
+                className="w-full py-5 text-md"
                 required
               />
             </div>
