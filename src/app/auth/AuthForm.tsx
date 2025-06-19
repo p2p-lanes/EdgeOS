@@ -54,8 +54,6 @@ export default function AuthForm() {
     }
     setIsValidEmail(true)
     setIsLoading(true)
-
-    console.log('worldData', JSON.stringify(worldData))
     
     api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null, signature: worldData.signature, world_address: worldData.address}).then((e) => {
       if(e.status === 200) {
@@ -120,7 +118,7 @@ export default function AuthForm() {
             </p>
           </div>
 
-          <DrawerEmailWorldID open={true} setOpen={setOpen} handleCancel={() => setOpen(false)} handleSubmit={handleSubmit} isLoading={isLoading} email={email} setEmail={setEmail} />
+          <DrawerEmailWorldID open={open} setOpen={setOpen} handleCancel={() => setOpen(false)} handleSubmit={handleSubmit} isLoading={isLoading} email={email} setEmail={setEmail} />
 
           <form className="mt-4 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
             <div>
