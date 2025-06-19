@@ -6,6 +6,7 @@ import { filterProductsToPurchase } from "../helpers/filter"
 import { useApplication } from "@/providers/applicationProvider"
 import { usePassesProvider } from "@/providers/passesProvider"
 import { toast } from "sonner"
+import { MiniKit } from "@worldcoin/minikit-js"
 
 const usePurchaseProducts = () => {
   const [loading, setLoading] = useState<boolean>(false)
@@ -42,7 +43,11 @@ const usePurchaseProducts = () => {
       if(response.status === 200){
         const redirectUrl = isFastCheckout ? `${window.location.origin}/checkout/success` : window.location.href;
         if(response.data.status === 'pending'){
-          window.location.href = `${response.data.checkout_url}?redirect_url=${redirectUrl}`
+          if(MiniKit.isInstalled()){
+            window.location.href = `https://world.org/mini-app?app_id=app_f69274f93026ec73fb0ca76eb7185b73&path=${response.data.checkout_url}?redirect_url=${redirectUrl}`
+          }else{
+            window.location.href = `${response.data.checkout_url}?redirect_url=${redirectUrl}`
+          }
         }else if(response.data.status === 'approved'){
           await getApplication()
           if(editableMode){

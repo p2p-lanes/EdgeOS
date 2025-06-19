@@ -104,22 +104,25 @@ export default function AuthForm() {
             </p>
           </div>
 
-          <div className="mt-8 space-y-4 max-w-xs mx-auto">
-            <ButtonAnimated
-              variant="outline"
-              onClick={handleSignInWorldID}
-              className="group relative w-full flex justify-center py-2 px-4 text-sm font-medium rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-            >
-              <Image src="https://simplefi.s3.us-east-2.amazonaws.com/logo_wc.png" alt="World App" width={20} height={20} />
-              Sign In with World ID
-            </ButtonAnimated>
-            <p className="text-sm text-gray-600" style={{ textAlign: 'center', textWrap: 'balance' }}>
-              or
-            </p>
-          </div>
+          {
+            MiniKit.isInstalled() && (
+            <div className="mt-8 space-y-4 max-w-xs mx-auto">
+              <ButtonAnimated
+                variant="outline"
+                onClick={handleSignInWorldID}
+                className="group relative w-full flex justify-center py-2 px-4 text-sm font-medium rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              >
+                <Image src="https://simplefi.s3.us-east-2.amazonaws.com/logo_wc.png" alt="World App" width={20} height={20} />
+                Sign In with World ID
+              </ButtonAnimated>
+              <p className="text-sm text-gray-600" style={{ textAlign: 'center', textWrap: 'balance' }}>
+                or
+              </p>
+            </div>
+            )
+          }
 
           <DrawerEmailWorldID open={open} setOpen={setOpen} handleCancel={() => setOpen(false)} handleSubmit={handleSubmit} isLoading={isLoading} email={email} setEmail={setEmail} />
-
           <form className="mt-4 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
             <div>
               <Input
