@@ -5,7 +5,7 @@ import { X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 
-const DrawerEmailWorldID = ({open, setOpen, handleCancel, handleSubmit, isLoading, email, setEmail}: {open: boolean, setOpen: (open: boolean) => void, handleCancel: () => void, handleSubmit: (e: React.FormEvent) => void, isLoading: boolean, email: string, setEmail: (email: string) => void}) => {
+const DrawerEmailWorldID = ({ open, setOpen, handleCancel, handleSubmit, isLoading, email, setEmail }: {open: boolean, setOpen: (open: boolean) => void, handleCancel: () => void, handleSubmit: (e: React.FormEvent) => void, isLoading: boolean, email: string, setEmail: (email: string) => void}) => {
   const [isValidEmail, setIsValidEmail] = useState(true)
 
   const validateEmail = (email: string) => {
@@ -42,6 +42,7 @@ const DrawerEmailWorldID = ({open, setOpen, handleCancel, handleSubmit, isLoadin
                 placeholder="tu@email.com"
                 value={email}
                 onChange={(e) => {
+                  console.log('email',e.target.value)
                   setEmail(e.target.value)
                   setIsValidEmail(validateEmail(e.target.value))
                 }}
@@ -57,6 +58,7 @@ const DrawerEmailWorldID = ({open, setOpen, handleCancel, handleSubmit, isLoadin
             Cancel
           </Button>
           <Button
+            type="submit"
             onClick={handleSubmit}
             className="flex-1 bg-black hover:bg-black/90 text-white"
             disabled={isLoading || !isValidEmail}

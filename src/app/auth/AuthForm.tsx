@@ -18,6 +18,7 @@ export default function AuthForm() {
   const popupSlug = params.get('popup')
   const { signIn } = useSignInWorldApp()
   const [open, setOpen] = useState(false)
+  const [worldData, setWorldData] = useState<{signature: string | null, address: string | null}>({signature: null, address: null})
 
   useEffect(() => {
     setIsMounted(true)
@@ -42,18 +43,7 @@ export default function AuthForm() {
     if(result.status === 'success') {
       setIsLoading(true)
       setOpen(true)
-      api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null, signature: result.signature, world_address: result.address}).then((e) => {
-        if(e.status === 200) {
-          setIsLoading(false)
-          setMessage({status: 'success', message: 'Check your email inbox for the log in link'})
-          setOpen(false)
-        }else{
-          console.log(JSON.stringify(e))
-          setIsLoading(false)
-          setMessage({status: 'error', message: 'Something went wrong, please try again later'})
-          setOpen(false)
-        }
-      })
+      setWorldData({signature: result.signature ?? null, address: result.address ?? null})
     }
   }
 
@@ -66,7 +56,7 @@ export default function AuthForm() {
     setIsValidEmail(true)
     setIsLoading(true)
     
-    api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null}).then((e) => {
+    api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null, signature: worldData.signature, world_address: worldData.address}).then((e) => {
       if(e.status === 200) {
         setIsLoading(false)
         setMessage({status: 'success', message: 'Check your email inbox for the log in link'})
@@ -113,14 +103,6 @@ export default function AuthForm() {
             </p>
           </div>
 
-          {/* {
-            isInstalled && (
-              <div>
-
-              </div>
-            )
-          } */}
-
           <div className="mt-8 space-y-4 max-w-xs mx-auto">
             <ButtonAnimated
               variant="outline"
@@ -135,7 +117,7 @@ export default function AuthForm() {
             </p>
           </div>
 
-          <DrawerEmailWorldID open={open} setOpen={setOpen} handleCancel={() => setOpen(false)} handleSubmit={handleSubmit} isLoading={isLoading} email={email} setEmail={setEmail} />
+          <DrawerEmailWorldID open={true} setOpen={setOpen} handleCancel={() => setOpen(false)} handleSubmit={handleSubmit} isLoading={isLoading} email={email} setEmail={setEmail} />
 
           <form className="mt-4 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
             <div>

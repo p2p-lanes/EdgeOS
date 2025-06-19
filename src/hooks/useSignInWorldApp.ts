@@ -1,6 +1,6 @@
 import { MiniKit, SignMessageInput } from "@worldcoin/minikit-js"
 import { useEffect, useState } from "react"
-import { hashSafeMessage } from "@safe-global/protocol-kit";
+// import { hashSafeMessage } from "@safe-global/protocol-kit";
 const messageToSign = 'Welcome to EdgeOS! Click to sign a message with your wallet to log in. This request will not trigger a blockchain transaction or cost any gas fees.'
 
 const useSignInWorldApp = () => {
@@ -38,8 +38,8 @@ const useSignInWorldApp = () => {
         return { status: 'error', code: 4, message: 'Error sign message' }
       }
 
-      const messageHash = hashSafeMessage(messageToSign);
-      console.log('messageHash', JSON.stringify(messageHash))
+      // const messageHash = hashSafeMessage(messageToSign);
+      // console.log('messageHash', JSON.stringify(messageHash))
 
       // const isValid = await (
       //   await Safe.init({
