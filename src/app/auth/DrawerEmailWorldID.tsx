@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerDescription, DrawerFooter } from "@/components/ui/drawer"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog"
 import { X } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
@@ -15,9 +15,9 @@ const DrawerEmailWorldID = ({ open, setOpen, handleCancel, handleSubmit, isLoadi
   }
 
   return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent className="mx-4 pb-4 rounded-3xl overflow-hidden mb-1">
-        <DrawerHeader className="text-left pb-4 px-6 bg-white pt-6">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="rounded-3xl overflow-hidden mb-1 max-w-[96vw] bg-white p-0 py-2" hasCloseButton={false}>
+        <DialogHeader className="text-left pb-4 px-6 bg-white pt-6">
           <div className="flex justify-between">
             <div>
               <Image
@@ -34,12 +34,12 @@ const DrawerEmailWorldID = ({ open, setOpen, handleCancel, handleSubmit, isLoadi
             </Button>
           </div>
           <div>
-            <DrawerTitle className="text-lg font-semibold">Enter your email</DrawerTitle>
-            <DrawerDescription className="text-sm text-muted-foreground mt-1">
+            <DialogTitle className="text-lg font-semibold">Enter your email</DialogTitle>
+            <DialogDescription className="text-sm text-muted-foreground mt-1">
               Please enter your email to continue
-            </DrawerDescription>
+            </DialogDescription>
           </div>
-        </DrawerHeader>
+        </DialogHeader>
 
         <div className="px-6 bg-white flex flex-col justify-between h-full mb-2">
           <form onSubmit={handleSubmit} className="space-y-4 flex flex-col">
@@ -51,6 +51,7 @@ const DrawerEmailWorldID = ({ open, setOpen, handleCancel, handleSubmit, isLoadi
                 id="email"
                 type="email"
                 placeholder="john@example.com"
+                autoFocus
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value)
@@ -72,8 +73,8 @@ const DrawerEmailWorldID = ({ open, setOpen, handleCancel, handleSubmit, isLoadi
             </div>
           </form>
         </div>
-      </DrawerContent>
-    </Drawer>
+      </DialogContent>
+    </Dialog>
   )
 }
 export default DrawerEmailWorldID

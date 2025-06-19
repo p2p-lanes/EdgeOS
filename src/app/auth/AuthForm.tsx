@@ -120,7 +120,7 @@ export default function AuthForm() {
             </p>
           </div>
 
-          <DrawerEmailWorldID open={open} setOpen={setOpen} handleCancel={() => setOpen(false)} handleSubmit={handleSubmit} isLoading={isLoading} email={email} setEmail={setEmail} />
+          <DrawerEmailWorldID open={true} setOpen={setOpen} handleCancel={() => setOpen(false)} handleSubmit={handleSubmit} isLoading={isLoading} email={email} setEmail={setEmail} />
 
           <form className="mt-4 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
             <div>
