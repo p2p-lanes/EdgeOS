@@ -1,13 +1,15 @@
 import { MiniKit, SignMessageInput } from "@worldcoin/minikit-js"
 import { useEffect, useState } from "react"
-import Safe, { hashSafeMessage } from "@safe-global/protocol-kit";
+import { hashSafeMessage } from "@safe-global/protocol-kit";
+const messageToSign = 'Welcome to EdgeOS! Click to sign a message with your wallet to log in. This request will not trigger a blockchain transaction or cost any gas fees.'
 
 const useSignInWorldApp = () => {
   const [address, setAddress] = useState<string | null>(null)
 
   const signIn = async () => {
+
     if (!MiniKit.isInstalled()) {
-      return { status: 'error', code: 0, message: 'Wallet not installed' }
+      return { status: 'error', code: 3, message: 'Wallet not installed' }
     }
 
     // if(MiniKit.user?.walletAddress) {
@@ -24,39 +26,39 @@ const useSignInWorldApp = () => {
     })
 
     if (walletAuthFinalPayload.status === 'error') {
-      return { status: 'error', code: 1, message: 'Error wallet auth' }
+      return { status: 'error', code: 5, message: 'Error wallet auth' }
     } else {
       const signMessagePayload: SignMessageInput = {
-        message: "test",
+        message: messageToSign,
       };
 
       const {finalPayload} = await MiniKit.commandsAsync.signMessage(signMessagePayload);
 
       if (finalPayload.status === 'error') {
-        return { status: 'error', code: 2, message: 'Error sign message' }
+        return { status: 'error', code: 4, message: 'Error sign message' }
       }
 
-      const messageHash = hashSafeMessage("test");
-
-      const isValid = await (
-      await Safe.init({
-        provider:
-          "https://worldchain-mainnet.g.alchemy.com/v2/UMfeLyPi588EQ35Q3hNpilN65kiUB5VY",
-        safeAddress: finalPayload.address,
-      })
-    ).isValidSignature(messageHash, finalPayload.signature);
-
-      if (isValid) {
-        console.log("Signature is valid");
-      }
-
+      const messageHash = hashSafeMessage(messageToSign);
       console.log('messageHash', JSON.stringify(messageHash))
+
+      // const isValid = await (
+      //   await Safe.init({
+      //     provider:
+      //       "https://worldchain-mainnet.g.alchemy.com/v2/UMfeLyPi588EQ35Q3hNpilN65kiUB5VY",
+      //     safeAddress: finalPayload.address,
+      //   })
+      // ).isValidSignature(messageHash, finalPayload.signature);
+
+      // if (isValid) {
+      //   console.log("Signature is valid");
+      // }
+
 
       if(finalPayload.status === 'success') {
         console.log("finalPayload", JSON.stringify(finalPayload))
-        return { status: 'success', signature: finalPayload.signature, address: finalPayload.address }
+        return { status: 'success', code: 2, signature: finalPayload.signature, address: finalPayload.address }
       } else {
-        return { status: 'error', code: 2, message: 'Error sign message' }
+        return { status: 'error', code: 4, message: 'Error sign message' }
       }
     }
   }

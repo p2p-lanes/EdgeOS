@@ -9,13 +9,16 @@ import { useSearchParams } from 'next/navigation'
 import { config } from '@/constants/config'
 import { MiniKit, VerifyCommandInput, VerificationLevel, ISuccessResult } from '@worldcoin/minikit-js'
 import useSignInWorldApp from '@/hooks/useSignInWorldApp'
+import Image from 'next/image'
+import DrawerEmailWorldID from './DrawerEmailWorldID'
 
 export default function AuthForm() {
   const [isMounted, setIsMounted] = useState(false)
   const params = useSearchParams()
   const popupSlug = params.get('popup')
   const { signIn } = useSignInWorldApp()
-  
+  const [open, setOpen] = useState(false)
+
   useEffect(() => {
     setIsMounted(true)
   }, [])
@@ -34,9 +37,24 @@ export default function AuthForm() {
     return re.test(email)
   }
 
-  const handleSignIn = async () => {
+  const handleSignInWorldID = async () => {
     const result = await signIn()
-    
+    if(result.status === 'success') {
+      setIsLoading(true)
+      setOpen(true)
+      api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null, signature: result.signature, world_address: result.address}).then((e) => {
+        if(e.status === 200) {
+          setIsLoading(false)
+          setMessage({status: 'success', message: 'Check your email inbox for the log in link'})
+          setOpen(false)
+        }else{
+          console.log(JSON.stringify(e))
+          setIsLoading(false)
+          setMessage({status: 'error', message: 'Something went wrong, please try again later'})
+          setOpen(false)
+        }
+      })
+    }
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -86,7 +104,7 @@ export default function AuthForm() {
           variants={animationFade}
           transition={{ duration: 0.6 }}
         >
-          <div className="text-center max-w-md mx-auto">
+          <div className="text-center max-w-md mx-auto mb-4">
             <h2 className="mt-6 text-3xl font-bold text-gray-900" style={{ textWrap: 'balance' }}>
               Sign Up or Log In to {config.name}
             </h2>
@@ -103,11 +121,23 @@ export default function AuthForm() {
             )
           } */}
 
-          <Button onClick={handleSignIn} className="w-full">
-            Sign In with World App
-          </Button>
+          <div className="mt-8 space-y-4 max-w-xs mx-auto">
+            <ButtonAnimated
+              variant="outline"
+              onClick={handleSignInWorldID}
+              className="group relative w-full flex justify-center py-2 px-4 text-sm font-medium rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+            >
+              <Image src="https://simplefi.s3.us-east-2.amazonaws.com/logo_wc.png" alt="World App" width={20} height={20} />
+              Sign In with World ID
+            </ButtonAnimated>
+            <p className="text-sm text-gray-600" style={{ textAlign: 'center', textWrap: 'balance' }}>
+              or
+            </p>
+          </div>
 
-          <form className="mt-8 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
+          <DrawerEmailWorldID open={open} setOpen={setOpen} handleCancel={() => setOpen(false)} handleSubmit={handleSubmit} isLoading={isLoading} email={email} setEmail={setEmail} />
+
+          <form className="mt-4 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
             <div>
               <Input
                 id="email"
@@ -167,7 +197,7 @@ export default function AuthForm() {
           </div>
         )}
       </div>
-  </div>
+    </div>
   )
 }
 
