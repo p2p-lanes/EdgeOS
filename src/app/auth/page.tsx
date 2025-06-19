@@ -54,7 +54,7 @@ export default function AuthPage() {
         <Loader/>
       </div>
     }>
-      <ConsoleLogger />
+      {/* <ConsoleLogger /> */}
       <AuthContent />
     </Suspense>
   )

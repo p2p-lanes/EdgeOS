@@ -58,9 +58,11 @@ export default function AuthForm() {
     
     api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null, signature: worldData.signature, world_address: worldData.address}).then((e) => {
       if(e.status === 200) {
+        setOpen(false)
         setIsLoading(false)
         setMessage({status: 'success', message: 'Check your email inbox for the log in link'})
       } else {
+        setOpen(false)
         setIsLoading(false)
         setMessage({status: 'error', message: 'Something went wrong, please try again later'})
       }
@@ -73,8 +75,8 @@ export default function AuthForm() {
   }
 
   return (
-    <div className="flex flex-col justify-center w-full md:w-1/2 p-8">
-      <div className="max-w-md w-full mx-auto space-y-8 my-12">
+    <div className="flex flex-col justify-center w-full md:w-1/2 p-4">
+      <div className="max-w-md w-full mx-auto space-y-8 md:my-12">
         <motion.div
           initial={{ y: 0 }}
           animate={{ y: [0, 16, 0] }}
