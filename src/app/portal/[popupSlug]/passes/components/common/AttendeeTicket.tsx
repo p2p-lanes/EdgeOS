@@ -64,8 +64,6 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
     setIsQrModalOpen(false)
   }
 
-  console.log(attendee)
-
 
   return (
     <div className="relative h-full w-full">

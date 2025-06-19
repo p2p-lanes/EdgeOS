@@ -44,7 +44,9 @@ const usePurchaseProducts = () => {
         const redirectUrl = isFastCheckout ? `${window.location.origin}/checkout/success` : window.location.href;
         if(response.data.status === 'pending'){
           if(MiniKit.isInstalled()){
-            window.location.href = `https://world.org/mini-app?app_id=app_f69274f93026ec73fb0ca76eb7185b73&path=${response.data.checkout_url}?redirect_url=${redirectUrl}`
+            const checkoutUrl = response.data.checkout_url
+            const url = new URL(checkoutUrl)
+            window.location.href = `https://world.org/mini-app?app_id=app_f69274f93026ec73fb0ca76eb7185b73&path=${url.pathname}?redirect_url=${redirectUrl}`
           }else{
             window.location.href = `${response.data.checkout_url}?redirect_url=${redirectUrl}`
           }
