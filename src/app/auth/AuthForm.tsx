@@ -54,6 +54,8 @@ export default function AuthForm() {
     }
     setIsValidEmail(true)
     setIsLoading(true)
+
+    console.log('worldData', JSON.stringify(worldData))
     
     api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null, signature: worldData.signature, world_address: worldData.address}).then((e) => {
       if(e.status === 200) {

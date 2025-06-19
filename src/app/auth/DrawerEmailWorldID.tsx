@@ -16,7 +16,7 @@ const DrawerEmailWorldID = ({ open, setOpen, handleCancel, handleSubmit, isLoadi
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerContent className="mx-4 pb-4 rounded-t-3xl overflow-hidden">
+      <DrawerContent className="mx-4 pb-4 rounded-3xl overflow-hidden mb-1">
         <DrawerHeader className="text-left pb-4 px-6 bg-white pt-6">
           <div className="flex justify-between">
             <div>
@@ -41,8 +41,8 @@ const DrawerEmailWorldID = ({ open, setOpen, handleCancel, handleSubmit, isLoadi
           </div>
         </DrawerHeader>
 
-        <div className="px-6 bg-white">
-          <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="px-6 bg-white flex flex-col justify-between h-full mb-2">
+          <form onSubmit={handleSubmit} className="space-y-4 flex flex-col">
             <div className="space-y-2">
               <Label htmlFor="email" className="text-sm font-medium">
                 Email
@@ -60,17 +60,17 @@ const DrawerEmailWorldID = ({ open, setOpen, handleCancel, handleSubmit, isLoadi
                 required
               />
             </div>
+            <div className="flex justify-end w-full my-4 mt-2">
+              <Button
+                type="submit"
+                onClick={handleSubmit}
+                className="flex-1 bg-black hover:bg-black/90 text-white rounded-full"
+                disabled={isLoading || !isValidEmail}
+              >
+                {isLoading ? "Confirming..." : "Confirm"}
+              </Button>
+            </div>
           </form>
-          <div className="flex justify-end w-full my-4 mt-6">
-            <Button
-              type="submit"
-              onClick={handleSubmit}
-              className="flex-1 bg-black hover:bg-black/90 text-white rounded-full"
-              disabled={isLoading || !isValidEmail}
-            >
-              {isLoading ? "Confirming..." : "Confirm"}
-            </Button>
-          </div>
         </div>
       </DrawerContent>
     </Drawer>
