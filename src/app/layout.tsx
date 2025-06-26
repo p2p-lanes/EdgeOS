@@ -29,12 +29,12 @@ export default function RootLayout({children }: Readonly<{ children: React.React
     <html lang="en">
       <body suppressHydrationWarning>
         <GoogleAnalytics />
-        <Toaster position="bottom-center" richColors />
         <MiniKitProvider>
           <div className={`${GeistSans.className} antialiased w-[100%] bg-neutral-100`}>
             {children}
           </div>
         </MiniKitProvider>
+        <Toaster position="bottom-center" richColors  />
       </body>
     </html>
   );

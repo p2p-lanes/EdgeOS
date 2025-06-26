@@ -164,8 +164,9 @@ export default function AuthForm() {
             </p>
           </form>
         </motion.div>
+      </div>
         {message.message !== '' && (
-          <div className={`mt-8 p-4 bg-${message.status === 'success' ? 'green' : 'red'}-100 border-l-4 border-${message.status === 'success' ? 'green' : 'red'}-500 rounded-md animate-fade-in-down`}>
+          <div className={`mt-6 max-w-md mx-auto mb-4 p-4 bg-${message.status === 'success' ? 'green' : 'red'}-100 border-l-4 border-${message.status === 'success' ? 'green' : 'red'}-500 rounded-md animate-fade-in-down`}>
             <div className="flex">
               {message.status === 'success' && (
                 <div className="flex-shrink-0">
@@ -182,7 +183,6 @@ export default function AuthForm() {
             </div>
           </div>
         )}
-      </div>
     </div>
   )
 }
