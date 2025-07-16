@@ -9,6 +9,8 @@ import { useApplication } from "@/providers/applicationProvider"
 interface ApplicationFormData extends Record<string, unknown> {
   gender?: string;
   gender_specify?: string;
+  interested_in_residency?: boolean;
+  residencies_interested_in?: string[];
 }
 
 const useSavesForm = () => {
@@ -36,10 +38,17 @@ const useSavesForm = () => {
     if (formData.gender === 'Specify' && formData.gender_specify) {
       processedData = {
         ...processedData,
-        gender: formData.gender_specify
+        gender: formData.gender_specify,
       };
       delete processedData.gender_specify;
     }
+    
+    processedData = {
+      ...processedData,
+      residencies_interested_in: formData.interested_in_residency ? formData.residencies_interested_in : [],
+    }
+    
+    delete processedData.interested_in_residency
 
     return {
       ...processedData,
@@ -82,10 +91,21 @@ const useSavesForm = () => {
       }
 
       updateApplicationsList(response.data);
+
+      console.log('response', response)
       
-      toast.success(successMessage.title, {
-        description: successMessage.description,
-      });
+      if(response.status === 201 || response.status === 200){
+        toast.success(successMessage.title, {
+          description: successMessage.description,
+        });
+      }
+
+
+      if(response.status >= 400){
+        toast.error(errorMessage.title, {
+          description: errorMessage.description,
+        });
+      }
 
       if (status === 'in review') {
         router.push(`/portal/${city?.slug}`);

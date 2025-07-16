@@ -24,6 +24,7 @@ import { dynamicForm } from "../../../../constants"
 import AccomodationForm from "./components/AccomodationForm"
 import { useApplication } from "@/providers/applicationProvider"
 import useGetFields from "./hooks/useGetFields"
+import PatagoniaResidenciesForm from "./components/PatagoniaResidenciesForm"
 
 export default function FormPage() {
   const [statusBtn, setStatusBtn] = useState({loadingDraft: false, loadingSubmit: false})
@@ -105,7 +106,7 @@ export default function FormPage() {
 
         <ParticipationForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
 
-        {/* <PatagoniaResidenciesForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/> */}
+        <PatagoniaResidenciesForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
 
         <ChildrenPlusOnesForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
 
