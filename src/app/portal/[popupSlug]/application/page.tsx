@@ -105,6 +105,8 @@ export default function FormPage() {
 
         <ParticipationForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
 
+        {/* <PatagoniaResidenciesForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/> */}
+
         <ChildrenPlusOnesForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
 
         <ScholarshipForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>

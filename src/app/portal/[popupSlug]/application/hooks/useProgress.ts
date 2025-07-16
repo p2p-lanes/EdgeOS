@@ -27,7 +27,7 @@ const useProgress = (formData: any) => {
       },
       {
         name: 'professionalDetails',
-        fields: ['organization', 'social_media'].filter(f => fields.has(f)),
+        fields: ['organization'].filter(f => fields.has(f)),
         required: !isVideoValid
       },
       {
