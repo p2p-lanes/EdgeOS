@@ -7,6 +7,8 @@ import { PopupsProps } from "@/types/Popup"
 import { ChevronsUpDown } from 'lucide-react'
 import { DropdownMenuContent, DropdownMenuItem } from "./DropdownMenu"
 import { Avatar, AvatarFallback } from "../ui/avatar"
+import Image from "next/image"
+import { motion } from "framer-motion"
 
 const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) => void }) => {
   const { getCity, getPopups } = useCityProvider()
@@ -30,10 +32,23 @@ const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) 
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-3">
-                        <Avatar className="size-8 rounded-lg flex items-center justify-center" >
+                    <div className="flex items-center gap-1">
+                        {/* <Avatar className="size-8 rounded-lg flex items-center justify-center" >
                           <AvatarFallback className='rounded-lg bg-slate-400 text-white font-semibold text-center'>{cityName}</AvatarFallback>
-                        </Avatar>
+                        </Avatar> */}
+                        <motion.div
+                          initial={{ y: 0 }}
+                          animate={{ y: [0, 6, 0] }}
+                          transition={{ duration: 4, repeat: Infinity, repeatType: 'loop', ease: 'easeIn' }}
+                          className="relative aspect-square"
+                        >
+                        <Image
+                          src="https://simplefi.s3.us-east-2.amazonaws.com/edge-patagonia-island-min.png"
+                          alt="EdgeCity illustration"
+                          width={48}
+                          height={48}
+                        />
+                      </motion.div>
                       <div className="flex flex-col gap-0.5 text-sm">
                         <span className="font-semibold">{city.name}</span>
                         <span className="text-xs text-muted-foreground">{city.location}</span>

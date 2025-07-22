@@ -84,7 +84,7 @@ export default function AuthForm() {
         >
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={popupSlug === 'edge-patagonia' ? 'https://simplefi.s3.us-east-2.amazonaws.com/edge-patagonia-island-min.png' : "https://simplefi.s3.us-east-2.amazonaws.com/isla_edge.png"}
+            src="https://simplefi.s3.us-east-2.amazonaws.com/edge-patagonia-island-min.png"
             alt="EdgeCity illustration"
             style={{width: '100%', height: '100%', objectFit: 'cover', borderRadius: '0.5rem'}}
           />
