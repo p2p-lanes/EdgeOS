@@ -69,7 +69,8 @@ export default function FormPage() {
     setStatusBtn({loadingDraft: false, loadingSubmit: true})
     const formValidation = validateForm()
     if (formValidation.isValid) {
-      await handleSaveForm(formData)
+      const response = await handleSaveForm(formData)
+      console.log('response', response)
     } else {
       const missingFields = formValidation.errors.map(error => error.field).join(', ')
       toast.error("Error", {

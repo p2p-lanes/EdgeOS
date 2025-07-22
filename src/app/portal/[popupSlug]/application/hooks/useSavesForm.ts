@@ -74,10 +74,12 @@ const useSavesForm = () => {
     successMessage: { title: string; description: string },
     errorMessage: { title: string; description: string }
   ) => {
-    if (!city || !user || !applications) return;
 
     const processedData = processFormData(formData);
-    if (!processedData) return;
+    if (!processedData) {
+      toast.error('Error processing form data');
+      return;
+    }
 
     const data = { ...processedData, status };
 
@@ -87,12 +89,11 @@ const useSavesForm = () => {
         : createApplication(data));
 
       if (status === 'in review' && response.status !== 201 && response.status !== 200) {
-        return;
+        toast.error('Error submitting application');
+        return {msg: 'Error submitting application', status: response.status, data: response.data};
       }
 
       updateApplicationsList(response.data);
-
-      console.log('response', response)
       
       if(response.status === 201 || response.status === 200){
         toast.success(successMessage.title, {
@@ -110,6 +111,7 @@ const useSavesForm = () => {
       if (status === 'in review') {
         router.push(`/portal/${city?.slug}`);
       }
+      return response;
     } catch (error) {
       toast.error(errorMessage.title, {
         description: errorMessage.description,
@@ -118,7 +120,7 @@ const useSavesForm = () => {
   };
 
   const handleSaveForm = async (formData: ApplicationFormData) => {
-    await handleSubmission(
+    const response = await handleSubmission(
       formData,
       'in review',
       {
@@ -130,6 +132,7 @@ const useSavesForm = () => {
         description: "There was an error submitting your application. Please try again."
       }
     );
+    return response;
   };
 
   const handleSaveDraft = async (formData: ApplicationFormData) => {
