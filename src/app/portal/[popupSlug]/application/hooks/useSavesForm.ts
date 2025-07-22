@@ -89,7 +89,7 @@ const useSavesForm = () => {
         : createApplication(data));
 
       if (status === 'in review' && response.status !== 201 && response.status !== 200) {
-        toast.error('Error submitting application');
+        toast.error('There was an error submitting your application. Please try again.');
         return {msg: 'Error submitting application', status: response.status, data: response.data};
       }
 
