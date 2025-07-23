@@ -12,9 +12,9 @@ const nextConfig: NextConfig = {
     unoptimized: true,
   },
   // Configuración adicional para sharp
-  experimental: {
-    forceSwcTransforms: true,
-  },
+  // experimental: {
+  //   forceSwcTransforms: true,
+  // },
 };
 
 export default nextConfig;
