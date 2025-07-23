@@ -10,6 +10,7 @@ import { DialogFooter } from "@/components/ui/dialog"
 import { badgeName } from "../constants/multiuse"
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select"
 import Link from "next/link"
+import { Button } from "@/components/ui/button"
 
 interface AttendeeModalProps {
   open: boolean
@@ -66,9 +67,13 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
     return (
       <Modal open={open} onClose={onClose} title={`Delete ${editingAttendee?.name}`} description={`Are you sure you want to delete this ${category}?`}>
         <DialogFooter>
-          <ButtonAnimated className="bg-red-500" loading={loading} onClick={handleSubmit}>
-            Delete
-          </ButtonAnimated>
+          <Button 
+            className="bg-red-500 hover:bg-red-600 text-white" 
+            disabled={loading} 
+            onClick={handleSubmit}
+          >
+            {loading ? 'Deleting...' : 'Delete'}
+          </Button>
         </DialogFooter>
       </Modal>
     )

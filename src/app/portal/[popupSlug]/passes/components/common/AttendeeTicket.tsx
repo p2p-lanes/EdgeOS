@@ -44,18 +44,38 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
   }
 
   const handleSubmit = async (data: AttendeeProps) => {
+    console.log('[AttendeeTicket] handleSubmit called, modal.isDelete:', modal.isDelete)
     try {
       if (modal.isDelete) {
+        console.log('[AttendeeTicket] About to call removeAttendee')
         await removeAttendee(attendee.id)
+        console.log('[AttendeeTicket] removeAttendee completed successfully')
       } else {
+        console.log('[AttendeeTicket] About to call editAttendee')
         await editAttendee(attendee.id, data)
+        console.log('[AttendeeTicket] editAttendee completed successfully')
       }
     } catch (error) {
-      console.error('Error in attendee operation:', error)
+      console.error('[AttendeeTicket] Error in attendee operation:', error)
       // El error ya se maneja en useAttendee con toast, solo aseguramos que el modal se cierre
     } finally {
       // Siempre cerrar el modal, sin importar si hubo error o no
+      console.log('[AttendeeTicket] About to close modal')
       handleCloseModal()
+      console.log('[AttendeeTicket] Modal closed, checking document focus')
+      
+      // Verificar y restaurar el focus después de cerrar el modal
+      setTimeout(() => {
+        console.log('[AttendeeTicket] Focus check - activeElement:', document.activeElement?.tagName, document.activeElement?.className)
+        console.log('[AttendeeTicket] Document hasFocus:', document.hasFocus())
+        
+        // Intentar devolver el focus al body si está perdido
+        if (!document.hasFocus() || document.activeElement === document.body) {
+          console.log('[AttendeeTicket] Attempting to restore focus')
+          document.body.focus()
+          document.body.click()
+        }
+      }, 100)
     }
   }
 
@@ -71,6 +91,8 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
     setIsQrModalOpen(false)
   }
 
+  // Debug log para verificar el estado del componente
+  console.log('[AttendeeTicket] Rendering for attendee:', attendee.id, 'Modal open:', modal.isOpen, 'hasPurchased:', hasPurchased)
 
   return (
     <div className="relative h-full w-full">
