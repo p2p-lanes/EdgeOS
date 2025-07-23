@@ -60,7 +60,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
               ...product,
               original_quantity: originalQuantity,
               quantity: originalQuantity,
-              selected: attendeePasses.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.selected || false,
+              selected: false,
               attendee_id: attendee.id,
               original_price: product.price,
               disabled: false,
