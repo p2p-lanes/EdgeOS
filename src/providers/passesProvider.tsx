@@ -45,7 +45,6 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   }, [attendeePasses, isEditing, discountApplied])
   
   useEffect(() => {
-    console.log('[PassesProvider] useEffect triggered - attendees:', attendees.length, 'products:', products.length)
     if (attendees.length > 0 && products.length > 0) {
       const initialAttendees = attendees.map(attendee => {
         const hasPatreonPurchased = attendee.products.some(p => p.category === 'patreon');
@@ -60,7 +59,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
               ...product,
               original_quantity: originalQuantity,
               quantity: originalQuantity,
-              selected: false,
+              selected: attendeePasses.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.selected || false,
               attendee_id: attendee.id,
               original_price: product.price,
               disabled: false,
@@ -74,7 +73,6 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         };
       });
       
-      console.log('[PassesProvider] Setting initial attendees:', initialAttendees.length)
       setAttendeePasses(initialAttendees);
     }
   }, [attendees, products, discountApplied, isEditing]);

@@ -69,6 +69,40 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
         console.log('[AttendeeTicket] Focus check - activeElement:', document.activeElement?.tagName, document.activeElement?.className)
         console.log('[AttendeeTicket] Document hasFocus:', document.hasFocus())
         
+        // DEBUGGING: Verificar si hay overlays fantasma en el DOM
+        const overlays = document.querySelectorAll('[data-radix-dialog-overlay]')
+        console.log('[AttendeeTicket] Dialog overlays found in DOM:', overlays.length)
+        overlays.forEach((overlay, index) => {
+          const htmlElement = overlay as HTMLElement
+          console.log(`[AttendeeTicket] Overlay ${index}:`, overlay.getAttribute('data-state'), htmlElement.style.display)
+          // Forzar eliminación de overlays fantasma
+          if (overlay.getAttribute('data-state') === 'closed' || htmlElement.style.display === 'none') {
+            console.log(`[AttendeeTicket] Removing ghost overlay ${index}`)
+            overlay.remove()
+          }
+        })
+        
+        // DEBUGGING: Verificar estados de loading que podrían estar activos
+        const loadingElements = document.querySelectorAll('[disabled], [aria-disabled="true"]')
+        console.log('[AttendeeTicket] Disabled elements found:', loadingElements.length)
+        
+        const buttonsWithPointerEvents = document.querySelectorAll('button[style*="pointer-events: none"], button.pointer-events-none')
+        console.log('[AttendeeTicket] Buttons with pointer-events-none:', buttonsWithPointerEvents.length)
+        
+        // Verificar si hay algún elemento con z-index alto que esté bloqueando
+        const highZElements = document.querySelectorAll('*')
+        let highestZ = 0
+        let blockingElement = null
+        highZElements.forEach(el => {
+          const htmlEl = el as HTMLElement
+          const zIndex = parseInt(window.getComputedStyle(htmlEl).zIndex)
+          if (zIndex > highestZ && zIndex > 40) {
+            highestZ = zIndex
+            blockingElement = el
+          }
+        })
+        console.log('[AttendeeTicket] Highest z-index element:', highestZ, blockingElement ? (blockingElement as HTMLElement).className : 'none')
+        
         // Intentar devolver el focus al body si está perdido
         if (!document.hasFocus() || document.activeElement === document.body) {
           console.log('[AttendeeTicket] Attempting to restore focus')
