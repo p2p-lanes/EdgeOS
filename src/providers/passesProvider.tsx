@@ -1,5 +1,5 @@
 import { AttendeeProps } from '@/types/Attendee';
-import { createContext, ReactNode, useContext, useMemo, useState, useEffect } from 'react';
+import { createContext, ReactNode, useContext, useMemo, useState, useEffect, useCallback } from 'react';
 import { sortAttendees } from '@/helpers/filters';
 import useGetPassesData from '@/hooks/useGetPassesData';
 import { getProductStrategy } from '@/strategies/ProductStrategies';
@@ -27,20 +27,25 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   const [discountApplied, setDiscountApplied] = useState<DiscountProps>({discount_value: 0, discount_type: 'percentage', discount_code: null})
   const [attendeePasses, setAttendeePasses] = useState<AttendeeProps[]>([])
   const application = getRelevantApplication()
-  const attendees = useMemo(() => sortAttendees(getAttendees()), [getAttendees])
+  const attendees = useMemo(() => {
+    const result = sortAttendees(getAttendees())
+    console.log('[PassesProvider] attendees updated, length:', result.length)
+    return result
+  }, [getAttendees])
   const [isEditing, setIsEditing] = useState(false)
   const { products } = useGetPassesData()
   const { getCity } = useCityProvider()
   const city = getCity()
 
-  const toggleProduct = (attendeeId: number, product: ProductsPass) => {
+  const toggleProduct = useCallback((attendeeId: number, product: ProductsPass) => {
     if (!product) return;
     const strategy = getProductStrategy(product, isEditing);
     const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product, discountApplied);
     setAttendeePasses(updatedAttendees);
-  }
+  }, [attendeePasses, isEditing, discountApplied])
   
   useEffect(() => {
+    console.log('[PassesProvider] useEffect triggered - attendees:', attendees.length, 'products:', products.length)
     if (attendees.length > 0 && products.length > 0) {
       const initialAttendees = attendees.map(attendee => {
         const hasPatreonPurchased = attendee.products.some(p => p.category === 'patreon');
@@ -69,37 +74,39 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         };
       });
       
+      console.log('[PassesProvider] Setting initial attendees:', initialAttendees.length)
       setAttendeePasses(initialAttendees);
     }
   }, [attendees, products, discountApplied, isEditing]);
 
-  const toggleEditing = (editing?: boolean) => {
+  const toggleEditing = useCallback((editing?: boolean) => {
     setAttendeePasses(attendeePasses.map(attendee => ({
       ...attendee,
       products: attendee.products.map(product => ({...product, edit: false, selected: false, disabled: false}))
     })))
 
     setIsEditing(editing !== undefined ? editing : !isEditing)
-  }
+  }, [attendeePasses, isEditing])
 
   useEffect(() => {
     if(city?.id){
+      console.log('[PassesProvider] City changed, resetting discount')
       setDiscountApplied({discount_value: 0, discount_type: 'percentage'})
     }
   }, [city?.id])
 
-
   useEffect(() => {
     if(application?.discount_assigned && application?.discount_assigned > discountApplied.discount_value){
+      console.log('[PassesProvider] Applying assigned discount:', application.discount_assigned)
       setDiscountApplied({discount_value: application?.discount_assigned, discount_type: 'percentage'})
     }
   }, [application?.discount_assigned, discountApplied.discount_value])
 
-  const setDiscount = (discount: DiscountProps) => {
+  const setDiscount = useCallback((discount: DiscountProps) => {
     if(discount.discount_value <= discountApplied.discount_value) return;
     
     setDiscountApplied(discount);
-  }
+  }, [discountApplied.discount_value])
 
   return (
     <PassesContext.Provider 

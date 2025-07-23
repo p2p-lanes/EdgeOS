@@ -2,7 +2,7 @@
 
 import { PopupsProps } from '@/types/Popup';
 import { useParams } from 'next/navigation';
-import { createContext, ReactNode, useContext, useState } from 'react';
+import { createContext, ReactNode, useContext, useState, useCallback } from 'react';
 
 interface CityContext_interface {
   getCity: () => PopupsProps | null;
@@ -18,12 +18,12 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
   const [cityPreselected, setCityPreselected] = useState<number | null>(null);
   const params = useParams()
 
-  const getValidCity = (): PopupsProps | null => {
+  const getValidCity = useCallback((): PopupsProps | null => {
     const city = popups.find((popup: PopupsProps) => popup.slug === params.popupSlug && popup.clickable_in_portal && popup.visible_in_portal)
     return city ?? null;
-  }
+  }, [popups, params.popupSlug])
 
-  const getCity = (): PopupsProps | null => {
+  const getCity = useCallback((): PopupsProps | null => {
     const city = getValidCity()
     if(cityPreselected) {
       const selectedCity = popups.find((popup: PopupsProps) => popup.id === cityPreselected)
@@ -34,13 +34,13 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
       if(selectedCity) return selectedCity
     }
     return city ?? null;
-  };
+  }, [getValidCity, cityPreselected, popups]);
 
-  const getPopups = (): PopupsProps[] => {
+  const getPopups = useCallback((): PopupsProps[] => {
     return popups
-  }
+  }, [popups])
 
-  const setPopups = (popups: PopupsProps[]): void => {
+  const setPopups = useCallback((popups: PopupsProps[]): void => {
     const sortedPopups = popups.sort((a, b) => {
         if (a.visible_in_portal && a.clickable_in_portal) return -1;
         if (b.visible_in_portal && b.clickable_in_portal) return 1;
@@ -49,7 +49,7 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
         return 0;
       });
     setPopupsState(sortedPopups);
-  }
+  }, [])
 
   return (
     <CityContext.Provider 

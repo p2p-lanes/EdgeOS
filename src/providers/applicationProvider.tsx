@@ -2,7 +2,7 @@
 
 import { ApplicationProps } from "@/types/Application";
 import { AttendeeProps } from "@/types/Attendee";
-import { createContext, ReactNode, useContext, useState } from "react"
+import { createContext, ReactNode, useContext, useState, useCallback } from "react"
 import { useCityProvider } from "./cityProvider";
 
 interface ApplicationContextProps {
@@ -19,24 +19,24 @@ const ApplicationProvider = ({ children }: { children: ReactNode }) => {
   const [applications, setApplications] = useState<ApplicationProps[] | null>(null);
   const { getCity } = useCityProvider()
 
-  const updateApplication = (application: ApplicationProps): void => {
+  const updateApplication = useCallback((application: ApplicationProps): void => {
     if(!applications) return;
     const newApplications = applications.filter(ap => ap.id !== application.id)
     setApplications([...newApplications, application])
-  }
+  }, [applications])
 
-  const getRelevantApplication = (): ApplicationProps | null => {
+  const getRelevantApplication = useCallback((): ApplicationProps | null => {
     const city = getCity()
     if(!applications) return null;
 
     return applications?.filter((app: ApplicationProps) => app.popup_city_id === city?.id)?.slice(-1)[0]
-  }
+  }, [applications, getCity])
 
-  const getAttendees = (): AttendeeProps[] => {
+  const getAttendees = useCallback((): AttendeeProps[] => {
     const application = getRelevantApplication()
     if(!application) return [];
     return application.attendees || [];
-  }
+  }, [getRelevantApplication])
   
   return (
     <ApplicationContext.Provider 
