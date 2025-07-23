@@ -1,10 +1,13 @@
 import { useApplication } from "@/providers/applicationProvider"
+import { useCityProvider } from "@/providers/cityProvider"
 import { usePassesProvider } from "@/providers/passesProvider"
 import { ProductsProps } from "@/types/Products"
 import { useMemo } from "react"
 
 const useCalculateDiscount = (isPatreon: boolean, products: ProductsProps[]) => {
   const { discountApplied } = usePassesProvider()
+  const { getCity } = useCityProvider()
+  const city = getCity()
   const { getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
   const productCompare = useMemo(() => products.find(p => p.category === 'week' && p.price !== p.compare_price) ?? {price: 100, compare_price: 100}, [products])
@@ -12,6 +15,8 @@ const useCalculateDiscount = (isPatreon: boolean, products: ProductsProps[]) => 
   const {discount, label, isEarlyBird} = useMemo(() => {
     if (isPatreon) return {discount: 100, label: 'As a Patron, you are directly supporting the ecosystem.'}
     
+    if(city?.slug === 'edge-patagonia') return {discount: 1, label: 'Early Bird Discount (before Aug 8th)'}
+
     if(!application || !application.discount_assigned && !productCompare.compare_price && !discountApplied.discount_value) return {discount: 0, label: ''}
     
     if(discountApplied.discount_value){

@@ -108,7 +108,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
             {
               standardProducts.length === 0 && (
                 <div className="flex w-full h-full justify-center items-center">
-                  <p className="text-sm font-medium text-neutral-500">No tickets available.</p>
+                  <p className="text-sm font-medium text-neutral-500">Coming soon.</p>
                 </div>
               )
             }
