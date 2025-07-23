@@ -22,10 +22,17 @@ const useAttendee = () => {
       if(response.status === 400){
         toast.error(response.data.detail)
       }
-    }catch{
-      console.log('error create attende')
-      toast.error("Unknown error, please try again later")
-    }finally{
+    } catch (error) {
+      console.error('Error adding attendee:', error)
+      // Manejar diferentes tipos de errores
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        toast.error("Network error. Please check your connection and try again.")
+      } else if (error instanceof Error && error.name === 'AbortError') {
+        toast.error("Request timeout. Please try again.")
+      } else {
+        toast.error("Unknown error, please try again later")
+      }
+    } finally {
       setLoading(false)
     }
   }
@@ -42,10 +49,17 @@ const useAttendee = () => {
       if(response.status === 400){
         toast.error(response.data.detail)
       }
-    }catch{
-      console.log('error create attende')
-      toast.error("Unknown error, please try again later")
-    }finally{
+    } catch (error) {
+      console.error('Error removing attendee:', error)
+      // Manejar diferentes tipos de errores
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        toast.error("Network error. Please check your connection and try again.")
+      } else if (error instanceof Error && error.name === 'AbortError') {
+        toast.error("Request timeout. Please try again.")
+      } else {
+        toast.error("Unknown error, please try again later")
+      }
+    } finally {
       setLoading(false)
     }
   }
@@ -62,10 +76,17 @@ const useAttendee = () => {
       if(response.status === 400){
         toast.error(response.data.detail)
       }
-    }catch{
-      console.log('error create attende')
-      toast.error("Unknown error, please try again later")
-    }finally{
+    } catch (error) {
+      console.error('Error editing attendee:', error)
+      // Manejar diferentes tipos de errores
+      if (error instanceof TypeError && error.message.includes('fetch')) {
+        toast.error("Network error. Please check your connection and try again.")
+      } else if (error instanceof Error && error.name === 'AbortError') {
+        toast.error("Request timeout. Please try again.")
+      } else {
+        toast.error("Unknown error, please try again later")
+      }
+    } finally {
       setLoading(false)
     }
   }

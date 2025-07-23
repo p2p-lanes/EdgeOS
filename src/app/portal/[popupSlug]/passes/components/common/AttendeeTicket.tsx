@@ -44,12 +44,19 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
   }
 
   const handleSubmit = async (data: AttendeeProps) => {
-    if (modal.isDelete) {
-      await removeAttendee(attendee.id)
-    }else {
-      await editAttendee(attendee.id, data)
+    try {
+      if (modal.isDelete) {
+        await removeAttendee(attendee.id)
+      } else {
+        await editAttendee(attendee.id, data)
+      }
+    } catch (error) {
+      console.error('Error in attendee operation:', error)
+      // El error ya se maneja en useAttendee con toast, solo aseguramos que el modal se cierre
+    } finally {
+      // Siempre cerrar el modal, sin importar si hubo error o no
+      handleCloseModal()
     }
-    handleCloseModal()
   }
 
   const handleRemoveAttendee = () => {
