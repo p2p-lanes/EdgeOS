@@ -33,8 +33,6 @@ export const sortAttendees = (attendees: AttendeeProps[]) => {
 
 export const filterProductsToPurchase = (products: ProductsPass[], editableMode: boolean) => {
 
-  console.log('products', products, {editableMode})
-
   const reducedProducts = products.reduce((acc: ProductsPass[], product) => {
     const isDayProduct = product.category === 'day'
     const isWeekProduct = product.category === 'week'

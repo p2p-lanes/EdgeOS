@@ -27,11 +27,12 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   const [discountApplied, setDiscountApplied] = useState<DiscountProps>({discount_value: 0, discount_type: 'percentage', discount_code: null})
   const [attendeePasses, setAttendeePasses] = useState<AttendeeProps[]>([])
   const application = getRelevantApplication()
+
   const attendees = useMemo(() => {
     const result = sortAttendees(getAttendees())
-    console.log('[PassesProvider] attendees updated, length:', result.length)
     return result
   }, [getAttendees])
+
   const [isEditing, setIsEditing] = useState(false)
   const { products } = useGetPassesData()
   const { getCity } = useCityProvider()
@@ -72,7 +73,6 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
           products: purchaseStrategy.applyPurchaseRules(attendeeProducts, attendee.products || [])
         };
       });
-      
       setAttendeePasses(initialAttendees);
     }
   }, [attendees, products, discountApplied, isEditing]);
@@ -88,14 +88,12 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if(city?.id){
-      console.log('[PassesProvider] City changed, resetting discount')
       setDiscountApplied({discount_value: 0, discount_type: 'percentage'})
     }
   }, [city?.id])
 
   useEffect(() => {
     if(application?.discount_assigned && application?.discount_assigned > discountApplied.discount_value){
-      console.log('[PassesProvider] Applying assigned discount:', application.discount_assigned)
       setDiscountApplied({discount_value: application?.discount_assigned, discount_type: 'percentage'})
     }
   }, [application?.discount_assigned, discountApplied.discount_value])

@@ -85,15 +85,8 @@ export const useApplicationData = ({ groupPopupCityId }: UseApplicationDataProps
           }
         }
         
-        // Asegurar un tiempo mínimo de carga para mejorar UX
-        const elapsedTime = Date.now() - startTime;
-        const minLoadingTime = 300; // ms
         
-        if (elapsedTime < minLoadingTime) {
-          await new Promise(resolve => 
-            setTimeout(resolve, minLoadingTime - elapsedTime)
-          );
-        }
+        
       } catch (error: any) {
         console.error("Error fetching application data:", error);
         setError("Failed to fetch previous application data");

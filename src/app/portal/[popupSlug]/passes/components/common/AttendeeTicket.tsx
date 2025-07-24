@@ -1,5 +1,5 @@
 import { AttendeeProps } from "@/types/Attendee"
-import { Pencil, QrCode, Trash, User } from "lucide-react"
+import { QrCode, User } from "lucide-react"
 import { badgeName } from "../../constants/multiuse"
 import { ProductsPass } from "@/types/Products"
 import { useCityProvider } from "@/providers/cityProvider"
@@ -9,13 +9,9 @@ import useModal from "../../hooks/useModal"
 import useAttendee from "@/hooks/useAttendee"
 import { AttendeeModal } from "../AttendeeModal"
 import OptionsMenu from "./Buttons/OptionsMenu"
-import { TooltipContent } from "@/components/ui/tooltip"
-import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
-import { TooltipProvider } from "@/components/ui/tooltip"
 import { Separator } from "@/components/ui/separator"
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import QRcode from "./QRcode"
 
 const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void, isDayCheckout?: boolean  }) => {
@@ -33,9 +29,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
   const hasPurchased = attendee.products.some((product) => product.purchased)
   const [isQrModalOpen, setIsQrModalOpen] = useState(false)
 
-  // Check if there are any day products
   const hasDayProducts = standardProducts.some(product => product.category === 'day');
-  // Find index of first day product
   const firstDayProductIndex = standardProducts.findIndex(product => product.category === 'day');
   const hasMonthPurchased = attendee.products.some(product => product.category === 'month' && (product.purchased || product.selected))
 
@@ -44,72 +38,17 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
   }
 
   const handleSubmit = async (data: AttendeeProps) => {
-    console.log('[AttendeeTicket] handleSubmit called, modal.isDelete:', modal.isDelete)
     try {
       if (modal.isDelete) {
-        console.log('[AttendeeTicket] About to call removeAttendee')
         await removeAttendee(attendee.id)
-        console.log('[AttendeeTicket] removeAttendee completed successfully')
       } else {
-        console.log('[AttendeeTicket] About to call editAttendee')
         await editAttendee(attendee.id, data)
-        console.log('[AttendeeTicket] editAttendee completed successfully')
       }
     } catch (error) {
-      console.error('[AttendeeTicket] Error in attendee operation:', error)
       // El error ya se maneja en useAttendee con toast, solo aseguramos que el modal se cierre
     } finally {
       // Siempre cerrar el modal, sin importar si hubo error o no
-      console.log('[AttendeeTicket] About to close modal')
       handleCloseModal()
-      console.log('[AttendeeTicket] Modal closed, checking document focus')
-      
-      // Verificar y restaurar el focus después de cerrar el modal
-      setTimeout(() => {
-        console.log('[AttendeeTicket] Focus check - activeElement:', document.activeElement?.tagName, document.activeElement?.className)
-        console.log('[AttendeeTicket] Document hasFocus:', document.hasFocus())
-        
-        // DEBUGGING: Verificar si hay overlays fantasma en el DOM
-        const overlays = document.querySelectorAll('[data-radix-dialog-overlay]')
-        console.log('[AttendeeTicket] Dialog overlays found in DOM:', overlays.length)
-        overlays.forEach((overlay, index) => {
-          const htmlElement = overlay as HTMLElement
-          console.log(`[AttendeeTicket] Overlay ${index}:`, overlay.getAttribute('data-state'), htmlElement.style.display)
-          // Forzar eliminación de overlays fantasma
-          if (overlay.getAttribute('data-state') === 'closed' || htmlElement.style.display === 'none') {
-            console.log(`[AttendeeTicket] Removing ghost overlay ${index}`)
-            overlay.remove()
-          }
-        })
-        
-        // DEBUGGING: Verificar estados de loading que podrían estar activos
-        const loadingElements = document.querySelectorAll('[disabled], [aria-disabled="true"]')
-        console.log('[AttendeeTicket] Disabled elements found:', loadingElements.length)
-        
-        const buttonsWithPointerEvents = document.querySelectorAll('button[style*="pointer-events: none"], button.pointer-events-none')
-        console.log('[AttendeeTicket] Buttons with pointer-events-none:', buttonsWithPointerEvents.length)
-        
-        // Verificar si hay algún elemento con z-index alto que esté bloqueando
-        const highZElements = document.querySelectorAll('*')
-        let highestZ = 0
-        let blockingElement = null
-        highZElements.forEach(el => {
-          const htmlEl = el as HTMLElement
-          const zIndex = parseInt(window.getComputedStyle(htmlEl).zIndex)
-          if (zIndex > highestZ && zIndex > 40) {
-            highestZ = zIndex
-            blockingElement = el
-          }
-        })
-        console.log('[AttendeeTicket] Highest z-index element:', highestZ, blockingElement ? (blockingElement as HTMLElement).className : 'none')
-        
-        // Intentar devolver el focus al body si está perdido
-        if (!document.hasFocus() || document.activeElement === document.body) {
-          console.log('[AttendeeTicket] Attempting to restore focus')
-          document.body.focus()
-          document.body.click()
-        }
-      }, 100)
     }
   }
 
@@ -124,9 +63,6 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
   const handleCloseQrModal = () => {
     setIsQrModalOpen(false)
   }
-
-  // Debug log para verificar el estado del componente
-  console.log('[AttendeeTicket] Rendering for attendee:', attendee.id, 'Modal open:', modal.isOpen, 'hasPurchased:', hasPurchased)
 
   return (
     <div className="relative h-full w-full">
@@ -217,7 +153,6 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
         </div>
       </div>
 
-      {(modal.isOpen) && (
         <AttendeeModal
           open={modal.isOpen}
           onClose={handleCloseModal}
@@ -226,7 +161,6 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
           editingAttendee={modal.editingAttendee}
           isDelete={modal.isDelete}
         />
-      )}
 
       <QRcode check_in_code={attendee.check_in_code || ""} isOpen={isQrModalOpen} onOpenChange={setIsQrModalOpen}/>
     </div>
