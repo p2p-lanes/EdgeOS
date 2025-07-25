@@ -57,7 +57,7 @@ export default function MultiSelectDropdown({ options, onChange, defaultValue, t
             >
               <div className="flex flex-wrap gap-1 flex-1">
                 {selectedValues.length === 0 ? (
-                  <span className="text-muted-foreground">Selecciona opciones...</span>
+                  <span className="text-muted-foreground">Select options...</span>
                 ) : (
                   selectedOptions.map((option) => (
                     <Badge key={option.value} variant="secondary" className="mr-1 mb-1">
