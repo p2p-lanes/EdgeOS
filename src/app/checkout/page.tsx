@@ -18,7 +18,6 @@ const CheckoutPage = () => {
   useEffect(() => {
     if(group) {
       const isBhutan = group.popup_name.toLowerCase().includes("bhutan")
-      console.log('isBhutan', isBhutan, group.name)
       setUrlImage(isBhutan ? "https://simplefi.s3.us-east-2.amazonaws.com/backgroundBt.jpeg" : "https://simplefi.s3.us-east-2.amazonaws.com/edge-bg.jpg")
     }
   }, [group])

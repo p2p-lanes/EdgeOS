@@ -9,22 +9,23 @@ const GroupsResources = () => {
   const { getCity } = useCityProvider()
   const city = getCity()
   const router = useRouter()
-  const isEdge = city?.slug === 'edge-esmeralda' || city?.slug === 'buenos-aires'
   
   const handleClickPath = (path?: string) => {
     if(path) router.push(path)
   }
   
-  if(isLoading || !isEdge) return;
+  if(isLoading) return;
+
+  const filteredGroups = groups.filter((group) => group.popup_city_id === city?.id)
   
   return (
     <div className="flex flex-col ml-2">
       {
-        groups.length > 0 && (
+        filteredGroups.length > 0 && (
           <p className="text-xs font-medium text-gray-500 mb-2">Groups</p>
         )
       }
-      {groups.map((group) => (
+      {filteredGroups.map((group) => (
         <ActiveResource 
           key={group.id} 
           resource={{
