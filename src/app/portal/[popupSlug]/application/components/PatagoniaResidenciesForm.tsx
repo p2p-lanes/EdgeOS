@@ -56,14 +56,14 @@ const PatagoniaResidenciesForm = ({ formData, errors, handleChange, fields }: Se
         <AnimatePresence>
             {formData.interested_in_residency && (
               <div className="w-full flex flex-col gap-4">
-                <motion.div {...animationProps}>
+                {/* <motion.div {...animationProps}>
                   <MultiSelectDropdown
                       title="Which type of residency are you interested in?"
                       defaultValue={formData.residencies_interested_in ?? []}
                       onChange={(value) => handleChange('residencies_interested_in', value)}
                       options={residencies}
                     />
-                </motion.div>
+                </motion.div> */}
                 <motion.div {...animationProps}>
                   <TextAreaForm
                     label="Please describe your current work or project, including the tech stack and tools you are using."

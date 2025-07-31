@@ -10,6 +10,8 @@ import { useCityProvider } from "@/providers/cityProvider"
 import { dynamicForm } from "@/constants"
 import SelectForm from "@/components/ui/Form/Select"
 import { paymentCapacityOptions } from "@/constants/Forms/edge-sa"
+import { Label } from "@/components/ui/label"
+import Link from "next/link"
 
 
 export function ScholarshipForm({ formData, errors, handleChange, fields }: SectionProps) {
@@ -95,12 +97,12 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
                   fields?.has('scholarship_video_url') && (
                     <InputForm
                       isRequired
-                      label="[Required] Please share a ~60 second video answering why you’re applying for a scholarship and what your contribution might be. If you are applying for a scholarship and want to receive a ticket discount, this video is mandatory."
+                      label={form?.scholarship?.scholarship_video_url?.label ?? "[Required] Please share a ~60 second video answering why you’re applying for a scholarship and what your contribution might be. If you are applying for a scholarship and want to receive a ticket discount, this video is mandatory."}
                       id="scholarship_video_url"
                       value={formData.scholarship_video_url ?? ''}
                       onChange={(e) => handleChange('scholarship_video_url', e)}
                       error={errors.scholarship_video_url}
-                      subtitle="You can upload your video to Dropbox, Google Drive, Youtube, or anywhere where you can make the link public and viewable"
+                      subtitle="You can upload your video to Dropbox, Google Drive, Youtube, or anywhere where you can make the link public and viewable."
                     />
                   )
                 }
@@ -115,6 +117,14 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
                       isRequired={city?.slug === 'edge-austin'}
                       error={errors.scholarship_details}
                     />
+                  )
+                }
+
+                {
+                  fields?.has('scholarship_volunteer') && (
+                    <div className="flex flex-col gap-2 mt-2">
+                      <p className="text-sm text-gray-700">If you are interested in volunteering in exchange for a 50% discount (20h/week) or 100% discount (40h/week), please apply via <Link href="https://docs.google.com/forms/d/e/1FAIpQLSc2053thIeFj7I6dE35Cd0X_nt9_n-RVrOIsOWPb5aVJB5cAQ/viewform" target="_blank" className="underline text-blue-500">this form</Link></p>
+                    </div>
                   )
                 }
               </div>

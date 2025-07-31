@@ -6,31 +6,36 @@ import { edgePatagonia } from "./Forms/edge-patagonia";
 
 export type DynamicForm = {
   local?: string,
+  [key: string]: any,
   personal_information?:{
     title?: string,
     subtitle?: string,
     residence_placeholder?: string,
+    [key: string]: any,
   },
   professional_details?:{
     title?: string,
     subtitle?: string,
+    [key: string]: any,
   },
   participation?:{
     title?: string,
     subtitle?: string,
     duration_label?: string,
     duration_subtitle?: string,
+    [key: string]: any,
   },
   scholarship?: {
     title?: string,
     subtitle?: string,
     interest_text?: string,
     scholarship_request?: string,
-    scholarship_details?: string,
+    [key: string]: any,
   },
   accommodation?: {
     title?: string,
     subtitle?: string,
+    [key: string]: any,
   },
   fields: string[]
 }

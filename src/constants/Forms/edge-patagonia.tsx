@@ -3,7 +3,15 @@ import { DynamicForm } from ".."
 export const edgePatagonia: DynamicForm = {
   local: 'Sonoma County',
   scholarship: {
-    interest_text: 'We understand that some folks will need financial assistance to attend, and have other ways to contribute beyond financial support. We have limited numbers of discounted tickets to allocate. Please elaborate on why you’re applying, and what your contribution might be. We estimate roughly a 10 hour/week volunteer effort from folks who gets scholarships.',
+    interest_text: 'We have a limited number of scholarships available, offering a 30% discount on tickets.',
+    scholarship_video_url: {
+      label: <p className="text-sm flex flex-col gap-1">
+        [Mandatory] Share a ~60 second video explaining:
+        <span>1. Why you’re applying for a scholarship</span>
+        <span>2. In which way you will contribute to the event.</span>
+      </p>
+    },
+    scholarship_details: 'Is there anything else you want to tell us regarding your scholarship application? (The video submission is mandatory, even if you fill out this field).'
   },
   fields: [
     "first_name",
@@ -38,6 +46,7 @@ export const edgePatagonia: DynamicForm = {
     "scholarship_details",
     "scholarship_video_url",
     "scholarship_request",
-    'patagonia_residencies'
+    'patagonia_residencies',
+    'scholarship_volunteer'
   ]
 }

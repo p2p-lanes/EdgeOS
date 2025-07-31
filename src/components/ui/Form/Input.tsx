@@ -4,7 +4,7 @@ import { Input } from "../input"
 import { LabelMuted, LabelRequired } from "../label"
 
 interface InputFormProps {
-  label: string
+  label: any
   id: string
   value?: string
   onChange: (value: string) => void
@@ -25,7 +25,7 @@ const InputForm = ({ label, id, value, onChange, error, subtitle, isRequired = f
   return (
     <FormInputWrapper>
       <div className="flex flex-col gap-2">
-        <LabelRequired htmlFor={id} isRequired={isRequired}>{label}</LabelRequired>
+        <LabelRequired htmlFor={id} isRequired={isRequired} className="flex">{label}</LabelRequired>
         {subtitle && <LabelMuted className="text-sm text-muted-foreground">{subtitle}</LabelMuted>}
       </div>
       <Input
