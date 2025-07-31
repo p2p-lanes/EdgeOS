@@ -43,9 +43,9 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
     if (formData.kids_info && kids.length === 0) {
       const parsedKids: Kid[] = [];
       // Split by periods and filter out empty strings
-      const kidEntries = formData.kids_info.split('.').filter(entry => entry.trim());
+      const kidEntries = formData.kids_info.split('.').filter((entry: string) => entry.trim());
       
-      kidEntries.forEach((entry, index) => {
+      kidEntries.forEach((entry: string, index: number) => {
         const trimmedEntry = entry.trim();
         if (trimmedEntry) {
           // Split by last comma to separate name and age
