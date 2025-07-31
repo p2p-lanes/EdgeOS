@@ -19,7 +19,7 @@ const CardVideo = ({ videoUrl, setVideoUrl }: { videoUrl: string, setVideoUrl: (
             <div className="flex flex-col h-full my-1 gap-2">
               <div>
                 <p className="text-black flex items-center gap-2 font-medium text-sm">
-                  <Star className="w-4 h-4" /> Preferred Option
+                  <Star className="w-4 h-4" /> Optional
                 </p>
               </div>
               <Tooltip>
