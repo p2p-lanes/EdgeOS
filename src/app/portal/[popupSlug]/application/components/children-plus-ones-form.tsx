@@ -29,7 +29,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
   const [kidAge, setKidAge] = useState("");
 
   // Age options for the select
-  const ageOptions = Array.from({ length: 18 }, (_, i) => (i + 1).toString());
+  const ageOptions = ["< 1", ...Array.from({ length: 18 }, (_, i) => (i + 1).toString())];
 
   const animationProps = {
     initial: { opacity: 0, height: 0 },
@@ -187,7 +187,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                           {kids.map((kid) => (
                             <div key={kid.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
                               <span className="text-sm">
-                                {kid.name}, {kid.age} years old
+                                {kid.name}, {kid.age === "< 1" ? "< 1 year old" : `${kid.age} years old`}
                               </span>
                               <button
                                 type="button"
@@ -243,7 +243,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                                   <SelectContent>
                                     {ageOptions.map((age) => (
                                       <SelectItem key={age} value={age}>
-                                        {age} years old
+                                        {age === "< 1" ? "< 1 year old" : `${age} years old`}
                                       </SelectItem>
                                     ))}
                                   </SelectContent>

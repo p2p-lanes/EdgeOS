@@ -8,6 +8,9 @@ import CheckboxForm from "@/components/ui/Form/Checkbox";
 import { AnimatePresence, motion } from "framer-motion";
 import MultiSelectDropdown from "@/components/ui/Form/MultiselectDropdown";
 import TextAreaForm from "@/components/ui/Form/TextArea";
+import { Label } from "@/components/ui/label";
+import Link from "next/link";
+import { SectionSeparator } from "./section-separator";
 
 const fieldsPatagoniaResidencies = ["patagonia_residencies"]
 
@@ -44,17 +47,18 @@ const PatagoniaResidenciesForm = ({ formData, errors, handleChange, fields }: Se
 
   
   return (
-    <SectionWrapper title={"Edge Patagonia 2025 residencies"} subtitle={"Please indicate any residencies you'd be interested in joining. As residencies are confirmed, we'll notify you when applications open. Resident organizers will also be able to see your name as someone who expressed interest."}>
+    <>
+    <SectionWrapper title={"Edge Patagonia 2025 residencies"} subtitle={"You can attend Edge City Patagonia solo, join an existing residency, or start your own."}>
       <div className="grid gap-4 grid-cols-1 sm:items-end">
-        <CheckboxForm
+        {/* <CheckboxForm
           label={'Are you interested in being part of a residency?'}
           id="interested_in_residency"
           checked={formData.interested_in_residency || false}
           onCheckedChange={(checked: boolean) => handleChange('interested_in_residency', checked === true)}
-        />
+        /> */}
 
-        <AnimatePresence>
-            {formData.interested_in_residency && (
+        {/* <AnimatePresence>
+            {formData.interested_in_residency && ( */}
               <div className="w-full flex flex-col gap-4">
                 {/* <motion.div {...animationProps}>
                   <MultiSelectDropdown
@@ -64,7 +68,7 @@ const PatagoniaResidenciesForm = ({ formData, errors, handleChange, fields }: Se
                       options={residencies}
                     />
                 </motion.div> */}
-                <motion.div {...animationProps}>
+                {/* <motion.div {...animationProps}> */}
                   <TextAreaForm
                     label="Please describe your current work or project, including the tech stack and tools you are using."
                     id="residencies_text"
@@ -72,14 +76,22 @@ const PatagoniaResidenciesForm = ({ formData, errors, handleChange, fields }: Se
                     handleChange={(value) => handleChange('residencies_text', value)}
                     error={errors.residencies_text}
                   />
-                </motion.div>
+                {/* </motion.div> */}
 
-
+                <Label className="text-sm text-gray-500">
+                  Find all residencies open for applications <Link href="https://edgecity.notion.site/Edge-City-Patagonia-Residency-Application-updated-regularly-240d45cdfc5980e980f8db7d362c553d" target="_blank" className="text-blue-500">here</Link>.
+                </Label>
+                <Label className="text-sm text-gray-500">
+                 Submit a proposal for your own residency <Link href="https://guildhall.simplefi.tech/dashboard/#/nc/form/8d445476-f4d6-4dc9-bb0d-7a8f234f6b33" target="_blank" className="text-blue-500">here</Link>.
+                </Label>
               </div>
-            )}
-          </AnimatePresence>
+            {/* )}
+          </AnimatePresence> */}
       </div>
+
     </SectionWrapper>
+      <SectionSeparator />
+    </>
   )
 }
 export default PatagoniaResidenciesForm

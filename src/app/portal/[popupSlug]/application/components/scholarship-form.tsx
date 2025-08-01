@@ -120,17 +120,17 @@ export function ScholarshipForm({ formData, errors, handleChange, fields }: Sect
                   )
                 }
 
-                {
-                  fields?.has('scholarship_volunteer') && (
-                    <div className="flex flex-col gap-2 mt-2">
-                      <p className="text-sm text-gray-700">If you are interested in volunteering in exchange for a 50% discount (20h/week) or 100% discount (40h/week), please apply via <Link href="https://docs.google.com/forms/d/e/1FAIpQLSc2053thIeFj7I6dE35Cd0X_nt9_n-RVrOIsOWPb5aVJB5cAQ/viewform" target="_blank" className="underline text-blue-500">this form</Link></p>
-                    </div>
-                  )
-                }
               </div>
             </motion.div>
           )}
         </AnimatePresence>
+          {
+            fields?.has('scholarship_volunteer') && (
+              <div className="flex flex-col gap-2 mt-2">
+                <p className="text-sm text-gray-700">If you are interested in volunteering in exchange for a 50% discount (20h/week) or 100% discount (40h/week), please apply via <Link href="https://docs.google.com/forms/d/e/1FAIpQLSc2053thIeFj7I6dE35Cd0X_nt9_n-RVrOIsOWPb5aVJB5cAQ/viewform" target="_blank" className="underline text-blue-500">this form</Link></p>
+              </div>
+            )
+          }
       </SectionWrapper>
       <SectionSeparator />
     </>
