@@ -186,7 +186,7 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error, isInvit
         }
         <CardDescription>
           {
-            group?.description ? group.description : `You&apos;re invited to skip the application process and proceed directly to checkout. Provide your information below to secure your ticket(s) to ${group?.popup_name}!`
+            group?.description ? group.description : `You're invited to skip the application process and proceed directly to checkout. Provide your information below to secure your ticket(s) to ${group?.popup_name}!`
           }
         </CardDescription>
       </CardHeader>

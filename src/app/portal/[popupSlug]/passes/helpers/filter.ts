@@ -63,6 +63,8 @@ export const filterProductsToPurchase = (products: ProductsPass[], editableMode:
       if(isPatreonProduct && product.purchased) return [...acc, product]
   
       if(isWeekProduct && !hasMonth) return [...acc, product]
+
+      if(isDayProduct && !hasMonth) return [...acc, product]
     }
 
     return acc
