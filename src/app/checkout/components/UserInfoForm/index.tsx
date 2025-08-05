@@ -177,8 +177,17 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error, isInvit
     <Card className="max-w-lg mx-auto backdrop-blur bg-white/90">
       <CardHeader>
         <CardTitle className="text-2xl font-bold">Express Checkout</CardTitle>
+        {
+          group?.welcome_message && (
+            <CardDescription className="bg-green-100 text-green-800 p-2 rounded-md radius-lg">
+              {group.welcome_message}
+            </CardDescription>
+          )
+        }
         <CardDescription>
-          You&apos;re invited to skip the application process and proceed directly to checkout. Provide your information below to secure your ticket(s) to {group?.popup_name}!
+          {
+            group?.description ? group.description : `You&apos;re invited to skip the application process and proceed directly to checkout. Provide your information below to secure your ticket(s) to ${group?.popup_name}!`
+          }
         </CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>

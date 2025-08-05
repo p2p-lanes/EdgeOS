@@ -1,21 +1,24 @@
 import { Button } from '@/components/ui/button'
-import { Check, Import, Plus, Share2, Users } from 'lucide-react'
+import { Check, Edit, Import, Plus, Share2, Users } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { getBaseUrl } from '@/utils/environment'
 import { GroupProps } from '@/types/Group'
 import MemberFormModal from './AddMemberModal'
 import ImportMembersModal from './ImportMembersModal'
+import WelcomeMessageModal from './WelcomeMessageModal'
 
 interface TeamHeaderProps {
   totalMembers: number
   group: GroupProps
   onMemberAdded?: () => void
+  onGroupUpdated?: () => void
 }
 
-const TeamHeader = ({ totalMembers, group, onMemberAdded }: TeamHeaderProps) => {
+const TeamHeader = ({ totalMembers, group, onMemberAdded, onGroupUpdated }: TeamHeaderProps) => {
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [isImportModalOpen, setIsImportModalOpen] = useState(false)
+  const [isWelcomeMessageModalOpen, setIsWelcomeMessageModalOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
 
   const handleModalClose = () => {
@@ -40,6 +43,17 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded }: TeamHeaderProps) => 
     handleImportModalClose()
   }
 
+  const handleWelcomeMessageModalClose = () => {
+    setIsWelcomeMessageModalOpen(false)
+  }
+
+  const handleWelcomeMessageUpdated = () => {
+    if (onGroupUpdated) {
+      onGroupUpdated()
+    }
+    handleWelcomeMessageModalClose()
+  }
+
   const handleCopyCheckoutLink = async () => {
     const baseUrl = getBaseUrl()
     const checkoutLink = `${baseUrl}/checkout?group=${group.slug}`
@@ -59,6 +73,8 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded }: TeamHeaderProps) => 
     }
   }
 
+  const isAmbassadorGroup = group.is_ambassador_group
+
   return (
     <div className="space-y-6">
       <div>
@@ -77,28 +93,35 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded }: TeamHeaderProps) => 
         </div>
 
         <div className="flex gap-3 flex-wrap">
-          <Button 
-            variant="outline" 
-            className="bg-white"
-            onClick={() => setIsImportModalOpen(true)}
-          >
-            <Import className="w-4 h-4" /> Import
-          </Button>
+          {
+            !isAmbassadorGroup && (
+              <>
+              <Button 
+                variant="outline" 
+                className="bg-white"
+                onClick={() => setIsImportModalOpen(true)}
+              >
+                <Import className="w-4 h-4" /> Import
+              </Button>
 
-          <Button 
-            variant="outline" 
-            className="bg-white"
-            onClick={() => setIsModalOpen(true)}
-          >
-            <Plus className="w-4 h-4" /> Add a new member
-          </Button>
+              <Button 
+                variant="outline" 
+                className="bg-white"
+                onClick={() => setIsModalOpen(true)}
+              >
+                <Plus className="w-4 h-4" /> Add a new member
+              </Button>
+              </>
+            )
+          }
           
           <Button
             onClick={handleCopyCheckoutLink}
+            
           >
             {isCopied ? (
               <>
-                <Check className="w-4 h-4" /> Copied
+                <Check className="w-4 h-4" /> Share Express Checkout link
               </>
             ) : (
               <>
@@ -106,6 +129,16 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded }: TeamHeaderProps) => 
               </>
             )}
           </Button>
+
+          {/* {isAmbassadorGroup && (
+            <Button
+              variant="outline"
+              className="bg-white"
+              onClick={() => setIsWelcomeMessageModalOpen(true)}
+            >
+              <Edit className="w-4 h-4" /> Edit Welcome Message
+            </Button>
+          )} */}
         </div>
 
       </div>
@@ -120,6 +153,13 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded }: TeamHeaderProps) => 
         open={isImportModalOpen}
         onClose={handleImportModalClose}
         onSuccess={handleMembersImported}
+      />
+
+      <WelcomeMessageModal
+        open={isWelcomeMessageModalOpen}
+        onClose={handleWelcomeMessageModalClose}
+        onSuccess={handleWelcomeMessageUpdated}
+        group={group}
       />
       
     </div>

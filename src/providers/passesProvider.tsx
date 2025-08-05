@@ -87,7 +87,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   }, [attendeePasses, isEditing])
 
   useEffect(() => {
-    if(city?.id){
+    if(city?.id && discountApplied.city_id !== city?.id){
       setDiscountApplied({discount_value: 0, discount_type: 'percentage'})
     }
   }, [city?.id])
@@ -99,8 +99,9 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   }, [application?.discount_assigned, discountApplied.discount_value])
 
   const setDiscount = useCallback((discount: DiscountProps) => {
+    console.log('discount', discount)
     if(discount.discount_value <= discountApplied.discount_value) return;
-    
+    console.log('discount', discount)
     setDiscountApplied(discount);
   }, [discountApplied.discount_value])
 

@@ -14,6 +14,11 @@ export interface GroupData {
   name: string;
   popup_name: string;
   popup_city_id: string;
+  description: string;
+  popup_city_name: string;
+  discount_percentage: number;
+  is_ambassador_group: boolean;
+  welcome_message: string;
 }
 
 export type CheckoutState = "form" | "processing" | "success" | "passes";

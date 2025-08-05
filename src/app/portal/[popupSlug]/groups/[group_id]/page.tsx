@@ -70,6 +70,7 @@ const GroupPage = () => {
         totalMembers={group.members.length} 
         group={group}
         onMemberAdded={() => refetch()}
+        onGroupUpdated={() => refetch()}
       />
       
       <SearchBar 
@@ -86,6 +87,7 @@ const GroupPage = () => {
           <MembersList 
             members={currentMembers} 
             onMemberUpdated={refetch}
+            isAmbassadorGroup={group.is_ambassador_group}
           />
           
           <Pagination

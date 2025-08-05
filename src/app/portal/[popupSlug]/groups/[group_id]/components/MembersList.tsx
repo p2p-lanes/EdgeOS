@@ -4,9 +4,10 @@ import MemberItem from './MemberItem'
 interface MembersListProps {
   members: Member[]
   onMemberUpdated?: () => void
+  isAmbassadorGroup?: boolean
 }
 
-const MembersList = ({ members, onMemberUpdated }: MembersListProps) => {
+const MembersList = ({ members, onMemberUpdated, isAmbassadorGroup }: MembersListProps) => {
   if (members.length === 0) {
     return (
       <div className="p-8 text-center text-gray-500">
@@ -22,6 +23,7 @@ const MembersList = ({ members, onMemberUpdated }: MembersListProps) => {
           key={member.id} 
           member={member} 
           onMemberUpdated={onMemberUpdated}
+          isAmbassadorGroup={isAmbassadorGroup}
         />
       ))}
     </div>

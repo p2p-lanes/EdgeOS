@@ -2,6 +2,7 @@
 
 import { instance } from "@/api"
 import { useCityProvider } from "@/providers/cityProvider";
+import { usePassesProvider } from "@/providers/passesProvider";
 import { useParams, useSearchParams } from "next/navigation"
 import { useEffect, useState } from "react"
 
@@ -11,6 +12,7 @@ const useGetInviteData = () => {
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const { setCityPreselected } = useCityProvider()
+  const { setDiscount } = usePassesProvider()
 
   const getGroup = async () => {
     setIsLoading(true)
@@ -22,6 +24,7 @@ const useGetInviteData = () => {
       })
       setGroupData(response.data)
       setCityPreselected(response.data.popup_city_id)
+      setDiscount({discount_value: response.data.discount_percentage, discount_type: 'percentage', city_id: response.data.popup_city_id})
       setIsLoading(false)
     } catch (error: any) {
       setError(`Error fetching group data: ${error.response.data.detail}`)

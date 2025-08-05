@@ -18,9 +18,10 @@ import {
 interface MemberItemProps {
   member: Member
   onMemberUpdated?: () => void
+  isAmbassadorGroup?: boolean
 }
 
-const MemberItem = ({ member, onMemberUpdated }: MemberItemProps) => {
+const MemberItem = ({ member, onMemberUpdated, isAmbassadorGroup }: MemberItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
@@ -129,36 +130,43 @@ const MemberItem = ({ member, onMemberUpdated }: MemberItemProps) => {
               </div>
               
               <div className="flex justify-end gap-3">
-                <Button 
-                  variant={'outline'}
-                  aria-label="Edit member"
-                  onClick={handleEditClick}
-                >
-                  <Pencil size={16} className="mr-2" /> Edit
-                </Button>
+                {
+                  !isAmbassadorGroup && (
+                    <>
+                      <Button 
+                        variant={'outline'}
+                        aria-label="Edit member"
+                        onClick={handleEditClick}
+                      >
+                        <Pencil size={16} className="mr-2" /> Edit
+                      </Button>
+                      <TooltipProvider delayDuration={100}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <div className="inline-block">
+                              <Button 
+                                variant={'outline'}
+                                aria-label="Remove member"
+                                className='text-red-500 border-red-500 hover:bg-red-500 hover:text-white'
+                                onClick={handleDeleteClick}
+                                disabled={member.products.length > 0}
+                              >
+                                <Trash2 size={16} className="mr-2" /> Remove
+                              </Button>
+                            </div>
+                          </TooltipTrigger>
+                          {member.products.length > 0 && (
+                            <TooltipContent side="top" className="bg-gray-800 text-white px-3 py-2 rounded shadow-lg z-50">
+                              <p>This member already has an active ticket.</p>
+                            </TooltipContent>
+                          )}
+                        </Tooltip>
+                      </TooltipProvider>
+                    </>
+                  )
+                }
                 
-                <TooltipProvider delayDuration={100}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="inline-block">
-                        <Button 
-                          variant={'outline'}
-                          aria-label="Remove member"
-                          className='text-red-500 border-red-500 hover:bg-red-500 hover:text-white'
-                          onClick={handleDeleteClick}
-                          disabled={member.products.length > 0}
-                        >
-                          <Trash2 size={16} className="mr-2" /> Remove
-                        </Button>
-                      </div>
-                    </TooltipTrigger>
-                    {member.products.length > 0 && (
-                      <TooltipContent side="top" className="bg-gray-800 text-white px-3 py-2 rounded shadow-lg z-50">
-                        <p>This member already has an active ticket.</p>
-                      </TooltipContent>
-                    )}
-                  </Tooltip>
-                </TooltipProvider>
+                
               </div>
             </div>
           </motion.div>
