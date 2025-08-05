@@ -2,7 +2,6 @@
 
 import { Suspense, useEffect, useState } from "react"
 import { CheckoutContent } from "./components/CheckoutContent"
-import { useCityProvider } from "@/providers/cityProvider"
 import useGetCheckoutData from "./hooks/useGetCheckoutData"
 
 const LoadingFallback = () => (

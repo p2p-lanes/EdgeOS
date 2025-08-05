@@ -5,11 +5,12 @@ import { api, instance } from "@/api";
 import { useApplication } from "@/providers/applicationProvider";
 import { FormDataProps, CheckoutState } from "../types";
 import useCookies from "./useCookies";
-import { useSearchParams } from "next/navigation";
+import { useParams, useSearchParams } from "next/navigation";
 
 const useCheckoutState = () => {
   const searchParams = useSearchParams();
   const groupParam = searchParams.get("group");
+  const { group } = useParams()
   const { setApplications } = useApplication();
   const [checkoutState, setCheckoutState] = useState<CheckoutState>("form");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -17,7 +18,7 @@ const useCheckoutState = () => {
   const { setCookie } = useCookies();
 
   const handleSubmit = async (formData: FormDataProps, groupData: any): Promise<void> => {
-    if (!groupParam) {
+    if (!groupParam && !group) {
       setErrorMessage("Invalid group ID");
       return;
     }
@@ -35,7 +36,7 @@ const useCheckoutState = () => {
       
       // Enviamos la solicitud con el header específico para esta petición
       const response = await instance.post(
-        `/groups/${groupParam}/new_member`, 
+        `/groups/${groupParam || group}/new_member`, 
         { ...formData }
       );
 
@@ -63,7 +64,7 @@ const useCheckoutState = () => {
             // Si tenemos aplicaciones, usamos la que corresponde a este grupo
             if (userApplicationsResponse.data && Array.isArray(userApplicationsResponse.data)) {
               const existingApp = userApplicationsResponse.data.find(
-                (app: any) => app.group_id === groupParam || app.popup_city_id === groupData.popup_city_id
+                (app: any) => app.group_id === groupParam || group || app.popup_city_id === groupData.popup_city_id
               );
               
               if (existingApp) {

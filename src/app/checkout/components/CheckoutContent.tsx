@@ -15,7 +15,7 @@ const LoadingFallback = () => (
   </div>
 );
 
-export const CheckoutContent = ({ group, isLoading, error }: { group: any, isLoading: boolean, error: any }) => {
+export const CheckoutContent = ({ group, isLoading, error, isInvite = false }: { group: any, isLoading: boolean, error: any, isInvite?: boolean }) => {
   const { checkoutState, isSubmitting, errorMessage, handleSubmit, setCheckoutState } = useCheckoutState();
 
   // Función que maneja el envío del formulario
@@ -45,6 +45,7 @@ export const CheckoutContent = ({ group, isLoading, error }: { group: any, isLoa
               error={error}
               onSubmit={handleFormSubmit}
               isSubmitting={isSubmitting}
+              isInvite={isInvite}
             />
           </motion.div>
         );

@@ -17,9 +17,10 @@ interface UserInfoFormProps {
   error: string | null;
   onSubmit: (data: FormDataProps) => Promise<void>;
   isSubmitting: boolean;
+  isInvite?: boolean;
 }
 
-const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error }: UserInfoFormProps) => {
+const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error, isInvite = false }: UserInfoFormProps) => {
   const [isAutoFilled, setIsAutoFilled] = useState(false);
   const searchParams = useSearchParams();
   const isDayCheckout = searchParams.has("day-passes");
