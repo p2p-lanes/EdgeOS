@@ -7,13 +7,15 @@ import useDiscountCode from "../../hooks/useDiscountCode"
 import ProductCart from "./Products/ProductCart"
 import { useTotal } from "@/providers/totalProvider"
 import { ProductsPass } from "@/types/Products"
+import { useApplication } from "@/providers/applicationProvider"
 
 const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: AttendeeProps[], isModal?: boolean, isOpen: boolean, setIsOpen: (prev: boolean) => void}) => {
   const { discountApplied } = useDiscountCode()
   const { originalTotal, total, discountAmount } = useTotal()
-  
+  const { getRelevantApplication } = useApplication()
+  const application = getRelevantApplication()
 
-  const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected && p.category !== 'month')).sort((a, b) => {
+  const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected)).sort((a, b) => {
     if (a.category === 'patreon') return -1
     if (b.category === 'patreon') return 1
     return 0
@@ -60,6 +62,20 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
             <DiscountMonth attendees={attendees} total={total}/>
 
             <DiscountCouponTotal products={productsCart} discountAmount={discountAmount} discountApplied={discountApplied} patreonSelected={patreonSelected} />
+
+            {
+              application?.credit && (
+                <div className="flex justify-between text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2">
+                  <Tag className="w-4 h-4" />
+                  <span className="text-sm text-muted-foreground">
+                    Credit
+                  </span>
+                </div>
+                  <span> - ${application?.credit}</span>
+                </div>
+              )
+            }
           </div>
         ) : (
           <p className="text-sm text-muted-foreground px-3">
@@ -99,7 +115,7 @@ const DiscountCouponTotal = ({ discountAmount, discountApplied, patreonSelected,
           {getLabelDiscount()}
         </span>
       </div>
-        <span data-discount-amount={discountAmount.toFixed(2)}> - ${discountAmount.toFixed(2)}</span>
+        <span data-discount-amount={discountAmount.toFixed(0)}> - ${discountAmount.toFixed(0)}</span>
       </div>
     )
   }
@@ -113,7 +129,7 @@ const DiscountMonth = ({ attendees, total }: { attendees: AttendeeProps[], total
     const totalPrice = attendees.reduce((total, attendee) => {
       return total + attendee.products
         .filter(p => p.selected && p.category === 'week')
-        .reduce((sum, product) => sum + (product.compare_price ?? 0), 0)
+        .reduce((sum, product) => sum + (product.price ?? 0), 0)
     }, 0)
 
     return totalPrice - total
@@ -130,7 +146,7 @@ const DiscountMonth = ({ attendees, total }: { attendees: AttendeeProps[], total
   return (
      <div className="flex justify-between text-sm text-muted-foreground">
         <span className="flex items-center gap-2"><Tag className="w-4 h-4" />Discount on Full Month</span>
-        <span data-month-discount={discountMonth}> - ${discountMonth.toFixed(2)}</span>
+        <span data-month-discount={discountMonth}> - ${discountMonth.toFixed(0)}</span>
       </div>
   )
 }

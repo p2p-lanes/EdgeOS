@@ -14,7 +14,7 @@ interface PriceCalculationStrategy {
 abstract class BasePriceStrategy implements PriceCalculationStrategy {
   protected calculateOriginalTotal(products: ProductsPass[]): number {
     return products.filter(p => p.selected).reduce((sum, product) => {
-      const price = product.compare_price ?? product.original_price ?? 0;
+      const price = product.original_price ?? 0;
       
       if (product.purchased) {
         // Para productos comprados, solo contamos la diferencia adicional

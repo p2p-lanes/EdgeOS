@@ -27,9 +27,9 @@ const DiscountCode = ({defaultOpen = false, label = true}: {defaultOpen?: boolea
         )
       }
       {
-        open ? (
-          <div className="flex flex-col items-start gap-2">
-            <div className="flex items-start gap-4">
+          open ? (
+          <div className="flex flex-col items-end gap-2">
+            <div className="flex items-end gap-4">
               <Input
                 disabled={loading || validDiscount}
                 error={!validDiscount && !!discountMsg && discountCode.length > 0 ? discountMsg : ''}

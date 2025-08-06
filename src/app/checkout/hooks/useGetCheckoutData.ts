@@ -27,7 +27,7 @@ const useGetCheckoutData = () => {
       })
       setGroup(response.data)
       setCityPreselected(response.data.popup_city_id)
-      setDiscount({discount_value: response.data.discount_percentage, discount_type: 'percentage'})
+      setDiscount({discount_value: response.data.discount_percentage, discount_type: 'percentage', city_id: response.data.popup_city_id})
       setIsLoading(false)
     } catch (error: any) {
       setError(`Error fetching group data: ${error.response.data.detail}`)
