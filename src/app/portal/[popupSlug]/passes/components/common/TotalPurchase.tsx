@@ -64,7 +64,7 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
             <DiscountCouponTotal products={productsCart} discountAmount={discountAmount} discountApplied={discountApplied} patreonSelected={patreonSelected} />
 
             {
-              application?.credit && (
+              application?.credit ? (
                 <div className="flex justify-between text-sm text-muted-foreground">
                   <div className="flex items-center gap-2">
                   <Tag className="w-4 h-4" />
@@ -72,9 +72,9 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
                     Credit
                   </span>
                 </div>
-                  <span> - ${application?.credit}</span>
+                  <span> - ${application?.credit.toFixed(0)}</span>
                 </div>
-              )
+              ) : null
             }
           </div>
         ) : (
@@ -103,7 +103,7 @@ const DiscountCouponTotal = ({ discountAmount, discountApplied, patreonSelected,
     if(discountApplied.discount_code){
       return `${discountApplied.discount_code } (${discountApplied.discount_value}% OFF)`
     }
-    return `Award ${discountApplied.discount_value}% OFF`
+    return `Discount ${discountApplied.discount_value}% OFF`
   }
 
   if(discountAmount > 0){
