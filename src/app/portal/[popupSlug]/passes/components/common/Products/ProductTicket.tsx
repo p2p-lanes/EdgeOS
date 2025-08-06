@@ -20,7 +20,7 @@ const variants: Record<VariantStyles, string> = {
 
 const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {product: ProductsPass, onClick: (attendeeId: number | undefined, product: ProductsPass) => void, defaultDisabled?: boolean, hasMonthPurchased?: boolean}) => {
   const disabled = product.disabled || defaultDisabled
-  const originalPrice = product.compare_price ?? product.price
+  const originalPrice = product.original_price ?? product.price
   const { purchased, selected } = product
   const { isEditing } = usePassesProvider()
 
