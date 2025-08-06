@@ -15,7 +15,22 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
   const { getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
 
-  const productsCart = attendees.flatMap(attendee => attendee.products.filter(p => p.selected)).sort((a, b) => {
+  // Detectar si hay productos month seleccionados
+  const hasMonthSelected = attendees.some(attendee => 
+    attendee.products.some(p => p.selected && p.category === 'month')
+  )
+
+  const productsCart = attendees.flatMap(attendee => {
+    const selectedProducts = attendee.products.filter(p => p.selected)
+    
+    // Si hay un month seleccionado, solo mostrar los productos month
+    if (hasMonthSelected) {
+      return selectedProducts.filter(p => p.category === 'month')
+    }
+    
+    // Lógica original si no hay month seleccionado
+    return selectedProducts
+  }).sort((a, b) => {
     if (a.category === 'patreon') return -1
     if (b.category === 'patreon') return 1
     return 0
@@ -60,6 +75,8 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
             }
 
             <DiscountMonth attendees={attendees} total={total}/>
+
+            <DiscountWeekPurchased attendees={attendees} hasMonthSelected={hasMonthSelected}/>
 
             <DiscountCouponTotal products={productsCart} discountAmount={discountAmount} discountApplied={discountApplied} patreonSelected={patreonSelected} />
 
@@ -150,4 +167,51 @@ const DiscountMonth = ({ attendees, total }: { attendees: AttendeeProps[], total
       </div>
   )
 }
+
+const DiscountWeekPurchased = ({ attendees, hasMonthSelected }: { 
+  attendees: AttendeeProps[], 
+  hasMonthSelected: boolean 
+}) => {
+  
+  if (!hasMonthSelected) return null
+
+  const calculateWeekPurchasedDiscount = () => {
+    return attendees.reduce((totalDiscount, attendee) => {
+      // Verificar si este attendee tiene un month seleccionado
+      const hasMonthSelectedForAttendee = attendee.products.some(p => p.selected && p.category === 'month')
+      
+      if (!hasMonthSelectedForAttendee) return totalDiscount
+
+      // Buscar productos week comprados para este attendee
+      const weekPurchasedProducts = attendee.products.filter(p => 
+        p.purchased && p.category === 'week'
+      )
+
+      // Sumar el original_price de los productos week comprados
+      const weekDiscount = weekPurchasedProducts.reduce((sum, product) => {
+        const price = product.original_price || product.price || 0
+        return sum + price
+      }, 0)
+
+      return totalDiscount + weekDiscount
+    }, 0)
+  }
+
+  const weekDiscount = calculateWeekPurchasedDiscount()
+
+  if (weekDiscount <= 0) return null
+
+  return (
+    <div className="flex justify-between text-sm text-muted-foreground">
+      <div className="flex items-center gap-2">
+        <Tag className="w-4 h-4" />
+        <span className="text-sm text-muted-foreground">
+          Week Pass Credit
+        </span>
+      </div>
+      <span data-week-discount={weekDiscount.toFixed(0)}> - ${weekDiscount.toFixed(0)}</span>
+    </div>
+  )
+}
+
 export default TotalPurchase
