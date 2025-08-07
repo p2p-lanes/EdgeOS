@@ -184,11 +184,12 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error, isInvit
             </CardDescription>
           )
         }
-        <CardDescription>
-          {
-            group?.description ? group.description : `You're invited to skip the application process and proceed directly to checkout. Provide your information below to secure your ticket(s) to ${group?.popup_name}!`
-          }
-        </CardDescription>
+        {group?.description && (
+          <CardDescription 
+            className="prose prose-sm max-w-none"
+            dangerouslySetInnerHTML={{ __html: group.description }}
+          />
+        )}
       </CardHeader>
       <form onSubmit={handleSubmit}>
         <CardContent className="space-y-4">

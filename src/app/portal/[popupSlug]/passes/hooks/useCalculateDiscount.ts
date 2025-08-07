@@ -15,7 +15,7 @@ const useCalculateDiscount = (isPatreon: boolean, products: ProductsProps[]) => 
   const {discount, label, isEarlyBird} = useMemo(() => {
     if (isPatreon) return {discount: 100, label: 'As a Patron, you are directly supporting the ecosystem.'}
     
-    if(city?.slug === 'edge-patagonia') return {discount: 1, label: 'Prices for monthly tickets increase $100 every Sunday.'}
+    if(city?.slug === 'edge-patagonia') return {discount: 1, label: 'All tickets go up $50-$100 every Sunday.'}
 
     if(!application || !application.discount_assigned && !productCompare.compare_price && !discountApplied.discount_value) return {discount: 0, label: ''}
     
