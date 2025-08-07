@@ -74,7 +74,7 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
               productsCart.map(product => <ProductCart key={product.id} product={product}/>)
             }
 
-            <DiscountMonth attendees={attendees} total={total}/>
+            {/* <DiscountMonth attendees={attendees} total={total}/> */}
 
             <DiscountWeekPurchased attendees={attendees} hasMonthSelected={hasMonthSelected}/>
 
@@ -110,6 +110,8 @@ const DiscountCouponTotal = ({ discountAmount, discountApplied, patreonSelected,
   patreonSelected: boolean,
   products: ProductsPass[]
 }) => {
+
+  console.log('discountAmount', discountAmount, discountApplied)
 
   if(!discountApplied.discount_value || discountAmount === 0) return null
 
@@ -189,7 +191,7 @@ const DiscountWeekPurchased = ({ attendees, hasMonthSelected }: {
 
       // Sumar el original_price de los productos week comprados
       const weekDiscount = weekPurchasedProducts.reduce((sum, product) => {
-        const price = product.original_price || product.price || 0
+        const price = product.price || 0
         return sum + price
       }, 0)
 

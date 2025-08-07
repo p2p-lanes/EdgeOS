@@ -40,6 +40,7 @@ class MonthlyPriceStrategy extends BasePriceStrategy {
     const originalTotal = this.calculateOriginalTotal(products)
     const discountAmount = discount.discount_value ? originalTotal * (discount.discount_value / 100): 0;
 
+    console.log('discountAmount', discountAmount, discount, originalTotal)
     return {
       total: monthPrice - (hasPatreon && monthProduct?.attendee_category !== 'main' ? 0 : totalProductsPurchased),
       originalTotal: originalTotal,
@@ -49,8 +50,7 @@ class MonthlyPriceStrategy extends BasePriceStrategy {
 
   protected calculateOriginalTotal(products: ProductsPass[]): number {
     return products
-      .filter(p => p.selected && p.category === 'week')
-      .reduce((sum, product) => sum + (product.compare_price ?? 0) * (product.quantity ?? 1), 0);
+      .find(p => p.selected && p.category === 'month')?.original_price ?? 0
   }
 }
 
