@@ -23,7 +23,7 @@ const InvitePage = () => {
     <div 
       className="min-h-screen w-full py-8 flex items-center justify-center"
       style={{
-        backgroundImage: `url(https://simplefi.s3.us-east-2.amazonaws.com/edge-bg.jpg)`,
+        backgroundImage: group.popup_name.toLowerCase().includes("patagonia") ? `url(https://simplefi.s3.us-east-2.amazonaws.com/edge-patagonia-background.jpeg)` : `url(https://simplefi.s3.us-east-2.amazonaws.com/edge-bg.jpg)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
         backgroundRepeat: "no-repeat",

@@ -99,9 +99,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   }, [application?.discount_assigned, discountApplied.discount_value])
 
   const setDiscount = useCallback((discount: DiscountProps) => {
-    console.log('discount', discount)
     if(discount.discount_value <= discountApplied.discount_value) return;
-    console.log('discount', discount)
     setDiscountApplied(discount);
   }, [discountApplied.discount_value])
 
