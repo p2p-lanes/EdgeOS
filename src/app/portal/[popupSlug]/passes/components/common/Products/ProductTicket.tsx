@@ -8,7 +8,7 @@ import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import ProductDay from "./ProductDay"
 import { Separator } from "@/components/ui/separator"
 
-type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default'
+type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default' | 'week-with-month'
 
 const variants: Record<VariantStyles, string> = {
   selected: 'bg-green-200 border-green-400 text-green-800 hover:bg-green-200/80',
@@ -16,6 +16,7 @@ const variants: Record<VariantStyles, string> = {
   edit: 'bg-slate-800/30 border-dashed border-slate-200 text-neutral-700 border',
   disabled: 'bg-neutral-0 text-neutral-300 cursor-not-allowed ',
   default: 'bg-white border-neutral-300 text-neutral-700 hover:bg-slate-100',
+  'week-with-month': 'bg-violet-100 border-violet-300 text-violet-800 hover:bg-violet-100/80',
 }
 
 const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {product: ProductsPass, onClick: (attendeeId: number | undefined, product: ProductsPass) => void, defaultDisabled?: boolean, hasMonthPurchased?: boolean}) => {
@@ -23,6 +24,9 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
   const originalPrice = product.original_price ?? product.price
   const { purchased, selected } = product
   const { isEditing } = usePassesProvider()
+  
+  // Check if this is a week product with month purchased/selected from same attendee
+  const isWeekWithMonth = product.category === 'week' && hasMonthPurchased && !product.purchased
 
   if (product.category === 'day') { 
     return <ProductDay product={product} onClick={onClick} defaultDisabled={defaultDisabled} hasMonthPurchased={hasMonthPurchased}/>
@@ -33,8 +37,15 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
       onClick={disabled || (purchased && !isEditing) ? undefined : () => onClick(product.attendee_id, product)}
       disabled={disabled || (purchased && !isEditing)}
       className={cn(
-        'flex items-center gap-2 border border-neutral-200 rounded-md p-2 relative',
-        variants[(selected && purchased && !disabled) ? 'edit' : purchased ? 'purchased' : disabled ? 'disabled' : selected ? 'selected' : 'default']
+        'flex items-center gap-2 border border-neutral-200 rounded-md p-2 relative h-[42px]',
+        variants[
+          (selected && purchased && !disabled) ? 'edit' : 
+          purchased ? 'purchased' : 
+          disabled ? 'disabled' : 
+          isWeekWithMonth ? 'week-with-month' :
+          selected ? 'selected' : 
+          'default'
+        ]
       )}
     >
       <div className="flex justify-between w-full">
@@ -74,7 +85,7 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
           }
           
           {
-            !product.purchased && (
+            !product.purchased && !isWeekWithMonth && (
               <>
                 {
                   originalPrice !== product.price && (

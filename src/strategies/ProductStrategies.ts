@@ -63,6 +63,8 @@ class PatreonProductStrategy implements ProductStrategy {
 class MonthProductStrategy implements ProductStrategy {
   handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
     const isMonthSelected = product?.selected;
+    const willSelectMonth = !isMonthSelected;
+
 
     return attendees.map(attendee => {
       if (attendee.id !== attendeeId) return attendee;
@@ -72,7 +74,7 @@ class MonthProductStrategy implements ProductStrategy {
         products: attendee.products.map(p => ({
           ...p,
           selected: p.id === product.id ? !p.selected : 
-            p.category === 'week' ? !isMonthSelected : p.selected
+            p.category === 'week' ? willSelectMonth: p.selected
         }))
       };
     });
@@ -160,8 +162,8 @@ class DayProductStrategy implements ProductStrategy {
 }
 
 export const getProductStrategy = (product: ProductsPass, isEditing: boolean): ProductStrategy => {
-  
-  if (product.exclusive) return new ExclusiveProductStrategy();
+
+  if (product.exclusive && product.category !== 'month') return new ExclusiveProductStrategy();
   
   switch (product.category) {
     case 'patreon':

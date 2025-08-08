@@ -16,7 +16,7 @@ import QRcode from "./QRcode"
 
 const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void, isDayCheckout?: boolean  }) => {
   const standardProducts = attendee.products
-    .filter((product) => product.category !== 'patreon' && product.category !== 'month' && (isDayCheckout ? product.category === 'day' : true))
+    .filter((product) => product.category !== 'patreon' && (isDayCheckout ? product.category === 'day' : true))
     .sort((a, b) => {
       if (a.category === 'day' && b.category !== 'day') return 1;
       if (a.category !== 'day' && b.category === 'day') return -1;
