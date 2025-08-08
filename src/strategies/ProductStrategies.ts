@@ -74,7 +74,7 @@ class MonthProductStrategy implements ProductStrategy {
         products: attendee.products.map(p => ({
           ...p,
           selected: p.id === product.id ? !p.selected : 
-            p.category === 'week' ? willSelectMonth: p.selected
+            p.category === 'week' && !p.purchased ? willSelectMonth : p.selected
         }))
       };
     });
