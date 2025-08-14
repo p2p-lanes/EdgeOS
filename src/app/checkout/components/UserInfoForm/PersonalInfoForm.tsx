@@ -32,29 +32,25 @@ const PersonalInfoForm = ({
   const searchParams = useSearchParams();
   const isDayCheckout = searchParams.has("day-passes");
   // Estado para almacenar el valor de género normalizado
+  const [customGender, setCustomGender] = useState<string>("");
   const [genderValue, setGenderValue] = useState<string>("");
 
-  // Efecto para normalizar el valor de género cuando cambia formData
   useEffect(() => {
-    // Si hay un valor de género
-    if (formData.gender) {
-      // Verificar si coincide con alguna de las opciones disponibles (comparación insensible a mayúsculas/minúsculas)
+    if(formData.gender) {
       const matchingOption = GENDER_OPTIONS.find(opt => 
         opt.value.toLowerCase() === formData.gender.toLowerCase()
-      );
-      
-      // Si hay coincidencia, usar el valor exacto de la opción
-      if (matchingOption) {
-        setGenderValue(matchingOption.value);
+      )
+      if(matchingOption) {
+        setGenderValue(matchingOption.value)
       } else {
-        // Si no hay coincidencia, usar el valor original
-        setGenderValue(formData.gender);
+        setGenderValue('Specify')
+        const gender = formData.gender.split(' - ')[1]
+        setCustomGender(gender)
       }
     } else {
-      // Si no hay valor, asegurarse de que genderValue esté vacío
-      setGenderValue("");
+      setGenderValue('')
     }
-  }, [formData.gender]);
+  }, [formData.gender])
 
   return (
     <div className="space-y-4 animate-in fade-in duration-500">      
@@ -150,11 +146,29 @@ const PersonalInfoForm = ({
         label="Gender"
         subtitle="Select your gender"
         value={genderValue}
-        onChange={(value) => handleInputChange("gender", value)}
+        onChange={(value) => {
+          setGenderValue(value)
+          handleInputChange("gender", value)
+        }}
         error={errors.gender}
         isRequired
         options={GENDER_OPTIONS}
       />
+
+      {genderValue === "Specify" && (
+        <InputForm
+          label="Specify gender"
+          id="gender_specify"
+          value={customGender}
+          onChange={(value) => {
+            setCustomGender(value);
+            handleInputChange("gender", `SYO - ${value}`);
+          }}
+          error={errors.gender_specify}
+          isRequired
+          placeholder="Specify your gender"
+        />
+      )}
     </div>
   );
 };

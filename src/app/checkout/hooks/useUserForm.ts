@@ -91,6 +91,7 @@ export const useUserForm = ({ initialData = {}, applicationData }: UseUserFormPr
     if (!formData.organization && !isDayCheckout) newErrors.organization = "Organization is required";
     if (!formData.role && !isDayCheckout) newErrors.role = "Role is required";
     if (!formData.gender) newErrors.gender = "Gender is required";
+    if(formData.gender === 'Specify') newErrors.gender_specify = "Please specify your gender";
     
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;

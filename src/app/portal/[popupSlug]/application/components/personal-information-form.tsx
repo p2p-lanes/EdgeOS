@@ -12,7 +12,7 @@ import { dynamicForm } from "@/constants";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
 import { ageOptions, shareableInfo } from "../constants/forms";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { GENDER_OPTIONS } from "@/constants/util";
 
 const fieldsPersonalInformation = ["first_name", "last_name", "email", "gender", "age", "telegram", "residence", "eth_address", "referral", "local_resident", "info_not_shared"]
@@ -20,6 +20,7 @@ const fieldsPersonalInformation = ["first_name", "last_name", "email", "gender",
 export function PersonalInformationForm({ formData, errors, handleChange, fields }: SectionProps) {
   const { getCity } = useCityProvider()
   const city = getCity()
+  const [genderSpecify, setGenderSpecify] = useState('')
 
   useEffect(() => {
     if (formData.gender && formData.gender !== '' && !GENDER_OPTIONS.some(opt => opt.value === formData.gender)) {
@@ -117,8 +118,8 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
                   isRequired
                   label="Specify your gender"
                   id="gender_specify"
-                  value={formData.gender_specify ?? ''}
-                  onChange={(e) => handleChange('gender_specify', e)}
+                  value={formData.gender_specify?.split(' - ')[1] ?? ''}
+                  onChange={(e) => handleChange('gender_specify', `SYO - ${e}`)}
                   error={errors.gender_specify}
                 />
               </motion.div>
