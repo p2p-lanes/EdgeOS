@@ -1,6 +1,6 @@
 "use client"
 
-import { Suspense, useEffect, useState } from "react"
+import { Suspense } from "react"
 import { CheckoutContent } from "./components/CheckoutContent"
 import useGetCheckoutData from "./hooks/useGetCheckoutData"
 
@@ -11,15 +11,7 @@ const LoadingFallback = () => (
 )
 
 const CheckoutPage = () => {
-  const [urlImage, setUrlImage] = useState<string>("")
   const { data: { group }, error, isLoading } = useGetCheckoutData();
-
-  useEffect(() => {
-    if(group) {
-      const isBhutan = group.popup_name.toLowerCase().includes("bhutan")
-      setUrlImage(isBhutan ? "https://simplefi.s3.us-east-2.amazonaws.com/backgroundBt.jpeg" : "https://simplefi.s3.us-east-2.amazonaws.com/edge-bg.jpg")
-    }
-  }, [group])
 
   if(isLoading) {
     return <LoadingFallback />
@@ -30,10 +22,10 @@ const CheckoutPage = () => {
     <div 
       className="min-h-screen w-full py-8 flex items-center justify-center"
       style={{
-        backgroundImage: `url(${urlImage})`,
+        backgroundImage:  group.express_checkout_background ? `url(${group.express_checkout_background})` : `url(https://simplefi.s3.us-east-2.amazonaws.com/edge-bg.jpg)`,
         backgroundSize: "cover",
         backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
+        backgroundRepeat: "no-repeat",  
         backgroundAttachment: "fixed"
       }}
     >

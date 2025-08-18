@@ -78,20 +78,20 @@ const QRcode = ({check_in_code, isOpen, onOpenChange}: {check_in_code: string, i
               </div>
               <div className="text-center space-y-2">
                 <p className="text-lg font-mono">{check_in_code}</p>
-                <p className="text-sm text-gray-500">Use este código para registrarse en el evento</p>
+                <p className="text-sm text-gray-500">Use this code to check in</p>
               </div>
               <Button 
                 onClick={handleDownload}
                 className="flex items-center gap-2"
                 variant="outline"
-                aria-label="Descargar código QR"
+                aria-label="Download QR code"
               >
                 <Download className="h-4 w-4" />
-                <span>Descargar QR</span>
+                <span>Download QR</span>
               </Button>
             </div>
           ) : (
-            <p className="text-lg text-gray-500 text-center">No hay código disponible</p>
+            <p className="text-lg text-gray-500 text-center">No code available</p>
           )}
         </div>
       </DialogContent>
