@@ -169,12 +169,19 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
 
       {fields.has("local_resident") && (
         <div style={{ marginTop: '24px' }}>
-          <CheckboxForm
-            label={city?.slug === 'edge-patagonia' ? 'I am a LATAM citizen/San Martín resident' : `Are you a ${dynamicForm[city?.slug ?? '']?.local || city?.location} local?`}
+          <SelectForm
+            label="Are you a local resident?"
             id="local_resident"
-            checked={formData.local_resident || false}
-            onCheckedChange={(checked: boolean) => handleChange('local_resident', checked === true)}
-          />
+            value={formData.local_resident === null ? "" : formData.local_resident === true ? "yes" : "no"}
+            onChange={(value) => handleChange("local_resident", value === "yes" ? true : false)}
+            error={errors.local_resident}
+            isRequired
+            placeholder="Select..."
+            options={[
+              { value: "yes", label: "Yes" },
+              { value: "no", label: "No" },
+            ]}
+          />  
         </div>
       )}
 

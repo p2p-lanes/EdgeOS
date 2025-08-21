@@ -20,7 +20,6 @@ import useInitForm from './hooks/useInitForm'
 import { useCityProvider } from "@/providers/cityProvider"
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
-import { dynamicForm } from "../../../../constants"
 import AccomodationForm from "./components/AccomodationForm"
 import { useApplication } from "@/providers/applicationProvider"
 import useGetFields from "./hooks/useGetFields"
@@ -70,7 +69,6 @@ export default function FormPage() {
     const formValidation = validateForm()
     if (formValidation.isValid) {
       const response = await handleSaveForm(formData)
-      console.log('response', response)
     } else {
       const missingFields = formValidation.errors.map(error => error.field).join(', ')
       toast.error("Error", {

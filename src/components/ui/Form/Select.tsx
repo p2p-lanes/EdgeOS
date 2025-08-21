@@ -24,8 +24,8 @@ const SelectForm = ({ label, id, value, onChange, error, isRequired = false, pla
           {label}
         </LabelRequired>
         <Select onValueChange={(value) => onChange(value)} value={value}>
-          <SelectTrigger id={id} className={error ? 'border-red-500' : ''}>
-            <SelectValue placeholder={placeholder} />
+          <SelectTrigger id={id} className={error ? 'border-red-500' : ''} >
+            <SelectValue placeholder={placeholder} className="text-sm text-muted-foreground"/>
           </SelectTrigger>
           <SelectContent>
             {options.map((option) => (

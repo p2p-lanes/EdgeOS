@@ -39,6 +39,7 @@ const useSavesForm = () => {
       processedData = {
         ...processedData,
         gender: formData.gender_specify,
+        local_resident: formData.local_resident === 'yes' ? true : false,
       };
       delete processedData.gender_specify;
     }
