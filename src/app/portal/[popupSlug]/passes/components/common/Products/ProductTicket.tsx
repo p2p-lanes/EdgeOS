@@ -26,7 +26,7 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
   const { isEditing } = usePassesProvider()
   
   // Check if this is a week product with month purchased/selected from same attendee
-  const isWeekWithMonth = product.category === 'week' && hasMonthPurchased && !product.purchased
+  const isWeekWithMonth = (product.category === 'week' || product.category === 'local week') && hasMonthPurchased && !product.purchased
 
   if (product.category === 'day') { 
     return <ProductDay product={product} onClick={onClick} defaultDisabled={defaultDisabled} hasMonthPurchased={hasMonthPurchased}/>

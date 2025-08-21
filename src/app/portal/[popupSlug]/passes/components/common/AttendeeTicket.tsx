@@ -31,7 +31,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
 
   const hasDayProducts = standardProducts.some(product => product.category === 'day');
   const firstDayProductIndex = standardProducts.findIndex(product => product.category === 'day');
-  const hasMonthPurchased = attendee.products.some(product => product.category === 'month' && (product.purchased || product.selected))
+  const hasMonthPurchased = attendee.products.some(product => (product.category === 'month' || product.category === 'local month') && (product.purchased || product.selected))
 
   const handleEditAttendee = () => {
     handleEdit(attendee)
@@ -125,7 +125,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                     onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
                   />
                   {
-                    product.category === 'month' && (
+                    product.category === 'month' || product.category === 'local month' && (
                       <Separator className="my-1" />
                     )
                   }

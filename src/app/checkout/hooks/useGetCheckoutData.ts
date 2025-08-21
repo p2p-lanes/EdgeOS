@@ -30,7 +30,7 @@ const useGetCheckoutData = () => {
       setDiscount({discount_value: response.data.discount_percentage, discount_type: 'percentage', city_id: response.data.popup_city_id})
       setIsLoading(false)
     } catch (error: any) {
-      setError(`Error fetching group data: ${error.response.data.detail}`)
+      setError(`Error fetching group data: ${error.response?.data?.detail}`)
       setIsLoading(false)
     } finally {
       setIsLoading(false)

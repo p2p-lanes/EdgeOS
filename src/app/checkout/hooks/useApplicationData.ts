@@ -74,7 +74,8 @@ export const useApplicationData = ({ groupPopupCityId }: UseApplicationDataProps
               organization: matchingApplication.organization || "",
               role: matchingApplication.role || "",
               gender: matchingApplication.gender?.toLowerCase() || "",
-              email_verified: true
+              email_verified: true,
+              local_resident: matchingApplication.local_resident !== null ? matchingApplication.local_resident === true ? "yes" : "no" : ""
             });
           } else {
             // User has no matching application, just set email

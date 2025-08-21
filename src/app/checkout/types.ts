@@ -7,6 +7,7 @@ export interface FormDataProps {
   role: string | null;
   gender: string;
   email_verified: boolean;
+  local_resident: string;
 }
 
 export interface GroupData {

@@ -1,5 +1,5 @@
 import { AttendeeProps } from '@/types/Attendee';
-import { createContext, ReactNode, useContext, useMemo, useState, useEffect, useCallback } from 'react';
+import { createContext, ReactNode, useContext, useMemo, useState, useEffect, useCallback, useRef } from 'react';
 import { sortAttendees } from '@/helpers/filters';
 import useGetPassesData from '@/hooks/useGetPassesData';
 import { getProductStrategy } from '@/strategies/ProductStrategies';
@@ -37,6 +37,8 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   const { products } = useGetPassesData()
   const { getCity } = useCityProvider()
   const city = getCity()
+  const localResident = application?.local_resident || false
+  const attendeePassesRef = useRef<AttendeeProps[]>([])
 
   const toggleProduct = useCallback((attendeeId: number, product: ProductsPass) => {
     if (!product) return;
@@ -53,14 +55,22 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         const purchaseStrategy = getPurchaseStrategy();
       
         const attendeeProducts = products
-          .filter((product: ProductsPass) => product.attendee_category === attendee.category && product.is_active)
+          .filter((product: ProductsPass) => 
+            product.attendee_category === attendee.category && 
+            product.is_active &&
+            (
+              localResident 
+                ? (product.category.includes('local')) 
+                : (product.category !== 'local week' && product.category !== 'local month')
+            )
+          )
           .map((product: ProductsPass) => {
             const originalQuantity = product.category === 'day' ? attendees.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.quantity ?? 0 : 1
             return {
               ...product,
               original_quantity: originalQuantity,
               quantity: originalQuantity,
-              selected: attendeePasses.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.selected || false,
+              selected: attendeePassesRef.current.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.selected || false,
               attendee_id: attendee.id,
               original_price: product.price,
               disabled: false,
@@ -75,7 +85,11 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
       });
       setAttendeePasses(initialAttendees);
     }
-  }, [attendees, products, discountApplied, isEditing]);
+  }, [attendees, products, discountApplied, isEditing, localResident]);
+
+  useEffect(() => {
+    attendeePassesRef.current = attendeePasses
+  }, [attendeePasses])
 
   const toggleEditing = useCallback((editing?: boolean) => {
     setAttendeePasses(attendeePasses.map(attendee => ({
@@ -90,7 +104,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     if(city?.id && discountApplied.city_id !== city?.id){
       setDiscountApplied({discount_value: 0, discount_type: 'percentage'})
     }
-  }, [city?.id])
+  }, [city?.id, discountApplied.city_id])
 
   useEffect(() => {
     if(application?.discount_assigned && application?.discount_assigned > discountApplied.discount_value){

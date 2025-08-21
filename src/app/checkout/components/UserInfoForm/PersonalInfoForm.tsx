@@ -4,6 +4,7 @@ import { GenderOption } from "../../types";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { LabelRequired } from "@/components/ui/label";
+import SelectForm from "@/components/ui/Form/Select";
 import { GENDER_OPTIONS } from "@/constants/util";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
@@ -17,6 +18,7 @@ interface PersonalInfoFormProps {
     role: string | null;
     gender: string;
     email: string;
+    local_resident?: string;
   };
   handleInputChange: (field: string, value: string) => void;
   handleChangeEmail?: () => void;
@@ -141,6 +143,20 @@ const PersonalInfoForm = ({
           </>
         )
       }
+
+      <SelectForm
+        label="Local resident"
+        id="local_resident"
+        value={formData.local_resident || ""}
+        onChange={(value) => handleInputChange("local_resident", value)}
+        error={errors.local_resident}
+        isRequired
+        placeholder="Are you a local resident?"
+        options={[
+          { value: "yes", label: "Yes" },
+          { value: "no", label: "No" },
+        ]}
+      />  
       
       <RadioGroupForm
         label="Gender"

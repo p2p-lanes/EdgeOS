@@ -30,6 +30,7 @@ const useCheckoutState = () => {
       // Guardar datos en cookies
       setCookie(JSON.stringify({
         ...formData, 
+        local_resident: formData.local_resident === "yes" ? true : false,
         group_id: groupData.id, 
         popup_city_id: groupData.popup_city_id
       }));
@@ -37,7 +38,7 @@ const useCheckoutState = () => {
       // Enviamos la solicitud con el header específico para esta petición
       const response = await instance.post(
         `/groups/${groupParam || group}/new_member`, 
-        { ...formData }
+        { ...formData, local_resident: formData.local_resident === "yes" ? true : false }
       );
 
       const application = response.data;
