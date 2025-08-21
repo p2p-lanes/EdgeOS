@@ -18,7 +18,7 @@ interface PersonalInfoFormProps {
     role: string | null;
     gender: string;
     email: string;
-    local_resident?: string;
+    local_resident: string;
   };
   handleInputChange: (field: string, value: string) => void;
   handleChangeEmail?: () => void;
@@ -53,6 +53,7 @@ const PersonalInfoForm = ({
       setGenderValue('')
     }
   }, [formData.gender])
+
 
   return (
     <div className="space-y-4 animate-in fade-in duration-500">      
@@ -145,13 +146,16 @@ const PersonalInfoForm = ({
       }
 
       <SelectForm
-        label="Local resident"
+        label="Are you a local resident?"
         id="local_resident"
-        value={formData.local_resident || ""}
-        onChange={(value) => handleInputChange("local_resident", value)}
+        value={formData.local_resident}
+        onChange={(value) => {
+          if (value === formData.local_resident) return;
+          handleInputChange("local_resident", value);
+        }}
         error={errors.local_resident}
         isRequired
-        placeholder="Are you a local resident?"
+        placeholder="Select..."
         options={[
           { value: "yes", label: "Yes" },
           { value: "no", label: "No" },

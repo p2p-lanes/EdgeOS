@@ -105,6 +105,13 @@ export const useEmailVerification = ({ email, onVerificationSuccess }: UseEmailV
         
         // Limpiar cualquier error
         setVerificationError(null);
+        // Detener countdown e intervalo para evitar renders cada segundo
+        if (timerRef.current) {
+          clearInterval(timerRef.current);
+          timerRef.current = null;
+        }
+        setCountdown(0);
+        setShowVerificationInput(false);
         
         // Notificar éxito
         onVerificationSuccess(token);

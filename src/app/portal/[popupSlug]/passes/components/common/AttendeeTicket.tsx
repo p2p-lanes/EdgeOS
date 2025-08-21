@@ -125,7 +125,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                     onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
                   />
                   {
-                    product.category === 'month' || product.category === 'local month' && (
+                    (product.category === 'month' || product.category === 'local month') && (
                       <Separator className="my-1" />
                     )
                   }

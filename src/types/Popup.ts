@@ -16,4 +16,5 @@ export type PopupsProps = {
   allows_spouse?: boolean;
   allows_children?: boolean;
   allows_coupons?: boolean;
+  ticketing_banner_description?: string;
 }
