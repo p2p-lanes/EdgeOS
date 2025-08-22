@@ -4,7 +4,10 @@ import { useCityProvider } from "@/providers/cityProvider"
 import { useEffect, useMemo, useState } from "react"
 import useGetFields from "./useGetFields"
 
-const useProgress = (formData: any) => {
+type FieldValue = string | boolean | string[] | string[][] | null
+type FormData = Record<string, FieldValue>
+
+const useProgress = (formData: FormData) => {
   const [progress, setProgress] = useState(0)
   const { getCity } = useCityProvider()
   const city = getCity()
@@ -20,6 +23,11 @@ const useProgress = (formData: any) => {
         fields: ['first_name', 'last_name', 'telegram', 'gender', 'age', 'email', 'local_resident'].filter(f => fields.has(f)),
         required: true
       },
+      // {
+      //   name: 'personalInformation',
+      //   fields: ['first_name', 'last_name', 'telegram', 'gender', 'age', 'email', 'local_resident'].filter(f => fields.has(f)),
+      //   required: formData.local_resident !== null
+      // },
       {
         name: 'personalInformation',
         fields: ['gender_specify'].filter(f => fields.has(f)),
@@ -71,10 +79,15 @@ const useProgress = (formData: any) => {
     const validSections = sections.filter(section => section.fields.length > 0)
     const totalSections = validSections.filter(section => section.required).length
     
+    const isFieldValueFilled = (field: string) => {
+      const value = formData[field]
+      if (Array.isArray(value)) return value.length > 0
+      if (typeof value === 'boolean') return true // treat both true and false as filled
+      return Boolean(value)
+    }
+
     const filledSections = validSections.filter(section => 
-      section.required && section.fields.every(field => 
-        Array.isArray(formData[field]) ? formData[field].length > 0 : Boolean(formData[field])
-      )
+      section.required && section.fields.every(field => isFieldValueFilled(field))
     ).length
 
     setProgress(totalSections > 0 ? (filledSections / totalSections) * 100 : 0)

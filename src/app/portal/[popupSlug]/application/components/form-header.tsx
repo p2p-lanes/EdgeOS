@@ -51,9 +51,9 @@ export function FormHeader() {
               How to join Edge Patagonia:
             </p>
             <div className="text-sm text-muted-foreground ml-1">
-              <p> - Apply & buy a ticket</p>
-              <p> - Decide on coming solo / with a residency, then book accommodation.</p>
-              <p> - Buy flights and get excited!</p>
+              <p> 1.  Apply & buy a ticket</p>
+              <p> 2. Decide on coming solo / with a residency, then book accommodation.</p>
+              <p> 3. Buy flights and get excited!</p>
             </div>
           </div>
         )}

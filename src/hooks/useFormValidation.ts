@@ -46,6 +46,9 @@ export const useFormValidation = (initialData: FormData) => {
       if(name === 'booking_confirmation') {
         if(!formData.is_renter) return '';
       }
+      if(name === 'local_resident') {
+        return value === null ? 'This field is required' : ''
+      }
       if(name === 'social_media') {
         if(fields.has('video_url') && validateVideo) return '';
       }

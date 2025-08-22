@@ -170,7 +170,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
       {fields.has("local_resident") && (
         <div style={{ marginTop: '24px' }}>
           <SelectForm
-            label="Are you a local resident?"
+            label="Are you from Central / South America or a San Martín de los Andes resident?"
             id="local_resident"
             value={formData.local_resident === null ? "" : formData.local_resident === true ? "yes" : "no"}
             onChange={(value) => handleChange("local_resident", value === "yes" ? true : false)}

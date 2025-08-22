@@ -39,14 +39,18 @@ const useSavesForm = () => {
       processedData = {
         ...processedData,
         gender: formData.gender_specify,
-        local_resident: formData.local_resident === 'yes' ? true : false,
       };
       delete processedData.gender_specify;
     }
     
+    const normalizedLocalResident = typeof formData.local_resident === 'string'
+      ? (formData.local_resident === 'yes' ? true : formData.local_resident === 'no' ? false : null)
+      : (formData.local_resident as boolean | null)
+
     processedData = {
       ...processedData,
       residencies_interested_in: formData.interested_in_residency ? formData.residencies_interested_in : [],
+      local_resident: normalizedLocalResident,
     }
     
     delete processedData.interested_in_residency
