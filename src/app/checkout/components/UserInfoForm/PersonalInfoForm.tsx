@@ -146,7 +146,7 @@ const PersonalInfoForm = ({
       }
 
       <SelectForm
-        label="Are you a local resident?"
+        label="Are you a LATAM citizen / San Martin resident?"
         id="local_resident"
         value={formData.local_resident}
         onChange={(value) => {
