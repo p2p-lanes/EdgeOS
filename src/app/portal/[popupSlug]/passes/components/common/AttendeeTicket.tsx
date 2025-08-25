@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator"
 import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import QRcode from "./QRcode"
+import { useApplication } from "@/providers/applicationProvider"
 
 const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void, isDayCheckout?: boolean  }) => {
   const standardProducts = attendee.products
@@ -24,6 +25,8 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
     });
   const { getCity } = useCityProvider()
   const city = getCity()
+  const { getRelevantApplication } = useApplication()
+  const application = getRelevantApplication()
   const { handleEdit, handleCloseModal, modal, handleDelete } = useModal()
   const { removeAttendee, editAttendee } = useAttendee()
   const hasPurchased = attendee.products.some((product) => product.purchased)
@@ -31,7 +34,8 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
 
   const hasDayProducts = standardProducts.some(product => product.category === 'day');
   const firstDayProductIndex = standardProducts.findIndex(product => product.category === 'day');
-  const hasMonthPurchased = attendee.products.some(product => (product.category === 'month' || product.category === 'local month') && (product.purchased || product.selected))
+  const hasMonthPurchased = attendee.products.some(product => (product.category === 'month' || product.category === 'month local') && (product.purchased || product.selected))
+  const isLocalResident = application?.local_resident
 
   const handleEditAttendee = () => {
     handleEdit(attendee)
@@ -125,12 +129,18 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                     onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
                   />
                   {
-                    (product.category === 'month' || product.category === 'local month') && (
+                    (product.category === 'month' || product.category === 'month local') && (
                       <Separator className="my-1" />
                     )
                   }
                 </React.Fragment>
               ))
+            }
+
+            {
+              (isLocalResident && standardProducts.length > 0) && (
+                <p className="text-sm font-medium text-neutral-500 text-right mt-2">ID Required at check-in *</p>
+              )
             }
             {
               !hasPurchased && (

@@ -36,10 +36,10 @@ export const filterProductsToPurchase = (products: ProductsPass[], editableMode:
   const reducedProducts = products.reduce((acc: ProductsPass[], product) => {
     const isDayProduct = product.category === 'day'
     const isWeekProduct = product.category === 'week' || product.category === 'local week'
-    const isMonthProduct = product.category === 'month' || product.category === 'local month'
+    const isMonthProduct = product.category === 'month' || product.category === 'month local'
     const isPatreonProduct = product.category === 'patreon'
 
-    const hasMonth = products.some(p => (p.category === 'month' || p.category === 'local month') && (p.selected || p.purchased) && !p.edit && p.attendee_category === product.attendee_category)
+    const hasMonth = products.some(p => (p.category === 'month' || p.category === 'month local') && (p.selected || p.purchased) && !p.edit && p.attendee_category === product.attendee_category)
     
     if((!editableMode && !product.selected) || (!product.purchased && !product.selected)) return acc
 

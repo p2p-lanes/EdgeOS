@@ -61,7 +61,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
             (
               localResident 
                 ? (product.category.includes('local')) 
-                : (product.category !== 'local week' && product.category !== 'local month')
+                : (product.category !== 'local week' && product.category !== 'month local')
             )
           )
           .map((product: ProductsPass) => {
