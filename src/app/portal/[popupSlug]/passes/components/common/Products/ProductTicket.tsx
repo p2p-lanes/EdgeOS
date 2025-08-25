@@ -37,7 +37,7 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
       onClick={disabled || (purchased && !isEditing) ? undefined : () => onClick(product.attendee_id, product)}
       disabled={disabled || (purchased && !isEditing)}
       className={cn(
-        'flex items-center gap-2 border border-neutral-200 rounded-md p-2 relative h-[42px]',
+        'flex items-center gap-2 border border-neutral-200 rounded-md p-2 relative',
         variants[
           (selected && purchased && !disabled) ? 'edit' : 
           purchased ? 'purchased' : 
@@ -49,24 +49,19 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
       )}
     >
       <div className="flex justify-between w-full">
-        <div className="flex md:items-center md:gap-2 flex-col md:flex-row">
-          <div className="flex items-center gap-2 pl-2">
-            {/* {
-              !product.selected && !product.purchased && (
-                <Plus className="w-4 h-4" />
-              )
-            } */}
-            <Ticket className="w-4 h-4" />
+        <div className="flex items-center justify-center">
+          <Ticket className="w-4 h-4" />
+          <div className="flex flex-col pl-3 ">
             <p className="font-semibold text-sm">{product.name}</p>
-          </div>
 
-          {
-            product.start_date && product.end_date && (
-              <span className={cn(`text-xs text-muted-foreground ${product.purchased ? 'text-white' : ''}`, disabled && 'text-neutral-300')}>
-                {formatDate(product.start_date, {day: 'numeric', month: 'short'})} to {formatDate(product.end_date, {day: 'numeric', month: 'short'})}
-              </span>
-            )
-          }
+            {
+              product.start_date && product.end_date && (
+                <span className={cn(`text-xs text-left text-muted-foreground ${product.purchased ? 'text-white' : ''}`, disabled && 'text-neutral-300')}>
+                  {formatDate(product.start_date, {day: 'numeric', month: 'short'})} to {formatDate(product.end_date, {day: 'numeric', month: 'short'})}
+                </span>
+              )
+            }
+          </div>
         </div>
 
         <div className="flex items-center gap-2">
