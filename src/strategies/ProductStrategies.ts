@@ -185,7 +185,7 @@ class LocalWeekProductStrategy implements ProductStrategy {
       if (attendee.id !== attendeeId) return attendee;
 
       const willBeSelected = !product.selected;
-      const monthProduct = attendee.products.find(p => p.category === 'month local');
+      const monthProduct = attendee.products.find(p => p.category === 'local month');
 
       const updatedProducts = attendee.products.map(p => ({
         ...p,
@@ -206,8 +206,8 @@ class LocalWeekProductStrategy implements ProductStrategy {
         products: updatedProducts.map(p => ({
           ...p,
           quantity: p.category === 'day' && shouldSelectMonth && !p.purchased ? 0 : p.quantity,
-          selected: p.category === 'month local' ? shouldSelectMonth : p.category === 'day' && shouldSelectMonth ? false : p.selected,
-          edit: p.category === 'month local' ? hasEdited : p.edit
+          selected: p.category === 'local month' ? shouldSelectMonth : p.category === 'day' && shouldSelectMonth ? false : p.selected,
+          edit: p.category === 'local month' ? hasEdited : p.edit
         }))
       };
     });
@@ -241,7 +241,7 @@ export const getProductStrategy = (product: ProductsPass, isEditing: boolean): P
       return new PatreonProductStrategy();
     case 'month':
       return new MonthProductStrategy();
-    case 'month local':
+    case 'local month':
       return new LocalMonthProductStrategy();
     case 'week':
       return new WeekProductStrategy();

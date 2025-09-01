@@ -15,14 +15,35 @@ import { Button } from "@/components/ui/button"
 import QRcode from "./QRcode"
 import { useApplication } from "@/providers/applicationProvider"
 
+const getCategoryPriority = (category: string): number => {
+  const normalized = category.toLowerCase()
+  if (normalized === 'day') return 999
+
+  const isLocal = normalized.includes('local')
+  const isWeek = normalized.includes('week')
+  const isMonth = normalized.includes('month')
+
+  if (!isLocal && isMonth) return 0
+  if (!isLocal && isWeek) return 1
+  if (isLocal && isMonth) return 2
+  if (isLocal && isWeek) return 3
+  return 4
+}
+
+const sortProductsByPriority = (a: ProductsPass, b: ProductsPass): number => {
+  if (a.category === 'day' && b.category !== 'day') return 1
+  if (a.category !== 'day' && b.category === 'day') return -1
+
+  const priorityA = getCategoryPriority(a.category)
+  const priorityB = getCategoryPriority(b.category)
+  if (priorityA !== priorityB) return priorityA - priorityB
+  return 0
+}
+
 const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void, isDayCheckout?: boolean  }) => {
   const standardProducts = attendee.products
     .filter((product) => product.category !== 'patreon' && (isDayCheckout ? product.category === 'day' : true))
-    .sort((a, b) => {
-      if (a.category === 'day' && b.category !== 'day') return 1;
-      if (a.category !== 'day' && b.category === 'day') return -1;
-      return 0;
-    });
+    .sort(sortProductsByPriority);
   const { getCity } = useCityProvider()
   const city = getCity()
   const { getRelevantApplication } = useApplication()
@@ -34,7 +55,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
 
   const hasDayProducts = standardProducts.some(product => product.category === 'day');
   const firstDayProductIndex = standardProducts.findIndex(product => product.category === 'day');
-  const hasMonthPurchased = attendee.products.some(product => (product.category === 'month' || product.category === 'month local') && (product.purchased || product.selected))
+  const hasMonthPurchased = attendee.products.some(product => (product.category === 'month' || product.category === 'local month') && (product.purchased || product.selected))
   const isLocalResident = application?.local_resident
 
   const handleEditAttendee = () => {
@@ -129,7 +150,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                     onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
                   />
                   {
-                    (product.category === 'month' || product.category === 'month local') && (
+                    (product.category === 'month' || product.category === 'local month') && (
                       <Separator className="my-1" />
                     )
                   }

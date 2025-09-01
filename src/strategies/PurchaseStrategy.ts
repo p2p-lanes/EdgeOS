@@ -6,7 +6,7 @@ interface PurchaseStrategy {
 
 class DefaultPurchaseStrategy implements PurchaseStrategy {
   applyPurchaseRules(products: ProductsPass[], attendeeProducts: ProductsPass[]): ProductsPass[] {
-    const hasMonthlyPass = attendeeProducts?.some(p => p.category === 'month' || p.category === 'month local');
+    const hasMonthlyPass = attendeeProducts?.some(p => p.category === 'month' || p.category === 'local month');
     
     return products.map(product => ({
       ...product,

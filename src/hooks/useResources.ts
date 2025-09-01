@@ -10,9 +10,8 @@ const useResources = () => {
   const city = getCity()
 
   const isEdge = city?.slug === 'edge-esmeralda' || city?.slug === 'buenos-aires'
-  const isEdgeAustin = city?.slug === 'edge-austin'
   const applicationAccepted = application?.status === 'accepted'
-  const canSeeAttendees = applicationAccepted && isEdge
+  const canSeeAttendees = applicationAccepted
 
   const resources: Resource[] = [
     {

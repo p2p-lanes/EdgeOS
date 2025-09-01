@@ -57,12 +57,12 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         const attendeeProducts = products
           .filter((product: ProductsPass) => 
             product.attendee_category === attendee.category && 
-            product.is_active &&
-            (
-              localResident 
-                ? (product.category.includes('local')) 
-                : (product.category !== 'local week' && product.category !== 'month local')
-            )
+            product.is_active 
+            // (
+            //   localResident 
+            //     ? (product.category.includes('local')) 
+            //     : (product.category !== 'local week' && product.category !== 'local month')
+            // )
           )
           .map((product: ProductsPass) => {
             const originalQuantity = product.category === 'day' ? attendees.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.quantity ?? 0 : 1

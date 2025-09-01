@@ -7,6 +7,9 @@ import { GroupProps } from '@/types/Group'
 import MemberFormModal from './AddMemberModal'
 import ImportMembersModal from './ImportMembersModal'
 import WelcomeMessageModal from './WelcomeMessageModal'
+import { useParams } from 'next/navigation'
+import { useApplication } from '@/providers/applicationProvider'
+import { useCityProvider } from '@/providers/cityProvider'
 
 interface TeamHeaderProps {
   totalMembers: number
@@ -20,6 +23,7 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded, onGroupUpdated }: Team
   const [isImportModalOpen, setIsImportModalOpen] = useState(false)
   const [isWelcomeMessageModalOpen, setIsWelcomeMessageModalOpen] = useState(false)
   const [isCopied, setIsCopied] = useState(false)
+  const {getCity} = useCityProvider()
 
   const handleModalClose = () => {
     setIsModalOpen(false)
@@ -56,7 +60,14 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded, onGroupUpdated }: Team
 
   const handleCopyCheckoutLink = async () => {
     const baseUrl = getBaseUrl()
-    const checkoutLink = `${baseUrl}/checkout?group=${group.slug}`
+    let checkoutLink = ''
+    if(group.is_ambassador_group){
+      const city = getCity()
+      checkoutLink = `${baseUrl}/${city?.slug}/invite/${group.slug}`
+    }
+    else{
+      checkoutLink = `${baseUrl}/checkout?group=${group.slug}`
+    }
     
     try {
       await navigator.clipboard.writeText(checkoutLink)
