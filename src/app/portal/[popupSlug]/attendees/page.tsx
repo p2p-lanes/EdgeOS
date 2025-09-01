@@ -73,7 +73,7 @@ const Page = () => {
               variant="ghost"
               aria-label="Clear filters"
               onClick={clearFilters}
-              className="bg-white text-black hover:bg-white hover:shadow-md"
+              className="bg-red-500 text-white hover:bg-red-500 hover:shadow-md hover:text-white"
             >
               Clear filters
             </Button>
