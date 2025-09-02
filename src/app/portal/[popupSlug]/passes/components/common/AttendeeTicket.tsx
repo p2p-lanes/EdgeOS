@@ -1,5 +1,5 @@
 import { AttendeeProps } from "@/types/Attendee"
-import { QrCode, User } from "lucide-react"
+import { ChevronRight, QrCode, User } from "lucide-react"
 import { badgeName } from "../../constants/multiuse"
 import { ProductsPass } from "@/types/Products"
 import { useCityProvider } from "@/providers/cityProvider"
@@ -14,6 +14,8 @@ import React, { useState } from "react"
 import { Button } from "@/components/ui/button"
 import QRcode from "./QRcode"
 import { useApplication } from "@/providers/applicationProvider"
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
+import { cn } from "@/lib/utils"
 
 const getCategoryPriority = (category: string): number => {
   const normalized = category.toLowerCase()
@@ -57,6 +59,16 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
   const firstDayProductIndex = standardProducts.findIndex(product => product.category === 'day');
   const hasMonthPurchased = attendee.products.some(product => (product.category === 'month' || product.category === 'local month') && (product.purchased || product.selected))
   const isLocalResident = application?.local_resident
+
+  // Split products into Local and Common groups while preserving the original order
+  const localProducts = standardProducts.filter(p => p.category === 'local week' || p.category === 'local month')
+  const commonProducts = standardProducts.filter(p => p.category === 'week' || p.category === 'month' || p.category === 'day')
+
+  // Collapsible open states
+  const defaultLocalOpen = isLocalResident ? localProducts.length > 0 : false
+  const defaultCommonOpen = isLocalResident ? localProducts.length === 0 : true
+  const [localOpen, setLocalOpen] = useState(defaultLocalOpen)
+  const [commonOpen, setCommonOpen] = useState(defaultCommonOpen)
 
   const handleEditAttendee = () => {
     handleEdit(attendee)
@@ -129,40 +141,86 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
           </div>
 
           <div className="flex flex-col p-8 gap-2 xl:pr-10">
-            {
-              standardProducts.length === 0 && (
-                <div className="flex w-full h-full justify-center items-center">
-                  <p className="text-sm font-medium text-neutral-500">Coming soon.</p>
-                </div>
-              )
-            }
-            {
-              standardProducts.map((product, index) => (
-                <React.Fragment key={`${product.id}-${attendee.id}`}>
-                  {/* Add separator before the first day product */}
-                  {index === firstDayProductIndex && hasDayProducts && !isDayCheckout && (
-                    <Separator className="my-1" />
-                  )}
-                  <Product 
-                    product={product} 
-                    defaultDisabled={!toggleProduct} 
-                    hasMonthPurchased={hasMonthPurchased}
-                    onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
-                  />
-                  {
-                    (product.category === 'month' || product.category === 'local month') && (
-                      <Separator className="my-1" />
-                    )
-                  }
-                </React.Fragment>
-              ))
-            }
+            {standardProducts.length === 0 ? (
+              <div className="flex w-full h-full justify-center items-center">
+                <p className="text-sm font-medium text-neutral-500">Coming soon.</p>
+              </div>
+            ) : (
+              <div className="flex flex-col gap-3">
+                {localProducts.length > 0 && (
+                  <Collapsible open={localOpen} onOpenChange={setLocalOpen} className="space-y-2">
+                    <CollapsibleTrigger className="w-full bg-accent rounded-md" aria-label="Toggle Local Tickets">
+                      <div className="flex justify-between items-center p-3">
+                        <div className="flex items-center gap-2">
+                          <ChevronRight className={cn("h-4 w-4 transition-transform duration-200", localOpen && "transform rotate-90")} />
+                          <span className="font-medium">Latam Citizens</span>
+                        </div>
+                      </div>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="transition-all duration-100 ease-in-out data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown">
+                      <div className="flex flex-col gap-2">
+                        {localProducts.map((product) => (
+                          <React.Fragment key={`${product.id}-${attendee.id}`}>
+                            <Product 
+                              product={product} 
+                              defaultDisabled={!toggleProduct} 
+                              hasMonthPurchased={hasMonthPurchased}
+                              onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
+                            />
+                            {(product.category === 'month' || product.category === 'local month') && (
+                              <Separator className="my-1" />
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </div>
+                      {
+                        (isLocalResident && standardProducts.length > 0) && (
+                          <p className="text-sm font-medium text-neutral-500 text-right mt-2">ID Required at check-in *</p>
+                        )
+                      }
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
 
-            {
-              (isLocalResident && standardProducts.length > 0) && (
-                <p className="text-sm font-medium text-neutral-500 text-right mt-2">ID Required at check-in *</p>
-              )
-            }
+                {commonProducts.length > 0 && (
+                  <Collapsible open={commonOpen} onOpenChange={setCommonOpen} className="space-y-2">
+                    <CollapsibleTrigger className="w-full bg-accent rounded-md" aria-label="Toggle Common Tickets">
+                      <div className="flex justify-between items-center p-3">
+                        <div className="flex items-center gap-2">
+                          <ChevronRight className={cn("h-4 w-4 transition-transform duration-200", commonOpen && "transform rotate-90")} />
+                          <span className="font-medium">Standard</span>
+                        </div>
+                      </div>
+                    </CollapsibleTrigger>
+                    <CollapsibleContent className="transition-all duration-100 ease-in-out data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown">
+                      <div className="flex flex-col gap-2">
+                        {(() => {
+                          const hasDayInCommon = commonProducts.some(p => p.category === 'day')
+                          const firstDayIndexCommon = commonProducts.findIndex(p => p.category === 'day')
+                          return commonProducts.map((product, index) => (
+                            <React.Fragment key={`${product.id}-${attendee.id}`}>
+                              {index === firstDayIndexCommon && hasDayInCommon && !isDayCheckout && (
+                                <Separator className="my-1" />
+                              )}
+                              <Product 
+                                product={product} 
+                                defaultDisabled={!toggleProduct} 
+                                hasMonthPurchased={hasMonthPurchased}
+                                onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
+                              />
+                              {(product.category === 'month' || product.category === 'local month') && (
+                                <Separator className="my-1" />
+                              )}
+                            </React.Fragment>
+                          ))
+                        })()}
+                      </div>
+                    </CollapsibleContent>
+                  </Collapsible>
+                )}
+              </div>
+            )}
+
             {
               !hasPurchased && (
                 <OptionsMenu onEdit={handleEditAttendee} onDelete={handleRemoveAttendee} className="absolute top-2 right-3 hidden xl:flex"/>

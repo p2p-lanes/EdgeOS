@@ -52,7 +52,7 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
         <div className="flex items-center justify-center">
           <Ticket className="w-4 h-4" />
           <div className="flex flex-col pl-3 ">
-            <p className="font-semibold text-sm">{product.name}</p>
+            <p className="font-semibold text-sm text-left">{product.name}</p>
 
             {
               product.start_date && product.end_date && (
