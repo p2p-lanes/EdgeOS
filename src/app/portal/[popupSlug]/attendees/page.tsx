@@ -6,6 +6,7 @@ import Permissions from "@/components/Permissions"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Switch } from "../../../../components/ui/switch"
 import { useEffect, useState } from "react"
 import useExportCsv from "./hooks/useExportCsv"
@@ -49,8 +50,9 @@ const Page = () => {
   }, [searchQuery])
 
   return (
-    <Permissions>
-      <div className="flex flex-col h-full max-w-5xl mx-auto p-6">
+    <TooltipProvider>
+      <Permissions>
+        <div className="flex flex-col h-full max-w-5xl mx-auto p-6">
         <div className="flex-none">
           <h1 className="text-2xl font-semibold tracking-tight">Attendee Directory</h1>
           <p className="text-sm text-muted-foreground mt-4">
@@ -80,14 +82,21 @@ const Page = () => {
             </Button>
           )}
           <Dialog open={filtersOpen} onOpenChange={setFiltersOpen}>
-            <DialogTrigger asChild>
-              <Button
-                aria-label="Open filters"
-                className="bg-white text-black hover:bg-white hover:shadow-md"
-              >
-                <ListFilter className="w-4 h-4" />
-              </Button>
-            </DialogTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <Button
+                    aria-label="Open filters"
+                    className="bg-white text-black hover:bg-white hover:shadow-md"
+                  >
+                    <ListFilter className="w-4 h-4" />
+                  </Button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Open search filters</p>
+              </TooltipContent>
+            </Tooltip>
             <DialogContent className="bg-white">
               <DialogHeader>
                 <DialogTitle>Filters</DialogTitle>
@@ -137,14 +146,21 @@ const Page = () => {
             </DialogContent>
           </Dialog>
 
-          <Button
-            aria-label="Export attendees as CSV"
-            className="bg-white text-black hover:bg-white hover:shadow-md"
-            onClick={handleExportCsv}
-            disabled={isExporting}
-          >
-            {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                aria-label="Export attendees as CSV"
+                className="bg-white text-black hover:bg-white hover:shadow-md"
+                onClick={handleExportCsv}
+                disabled={isExporting}
+              >
+                {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Export attendees as CSV</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
 
         <AttendeesTable 
@@ -156,8 +172,9 @@ const Page = () => {
           onPageChange={handlePageChange}
           onPageSizeChange={handlePageSizeChange}
         />
-      </div>
-    </Permissions>
+        </div>
+      </Permissions>
+    </TooltipProvider>
   )
 }
 
