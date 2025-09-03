@@ -9,6 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Switch } from "../../../../components/ui/switch"
 import { useEffect, useState } from "react"
 import useExportCsv from "./hooks/useExportCsv"
+import { FileDown, Loader2, ListFilter } from "lucide-react"
 
 const Page = () => {
   const { 
@@ -84,7 +85,7 @@ const Page = () => {
                 aria-label="Open filters"
                 className="bg-white text-black hover:bg-white hover:shadow-md"
               >
-                Filters
+                <ListFilter className="w-4 h-4" />
               </Button>
             </DialogTrigger>
             <DialogContent className="bg-white">
@@ -142,7 +143,7 @@ const Page = () => {
             onClick={handleExportCsv}
             disabled={isExporting}
           >
-            {isExporting ? 'Exporting...' : 'Export'}
+            {isExporting ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileDown className="w-4 h-4" />}
           </Button>
         </div>
 
