@@ -1,19 +1,15 @@
-import { LogOut, ChevronDown, Star, Github, Medal } from "lucide-react"
+import { Star, Github, User } from "lucide-react"
 import { useState, useEffect } from "react"
 
-import { DropdownMenuItem, DropdownMenuContent, DropdownMenu, DropdownMenuTrigger } from "./DropdownMenu"
-import { AvatarFallback, AvatarImage, Avatar } from "../ui/avatar"
-import { SidebarMenu, SidebarMenuItem, SidebarMenuButton, SidebarFooter } from "./SidebarComponents"
+import { SidebarMenu, SidebarMenuItem, SidebarFooter } from "./SidebarComponents"
 
-import { User } from "@/types/User"
+import { User as UserType } from "@/types/User"
 import PoapMint from "./Poap/PoapMint"
-import { usePoapsProvider } from "@/providers/poapsProvider"
-import { useRouter } from "next/navigation"
+import Link from "next/link"
 
-const FooterMenu = ({handleLogout, user}: {handleLogout: () => void, user: User}) => {
+const FooterMenu = ({handleLogout, user}: {handleLogout: () => void, user: UserType}) => {
   const [stars, setStars] = useState<number | null>(null)
   const repoUrl = "https://github.com/p2p-lanes/EdgeOS"
-  const router = useRouter()
 
   async function getGitHubStars() {
     try {
@@ -59,30 +55,14 @@ const FooterMenu = ({handleLogout, user}: {handleLogout: () => void, user: User}
             </a>
           )}
           <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton size="lg">
-                  <Avatar className="size-8 rounded-lg">
-                    <AvatarImage src="/avatars/01.png" alt="Avatar" />
-                    <AvatarFallback className="rounded-lg">{user?.email?.[0].toUpperCase()}</AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col gap-0.5 text-sm">
-                    <span className="text-xs font-semibold">{user?.email}</span>
-                  </div>
-                  <ChevronDown className="ml-auto size-4 opacity-50" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent align="start" className="w-[--radix-dropdown-menu-trigger-width]">
-                <DropdownMenuItem onClick={() => router.push('/portal/poaps')} className="cursor-pointer my-2 py-2">
-                  <Medal className="mr-2 size-4" />
-                  <span>My Collectibles</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem onClick={handleLogout} className="cursor-pointer my-2 py-2">
-                  <LogOut className="mr-2 size-4" />
-                  <span>Log out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
+             <Link href={"/portal/profile"}>
+              <div className="flex items-center gap-4 p-2 px-4 hover:bg-gray-100 hover:text-gray-700 text-muted-foreground rounded-lg transition-colors cursor-pointer mb-4 mt-4">
+                <User className="w-4 h-4" />
+                <span className="text-sm font-medium">
+                  My Profile
+                </span>
+              </div>
+            </Link>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>
