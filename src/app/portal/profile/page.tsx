@@ -5,16 +5,16 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { MapPin, Calendar, Clock, Edit2, Save, X, User, Mail, MessageSquare, Medal } from "lucide-react"
+import { MapPin, Calendar, Clock, Edit2, Save, X, User, Mail, MessageSquare, Medal, Newspaper, LogOut } from "lucide-react"
 import useGetProfile from "@/hooks/useGetProfile"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
+import InvoiceModal from "../[popupSlug]/passes/components/common/InvoiceModal"
 
 export default function ProfileContent() {
   const { profile, isLoading, error, updateProfile, isUpdating, updateError } = useGetProfile()
   const [userData, setUserData] = useState(profile)
-  const router = useRouter()
-
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editForm, setEditForm] = useState({
     first_name: userData?.first_name,
@@ -26,8 +26,7 @@ export default function ProfileContent() {
     gender: userData?.gender,
     role: userData?.role,
   })
-  
-  const totalDays = userData?.total_days ?? 0
+  const router = useRouter()
 
   useEffect(() => {
     if (!profile) return
@@ -100,6 +99,18 @@ export default function ProfileContent() {
 
   const uniqueCountries = new Set((userData?.popups ?? []).map((popup) => (popup.location ?? "").split(", ").pop())).size
 
+  if(!isLoading && !profile) {
+    return(
+      <div className="flex-1 flex flex-col items-center justify-center h-full">
+        <Card className="p-6 bg-white gap-2">
+          <p className="text-gray-600 text-center">No profile data available.</p>
+          <p className="text-gray-600 text-center">Please contact support if you believe this is an error.</p>
+          <p className="text-red-600 text-center">{error}</p>
+        </Card>
+      </div>
+    )
+  } 
+
   return (
     <div className="flex-1 flex flex-col">
       {/* Header with CTAs */}
@@ -116,9 +127,14 @@ export default function ProfileContent() {
             </Button>
             {/* <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-50 bg-transparent">
               My Referrals
-            </Button>
-            <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-50 bg-transparent">
+            </Button> */}
+            <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-50 bg-transparent" onClick={() => setIsInvoiceModalOpen(true)}>
+              <Newspaper className="h-4 w-4" />
               Invoices
+            </Button>
+            <InvoiceModal isOpen={isInvoiceModalOpen} onClose={() => setIsInvoiceModalOpen(false)} />
+            {/* <Button variant="outline" className="text-gray-700 border-gray-300 hover:bg-gray-50 bg-transparent">
+              <LogOut className="h-4 w-4" />
             </Button> */}
           </div>
         </div>
@@ -130,15 +146,10 @@ export default function ProfileContent() {
           {isLoading && (
             <div className="text-gray-600">Loading profile...</div>
           )}
-          {error && !isLoading && (
-            <div className="text-red-600">{error}</div>
-          )}
           {updateError && (
             <div className="text-red-600 mb-4">{updateError}</div>
           )}
-          {!isLoading && !profile ? (
-            <Card className="p-6 bg-white">No profile data available.</Card>
-          ) : null}
+          
           <Card className="p-6 bg-white mb-8">
             <div className="flex items-center justify-between mb-6">
               <div className="flex items-center gap-4">
