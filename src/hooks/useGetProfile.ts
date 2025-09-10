@@ -8,6 +8,7 @@ export type UpdateCitizenProfilePayload = Partial<
   Pick<CitizenProfile,
     | "first_name"
     | "last_name"
+    | "organization"
     | "primary_email"
     | "secondary_email"
     | "x_user"

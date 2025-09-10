@@ -10,6 +10,7 @@ export interface CitizenProfilePopup {
 export interface CitizenProfile {
   primary_email: string;
   secondary_email: string;
+  organization: string;
   email_validated: boolean;
   first_name: string;
   last_name: string;
