@@ -22,6 +22,8 @@ const HeaderBar = () => {
   const pathSegments = pathname.split('/').filter(Boolean).slice(2) // Eliminar los dos primeros elementos
   const pathsToDisplay = pathSegments.length > 0 ? pathSegments : ['application']
 
+  
+
   return (
     <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-white px-6 w-[100%]">
       <SidebarTrigger />

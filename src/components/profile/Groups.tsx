@@ -32,7 +32,6 @@ const Groups = () => {
   const { groups } = useGetGroups()
   const router = useRouter()
   const { getCity, getPopups } = useCityProvider()
-  const city = getCity()
   const popups = getPopups()
 
   if(groups.length === 0) return null
@@ -41,7 +40,6 @@ const Groups = () => {
     <div className="bg-white rounded-lg border border-gray-200 mb-8">
       <div className="p-6 border-b border-gray-200">
         <h2 className="text-xl font-semibold text-gray-900">My Groups</h2>
-        <p className="text-gray-600">Groups you're part of across different Pop-ups</p>
       </div>
 
       <div className="p-6">

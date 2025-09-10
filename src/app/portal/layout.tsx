@@ -9,8 +9,11 @@ import { BackofficeSidebar } from "@/components/Sidebar/Sidebar"
 import HeaderBar from "@/components/Sidebar/HeaderBar"
 import Providers from "../../components/Providers"
 import { useGetPoaps } from "@/hooks/useGetPoaps"
+import { usePathname } from "next/navigation"
 
 export default function PortalLayout({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname()
+  const isProfilePage = pathname === '/portal/profile'
 
   return (
     <Providers>
@@ -19,7 +22,7 @@ export default function PortalLayout({ children }: { children: React.ReactNode }
         <div className="flex min-h-screen w-[100%]">
           <BackofficeSidebar collapsible="icon" />
           <SidebarInset>
-            <HeaderBar/>
+            {!isProfilePage && <HeaderBar/>}
             <main className="flex-1 w-[100%] bg-neutral-100">
               {children}
             </main>
