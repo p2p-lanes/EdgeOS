@@ -23,6 +23,7 @@ export interface CitizenProfile {
   id: number;
   popups: CitizenProfilePopup[];
   total_days: number;
+  referral_count: number;
 }
 
 

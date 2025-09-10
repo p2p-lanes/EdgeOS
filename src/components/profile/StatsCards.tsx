@@ -33,7 +33,7 @@ const StatsCards = ({userData}: {userData: CitizenProfile | null}) => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-gray-600 mb-1">Referrals</p>
-            <p className="text-3xl font-bold text-gray-900">10</p>
+            <p className="text-3xl font-bold text-gray-900">{userData?.referral_count ?? 0}</p>
           </div>
           <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
             <Speech className="w-6 h-6 text-purple-600" />
