@@ -1,5 +1,5 @@
 import { Button } from '@/components/ui/button'
-import { Check, Edit, Import, Plus, Share2, Users } from 'lucide-react'
+import { Check, Copy, Edit, Import, Plus, Share2, Users } from 'lucide-react'
 import { useState } from 'react'
 import { toast } from 'sonner'
 import { getBaseUrl } from '@/utils/environment'
@@ -10,6 +10,7 @@ import WelcomeMessageModal from './WelcomeMessageModal'
 import { useParams } from 'next/navigation'
 import { useApplication } from '@/providers/applicationProvider'
 import { useCityProvider } from '@/providers/cityProvider'
+import { Badge } from '@/components/ui/badge'
 
 interface TeamHeaderProps {
   totalMembers: number
@@ -89,7 +90,10 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded, onGroupUpdated }: Team
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-bold mb-2">{group.name}</h1>
+        <div className="flex items-center gap-4 mb-2">
+          <h1 className="text-2xl font-bold">{group.name}</h1>
+          <Badge variant={'outline'} className="w-fit mt-1">{group.is_ambassador_group ? 'Ambassador' : 'Group'}</Badge>
+        </div>
         <p className="text-gray-500 text-sm">
           View and manage your group members here. Need to make changes? You can click on a member and edit
           or remove them from the group.
@@ -132,11 +136,11 @@ const TeamHeader = ({ totalMembers, group, onMemberAdded, onGroupUpdated }: Team
           >
             {isCopied ? (
               <>
-                <Check className="w-4 h-4" /> Share Express Checkout link
+                <Check className="w-4 h-4" /> { isAmbassadorGroup ? 'Copy Referral Link' : 'Copy Express Checkout Link'}
               </>
             ) : (
               <>
-                <Share2 className="w-4 h-4" /> Share Express Checkout link
+                <Copy className="w-4 h-4" /> { isAmbassadorGroup ? 'Copy Referral Link' : 'Copy Express Checkout Link'}
               </>
             )}
           </Button>

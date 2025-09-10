@@ -1,7 +1,7 @@
 import { CitizenProfile } from "@/types/Profile"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
-import { Edit2, Save, X, User, Mail, MessageSquare, Calendar } from "lucide-react"
+import { Edit2, Save, X, User, Mail, MessageSquare, Calendar, Building } from "lucide-react"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
 
@@ -61,9 +61,9 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
       </div>
 
       {!isEditing ? (
-        <div className="flex flex-wrap gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {userData?.primary_email && (
-            <div className="flex items-center gap-3 min-w-[300px] flex-1">
+            <div className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-gray-400" />
               <div>
                 <p className="text-sm text-gray-600">Email</p>
@@ -71,17 +71,26 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
               </div>
             </div>
           )}
-          {userData?.secondary_email && (
-            <div className="flex items-center gap-3 min-w-[300px] flex-1">
-              <Mail className="w-5 h-5 text-gray-400" />
+           {userData?.gender && (
+            <div className="flex items-center gap-3">
+              <User className="w-5 h-5 text-gray-400" />
               <div>
-                <p className="text-sm text-gray-600">Secondary Email</p>
-                <p className="text-gray-900">{userData?.secondary_email}</p>
+                <p className="text-sm text-gray-600">Gender</p>
+                <p className="text-gray-900">{userData?.gender}</p>
+              </div>
+            </div>
+          )}
+          {userData?.organization && (
+            <div className="flex items-center gap-3">
+              <Building className="w-5 h-5 text-gray-400" />
+              <div>
+                <p className="text-sm text-gray-600">Organization</p>
+                <p className="text-gray-900">{userData?.organization}</p>
               </div>
             </div>
           )}
           {userData?.x_user && (
-            <div className="flex items-center gap-3 min-w-[300px] flex-1">
+            <div className="flex items-center gap-3">
               <MessageSquare className="w-5 h-5 text-gray-400" />
               <div>
                 <p className="text-sm text-gray-600">X (Twitter)</p>
@@ -90,29 +99,11 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
             </div>
           )}
           {userData?.telegram && (
-            <div className="flex items-center gap-3 min-w-[300px] flex-1">
+            <div className="flex items-center gap-3">
               <MessageSquare className="w-5 h-5 text-gray-400" />
               <div>
                 <p className="text-sm text-gray-600">Telegram</p>
                 <p className="text-gray-900">{userData?.telegram}</p>
-              </div>
-            </div>
-          )}
-          {userData?.gender && (
-            <div className="flex items-center gap-3 min-w-[300px] flex-1">
-              <User className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-sm text-gray-600">Gender</p>
-                <p className="text-gray-900">{userData?.gender}</p>
-              </div>
-            </div>
-          )}
-          {userData?.created_at && (
-            <div className="flex items-center gap-3 min-w-[300px] flex-1">
-              <Calendar className="w-5 h-5 text-gray-400" />
-              <div>
-                <p className="text-sm text-gray-600">Member Since</p>
-                <p className="text-gray-900">{userData?.created_at ? formatDate(userData.created_at) : ""}</p>
               </div>
             </div>
           )}
