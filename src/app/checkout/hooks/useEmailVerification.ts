@@ -68,7 +68,7 @@ export const useEmailVerification = ({ email, onVerificationSuccess }: UseEmailV
       
       // Llamada a la API para enviar código
       await api.post("/citizens/authenticate", {
-        email,
+        email: email.toLowerCase(),
         use_code: true
       });
       
@@ -93,7 +93,7 @@ export const useEmailVerification = ({ email, onVerificationSuccess }: UseEmailV
       setVerificationError(null);
       
       // Llamada a la API para verificar el código con query params
-      const response = await api.post(`/citizens/login?email=${encodeURIComponent(email)}&code=${verificationCode}`);
+      const response = await api.post(`/citizens/login?email=${encodeURIComponent(email.toLowerCase())}&code=${verificationCode}`);
       
       // Si llegamos aquí es porque la API devolvió 200 o 201
       if (response.status === 200 || response.status === 201) {
