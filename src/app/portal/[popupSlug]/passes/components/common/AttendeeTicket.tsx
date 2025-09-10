@@ -173,11 +173,8 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                           </React.Fragment>
                         ))}
                       </div>
-                      {
-                        (isLocalResident && standardProducts.length > 0) && (
-                          <p className="text-sm font-medium text-neutral-500 text-right mt-2">ID Required at check-in *</p>
-                        )
-                      }
+                      <p className="text-sm font-medium text-neutral-500 text-right mt-2">ID Required at check-in *</p>
+                        
                     </CollapsibleContent>
                   </Collapsible>
                 )}
