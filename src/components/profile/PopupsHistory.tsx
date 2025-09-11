@@ -34,6 +34,9 @@ const PopupsHistory = ( {popups}: {popups: CitizenProfilePopup[]}) => {
 
       <div className="p-6">
         <div className="space-y-6">
+          {popups.length === 0 && (
+            <div className="text-center text-gray-600 p-4">No events found</div>
+          )}
           {(popups ?? []).map((popup, index) => (
             <div
               key={index}
