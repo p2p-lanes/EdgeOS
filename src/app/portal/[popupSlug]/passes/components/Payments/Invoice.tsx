@@ -82,7 +82,7 @@ export const Invoice = ({ payment, discount, hasPatreon, imageUrl, clientName }:
         <View style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1}}>
           <Text>Edge Institute Inc</Text>
           <Text>Address: 1300 S 6th St, Austin, TX 78704</Text>
-          <Text>Email: allison@edgecity.live</Text>
+          <Text>Email: syl@edgecity.live</Text>
         </View>
         <View style={{display: 'flex', flexDirection: 'column', gap: 4, flex: 1, alignItems: 'flex-end'}}>
           <Text>Date: {formatDate(payment.created_at)}</Text>
