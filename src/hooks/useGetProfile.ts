@@ -15,6 +15,7 @@ export type UpdateCitizenProfilePayload = Partial<
     | "telegram"
     | "gender"
     | "role"
+    | "picture_url"
   >
 >;
 

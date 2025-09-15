@@ -24,6 +24,7 @@ export interface CitizenProfile {
   popups: CitizenProfilePopup[];
   total_days: number;
   referral_count: number;
+  picture_url: string;
 }
 
 

@@ -1,15 +1,9 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { MapPin, Calendar, Clock, Edit2, Save, X, User, Mail, MessageSquare, Medal, Newspaper, Users, House} from "lucide-react"
 import useGetProfile from "@/hooks/useGetProfile"
-import Image from "next/image"
 import { useRouter } from "next/navigation"
-import InvoiceModal from "../[popupSlug]/passes/components/common/InvoiceModal"
 import Groups from "@/components/profile/Groups"
 import PopupsHistory from "@/components/profile/PopupsHistory"
 import HumanForm from "@/components/profile/HumanForm"
@@ -31,6 +25,7 @@ export default function ProfileContent() {
     telegram: userData?.telegram,
     gender: userData?.gender,
     role: userData?.role,
+    picture_url: userData?.picture_url,
   })
   const router = useRouter()
 
@@ -47,6 +42,7 @@ export default function ProfileContent() {
       telegram: profile.telegram,
       gender: profile.gender,
       role: profile.role,
+      picture_url: profile.picture_url,
     })
   }, [profile])
 
@@ -61,6 +57,7 @@ export default function ProfileContent() {
       telegram: editForm.telegram,
       gender: editForm.gender,
       role: editForm.role,
+      picture_url: editForm.picture_url,
     })
     if (updated) {
       setUserData(updated)
@@ -80,6 +77,7 @@ export default function ProfileContent() {
       telegram: userData.telegram,
       gender: userData.gender,
       role: userData.role,
+      picture_url: userData.picture_url,
     })
     setIsEditing(false)
   }

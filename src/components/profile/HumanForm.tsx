@@ -1,11 +1,16 @@
 import { CitizenProfile } from "@/types/Profile"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
-import { Edit2, Save, X, User, Mail, MessageSquare, Calendar, Building } from "lucide-react"
+import { Edit2, Save, X, User, Mail, MessageSquare, Calendar, Building, Upload, Loader2 } from "lucide-react"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
+import { useState, useRef } from "react"
+import uploadFileToS3 from "@/helpers/upload"
 
 const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel, editForm, setEditForm}: {userData: CitizenProfile | null, isEditing: boolean, setIsEditing: (isEditing: boolean) => void, handleSave: () => void, handleCancel: () => void, editForm: any, setEditForm: (editForm: any) => void}) => {
+  const [isHovering, setIsHovering] = useState(false)
+  const [isUploading, setIsUploading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -15,12 +20,88 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
     })
   }
 
+  const handleAvatarClick = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Validar que sea una imagen
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor selecciona un archivo de imagen válido')
+      return
+    }
+
+    // Validar tamaño del archivo (máximo 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('El archivo es demasiado grande. Por favor selecciona una imagen menor a 5MB')
+      return
+    }
+
+    try {
+      setIsUploading(true)
+      setIsEditing(true)
+      const imageUrl = await uploadFileToS3(file)
+      
+      // Actualizar el formulario con la nueva imagen
+      setEditForm({ ...editForm, picture_url: imageUrl })
+      
+      console.log('Imagen subida exitosamente:', imageUrl)
+    } catch (error) {
+      console.error('Error al subir la imagen:', error)
+      alert('Error al subir la imagen. Por favor intenta de nuevo.')
+    } finally {
+      setIsUploading(false)
+      // Limpiar el input para permitir subir el mismo archivo nuevamente
+      if (event.target) {
+        event.target.value = ''
+      }
+    }
+  }
+
   return (
     <Card className="p-6 bg-white mb-8">
       <div className="flex items-center justify-between mb-6">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-            <User className="w-8 h-8 text-blue-600" />
+          <div className="relative">
+            <div 
+              className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-blue-200 group"
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
+              onClick={handleAvatarClick}
+            >
+              {userData?.picture_url || editForm?.picture_url ? (
+                <img
+                  src={editForm?.picture_url || userData?.picture_url}
+                  alt="Profile"
+                  className="w-full h-full rounded-full object-cover"
+                />
+              ) : (
+                <User className="w-8 h-8 text-blue-600" />
+              )}
+              
+              {/* Overlay con icono de upload en hover o loader */}
+              {(isHovering || isUploading) && (
+                <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center transition-all duration-200">
+                  {isUploading ? (
+                    <Loader2 className="w-6 h-6 text-white animate-spin" />
+                  ) : (
+                    <Upload className="w-6 h-6 text-white" />
+                  )}
+                </div>
+              )}
+            </div>
+            
+            {/* Input de archivo oculto */}
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">
