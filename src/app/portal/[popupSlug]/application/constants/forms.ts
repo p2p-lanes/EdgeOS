@@ -13,7 +13,9 @@ export const shareableInfo = [
   { value: "participation", label: "Participation" },
   { value: "brings_kids", label: "Whether or not I'm bringing kids" },
   { value: 'role', label: 'Role' },
-  { value: 'organization', label: 'Organization' }
+  { value: 'organization', label: 'Organization' },
+  { value: 'personal_goals', label: 'Personal goals' },
+  { value: 'residence', label: 'Residence' },
 ]
 
 export const ageOptions = [

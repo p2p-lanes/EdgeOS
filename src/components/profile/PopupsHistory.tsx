@@ -23,7 +23,7 @@ const PopupsHistory = ( {popups}: {popups: CitizenProfilePopup[]}) => {
     if (now >= start && now <= end) {
       return { label: "In progress", className: "bg-blue-100 text-blue-800" }
     }
-    return { label: "Incoming", className: "bg-gray-100 text-gray-800" }
+    return { label: "Upcoming", className: "bg-gray-100 text-gray-800" }
   }
 
   return (
