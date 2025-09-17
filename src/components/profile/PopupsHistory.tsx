@@ -29,7 +29,7 @@ const PopupsHistory = ( {popups}: {popups: CitizenProfilePopup[]}) => {
   return (
     <div className="bg-white rounded-lg border border-gray-200">
       <div className="p-6 border-b border-gray-200">
-        <h2 className="text-xl font-semibold text-gray-900">Events History</h2>
+        <h2 className="text-xl font-semibold text-gray-900">History</h2>
       </div>
 
       <div className="p-6">

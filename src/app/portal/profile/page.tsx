@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react"
 import { Card } from "@/components/ui/card"
 import useGetProfile from "@/hooks/useGetProfile"
-import { useRouter } from "next/navigation"
 import Groups from "@/components/profile/Groups"
 import PopupsHistory from "@/components/profile/PopupsHistory"
 import HumanForm from "@/components/profile/HumanForm"
@@ -13,7 +12,6 @@ import StatsCards from "@/components/profile/StatsCards"
 export default function ProfileContent() {
   const { profile, isLoading, error, updateProfile, isUpdating, updateError } = useGetProfile()
   const [userData, setUserData] = useState(profile)
-  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
   const [isEditing, setIsEditing] = useState(false)
   const [editForm, setEditForm] = useState({
     first_name: userData?.first_name,
@@ -27,7 +25,6 @@ export default function ProfileContent() {
     role: userData?.role,
     picture_url: userData?.picture_url,
   })
-  const router = useRouter()
 
   useEffect(() => {
     if (!profile) return
