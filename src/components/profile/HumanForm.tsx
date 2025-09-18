@@ -6,6 +6,7 @@ import { Label } from "../ui/label"
 import { Input } from "../ui/input"
 import { useState, useRef } from "react"
 import uploadFileToS3 from "@/helpers/upload"
+import { RiTelegram2Line, RiTwitterXFill } from "react-icons/ri";
 
 const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel, editForm, setEditForm}: {userData: CitizenProfile | null, isEditing: boolean, setIsEditing: (isEditing: boolean) => void, handleSave: () => void, handleCancel: () => void, editForm: any, setEditForm: (editForm: any) => void}) => {
   const [isHovering, setIsHovering] = useState(false)
@@ -172,7 +173,7 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
           )}
           {userData?.x_user && (
             <div className="flex items-center gap-3">
-              <MessageSquare className="w-5 h-5 text-gray-400" />
+              <RiTwitterXFill className="w-5 h-5 text-gray-400" />
               <div>
                 <p className="text-sm text-gray-600">X (Twitter)</p>
                 <p className="text-gray-900">{userData?.x_user}</p>
@@ -181,7 +182,7 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
           )}
           {userData?.telegram && (
             <div className="flex items-center gap-3">
-              <MessageSquare className="w-5 h-5 text-gray-400" />
+              <RiTelegram2Line className="w-5 h-5 text-gray-400" />
               <div>
                 <p className="text-sm text-gray-600">Telegram</p>
                 <p className="text-gray-900">{userData?.telegram}</p>
