@@ -1,5 +1,5 @@
 import { CitizenProfile } from "@/types/Profile"
-import { House, Calendar, Users, MapPinned, CalendarDays, Speech } from "lucide-react"
+import { House, Calendar, Users, MapPinned, CalendarDays, Speech, CalendarCheck, CalendarCheck2, Calendar1, CalendarPlus } from "lucide-react"
 import { Card } from "../ui/card"
 import { useSocialLayer } from "@/hooks/useSocialLayer"
 import { useEffect, useState, useCallback } from "react"
@@ -58,7 +58,7 @@ const StatsCards = ({userData}: {userData: CitizenProfile | null}) => {
               <p className="text-3xl font-bold text-gray-900">{userData?.total_days ?? 0}</p>
             </div>
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <CalendarDays className="w-6 h-6 text-blue-600" />
+              <Calendar1 className="w-6 h-6 text-blue-600" />
             </div>
           </div>
         </Card>
@@ -87,7 +87,7 @@ const StatsCards = ({userData}: {userData: CitizenProfile | null}) => {
               )}
             </div>
             <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <CalendarDays className="w-6 h-6 text-orange-600" />
+              <CalendarCheck2 className="w-6 h-6 text-orange-600" />
             </div>
           </div>
           <div className="mt-4 space-y-2">
@@ -121,14 +121,14 @@ const StatsCards = ({userData}: {userData: CitizenProfile | null}) => {
                 <p className="text-3xl font-bold text-gray-900">{profile?.events?.length ?? 0}</p>
               )}
             </div>
-            <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <CalendarDays className="w-6 h-6 text-orange-600" />
+            <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center">
+              <CalendarPlus className="w-6 h-6 text-red-600" />
             </div>
           </div>
           <div className="mt-4 space-y-2">
             {(profile?.events || []).slice(-3).reverse().map((event, index) => (
               <div key={`hosted-${event.id}-${index}`} className="flex items-center gap-2 px-2 py-1 rounded-md border border-gray-100">
-                <div className="w-2 h-2 bg-orange-400 rounded-full flex-shrink-0"></div>
+                <div className="w-2 h-2 bg-red-400 rounded-full flex-shrink-0"></div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-medium text-gray-900 truncate">{event.title}</p>
                   <p className="text-xs text-gray-500 truncate">
