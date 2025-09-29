@@ -4,7 +4,7 @@ import usePurchaseProducts from "../../hooks/usePurchaseProducts";
 import { usePassesProvider } from "@/providers/passesProvider";
 import { Loader2 } from "lucide-react";
 
-const TotalFloatingBar = ({ setOpenCart }: { setOpenCart: (prev: boolean) => void }) => {
+const TotalFloatingBar = ({ setOpenCart, waiverAccepted }: { setOpenCart: (prev: boolean) => void, waiverAccepted: boolean }) => {
   const { originalTotal, total } = useTotal()
   const { purchaseProducts, loading } = usePurchaseProducts();
   const { attendeePasses: attendees } = usePassesProvider()
@@ -35,7 +35,7 @@ const TotalFloatingBar = ({ setOpenCart }: { setOpenCart: (prev: boolean) => voi
         <Button variant="outline" className="p-5 whitespace-nowrap" onClick={handleOnClickReviewOrder}>
           Review Order
         </Button>
-        <Button variant="default" className="p-5 whitespace-nowrap" disabled={loading || !someSelected} onClick={() => purchaseProducts(attendees)}>
+        <Button variant="default" className="p-5 whitespace-nowrap" disabled={loading || !someSelected || !waiverAccepted} onClick={() => purchaseProducts(attendees)}>
           {
             loading && <Loader2 className="size-4 animate-spin" />
           }

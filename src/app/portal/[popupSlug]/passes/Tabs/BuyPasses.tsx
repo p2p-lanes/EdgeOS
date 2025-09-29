@@ -11,6 +11,7 @@ import Special from "../components/common/Products/Special"
 import BalancePasses from "../components/common/BalancePasses"
 import BottomSheet from "@/components/common/BottomSheet"
 import TotalFloatingBar from "../components/common/TotalFloatingBar"
+import WaiverCheckbox from "../components/common/WaiverCheckbox"
 import { useState } from "react"
 import { useTotal } from "@/providers/totalProvider"
 import { Loader2 } from "lucide-react"
@@ -35,6 +36,7 @@ const parseMarkdown = (markdown: string) => {
 const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, defaultOpenDiscount = false, positionCoupon = 'bottom'}: {floatingBar?: boolean, viewInvoices?: boolean, canEdit?: boolean, defaultOpenDiscount?: boolean, positionCoupon?: 'top' | 'bottom' | 'right'}) => {
   const { toggleProduct, attendeePasses: attendees, products, isEditing} = usePassesProvider()
   const [openCart, setOpenCart] = useState<boolean>(false)
+  const [waiverAccepted, setWaiverAccepted] = useState<boolean>(false)
   const searchParams = useSearchParams();
   const isDayCheckout = searchParams.has("day-passes");
   const mainAttendee = attendees.find(a => a.category === 'main')
@@ -109,8 +111,13 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
               isOpen={openCart}
               setIsOpen={setOpenCart}
             />
+            <WaiverCheckbox 
+              checked={waiverAccepted} 
+              onCheckedChange={setWaiverAccepted}
+              className="px-3"
+            />
             <div className="flex w-full justify-center">
-              <CompletePurchaseButton edit={total <= 0} />
+              <CompletePurchaseButton edit={total <= 0} waiverAccepted={waiverAccepted} />
             </div>
           </div>
         )
@@ -124,7 +131,13 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
               (isFloating) ? (
                 <div className="flex justify-center lg:ml-[255px]">
                   <div className="bg-white p-4 shadow-lg border border-neutral-200 rounded-lg min-w-[600px] pointer-events-auto">
-                    <TotalFloatingBar setOpenCart={setOpenCart}/>
+                    <div className="space-y-3">
+                      <WaiverCheckbox 
+                        checked={waiverAccepted} 
+                        onCheckedChange={setWaiverAccepted}
+                      />
+                      <TotalFloatingBar setOpenCart={setOpenCart} waiverAccepted={waiverAccepted}/>
+                    </div>
                   </div>
                 </div>
               ) : (
@@ -135,8 +148,13 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
                     isOpen={openCart}
                     setIsOpen={setOpenCart}
                   />
+                  <WaiverCheckbox 
+                    checked={waiverAccepted} 
+                    onCheckedChange={setWaiverAccepted}
+                    className="px-3"
+                  />
                   <div className="flex w-full justify-center">
-                    <CompletePurchaseButton edit={total <= 0} />
+                    <CompletePurchaseButton edit={total <= 0} waiverAccepted={waiverAccepted} />
                   </div>
                 </div>
               )
@@ -157,8 +175,13 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
                   isOpen={openCart}
                   setIsOpen={setOpenCart}
                 />
+                <WaiverCheckbox 
+                  checked={waiverAccepted} 
+                  onCheckedChange={setWaiverAccepted}
+                  className="px-3 mt-4"
+                />
                 <div className="flex w-full justify-center mt-4">
-                  <CompletePurchaseButton  edit={total <= 0}/>
+                  <CompletePurchaseButton edit={total <= 0} waiverAccepted={waiverAccepted}/>
                 </div>
               </div>
             )}
