@@ -3,6 +3,16 @@ import { api } from "@/api";
 import { jwtDecode } from "jwt-decode";
 import { FormDataProps } from "../types";
 
+interface ExtendedApplicationData extends Partial<FormDataProps> {
+  red_flag?: boolean;
+  popup?: {
+    id: string;
+    name: string;
+    slug: string;
+    [key: string]: any;
+  };
+}
+
 interface UseApplicationDataProps {
   groupPopupCityId?: string;
 }
@@ -17,13 +27,20 @@ interface Application {
   role?: string;
   gender?: string;
   popup_city_id?: string;
+  red_flag?: boolean;
+  popup?: {
+    id: string;
+    name: string;
+    slug: string;
+    [key: string]: any;
+  };
   [key: string]: any;
 }
 
 export const useApplicationData = ({ groupPopupCityId }: UseApplicationDataProps) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [applicationData, setApplicationData] = useState<Partial<FormDataProps> | null>(null);
+  const [applicationData, setApplicationData] = useState<ExtendedApplicationData | null>(null);
   const [refreshTrigger, setRefreshTrigger] = useState(0);
 
   // Function to manually trigger a refresh of application data
@@ -75,13 +92,16 @@ export const useApplicationData = ({ groupPopupCityId }: UseApplicationDataProps
               role: matchingApplication.role || "",
               gender: matchingApplication.gender?.toLowerCase() || "",
               email_verified: true,
-              local_resident: matchingApplication.local_resident !== null ? matchingApplication.local_resident === true ? "yes" : "no" : ""
+              local_resident: matchingApplication.local_resident !== null ? matchingApplication.local_resident === true ? "yes" : "no" : "",
+              red_flag: matchingApplication.red_flag || false,
+              popup: matchingApplication.popup
             });
           } else {
             // User has no matching application, just set email
             setApplicationData({
               email: decodedToken.email,
-              email_verified: true
+              email_verified: true,
+              red_flag: false
             });
           }
         }

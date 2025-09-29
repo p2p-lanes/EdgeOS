@@ -7,9 +7,12 @@ import { useEmailVerification } from "../../hooks/useEmailVerification";
 import { useApplicationData } from "../../hooks/useApplicationData";
 import EmailVerification from "./EmailVerification";
 import PersonalInfoForm from "./PersonalInfoForm";
+import RedFlagScreen from "./RedFlagScreen";
 import { FormDataProps, GroupData } from "../../types";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { useCityProvider } from "@/providers/cityProvider";
+import useGetPopups from "@/hooks/useGetPopups";
 
 interface UserInfoFormProps {
   group: GroupData | null;
@@ -22,9 +25,10 @@ interface UserInfoFormProps {
 
 const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error, isInvite = false }: UserInfoFormProps) => {
   const [isAutoFilled, setIsAutoFilled] = useState(false);
+  const [showRedFlagScreen, setShowRedFlagScreen] = useState(false);
   const searchParams = useSearchParams();
   const isDayCheckout = searchParams.has("day-passes");
-  
+
   // Get application data based on group's popup_city_id
   const { 
     applicationData, 
@@ -121,6 +125,12 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error, isInvit
     
     // If verified, validate and submit form
     if (validateForm()) {
+      // Check for red flag before proceeding with purchase
+      if (applicationData?.red_flag) {
+        setShowRedFlagScreen(true);
+        return;
+      }
+      
       try {
         if(isDayCheckout) {
           formData.organization = null;
@@ -170,6 +180,23 @@ const UserInfoForm = ({ group, onSubmit, isSubmitting, isLoading, error, isInvit
           <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-blue-500"></div>
         </CardContent>
       </Card>
+    );
+  }
+
+  // Show red flag screen if triggered by form submission
+  if (showRedFlagScreen) {
+    
+    const userName = applicationData?.first_name || formData.first_name || "User";
+    const popupName = group?.popup_name || "this location";
+
+    const popupSlug = group?.popup_slug || "unknown";
+    
+    return (
+      <RedFlagScreen 
+        userName={userName}
+        popupName={popupName}
+        popupSlug={popupSlug}
+      />
     );
   }
 

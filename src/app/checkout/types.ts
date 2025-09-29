@@ -20,6 +20,7 @@ export interface GroupData {
   discount_percentage: number;
   is_ambassador_group: boolean;
   welcome_message: string;
+  popup_slug: string;
 }
 
 export type CheckoutState = "form" | "processing" | "success" | "passes";

@@ -7,7 +7,6 @@ import { api } from '@/api'
 import { motion } from 'framer-motion'
 import { useSearchParams } from 'next/navigation'
 import { config } from '@/constants/config'
-import { MiniKit, VerifyCommandInput, VerificationLevel, ISuccessResult } from '@worldcoin/minikit-js'
 import useSignInWorldApp from '@/hooks/useSignInWorldApp'
 import Image from 'next/image'
 import DrawerEmailWorldID from './DrawerEmailWorldID'
@@ -55,7 +54,7 @@ export default function AuthForm() {
     setIsValidEmail(true)
     setIsLoading(true)
     
-    api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null, world_redirect: MiniKit.isInstalled() ? true : false, signature: worldData.signature, world_address: worldData.address}).then((e) => {
+    api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null, world_redirect: false, signature: worldData.signature, world_address: worldData.address}).then((e) => {
       if(e.status === 200) {
         setOpen(false)
         setIsLoading(false)
@@ -103,24 +102,6 @@ export default function AuthForm() {
             Welcome! If it’s your first time, sign up below. If you attended a past event, use the same email to import your prior application.
             </p>
           </div>
-
-          {
-            MiniKit.isInstalled() && (
-            <div className="mt-8 space-y-4 max-w-xs mx-auto">
-              <ButtonAnimated
-                variant="outline"
-                onClick={handleSignInWorldID}
-                className="group relative w-full flex justify-center py-2 px-4 text-sm font-medium rounded-md border border-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-              >
-                <Image src="https://simplefi.s3.us-east-2.amazonaws.com/logo_wc.png" alt="World App" width={20} height={20} />
-                Sign In with World ID
-              </ButtonAnimated>
-              <p className="text-sm text-gray-600" style={{ textAlign: 'center', textWrap: 'balance' }}>
-                or
-              </p>
-            </div>
-            )
-          }
 
           <DrawerEmailWorldID open={open} setOpen={setOpen} handleCancel={() => setOpen(false)} handleSubmit={handleSubmit} isLoading={isLoading} email={email} setEmail={setEmail} />
           <form className="mt-4 space-y-6 max-w-xs mx-auto" onSubmit={handleSubmit}>
