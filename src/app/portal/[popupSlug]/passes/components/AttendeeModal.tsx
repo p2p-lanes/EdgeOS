@@ -39,6 +39,7 @@ const kidsAgeOptions = [{label: 'Baby (<2)', value: 'baby'}, {label: 'Kid (2-12)
 export function AttendeeModal({ onSubmit, open, onClose, category, editingAttendee, isDelete }: AttendeeModalProps) {
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState<FormDataProps>(defaultFormData)
+  const [errors, setErrors] = useState<{[key: string]: boolean}>({});
 
   useEffect(() => {
     if (editingAttendee) {
@@ -47,13 +48,40 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
     } else {
       setFormData(defaultFormData)
     }
-  }, [editingAttendee])
+    setErrors({})
+  }, [editingAttendee, open])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate required fields
+    const newErrors: {[key: string]: boolean} = {}
+    
+    if (!formData.name.trim()) {
+      newErrors.name = true
+    }
+    
+    if (!formData.gender) {
+      newErrors.gender = true
+    }
+    
+    if (isChildCategory && !formData.category) {
+      newErrors.category = true
+    }
+    
+    if (category === 'spouse' && !formData.email.trim()) {
+      newErrors.email = true
+    }
+    
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+    
+    setErrors({})
     setLoading(true)
     try {
-      await onSubmit({...formData, category: formData.category ?? category, id: editingAttendee?.id, gender: formData.gender ?? editingAttendee?.gender } as AttendeeProps)
+      await onSubmit({...formData, category: formData.category ?? category, id: editingAttendee?.id, gender: formData.gender } as AttendeeProps)
     } finally {
       setLoading(false)
     }
@@ -98,7 +126,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
               id="name"
               value={formData.name}
               onChange={(e) => setFormData(prev => ({...prev, name: e.target.value}))}
-              className="col-span-3"
+              className={`col-span-3 ${errors.name ? 'border-red-500' : ''}`}
               required
             />
           </div>
@@ -113,7 +141,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
                   required
                   onValueChange={(value) => setFormData(prev => ({...prev, category: value}))}
                 >
-                  <SelectTrigger className="col-span-3">
+                  <SelectTrigger className={`col-span-3 ${errors.category ? 'border-red-500' : ''}`}>
                     <SelectValue placeholder="Select age" />
                   </SelectTrigger>
                   <SelectContent>
@@ -136,7 +164,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({...prev, email: e.target.value}))}
-                  className="col-span-3"
+                  className={`col-span-3 ${errors.email ? 'border-red-500' : ''}`}
                   required
                 />
               </div>
@@ -151,7 +179,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
               onValueChange={(value) => setFormData(prev => ({...prev, gender: value}))}
               required
             >
-              <SelectTrigger className="col-span-3">
+              <SelectTrigger className={`col-span-3 ${errors.gender ? 'border-red-500' : ''}`}>
                 <SelectValue placeholder="Select gender" />
               </SelectTrigger>
               <SelectContent>
