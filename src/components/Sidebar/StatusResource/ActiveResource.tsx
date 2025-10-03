@@ -15,6 +15,7 @@ const ActiveResource = ({ resource, handleClickPath, level, color, isGroup = fal
     <SidebarMenuButton
       onClick={handleClick}
       className={cn(isGroup ? 'py-2' : 'py-5', !isActive && 'opacity-50', level > 0 && 'pl-6')}
+      data-testid={`sidebar-${resource.name.toLowerCase().replace(/\s+/g, '-')}-button`}
     >
       {resource.icon && <resource.icon className="size-4 mr-2" />}
       <span className="group-data-[collapsible=icon]:hidden">{resource.name}</span>

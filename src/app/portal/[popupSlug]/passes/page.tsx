@@ -25,17 +25,17 @@ export default function HomePasses() {
   };
 
   return (
-    <Tabs value={initialTab} onValueChange={handleTabChange} className="w-full md:mt-0 mx-auto items-center max-w-5xl p-6">
-      <TabsList className="grid w-full grid-cols-2 mb-4">
-        <TabsTrigger value="your-passes"> <Ticket className="w-4 h-4 mr-2" /> Your Passes</TabsTrigger>
-        <TabsTrigger value="buy-passes"> <ShoppingCart className="w-4 h-4 mr-2" /> Buy Passes</TabsTrigger>
+    <Tabs value={initialTab} onValueChange={handleTabChange} className="w-full md:mt-0 mx-auto items-center max-w-5xl p-6" data-testid="passes-tabs">
+      <TabsList className="grid w-full grid-cols-2 mb-4" data-testid="passes-tabs-list">
+        <TabsTrigger value="your-passes" data-testid="your-passes-tab"> <Ticket className="w-4 h-4 mr-2" /> Your Passes</TabsTrigger>
+        <TabsTrigger value="buy-passes" data-testid="buy-passes-tab"> <ShoppingCart className="w-4 h-4 mr-2" /> Buy Passes</TabsTrigger>
       </TabsList>
 
-      <TabsContent value="your-passes">
+      <TabsContent value="your-passes" data-testid="your-passes-content">
         <YourPasses onSwitchToBuy={() => handleTabChange("buy-passes")} />
       </TabsContent>
 
-      <TabsContent value="buy-passes">
+      <TabsContent value="buy-passes" data-testid="buy-passes-content">
         <BuyPasses viewInvoices={false}/>
       </TabsContent>
     </Tabs>

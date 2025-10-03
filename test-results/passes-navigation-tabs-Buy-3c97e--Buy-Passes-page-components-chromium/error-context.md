@@ -1,0 +1,215 @@
+# Page snapshot
+
+```yaml
+- generic [ref=e1]:
+  - generic [ref=e4]:
+    - generic [ref=e8]:
+      - list [ref=e10]:
+        - listitem [ref=e11]:
+          - button "EdgeCity illustration Edge Esmeralda 2025 Healdsburg, California May 24, 2025" [ref=e12] [cursor=pointer]:
+            - generic [ref=e13] [cursor=pointer]:
+              - img "EdgeCity illustration" [ref=e15] [cursor=pointer]
+              - generic [ref=e16] [cursor=pointer]:
+                - generic [ref=e17] [cursor=pointer]: Edge Esmeralda 2025
+                - generic [ref=e18] [cursor=pointer]: Healdsburg, California
+                - generic [ref=e19] [cursor=pointer]: May 24, 2025
+            - img [ref=e20] [cursor=pointer]
+      - generic [ref=e24]:
+        - generic [ref=e25]: Your Participation
+        - list [ref=e27]:
+          - listitem [ref=e28]:
+            - button "Application" [ref=e29] [cursor=pointer]:
+              - img [ref=e30] [cursor=pointer]
+              - generic [ref=e33] [cursor=pointer]: Application
+            - list [ref=e34]:
+              - listitem [ref=e35]:
+                - generic [ref=e36]:
+                  - generic [ref=e37]: Status
+                  - generic [ref=e38]: accepted
+          - listitem [ref=e39]:
+            - button "Passes" [ref=e40] [cursor=pointer]:
+              - img [ref=e41] [cursor=pointer]
+              - generic [ref=e43] [cursor=pointer]: Passes
+            - list [ref=e44]:
+              - listitem [ref=e45]:
+                - button "ZK Email discounts" [ref=e46] [cursor=pointer]:
+                  - generic [ref=e47] [cursor=pointer]: ZK Email discounts
+          - listitem [ref=e48]:
+            - button "Attendee Directory" [ref=e49] [cursor=pointer]:
+              - img [ref=e50] [cursor=pointer]
+              - generic [ref=e55] [cursor=pointer]: Attendee Directory
+          - generic [ref=e56]:
+            - paragraph [ref=e57]: Groups
+            - button "Muvi team" [ref=e58] [cursor=pointer]:
+              - img [ref=e59] [cursor=pointer]
+              - generic [ref=e64] [cursor=pointer]: Muvi team
+      - generic [ref=e65]:
+        - generic [ref=e66] [cursor=pointer]:
+          - generic [ref=e67] [cursor=pointer]:
+            - img "poap" [ref=e68] [cursor=pointer]
+            - paragraph [ref=e69] [cursor=pointer]: You have POAPs to mint!
+          - img [ref=e71] [cursor=pointer]
+        - list [ref=e73]:
+          - link "EdgeOS 32" [ref=e74] [cursor=pointer]:
+            - /url: https://github.com/p2p-lanes/EdgeOS
+            - generic [ref=e75] [cursor=pointer]:
+              - img [ref=e76] [cursor=pointer]
+              - generic [ref=e79] [cursor=pointer]: EdgeOS
+            - generic [ref=e80] [cursor=pointer]:
+              - img [ref=e81] [cursor=pointer]
+              - generic [ref=e83] [cursor=pointer]: "32"
+          - listitem [ref=e84]:
+            - link "My Profile" [ref=e85] [cursor=pointer]:
+              - /url: /portal/profile
+              - generic [ref=e86] [cursor=pointer]:
+                - img [ref=e87] [cursor=pointer]
+                - generic [ref=e90] [cursor=pointer]: My Profile
+    - main [ref=e91]:
+      - generic [ref=e92]:
+        - button "Toggle Sidebar" [ref=e93] [cursor=pointer]:
+          - img
+          - generic [ref=e94] [cursor=pointer]: Toggle Sidebar
+        - navigation "breadcrumb" [ref=e95]:
+          - list [ref=e96]:
+            - listitem [ref=e97]:
+              - link "Edge Esmeralda 2025" [disabled] [ref=e98] [cursor=pointer]
+            - listitem [ref=e99]:
+              - img [ref=e100]
+            - listitem [ref=e102]:
+              - generic [ref=e103]: Passes
+      - main [ref=e104]:
+        - generic [ref=e106]:
+          - tablist [ref=e107]:
+            - tab "Your Passes" [ref=e108] [cursor=pointer]:
+              - img [ref=e109] [cursor=pointer]
+              - text: Your Passes
+            - tab "Buy Passes" [active] [selected] [ref=e111] [cursor=pointer]:
+              - img [ref=e112] [cursor=pointer]
+              - text: Buy Passes
+          - tabpanel "Buy Passes" [ref=e116]:
+            - generic [ref=e117]:
+              - generic [ref=e118]:
+                - heading "Buy Passes" [level=1] [ref=e119]
+                - generic [ref=e121]:
+                  - text: Choose your passes below and make sure to add tickets for any family members who will be joining you. You can explore more about the event's programming
+                  - link "here" [ref=e122] [cursor=pointer]:
+                    - /url: https://edgeesmeralda2025.substack.com/p/programming-philosophy-and-preview
+                  - text: . Please note that tickets
+                  - generic [ref=e123]: do not include accommodation
+                  - text: .
+              - button "Add children" [ref=e127] [cursor=pointer]:
+                - img
+                - text: Add children
+              - generic [ref=e130]:
+                - img [ref=e131]
+                - heading "50% discount" [level=2] [ref=e134]:
+                  - generic [ref=e135]: 50% discount
+              - generic [ref=e136]:
+                - generic [ref=e139]:
+                  - generic [ref=e142]:
+                    - generic [ref=e143]:
+                      - paragraph [ref=e144]: Joel
+                      - generic [ref=e145]:
+                        - img [ref=e146]
+                        - paragraph [ref=e149]: Primary Pass Holder
+                    - generic [ref=e151]:
+                      - img [ref=e152]
+                      - paragraph [ref=e154]: Edge Esmeralda 2025
+                  - generic [ref=e158]:
+                    - generic [ref=e160]:
+                      - button "Toggle Common Tickets" [expanded] [ref=e161] [cursor=pointer]:
+                        - generic [ref=e163] [cursor=pointer]:
+                          - img [ref=e164] [cursor=pointer]
+                          - generic [ref=e166] [cursor=pointer]: Standard
+                      - generic [ref=e168]:
+                        - button "Weekday (single day) $ 10" [ref=e169] [cursor=pointer]:
+                          - generic [ref=e170] [cursor=pointer]:
+                            - generic [ref=e172] [cursor=pointer]:
+                              - img [ref=e173] [cursor=pointer]
+                              - paragraph [ref=e175] [cursor=pointer]: Weekday (single day)
+                            - paragraph [ref=e178] [cursor=pointer]: $ 10
+                        - button "Weekend Day $ 12 Decrease quantity 1 Increase quantity" [ref=e179] [cursor=pointer]:
+                          - generic [ref=e180] [cursor=pointer]:
+                            - generic [ref=e182] [cursor=pointer]:
+                              - img [ref=e183] [cursor=pointer]
+                              - paragraph [ref=e185] [cursor=pointer]: Weekend Day
+                            - generic [ref=e186] [cursor=pointer]:
+                              - paragraph [ref=e188] [cursor=pointer]: $ 12
+                              - generic [ref=e192] [cursor=pointer]:
+                                - button "Decrease quantity" [disabled] [ref=e193]:
+                                  - img [ref=e194]
+                                - generic [ref=e195] [cursor=pointer]: "1"
+                                - button "Increase quantity" [ref=e196] [cursor=pointer]:
+                                  - img [ref=e197] [cursor=pointer]
+                    - button "Show check-in code" [ref=e199] [cursor=pointer]:
+                      - paragraph [ref=e200] [cursor=pointer]: Check-in Code
+                      - img
+                - generic [ref=e203]:
+                  - generic [ref=e206]:
+                    - generic [ref=e207]:
+                      - paragraph [ref=e208]: trini
+                      - generic [ref=e209]:
+                        - img [ref=e210]
+                        - paragraph [ref=e213]: Spouse
+                    - generic [ref=e215]:
+                      - img [ref=e216]
+                      - paragraph [ref=e218]: Edge Esmeralda 2025
+                  - generic [ref=e222]:
+                    - generic [ref=e224]:
+                      - button "Toggle Common Tickets" [expanded] [ref=e225] [cursor=pointer]:
+                        - generic [ref=e227] [cursor=pointer]:
+                          - img [ref=e228] [cursor=pointer]
+                          - generic [ref=e230] [cursor=pointer]: Standard
+                      - generic [ref=e232]:
+                        - button "Month Spouse May 24 to Jun 21 $ 1,000" [ref=e233] [cursor=pointer]:
+                          - generic [ref=e234] [cursor=pointer]:
+                            - generic [ref=e235] [cursor=pointer]:
+                              - img [ref=e236] [cursor=pointer]
+                              - generic [ref=e238] [cursor=pointer]:
+                                - paragraph [ref=e239] [cursor=pointer]: Month Spouse
+                                - generic [ref=e240] [cursor=pointer]: May 24 to Jun 21
+                            - paragraph [ref=e242] [cursor=pointer]: $ 1,000
+                        - button "Week 2 May 31 to Jun 7 $ 500" [ref=e243] [cursor=pointer]:
+                          - generic [ref=e244] [cursor=pointer]:
+                            - generic [ref=e245] [cursor=pointer]:
+                              - img [ref=e246] [cursor=pointer]
+                              - generic [ref=e248] [cursor=pointer]:
+                                - paragraph [ref=e249] [cursor=pointer]: Week 2
+                                - generic [ref=e250] [cursor=pointer]: May 31 to Jun 7
+                            - paragraph [ref=e252] [cursor=pointer]: $ 500
+                        - button "Week 3 Jun 7 to Jun 14 $ 500" [ref=e253] [cursor=pointer]:
+                          - generic [ref=e254] [cursor=pointer]:
+                            - generic [ref=e255] [cursor=pointer]:
+                              - img [ref=e256] [cursor=pointer]
+                              - generic [ref=e258] [cursor=pointer]:
+                                - paragraph [ref=e259] [cursor=pointer]: Week 3
+                                - generic [ref=e260] [cursor=pointer]: Jun 7 to Jun 14
+                            - paragraph [ref=e262] [cursor=pointer]: $ 500
+                        - button "Week 4 Jun 14 to Jun 21 $ 500" [ref=e263] [cursor=pointer]:
+                          - generic [ref=e264] [cursor=pointer]:
+                            - generic [ref=e265] [cursor=pointer]:
+                              - img [ref=e266] [cursor=pointer]
+                              - generic [ref=e268] [cursor=pointer]:
+                                - paragraph [ref=e269] [cursor=pointer]: Week 4
+                                - generic [ref=e270] [cursor=pointer]: Jun 14 to Jun 21
+                            - paragraph [ref=e272] [cursor=pointer]: $ 500
+                        - button "Weekday (single day) $ 5" [ref=e273] [cursor=pointer]:
+                          - generic [ref=e274] [cursor=pointer]:
+                            - generic [ref=e276] [cursor=pointer]:
+                              - img [ref=e277] [cursor=pointer]
+                              - paragraph [ref=e279] [cursor=pointer]: Weekday (single day)
+                            - generic [ref=e281] [cursor=pointer]:
+                              - img [ref=e282] [cursor=pointer]
+                              - paragraph [ref=e284] [cursor=pointer]: $ 5
+                    - img [ref=e286] [cursor=pointer]
+              - paragraph [ref=e291] [cursor=pointer]: Have a coupon?
+  - region "Notifications alt+T"
+  - status [ref=e292]:
+    - generic [ref=e293]:
+      - img [ref=e295]
+      - generic [ref=e297]:
+        - text: Static route
+        - button "Hide static indicator" [ref=e298] [cursor=pointer]:
+          - img [ref=e299] [cursor=pointer]
+  - alert [ref=e302]
+```

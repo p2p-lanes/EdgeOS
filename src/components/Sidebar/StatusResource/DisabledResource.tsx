@@ -6,6 +6,7 @@ const DisabledResource = ({ resource, level, color }: { resource: Resource, leve
     <SidebarMenuButton
       disabled={true}
       className={`py-5 opacity-50 cursor-not-allowed ${level > 0 ? 'pl-6' : ''}`}
+      data-testid={`sidebar-${resource.name.toLowerCase().replace(/\s+/g, '-')}-button`}
     >
       {resource.icon && <resource.icon className="size-4 mr-2" />}
       <span className="group-data-[collapsible=icon]:hidden">{resource.name}</span>

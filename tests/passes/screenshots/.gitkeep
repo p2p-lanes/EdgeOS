@@ -1,0 +1,11 @@
+# Screenshots
+
+Esta carpeta contiene screenshots generados automáticamente por los tests de Playwright.
+
+## Tipos de Screenshots
+
+- **Responsive tests**: Screenshots de diferentes viewports
+- **Test failures**: Screenshots automáticos cuando fallan los tests  
+- **Debug screenshots**: Screenshots tomados manualmente durante debugging
+
+Los archivos se nombran con el patrón: `test-name-viewport-timestamp.png`
