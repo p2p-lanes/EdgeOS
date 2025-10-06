@@ -3,7 +3,7 @@ import { AgeRangeProps, GenderProps } from "./User";
 
 type DurationProps = "1 weekend" | "1 week" | "2 weeks" | "full length" | "all weekends"
 
-type ApplicationStatusProps = "draft" | "in review" | "accepted" | "rejected"
+export type ApplicationStatusProps = "draft" | "in review" | "accepted" | "rejected"
 
 export type TicketCategoryProps = "standard" | "discounted"
 

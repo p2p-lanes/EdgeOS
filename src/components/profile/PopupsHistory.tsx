@@ -4,8 +4,20 @@ import Image from "next/image"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
 import { Separator } from "@radix-ui/react-select"
+import useGetApplications from "@/hooks/useGetApplications"
+import { useApplication } from "@/providers/applicationProvider"
+import { useCityProvider } from "@/providers/cityProvider"
+
+type ApplicationStatus = "draft" | "in review" | "accepted" | "rejected"
+
+interface PopupWithApplicationStatus extends CitizenProfilePopup {
+  application_status?: ApplicationStatus
+}
 
 const PopupsHistory = ( {popups}: {popups: CitizenProfilePopup[]}) => {
+  const { applications } = useApplication()
+  const { getPopups } = useCityProvider()
+  const allPopups = getPopups()
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -28,8 +40,44 @@ const PopupsHistory = ( {popups}: {popups: CitizenProfilePopup[]}) => {
     }
     return { label: "Upcoming", className: "bg-gray-100 text-gray-800" }
   }
+
+  const getApplicationStatusBadge = (status?: string) => {
+    switch(status) {
+      case "accepted":
+        return { label: "Application Approved", className: "bg-green-100 text-green-800" }
+      case "in review":
+        return { label: "Application Submitted", className: "bg-blue-100 text-blue-800" }
+      case "draft":
+        return { label: "Application Draft", className: "bg-gray-100 text-gray-800" }
+      default:
+        return { label: "Upcoming", className: "bg-gray-100 text-gray-800" }
+    }
+  }
   
-  const upcomingPopups = popups.filter((popup) => new Date(popup.start_date) > new Date())
+  // Filter applications where ALL attendees have NO products
+  const applicationsWithoutProducts = applications?.filter(app => 
+    app.attendees.every(attendee => attendee.products.length === 0)
+  ) ?? []
+  
+  // Map applications to popup data for upcoming popups with application status
+  const upcomingPopupsFromApplications = applicationsWithoutProducts
+    .map(app => {
+      const popup = allPopups.find(p => p.id === app.popup_city_id)
+      if (!popup) return null
+      
+      return {
+        popup_name: popup.name,
+        start_date: popup.start_date,
+        end_date: popup.end_date,
+        total_days: 0, // This could be calculated if needed
+        location: popup.location,
+        image_url: popup.image_url,
+        application_status: app.status // Include application status
+      } as PopupWithApplicationStatus
+    })
+    .filter((p): p is PopupWithApplicationStatus => p !== null)
+    .filter(popup => new Date(popup.end_date) > new Date()) // Only show upcoming events
+
   const pastPopups = popups.filter((popup) => new Date(popup.end_date) < new Date())
 
   return (
@@ -49,7 +97,12 @@ const PopupsHistory = ( {popups}: {popups: CitizenProfilePopup[]}) => {
             <h4 className="text-md font-semibold text-foreground">Upcoming Pop-Ups</h4>
           </div>
           <div className="space-y-4">
-            {(upcomingPopups ?? []).map((popup, index) => (
+            {
+              upcomingPopupsFromApplications.length === 0 && (
+                <div className="text-center text-gray-600 p-4">No upcoming events found</div>
+              )
+            }
+            {upcomingPopupsFromApplications.map((popup, index) => (
               <div key={popup.popup_name} className="flex items-center gap-4 p-4 border border-[#e2e8f0] rounded-lg">
                 <Image
                   src={popup.image_url || "/placeholder.svg"}
@@ -77,10 +130,9 @@ const PopupsHistory = ( {popups}: {popups: CitizenProfilePopup[]}) => {
                   </div>
                 </div>
                 <div
-                  className="px-3 py-1 rounded text-xs font-medium"
-                  style={{ backgroundColor: getPopupStatus(popup.start_date, popup.end_date).className, color: getPopupStatus(popup.start_date, popup.end_date).label }}
+                  className={`px-3 py-1 rounded text-xs font-medium ${getApplicationStatusBadge(popup.application_status).className}`}
                 >
-                  {getPopupStatus(popup.start_date, popup.end_date).label}
+                  {getApplicationStatusBadge(popup.application_status).label}
                 </div>
               </div>
             ))}
