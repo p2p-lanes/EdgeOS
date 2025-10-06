@@ -10,6 +10,7 @@ import { config } from '@/constants/config'
 import useSignInWorldApp from '@/hooks/useSignInWorldApp'
 import Image from 'next/image'
 import DrawerEmailWorldID from './DrawerEmailWorldID'
+import { MiniKit } from '@worldcoin/minikit-js'
 
 export default function AuthForm() {
   const [isMounted, setIsMounted] = useState(false)
@@ -54,7 +55,7 @@ export default function AuthForm() {
     setIsValidEmail(true)
     setIsLoading(true)
     
-    api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null, world_redirect: false, signature: worldData.signature, world_address: worldData.address}).then((e) => {
+    api.post(`citizens/authenticate`, {email: email, popup_slug: popupSlug ?? null, world_redirect: MiniKit.isInstalled(), signature: worldData.signature, world_address: worldData.address}).then((e) => {
       if(e.status === 200) {
         setOpen(false)
         setIsLoading(false)
