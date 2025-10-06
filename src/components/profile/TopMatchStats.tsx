@@ -55,7 +55,7 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
     // Convertir a array, ordenar por eventsCount y tomar top 3
     const sortedMatches = Object.values(participantCounts)
       .sort((a, b) => b.eventsCount - a.eventsCount)
-      .slice(0, 3)
+      .slice(0, 5)
 
     setTopMatches(sortedMatches)
   }, [userData?.primary_email, events])
@@ -66,11 +66,11 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
   }, [userData?.primary_email, events])
 
   return (
-    <Card className="p-6 bg-gray-50">
+    <Card className="p-6">
       <div className="flex flex-col h-full">
         <div className="mb-4">
-          <p className="text-sm text-gray-600 mb-1">Top Events Matched</p>
-          <p className="text-xs text-gray-500">People you&apos;ve shared the most events with</p>
+          <h2 className="text-2xl font-semibold text-gray-900">Top Connections</h2>
+          <p className="text-sm text-gray-600">Your most frequent event partners</p>
         </div>
         <div className="flex-1 flex flex-col gap-3 mt-2">
           {eventsLoading ? (
@@ -89,34 +89,40 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
           ) : topMatches.length > 0 ? (
             // Show top matches
             topMatches.map((match, index) => (
-              <div key={match.email} className="flex items-center gap-3 mt-2">
-                <div className="relative">
-                  <Avatar className="w-8 h-8">
-                    {match.image_url ? (
-                      <Image 
-                        src={match.image_url} 
-                        alt={match.nickname}
-                        width={32}
-                        height={32}
-                        className="w-full h-full object-cover rounded-full"
-                      />
-                    ) : (
-                      <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">
-                        {match.nickname.charAt(0).toUpperCase()}
-                      </div>
-                    )}
-                  </Avatar>
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold">
-                    {match.eventsCount}
+              <div key={match.email} className="flex items-center justify-between gap-3 mt-2 border-b border-gray-100 pb-3">
+                <div className="flex items-center gap-3">
+                  <div className="relative">
+                    <Avatar className="w-9 h-9">
+                      {match.image_url ? (
+                        <Image 
+                          src={match.image_url} 
+                          alt={match.nickname}
+                          width={32}
+                          height={32}
+                          className="w-full h-full object-cover rounded-full"
+                        />
+                      ) : (
+                        <div className="w-full h-full bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center text-white text-xs font-semibold">
+                          {match.nickname.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+                    </Avatar>
+                    {/* <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold">
+                      {match.eventsCount}
+                    </div> */}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium text-gray-900 truncate">
+                      {match.nickname}
+                    </p>
+                    <p className="text-xs text-gray-500">
+                      {match.email}
+                    </p>
                   </div>
                 </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-gray-900 truncate">
-                    {match.nickname}
-                  </p>
-                  <p className="text-xs text-gray-500">
-                    {match.email}
-                  </p>
+                <div className="text-sm font-medium text-blue-400 text-right">
+                  {match.eventsCount}
+                  <p className="text-xs text-gray-500">events</p>
                 </div>
               </div>
             ))

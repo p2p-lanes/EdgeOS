@@ -1,13 +1,16 @@
 import { CitizenProfilePopup } from "@/types/Profile"
 import { Calendar, Clock, MapPin } from "lucide-react"
 import Image from "next/image"
+import { Card } from "../ui/card"
+import { Button } from "../ui/button"
+import { Separator } from "@radix-ui/react-select"
 
 const PopupsHistory = ( {popups}: {popups: CitizenProfilePopup[]}) => {
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
-      month: "long",
+      month: "short",
       day: "numeric",
     })
   }
@@ -25,66 +28,112 @@ const PopupsHistory = ( {popups}: {popups: CitizenProfilePopup[]}) => {
     }
     return { label: "Upcoming", className: "bg-gray-100 text-gray-800" }
   }
+  
+  const upcomingPopups = popups.filter((popup) => new Date(popup.start_date) > new Date())
+  const pastPopups = popups.filter((popup) => new Date(popup.end_date) < new Date())
 
   return (
-    <div className="bg-white rounded-lg border border-gray-200">
-      <div className="p-6 border-b border-gray-200">
-        <h2 className="text-xl font-semibold text-gray-900">History</h2>
+    <Card className="p-6">
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold text-gray-900">Pop-Ups</h2>
+        <p className="text-sm text-gray-600">Your upcoming and past Pop-Ups</p>
       </div>
 
-      <div className="p-6">
+      <div className="py-2">
         <div className="space-y-6">
           {popups.length === 0 && (
             <div className="text-center text-gray-600 p-4">No events found</div>
           )}
-          {(popups ?? []).map((popup, index) => (
-            <div
-              key={index}
-              className="flex items-start gap-4 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors"
-            >
-              <Image
-                src={popup.image_url || "/placeholder.svg"}
-                alt={popup.popup_name}
-                width={160}
-                height={120}
-                className="w-40 h-30 object-cover rounded-lg"
-              />
-
-              <div className="flex-1">
-                <div className="flex items-start justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-gray-900">{popup.popup_name}</h3>
-                  {(() => {
-                    const status = getPopupStatus(popup.start_date, popup.end_date)
-                    return (
-                      <span className={`px-3 py-1 ${status.className} text-sm font-medium rounded-full`}>
-                        {status.label}
-                      </span>
-                    )
-                  })()}
+          <div className="flex items-center gap-2 mb-4">
+            <Calendar className="w-6 h-6 text-foreground" />
+            <h4 className="text-md font-semibold text-foreground">Upcoming Pop-Ups</h4>
+          </div>
+          <div className="space-y-4">
+            {(upcomingPopups ?? []).map((popup, index) => (
+              <div key={popup.popup_name} className="flex items-center gap-4 p-4 border border-[#e2e8f0] rounded-lg">
+                <Image
+                  src={popup.image_url || "/placeholder.svg"}
+                  alt={popup.popup_name}
+                  width={70}
+                  height={70}
+                  className="object-cover aspect-square rounded-lg"
+                />
+                <div className="flex-1">
+                  <h5 className="text-xl font-semibold text-foreground mb-2">{popup.popup_name}</h5>
+                  <div className="flex items-center gap-4 text-xs text-[#64748b]">
+                    {
+                      popup.location && (
+                        <div className="flex items-center gap-1">
+                          <MapPin className="w-4 h-4 text-black" />
+                          <span className="text-sm">{popup.location?.charAt(0).toUpperCase() + popup.location?.slice(1)}</span>
+                        </div>
+                      )
+                    }
+                    
+                    <div className="flex items-center gap-1">
+                      <Calendar className="w-4 h-4 text-black" />
+                      <span className="text-sm">{formatDate(popup.start_date)} - {formatDate(popup.end_date)}</span>
+                    </div>
+                  </div>
                 </div>
-
-                <div className="space-y-2 mb-4">
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <MapPin className="w-4 h-4" />
-                    <span>{popup.location}</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Calendar className="w-4 h-4" />
-                    <span>
-                      {formatDate(popup.start_date)} - {formatDate(popup.end_date)}
-                    </span>
-                  </div>
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Clock className="w-4 h-4" />
-                    <span>{popup.total_days} days attended</span>
-                  </div>
+                <div
+                  className="px-3 py-1 rounded text-xs font-medium"
+                  style={{ backgroundColor: getPopupStatus(popup.start_date, popup.end_date).className, color: getPopupStatus(popup.start_date, popup.end_date).label }}
+                >
+                  {getPopupStatus(popup.start_date, popup.end_date).label}
                 </div>
               </div>
+            ))}
+          </div>
+
+          <div className="h-px w-full bg-gray-200" />
+
+          <div>
+            <div className="flex items-center gap-2 mb-4">
+              <Clock className="w-6 h-6 text-foreground" />
+              <h4 className="text-md font-semibold text-foreground">Past Pop-Ups</h4>
             </div>
-          ))}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {pastPopups.map((popup) => (
+                <Card key={popup.popup_name} className="p-4">
+                  <div className="relative mb-3">
+                    <Image src={popup.image_url || "/placeholder.svg"} alt={popup.popup_name} width={160} height={160} className="w-full h-auto max-h-[140px] object-cover rounded-lg aspect-auto object-top" />
+                    <div className="absolute top-2 left-2 bg-[#dcfce7] text-[#166534] px-2 py-1 rounded text-xs font-medium">
+                      Completed
+                    </div>
+                  </div>
+                  <div>
+                    <h5 className="text-lg font-semibold text-black mb-2">{popup.popup_name}</h5>
+                    <div className="space-y-2 text-xs text-[#64748b] mb-3">
+
+                      <div className="flex items-center gap-2">
+                        <MapPin className="w-4 h-4 text-black" />
+                        <span className="text-sm">{popup.location}</span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Calendar className="w-4 h-4 text-black" />
+                        <span className="text-sm">{formatDate(popup.start_date)} - {formatDate(popup.end_date)}</span>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        <Clock className="w-4 h-4 text-black" />
+                        <span className="text-sm">{popup.total_days} days attended</span>
+                      </div>
+
+                    </div>
+                    {/* <Button variant="outline" size="sm" className="w-full bg-transparent">
+                      Go to Poap
+                    </Button> */}
+                  </div>
+                </Card>
+              ))}
+            </div>
+          </div>
+        
         </div>
       </div>
-    </div>
+    </Card>
   )
 }
 export default PopupsHistory

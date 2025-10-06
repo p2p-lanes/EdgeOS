@@ -31,7 +31,7 @@ const getCheckoutLinkForGroup = (group: GroupProps, popups: PopupsProps[]): stri
 const Groups = () => {
   const { groups } = useGetGroups()
   const router = useRouter()
-  const { getCity, getPopups } = useCityProvider()
+  const { getPopups } = useCityProvider()
   const popups = getPopups()
 
   if(groups.length === 0) return null

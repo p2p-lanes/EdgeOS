@@ -8,6 +8,8 @@ import PopupsHistory from "@/components/profile/PopupsHistory"
 import HumanForm from "@/components/profile/HumanForm"
 import HeaderProfile from "@/components/profile/HeaderProfile"
 import StatsCards from "@/components/profile/StatsCards"
+import ReferralLinks from "@/components/profile/ReferralLinks"
+import ProfileStats from "@/components/profile/ProfileStats"
 
 export default function ProfileContent() {
   const { profile, isLoading, error, updateProfile, isUpdating, updateError } = useGetProfile()
@@ -79,8 +81,6 @@ export default function ProfileContent() {
     setIsEditing(false)
   }
 
-  const uniqueCountries = new Set((userData?.popups ?? []).map((popup) => (popup.location ?? "").split(", ").pop())).size
-
   if(!isLoading && !profile) {
     return(
       <div className="flex-1 flex flex-col items-center justify-center h-full">
@@ -107,16 +107,19 @@ export default function ProfileContent() {
           {updateError && (
             <div className="text-red-600 mb-4">{updateError}</div>
           )}
-          
+
           <HumanForm userData={userData} isEditing={isEditing} setIsEditing={setIsEditing} handleSave={handleSave} handleCancel={handleCancel} editForm={editForm} setEditForm={setEditForm} />
 
+          <ReferralLinks />
+          
           {/* Stats Cards */}
           <StatsCards userData={userData} />
 
           {/* Events History */}
           <PopupsHistory popups={userData?.popups ?? []} />
+          
+          <ProfileStats userData={userData} />
 
-          <Groups />
         </div>
       </div>
     </div>
