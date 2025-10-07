@@ -36,7 +36,7 @@ export default function ReferralLinks() {
         <div className="flex flex-col gap-1 items-start justify-center">
           <h3 className="text-lg font-semibold text-[#020817]">Referral Links</h3>
           <p className="text-sm text-[#64748b]">
-            Give your friends a discount and auto-approval for upcoming EdgeCity events
+            Give your friends an auto-approval for upcoming EdgeCity events
           </p>
         </div>
         <div className="text-right flex gap-2 items-center">

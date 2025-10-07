@@ -96,6 +96,7 @@ const PopupsHistory = ({popups}: {popups: CitizenProfilePopup[]}) => {
     })
     .filter((p): p is PopupWithApplicationStatus => p !== null)
     .filter(popup => new Date(popup.end_date) > new Date()) // Only show upcoming events
+    .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime()) // Sort by most recent first
 
   const pastPopups = popups.filter((popup) => new Date(popup.end_date) < new Date())
 
@@ -199,7 +200,7 @@ const PopupsHistory = ({popups}: {popups: CitizenProfilePopup[]}) => {
                       if (!mainPoap) return null
 
                       const isClaimed = mainPoap.poap_claimed
-                      const buttonText = isClaimed ? "Go to poap" : "Claim poap"
+                      const buttonText = isClaimed ? "Go to POAP" : "Mint POAP"
 
                       return (
                         <div onClick={() => window.open(mainPoap.poap_url, '_blank')} className="w-full p-2 flex justify-center items-center gap-3 bg-gray-100 rounded-sm h-[42px] hover:bg-gray-200 cursor-pointer">
