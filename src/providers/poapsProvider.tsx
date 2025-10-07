@@ -8,6 +8,8 @@ interface PoapsContextType {
   setPoaps: (poaps: PoapProps[] | null) => void;
   loading: boolean;
   setLoading: (loading: boolean) => void;
+  poapsWithPopup: PoapResponse[] | null;
+  setPoapsWithPopup: (poapsWithPopup: PoapResponse[] | null) => void;
 }
 
 const PoapsContext = createContext<PoapsContextType | undefined>(undefined);
@@ -15,6 +17,7 @@ const PoapsContext = createContext<PoapsContextType | undefined>(undefined);
 export const PoapsProvider = ({ children }: { children: ReactNode }) => {
   const [poaps, setPoaps] = useState<PoapProps[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [poapsWithPopup, setPoapsWithPopup] = useState<PoapResponse[] | null>(null);
 
   return (
     <PoapsContext.Provider
@@ -23,6 +26,8 @@ export const PoapsProvider = ({ children }: { children: ReactNode }) => {
         setPoaps,
         loading,
         setLoading,
+        poapsWithPopup,
+        setPoapsWithPopup,
       }}
     >
       {children}

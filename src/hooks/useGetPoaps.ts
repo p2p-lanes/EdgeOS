@@ -5,7 +5,7 @@ import { PoapProps } from '@/types/Poaps';
 import { PoapResponse } from '@/types/Poaps';
 
 export const useGetPoaps = () => {
-  const { poaps, setPoaps, loading, setLoading } = usePoapsProvider();
+  const { poaps, setPoaps, loading, setLoading, setPoapsWithPopup } = usePoapsProvider();
 
   useEffect(() => {
     const checkPoaps = async () => {
@@ -16,6 +16,8 @@ export const useGetPoaps = () => {
           
           // Unir todos los poaps de todos los popups en un solo array
           const allPoaps = response.data.results.flatMap((result: PoapResponse) => result.poaps || []);
+
+          setPoapsWithPopup(response.data.results);
 
           if(allPoaps.length > 0) {
               const sortedPoaps = allPoaps.sort((a: PoapProps, b: PoapProps) => {
