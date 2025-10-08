@@ -134,8 +134,8 @@ class WeekProductStrategy implements ProductStrategy {
         ...attendee,
         products: updatedProducts.map(p => ({
           ...p,
-          quantity: p.category === 'day' && shouldSelectMonth && !p.purchased ? 0 : p.quantity,
-          selected: p.category === 'month' ? shouldSelectMonth : p.category === 'day' && shouldSelectMonth ? false : p.selected,
+          quantity: p.category.includes('day') && shouldSelectMonth && !p.purchased ? 0 : p.quantity,
+          selected: p.category === 'month' ? shouldSelectMonth : p.category.includes('day') && shouldSelectMonth ? false : p.selected,
           edit: p.category === 'month' ? hasEdited : p.edit
         }))
       };
@@ -205,8 +205,8 @@ class LocalWeekProductStrategy implements ProductStrategy {
         ...attendee,
         products: updatedProducts.map(p => ({
           ...p,
-          quantity: p.category === 'day' && shouldSelectMonth && !p.purchased ? 0 : p.quantity,
-          selected: p.category === 'local month' ? shouldSelectMonth : p.category === 'day' && shouldSelectMonth ? false : p.selected,
+          quantity: p.category.includes('day') && shouldSelectMonth && !p.purchased ? 0 : p.quantity,
+          selected: p.category === 'local month' ? shouldSelectMonth : p.category.includes('day') && shouldSelectMonth ? false : p.selected,
           edit: p.category === 'local month' ? hasEdited : p.edit
         }))
       };
@@ -250,6 +250,8 @@ export const getProductStrategy = (product: ProductsPass, isEditing: boolean): P
     case 'exclusive':
       return new ExclusiveProductStrategy();
     case 'day':
+      return new DayProductStrategy();
+    case 'local day':
       return new DayProductStrategy();
     default:
       return new WeekProductStrategy();

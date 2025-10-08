@@ -55,13 +55,11 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
   const hasPurchased = attendee.products.some((product) => product.purchased)
   const [isQrModalOpen, setIsQrModalOpen] = useState(false)
 
-  const hasDayProducts = standardProducts.some(product => product.category === 'day');
-  const firstDayProductIndex = standardProducts.findIndex(product => product.category === 'day');
   const hasMonthPurchased = attendee.products.some(product => (product.category === 'month' || product.category === 'local month') && (product.purchased || product.selected))
   const isLocalResident = application?.local_resident
 
   // Split products into Local and Common groups while preserving the original order
-  const localProducts = standardProducts.filter(p => p.category === 'local week' || p.category === 'local month')
+  const localProducts = standardProducts.filter(p => p.category.includes('local'))
   const commonProducts = standardProducts.filter(p => p.category === 'week' || p.category === 'month' || p.category === 'day')
 
   // Collapsible open states

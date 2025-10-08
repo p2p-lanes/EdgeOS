@@ -22,6 +22,8 @@ const useDiscountCode = () => {
       const res = await api.get(`coupon-codes?code=${discountCode.toUpperCase()}&popup_city_id=${city.id}`)
       if(res.status === 200){
         const newDiscount = compareDiscount(res.data.discount_value)
+        console.log('newDiscount', newDiscount)
+
         if(newDiscount.is_best){
           setDiscount({discount_value: newDiscount.discount_value, discount_type: 'percentage', discount_code: res.data.code})
           setDiscountMsg(res.data.message)

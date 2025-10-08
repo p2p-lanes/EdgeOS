@@ -26,8 +26,6 @@ const ApplicationProvider = ({ children }: { children: ReactNode }) => {
       }
       const newApplications = currentApplications.filter(ap => ap.id !== application.id)
       
-      const updatedApplications = [...newApplications, application]
-      
       // Forzar que React detecte el cambio usando JSON para romper referencias
       const freshApplication = JSON.parse(JSON.stringify(application))
       const finalApplications = [...newApplications, freshApplication]
