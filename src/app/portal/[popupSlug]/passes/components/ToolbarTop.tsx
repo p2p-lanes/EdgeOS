@@ -52,14 +52,15 @@ const ToolbarTop = ({
 
 
   return (
-    <div className="flex justify-between w-full flex-wrap gap-2">
-      <div className="flex gap-2 flex-wrap">
+    <div className="flex justify-between w-full flex-wrap gap-2" data-testid="toolbar-top">
+      <div className="flex gap-2 flex-wrap" data-testid="toolbar-left">
         {canAddSpouse && !hasSpouse && (
           <Button
             variant="outline"
             className="bg-white text-black hover:bg-white hover:shadow-md transition-all"
             disabled={!attendees.length}
             onClick={() => handleOpenModal('spouse')}
+            data-testid="toolbar-add-spouse-button"
           >
             <PlusIcon className="h-4 w-4 mr-2" />
             Add spouse
@@ -72,6 +73,7 @@ const ToolbarTop = ({
             className="bg-white text-black hover:bg-white hover:shadow-md transition-all"
             disabled={!attendees.length}
             onClick={() => handleOpenModal('kid')}
+            data-testid="toolbar-add-children-button"
         >
             <PlusIcon className="h-4 w-4 mr-2" />
             Add children
@@ -89,12 +91,12 @@ const ToolbarTop = ({
         )}
       </div>
 
-      <div className="flex gap-2 items-center">
-        {canEdit && canEditDate && <EditPassesButton onSwitchToBuy={onSwitchToBuy} />}
+      <div className="flex gap-2 items-center" data-testid="toolbar-right">
+        {canEdit && canEditDate && <EditPassesButton onSwitchToBuy={onSwitchToBuy} data-testid="toolbar-edit-passes-button" />}
         {
           viewInvoices && (
             <>
-              <Button variant={'ghost'} onClick={() => setIsInvoiceModalOpen(true)}>
+              <Button variant={'ghost'} onClick={() => setIsInvoiceModalOpen(true)} data-testid="toolbar-view-invoices-button">
                 <Newspaper className="h-4 w-4" />
                 <p className="text-sm font-medium hidden md:block">View Invoices</p>
               </Button>
@@ -105,7 +107,7 @@ const ToolbarTop = ({
 
         {
           positionCoupon === 'right' && allows_coupons && (
-            <div className="ml-2">
+            <div className="ml-2" data-testid="toolbar-discount-code-right">
               <DiscountCode defaultOpen={true} label={false}/>
             </div>
           )

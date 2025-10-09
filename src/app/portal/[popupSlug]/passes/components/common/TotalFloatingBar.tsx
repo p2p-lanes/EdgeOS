@@ -20,22 +20,22 @@ const TotalFloatingBar = ({ setOpenCart, waiverAccepted }: { setOpenCart: (prev:
   }
 
   return (
-    <div className="flex justify-between items-center">
+    <div className="flex justify-between items-center" data-testid="total-floating-bar-container">
       <div className="flex justify-center items-center gap-2">
         <p className="text-sm font-medium">Total</p>
         {
           originalTotal > 0 && originalTotal !== total && (
-            <span className=" text-muted-foreground line-through">${originalTotal.toFixed(0)}</span>
+            <span className=" text-muted-foreground line-through" data-testid="total-floating-bar-original-total">${originalTotal.toFixed(0)}</span>
           )
         }
-        <span className="font-medium">{total > 0 ? `$${total.toFixed(2)}` : '$0'}</span>
+        <span className="font-medium" data-testid="total-floating-bar-total">{total > 0 ? `$${total.toFixed(2)}` : '$0'}</span>
       </div>
 
       <div className="flex justify-center items-center gap-2">
-        <Button variant="outline" className="p-5 whitespace-nowrap" onClick={handleOnClickReviewOrder}>
+        <Button variant="outline" className="p-5 whitespace-nowrap" onClick={handleOnClickReviewOrder} data-testid="total-floating-bar-review-order">
           Review Order
         </Button>
-        <Button variant="default" className="p-5 whitespace-nowrap" disabled={loading || !someSelected || !waiverAccepted} onClick={() => purchaseProducts(attendees)}>
+        <Button variant="default" className="p-5 whitespace-nowrap" disabled={loading || !someSelected || !waiverAccepted} onClick={() => purchaseProducts(attendees)} data-testid="total-floating-bar-confirm-button">
           {
             loading && <Loader2 className="size-4 animate-spin" />
           }

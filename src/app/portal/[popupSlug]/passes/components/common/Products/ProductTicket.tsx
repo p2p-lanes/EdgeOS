@@ -47,16 +47,21 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
           'default'
         ]
       )}
+      data-testid={`product-button-${product.id}`}
+      data-product-id={product.id}
+      data-product-name={product.name}
+      data-product-selected={selected}
+      data-product-purchased={purchased}
     >
       <div className="flex justify-between w-full">
         <div className="flex items-center justify-center">
           <Ticket className="w-4 h-4" />
           <div className="flex flex-col pl-3 ">
-            <p className="font-semibold text-sm text-left">{product.name}</p>
+            <p className="font-semibold text-sm text-left" data-testid={`product-name-${product.id}`}>{product.name}</p>
 
             {
               product.start_date && product.end_date && (
-                <span className={cn(`text-xs text-left text-muted-foreground ${product.purchased ? 'text-white' : ''}`, disabled && 'text-neutral-300')}>
+                <span className={cn(`text-xs text-left text-muted-foreground ${product.purchased ? 'text-white' : ''}`, disabled && 'text-neutral-300')} data-testid={`product-dates-${product.id}`}>
                   {formatDate(product.start_date, {day: 'numeric', month: 'short'})} to {formatDate(product.end_date, {day: 'numeric', month: 'short'})}
                 </span>
               )
@@ -70,9 +75,9 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
             product.description && !product.purchased && (
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <Info className={cn(`w-4 h-4 text-slate-500 hover:text-slate-700`, product.purchased && 'text-white hover:text-white')} />
+                  <Info className={cn(`w-4 h-4 text-slate-500 hover:text-slate-700`, product.purchased && 'text-white hover:text-white')} data-testid={`product-info-icon-${product.id}`}/>
                 </TooltipTrigger>
-                <TooltipContent className="bg-white text-black shadow-md border border-gray-200 max-w-sm">
+                <TooltipContent className="bg-white text-black shadow-md border border-gray-200 max-w-sm" data-testid={`product-info-tooltip-${product.id}`}>
                   {product.description}
                 </TooltipContent>
               </Tooltip>
@@ -84,12 +89,12 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
               <>
                 {
                   originalPrice !== product.price && (
-                    <p className={cn("text-xs text-muted-foreground line-through", disabled && 'text-neutral-300')}>
+                    <p className={cn("text-xs text-muted-foreground line-through", disabled && 'text-neutral-300')} data-testid={`product-original-price-${product.id}`}>
                       ${originalPrice.toLocaleString()}
                     </p>
                   )
                 }
-                <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price.toLocaleString()}</p>
+                <p className={cn("text-md font-medium", disabled && 'text-neutral-300')} data-testid={`product-price-${product.id}`}>$ {product.price.toLocaleString()}</p>
               </>
             )
           }

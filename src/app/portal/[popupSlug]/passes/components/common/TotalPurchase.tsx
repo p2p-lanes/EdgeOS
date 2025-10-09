@@ -44,8 +44,9 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
       onOpenChange={setIsOpen}
       className="space-y-4 pt-0"
       data-cart
+      data-testid="total-purchase-collapsible"
     >
-      <CollapsibleTrigger className={cn("w-full bg-neutral-200 rounded-md", isModal && "bg-transparent")}>
+      <CollapsibleTrigger className={cn("w-full bg-neutral-200 rounded-md", isModal && "bg-transparent")} data-testid="total-purchase-trigger">
         <div className="flex justify-between items-center p-3">
           <div className="flex items-center gap-2">
             <ChevronRight 
@@ -59,19 +60,19 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
           
           <div className="flex items-center gap-2">
             {originalTotal > 0 && originalTotal !== total && (
-              <span className="text-xs text-muted-foreground line-through">
+              <span className="text-xs text-muted-foreground line-through" data-testid="total-purchase-original-total">
                 ${originalTotal.toFixed(2)}
               </span>
             )}
-            <span className="font-medium" data-total={total.toFixed(2)}>${total > 0 ? total.toFixed(2) : 0}</span>
+            <span className="font-medium" data-total={total.toFixed(2)} data-testid="total-purchase-total">${total > 0 ? total.toFixed(2) : 0}</span>
           </div>
         </div>
       </CollapsibleTrigger>
       <CollapsibleContent className="transition-all duration-100 ease-in-out data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown">
         {productsCart.length > 0 ? (
-          <div className="space-y-2 px-3">
+          <div className="space-y-2 px-3" data-testid="total-purchase-cart-items">
             {
-              productsCart.map(product => <ProductCart key={product.id} product={product}/>)
+              productsCart.map(product => <ProductCart key={product.id} product={product} data-testid={`cart-product-${product.id}`}/>)
             }
 
             {/* <DiscountMonth attendees={attendees} total={total}/> */}
@@ -84,7 +85,7 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
 
             {
               application?.credit ? (
-                <div className="flex justify-between text-sm text-muted-foreground">
+                <div className="flex justify-between text-sm text-muted-foreground" data-testid="total-purchase-credit">
                   <div className="flex items-center gap-2">
                   <Tag className="w-4 h-4" />
                   <span className="text-sm text-muted-foreground">
@@ -97,7 +98,7 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
             }
           </div>
         ) : (
-          <p className="text-sm text-muted-foreground px-3">
+          <p className="text-sm text-muted-foreground px-3" data-testid="total-purchase-no-items">
             No passes selected
           </p>
         )}

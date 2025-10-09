@@ -16,6 +16,7 @@ const CompletePurchaseButton = ({edit, waiverAccepted = true}: {edit?: boolean, 
       className="w-full md:w-fit md:min-w-[120px] text-white bg-slate-800" 
       onClick={() => purchaseProducts(attendees)}
       data-purchase
+      data-testid="complete-purchase-button"
     >
       {loading ? 'Loading...' : edit ? 'Confirm' : 'Confirm and Pay'}
     </ButtonAnimated>

@@ -100,11 +100,11 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
   }
 
   return (
-    <div className="relative h-full w-full">
+    <div className="relative h-full w-full" data-testid={`attendee-ticket-container-${attendee.id}`}>
       <div className="w-full overflow-hidden">
         <div className="w-full rounded-3xl border border-gray-200 h-full xl:grid xl:grid-cols-[1fr_2px_2fr] bg-white">
 
-          <div className="relative flex flex-col p-6 overflow-hidden h-full">
+          <div className="relative flex flex-col p-6 overflow-hidden h-full" data-testid={`attendee-header-${attendee.id}`}>
             <div 
               className="absolute inset-0 z-0 rounded-3xl"
               style={{
@@ -115,20 +115,20 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
             />
             <div className="z-10 h-full flex xl:flex-col justify-between xl:justify-start xl:gap-10">
               <div className="flex flex-col justify-center xl:order-2">
-                <p className="text-xl font-semibold">{attendee.name}</p>
+                <p className="text-xl font-semibold" data-testid={`attendee-name-${attendee.id}`}>{attendee.name}</p>
                 <div className="flex items-center gap-2 mt-1">
                   <User className="h-4 w-4 text-gray-500"/>
-                  <p className="text-sm text-gray-500">{badgeName[attendee.category] || attendee.category}</p>
+                  <p className="text-sm text-gray-500" data-testid={`attendee-category-${attendee.id}`}>{badgeName[attendee.category] || attendee.category}</p>
                 </div>
               </div>
               <div className="flex items-center gap-4">
                 <div className="flex items-center gap-2 xl:order-1">
                   <EdgeLand/>
-                  <p className="text-sm font-medium">{city?.name}</p>
+                  <p className="text-sm font-medium" data-testid={`attendee-city-${attendee.id}`}>{city?.name}</p>
                 </div>
               </div>
 
-              <OptionsMenu onEdit={handleEditAttendee} onDelete={hasPurchased ? undefined : handleRemoveAttendee} className="absolute top-1 right-4 xl:hidden"/>
+              <OptionsMenu onEdit={handleEditAttendee} onDelete={hasPurchased ? undefined : handleRemoveAttendee} className="absolute top-1 right-4 xl:hidden" data-testid={`attendee-options-menu-mobile-${attendee.id}`}/>
             </div>
 
           </div>
@@ -138,16 +138,16 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
             <div className="absolute max-xl:-top-[23px] max-xl:-right-[23px] xl:-bottom-[23px] xl:-right-auto xl:-left-[23px] w-[48px] h-[46px] bg-neutral-100 rounded-3xl border border-gray-200"></div> 
           </div>
 
-          <div className="flex flex-col p-8 gap-2 xl:pr-10">
+          <div className="flex flex-col p-8 gap-2 xl:pr-10" data-testid={`attendee-products-${attendee.id}`}>
             {standardProducts.length === 0 ? (
               <div className="flex w-full h-full justify-center items-center">
-                <p className="text-sm font-medium text-neutral-500">Coming soon.</p>
+                <p className="text-sm font-medium text-neutral-500" data-testid={`attendee-no-products-${attendee.id}`}>Coming soon.</p>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
                 {localProducts.length > 0 && (
-                  <Collapsible open={localOpen} onOpenChange={setLocalOpen} className="space-y-2">
-                    <CollapsibleTrigger className="w-full bg-accent rounded-md" aria-label="Toggle Local Tickets">
+                  <Collapsible open={localOpen} onOpenChange={setLocalOpen} className="space-y-2" data-testid={`attendee-local-collapsible-${attendee.id}`}>
+                    <CollapsibleTrigger className="w-full bg-accent rounded-md" aria-label="Toggle Local Tickets" data-testid={`attendee-local-trigger-${attendee.id}`}>
                       <div className="flex justify-between items-center p-3">
                         <div className="flex items-center gap-2">
                           <ChevronRight className={cn("h-4 w-4 transition-transform duration-200", localOpen && "transform rotate-90")} />
@@ -156,7 +156,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                       </div>
                     </CollapsibleTrigger>
                     <CollapsibleContent className="transition-all duration-100 ease-in-out data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown">
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-2" data-testid={`attendee-local-products-${attendee.id}`}>
                         {localProducts.map((product) => (
                           <React.Fragment key={`${product.id}-${attendee.id}`}>
                             <Product 
@@ -164,6 +164,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                               defaultDisabled={!toggleProduct} 
                               hasMonthPurchased={hasMonthPurchased}
                               onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
+                              data-testid={`product-${product.id}-attendee-${attendee.id}`}
                             />
                             {(product.category === 'month' || product.category === 'local month') && (
                               <Separator className="my-1" />
@@ -178,8 +179,8 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                 )}
 
                 {commonProducts.length > 0 && (
-                  <Collapsible open={commonOpen} onOpenChange={setCommonOpen} className="space-y-2">
-                    <CollapsibleTrigger className="w-full bg-accent rounded-md" aria-label="Toggle Common Tickets">
+                  <Collapsible open={commonOpen} onOpenChange={setCommonOpen} className="space-y-2" data-testid={`attendee-common-collapsible-${attendee.id}`}>
+                    <CollapsibleTrigger className="w-full bg-accent rounded-md" aria-label="Toggle Common Tickets" data-testid={`attendee-common-trigger-${attendee.id}`}>
                       <div className="flex justify-between items-center p-3">
                         <div className="flex items-center gap-2">
                           <ChevronRight className={cn("h-4 w-4 transition-transform duration-200", commonOpen && "transform rotate-90")} />
@@ -188,7 +189,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                       </div>
                     </CollapsibleTrigger>
                     <CollapsibleContent className="transition-all duration-100 ease-in-out data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown">
-                      <div className="flex flex-col gap-2">
+                      <div className="flex flex-col gap-2" data-testid={`attendee-common-products-${attendee.id}`}>
                         {(() => {
                           const hasDayInCommon = commonProducts.some(p => p.category === 'day')
                           const firstDayIndexCommon = commonProducts.findIndex(p => p.category === 'day')
@@ -202,6 +203,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                                 defaultDisabled={!toggleProduct} 
                                 hasMonthPurchased={hasMonthPurchased}
                                 onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
+                                data-testid={`product-${product.id}-attendee-${attendee.id}`}
                               />
                               {(product.category === 'month' || product.category === 'local month') && (
                                 <Separator className="my-1" />
@@ -218,7 +220,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
 
             {
               !hasPurchased && (
-                <OptionsMenu onEdit={handleEditAttendee} onDelete={handleRemoveAttendee} className="absolute top-2 right-3 hidden xl:flex"/>
+                <OptionsMenu onEdit={handleEditAttendee} onDelete={handleRemoveAttendee} className="absolute top-2 right-3 hidden xl:flex" data-testid={`attendee-options-menu-desktop-${attendee.id}`}/>
               )
             }
 
@@ -231,6 +233,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                     className="flex items-center gap-2 p-2" 
                     onClick={handleOpenQrModal}
                     aria-label="Show check-in code"
+                    data-testid={`attendee-checkin-code-button-${attendee.id}`}
                   >
                     <p className="text-sm font-medium">Check-in Code</p>
                     <QrCode className="w-5 h-5"/>
