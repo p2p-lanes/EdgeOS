@@ -21,7 +21,20 @@ import { buyPassesSelectors } from '@/tests/selectors/passes';
 
 ### Examples
 
-#### 1. Selecting Main Elements
+#### 1. Navigating to Buy Passes Tab
+
+```typescript
+// Wait for tabs to load
+await page.locator(buyPassesSelectors.tabs.tabsList).waitFor();
+
+// Click on Buy Passes tab
+await page.locator(buyPassesSelectors.tabs.buyPassesTab).click();
+
+// Wait for container to be visible
+await page.locator(buyPassesSelectors.container).waitFor();
+```
+
+#### 2. Selecting Main Elements
 
 ```typescript
 // Main container
@@ -35,7 +48,7 @@ await page.locator(buyPassesSelectors.title.description).textContent();
 await page.locator(buyPassesSelectors.balance).isVisible();
 ```
 
-#### 2. Working with Discount Code
+#### 3. Working with Discount Code
 
 ```typescript
 // Toggle discount code section
@@ -51,7 +64,7 @@ await page.locator(buyPassesSelectors.discountCode.applyButton).click();
 const message = await page.locator(buyPassesSelectors.discountCode.message).textContent();
 ```
 
-#### 3. Working with Attendees
+#### 4. Working with Attendees
 
 ```typescript
 // Using helper function
@@ -69,7 +82,7 @@ const productId = '456';
 await page.locator(getProductSelector(productId, attendeeId)).click();
 ```
 
-#### 4. Working with Cart/Total Purchase
+#### 5. Working with Cart/Total Purchase
 
 ```typescript
 // Open cart
@@ -82,7 +95,7 @@ const total = await page.locator(buyPassesSelectors.totalPurchase.total).textCon
 await page.locator(buyPassesSelectors.totalPurchase.cartItems).isVisible();
 ```
 
-#### 5. Complete Purchase Flow
+#### 6. Complete Purchase Flow
 
 ```typescript
 // 1. Select a product
@@ -95,7 +108,7 @@ await page.locator(buyPassesSelectors.waiverCheckbox.input).check();
 await page.locator(buyPassesSelectors.completePurchaseButton).click();
 ```
 
-#### 6. Mobile vs Desktop
+#### 7. Mobile vs Desktop
 
 ```typescript
 // Desktop floating bar
@@ -115,18 +128,19 @@ if (isMobile) {
 
 ### Main Sections
 
-1. **Container**: Main page container
-2. **Title & Description**: Page header and information
-3. **Balance**: Current balance display
-4. **Toolbar**: Action buttons (Add children, View Invoices, etc.)
-5. **Discount Code**: Coupon application section
-6. **Banner Discount**: Discount information banner
-7. **Special Product**: Patreon/special product section
-8. **Attendees List**: List of attendees and their tickets
-9. **Total Purchase**: Cart/checkout collapsible
-10. **Waiver Checkbox**: Terms acceptance checkbox
-11. **Complete Purchase Button**: Final purchase button
-12. **Desktop/Mobile Variants**: Platform-specific elements
+1. **Tabs**: Navigation between "Your Passes" and "Buy Passes"
+2. **Container**: Main page container
+3. **Title & Description**: Page header and information
+4. **Balance**: Current balance display
+5. **Toolbar**: Action buttons (Add children, View Invoices, etc.)
+6. **Discount Code**: Coupon application section
+7. **Banner Discount**: Discount information banner
+8. **Special Product**: Patreon/special product section
+9. **Attendees List**: List of attendees and their tickets
+10. **Total Purchase**: Cart/checkout collapsible
+11. **Waiver Checkbox**: Terms acceptance checkbox
+12. **Complete Purchase Button**: Final purchase button
+13. **Desktop/Mobile Variants**: Platform-specific elements
 
 ### Attendee Elements
 
@@ -167,6 +181,12 @@ test.describe('Buy Passes', () => {
   test('should select a ticket and complete purchase', async ({ page }) => {
     // Navigate to passes page
     await page.goto('/portal/edge-esmeralda/passes');
+    
+    // Wait for tabs to load
+    await page.locator(buyPassesSelectors.tabs.tabsList).waitFor();
+    
+    // Click on Buy Passes tab
+    await page.locator(buyPassesSelectors.tabs.buyPassesTab).click();
     
     // Wait for page to load
     await page.locator(buyPassesSelectors.container).waitFor();

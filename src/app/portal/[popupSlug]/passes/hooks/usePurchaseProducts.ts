@@ -19,7 +19,7 @@ const usePurchaseProducts = () => {
     if(!application) return;
     
     //Si tiene un mes seleccionado y tiene semanas o dias comprados
-    const monthSelectedWithWeekOrDay = attendeePasses.some(p => p.products.some(p => p.category === 'month' && p.selected) && (p.products.some(p => p.category === 'week' && p.purchased) || p.products.some(p => p.category === 'day' && p.purchased)))
+    const monthSelectedWithWeekOrDay = attendeePasses.some(p => p.products.some(p => p.category === 'month' && p.selected) && (p.products.some(p => p.category === 'week' && p.purchased) || p.products.some(p => p.category.includes('day') && p.purchased)))
     
     const editableMode = (isEditing || application.credit > 0 || monthSelectedWithWeekOrDay) && !attendeePasses.some(p => p.products.some(p => p.category === 'patreon' && p.selected ))
     

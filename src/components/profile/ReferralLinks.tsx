@@ -16,7 +16,7 @@ const referralLinks = [
   { name: "Edge Lana", url: "https://link/234-edge_austin.com" },
 ]
 
-export default function ReferralLinks() {
+export default function ReferralLinks({ referralCount }: { referralCount: number }) {
   const { groups } = useGetGroups()
   const { getPopups } = useCityProvider()
   const popups = getPopups()
@@ -41,7 +41,7 @@ export default function ReferralLinks() {
         </div>
         <div className="text-right flex gap-2 items-center">
           <p className="text-xs text-[#64748b]">Total referrals</p>
-          <p className="text-2xl font-bold text-[#020817]">24</p>
+          <p className="text-2xl font-bold text-[#020817]">{referralCount}</p>
         </div>
       </div>
 
@@ -53,7 +53,10 @@ export default function ReferralLinks() {
           if(!isPopupActive || !groupPopup) return null
 
           const baseUrl = getBaseUrl()
-          const link = group.is_ambassador_group ? `${baseUrl}/${groupPopup.slug}/invite/${group.slug}` : `${baseUrl}/checkout?group=${group.slug}`
+
+          if(!group.is_ambassador_group) return;
+
+          const link = `${baseUrl}/${groupPopup.slug}/invite/${group.slug}`
 
           return (
             <div key={group.name} className="flex items-center gap-4">

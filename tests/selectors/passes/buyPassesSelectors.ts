@@ -4,6 +4,15 @@
  */
 
 export const buyPassesSelectors = {
+  // Tabs Navigation
+  tabs: {
+    container: '.w-full.md\\:mt-0.mx-auto',
+    tabsList: '[role="tablist"]',
+    yourPassesTab: 'button[role="tab"][value="your-passes"]',
+    buyPassesTab: 'button[role="tab"][value="buy-passes"]',
+    buyPassesTabByText: 'button[role="tab"]:has-text("Buy Passes")',
+  },
+
   // Main Container
   container: '[data-testid="buy-passes-container"]',
   

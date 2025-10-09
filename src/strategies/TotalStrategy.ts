@@ -35,10 +35,14 @@ class MonthlyPriceStrategy extends BasePriceStrategy {
     const hasPatreon = products.some(p => (p.category === 'patreon' || p.category === 'supporter') && p.selected);
     const monthProduct = products.find(p => (p.category === 'month' || p.category === 'local month') && p.selected && !p.purchased);
     const monthPrice = (monthProduct?.price ?? 0) * (monthProduct?.quantity ?? 1);
-    const totalProductsPurchased = products.filter(p => p.category !== 'patreon' && p.category !== 'supporter').reduce((sum, product) => sum + (product.purchased ? product.price * (product.quantity ?? 1) : 0), 0)
+    const totalProductsPurchased = products
+      .filter(p => p.category !== 'patreon' && p.category !== 'supporter')
+      .reduce((sum, product) => sum + (product.purchased ? product.price * (product.quantity ?? 1) : 0), 0)
 
     const originalTotal = this.calculateOriginalTotal(products)
     const discountAmount = discount.discount_value ? originalTotal * (discount.discount_value / 100): 0;
+
+    console.log('month',{monthPrice, originalTotal, discountAmount, totalProductsPurchased})
 
     return {
       total: monthPrice - (hasPatreon && monthProduct?.attendee_category !== 'main' ? 0 : totalProductsPurchased),
@@ -118,7 +122,6 @@ class MonthlyPurchasedPriceStrategy extends BasePriceStrategy {
     const totalWeekPurchased = weekProductsPurchased.reduce((sum, product) => sum + (product.price * (product.quantity ?? 1)), 0)
 
     const originalTotal = this.calculateOriginalTotal(products)
-
     
     return {
       total: totalWeekPurchased - ((monthProductPurchased?.price ?? 0) * (monthProductPurchased?.quantity ?? 1)),

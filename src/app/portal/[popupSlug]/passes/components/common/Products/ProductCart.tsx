@@ -3,13 +3,16 @@ import { ProductsPass } from "@/types/Products"
 import { badgeName } from "../../../constants/multiuse"
 
 const ProductCart = ({ product }: { product: ProductsPass }) => {
-
   const price =  product.original_price ? product.original_price : product.price
+  
+  const quantity = product.category.includes('day') ? (product.quantity ?? 0) - (product.original_quantity ?? 0) : 1
+
+  const totalPrice = (price * quantity).toFixed(0)
 
   return (
     <div className="flex justify-between text-sm text-muted-foreground">
-      <span>1 x {product.name} ({badgeName[product.attendee_category] || product.attendee_category})</span>
-      <span data-product-price={price.toFixed(0)}>{product.edit ? `- $${price.toFixed(0)}` : `$${price.toFixed(0)}`}</span>
+      <span>{quantity} x {product.name} ({badgeName[product.attendee_category] || product.attendee_category})</span>
+      <span data-product-price={totalPrice}>{product.edit ? `- $${totalPrice}` : `$${totalPrice}`}</span>
     </div>
   )
 }
