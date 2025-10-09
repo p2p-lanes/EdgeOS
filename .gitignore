@@ -42,5 +42,6 @@ cypress.config.ts
 *.tsbuildinfo
 next-env.d.ts
 
-# cypress
-cypress.config.ts
+#playwright
+test-results/
+playwright-report/
