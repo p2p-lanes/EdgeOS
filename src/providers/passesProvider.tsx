@@ -44,6 +44,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     if (!product) return;
     const strategy = getProductStrategy(product, isEditing);
     const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product, discountApplied);
+    console.log('updatedAttendees', updatedAttendees);
     setAttendeePasses(updatedAttendees);
   }, [attendeePasses, isEditing, discountApplied])
   

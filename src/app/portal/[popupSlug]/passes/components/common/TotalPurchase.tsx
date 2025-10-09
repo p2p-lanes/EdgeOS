@@ -11,7 +11,7 @@ import { useApplication } from "@/providers/applicationProvider"
 
 const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: AttendeeProps[], isModal?: boolean, isOpen: boolean, setIsOpen: (prev: boolean) => void}) => {
   const { discountApplied } = useDiscountCode()
-  const { originalTotal, total, discountAmount } = useTotal()
+  const { originalTotal, total, discountAmount, groupDiscountPercentage, groupName } = useTotal()
   const { getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
 
@@ -79,6 +79,8 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
             <DiscountWeekPurchased attendees={attendees} hasMonthSelected={hasMonthSelected}/>
 
             <DiscountCouponTotal products={productsCart} discountAmount={discountAmount} discountApplied={discountApplied} patreonSelected={patreonSelected} />
+
+            <GroupDiscountDisplay groupDiscountPercentage={groupDiscountPercentage} groupName={groupName} />
 
             {
               application?.credit ? (
@@ -210,6 +212,25 @@ const DiscountWeekPurchased = ({ attendees, hasMonthSelected }: {
         </span>
       </div>
       <span data-week-discount={weekDiscount.toFixed(0)}> - ${weekDiscount.toFixed(0)}</span>
+    </div>
+  )
+}
+
+const GroupDiscountDisplay = ({ groupDiscountPercentage, groupName }: { 
+  groupDiscountPercentage: number, 
+  groupName: string | null 
+}) => {
+  if (!groupDiscountPercentage || groupDiscountPercentage === 0) return null
+
+  return (
+    <div className="flex justify-between text-sm text-muted-foreground">
+      <div className="flex items-center gap-2">
+        <Tag className="w-4 h-4" />
+        <span className="text-sm text-muted-foreground">
+          {groupName ? `${groupName} Group (${groupDiscountPercentage}% OFF)` : `Group Discount (${groupDiscountPercentage}% OFF)`}
+        </span>
+      </div>
+      <span className="text-green-600 font-medium">Applied</span>
     </div>
   )
 }

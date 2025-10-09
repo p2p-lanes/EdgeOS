@@ -6,6 +6,7 @@ import CityProvider from "@/providers/cityProvider"
 import { PoapsProvider } from "@/providers/poapsProvider"
 import PassesDataProvider from "@/providers/productsProvider"
 import PassesProvider from "@/providers/passesProvider"
+import { GroupsProvider } from "@/providers/groupsProvider"
 
 const Providers = ({children}: {children: React.ReactNode}) => {
   return (
@@ -14,9 +15,11 @@ const Providers = ({children}: {children: React.ReactNode}) => {
         <PassesDataProvider>
           <PassesProvider>
             <PoapsProvider>
-              <SidebarProvider>
-                {children}
-              </SidebarProvider>
+              <GroupsProvider>
+                <SidebarProvider>
+                  {children}
+                </SidebarProvider>
+              </GroupsProvider>
             </PoapsProvider>
           </PassesProvider>
         </PassesDataProvider>

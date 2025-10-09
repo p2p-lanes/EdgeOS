@@ -5,6 +5,7 @@ import CityProvider from "@/providers/cityProvider"
 import PassesDataProvider from "@/providers/productsProvider"
 import PassesProvider from "@/providers/passesProvider"
 import TotalProvider from "@/providers/totalProvider"
+import { GroupsProvider } from "@/providers/groupsProvider"
 
 const layout = ({children}: {children: React.ReactNode}) => {
 
@@ -13,9 +14,11 @@ const layout = ({children}: {children: React.ReactNode}) => {
       <ApplicationProvider>
         <PassesDataProvider>
           <PassesProvider>
-            <TotalProvider>
-              {children}
-            </TotalProvider>
+            <GroupsProvider>
+              <TotalProvider>
+                {children}
+              </TotalProvider>
+            </GroupsProvider>
           </PassesProvider>
         </PassesDataProvider>
       </ApplicationProvider>

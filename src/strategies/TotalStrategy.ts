@@ -55,14 +55,14 @@ class MonthlyPriceStrategy extends BasePriceStrategy {
 
 class WeeklyPriceStrategy extends BasePriceStrategy {
   calculate(products: ProductsPass[], discount: DiscountProps): TotalResult {
-    const weekSelectedProducts = products.filter(p => (p.category === 'week' || p.category === 'local week' || p.category === 'day') && p.selected);
+    const weekSelectedProducts = products.filter(p => (p.category === 'week' || p.category === 'local week' || p.category.includes('day')) && p.selected);
     
     const totalSelected = weekSelectedProducts.reduce((sum, product) => {
-      if (product.purchased && product.category !== 'day') {
+      if (product.purchased && !product.category.includes('day')) {
         return sum - ((product.price ?? 0) * (product.quantity || 1));
       }
       
-      if (product.category === 'day') {
+      if (product.category.includes('day')) {
         if (product.purchased) {
           const diff = ((product.quantity || 1) - (product.original_quantity || 1));
           return diff > 0 ? sum + ((product.price ?? 0) * diff) : sum;
@@ -130,7 +130,7 @@ class MonthlyPurchasedPriceStrategy extends BasePriceStrategy {
 
 class DayPriceStrategy extends BasePriceStrategy {
   calculate(products: ProductsPass[], discount: DiscountProps): TotalResult {
-     const daySelectedProducts = products.filter(p => (p.category === 'day') && p.selected);
+     const daySelectedProducts = products.filter(p => (p.category.includes('day')) && p.selected);
     
     const totalSelected = daySelectedProducts.reduce((sum, product) => {
       if (product.purchased) {
@@ -153,8 +153,8 @@ class DayPriceStrategy extends BasePriceStrategy {
 
 // Calculadora de totales
 export class TotalCalculator {
-  calculate(attendees: AttendeeProps[], discount: DiscountProps): TotalResult {
-    return attendees.reduce((total, attendee) => {
+  calculate(attendees: AttendeeProps[], discount: DiscountProps, groupDiscountPercentage?: number): TotalResult {
+    const baseResult = attendees.reduce((total, attendee) => {
       const strategy = this.getStrategy(attendee.products);
       const result = strategy.calculate(attendee.products, discount);
       
@@ -164,6 +164,18 @@ export class TotalCalculator {
         discountAmount: total.discountAmount + result.discountAmount
       };
     }, { total: 0, originalTotal: 0, discountAmount: 0 });
+
+    // Apply group discount if available
+    if (groupDiscountPercentage && groupDiscountPercentage > 0) {
+      const groupDiscountAmount = baseResult.total * (groupDiscountPercentage / 100);
+      return {
+        total: baseResult.total - groupDiscountAmount,
+        originalTotal: baseResult.originalTotal,
+        discountAmount: baseResult.discountAmount + groupDiscountAmount
+      };
+    }
+
+    return baseResult;
   }
 
   private getStrategy(products: ProductsPass[]): PriceCalculationStrategy {

@@ -34,7 +34,7 @@ export const sortAttendees = (attendees: AttendeeProps[]) => {
 export const filterProductsToPurchase = (products: ProductsPass[], editableMode: boolean) => {
 
   const reducedProducts = products.reduce((acc: ProductsPass[], product) => {
-    const isDayProduct = product.category === 'day'
+    const isDayProduct = product.category.includes('day')
     const isWeekProduct = product.category === 'week' || product.category === 'local week'
     const isMonthProduct = product.category === 'month' || product.category === 'local month'
     const isPatreonProduct = product.category === 'patreon'

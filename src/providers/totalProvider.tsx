@@ -3,12 +3,15 @@ import { useApplication } from './applicationProvider';
 import { usePassesProvider } from './passesProvider';
 import { TotalCalculator } from '@/strategies/TotalStrategy';
 import useDiscountCode from '@/app/portal/[popupSlug]/passes/hooks/useDiscountCode';
+import { useGroupsProvider } from './groupsProvider';
 
 interface TotalContext_interface {
   total: number;
   originalTotal: number;
   discountAmount: number;
   balance: number;
+  groupDiscountPercentage: number;
+  groupName: string | null;
 }
 
 const TotalContext = createContext<TotalContext_interface | null>(null);
@@ -22,18 +25,35 @@ const TotalProvider = ({ children }: { children: ReactNode }) => {
   const [originalTotal, setOriginalTotalState] = useState<number>(0)
   const [discountAmount, setDiscountAmountState] = useState<number>(0)
   const [balance, setBalanceState] = useState<number>(0)
+  const [groupDiscountPercentage, setGroupDiscountPercentage] = useState<number>(0)
+  const [groupName, setGroupName] = useState<string | null>(null)
+  const { groups } = useGroupsProvider()
 
   useEffect(() => {
     const hasPatreon = attendeePasses.some(a => a.products.some(p => (p.category === 'patreon' || p.category === 'supporter') && p.selected))
     const calculator = new TotalCalculator();
-    const result = calculator.calculate(attendeePasses, discountApplied)
+    
+    // Find group discount if application has group_id
+    let groupDiscountValue = 0;
+    let groupNameValue = null;
+    if (application?.group_id && groups.length > 0) {
+      const group = groups.find(g => g.id === application.group_id);
+      if (group && group.discount_percentage) {
+        groupDiscountValue = group.discount_percentage;
+        groupNameValue = group.name;
+      }
+    }
+    
+    const result = calculator.calculate(attendeePasses, discountApplied, groupDiscountValue)
     const balance = hasPatreon ? result.total : result.total - (application?.credit || 0)
 
     setTotalState(balance)
     setOriginalTotalState(result.originalTotal)
     setDiscountAmountState(result.discountAmount)
     setBalanceState(balance)
-  }, [application, attendeePasses, discountApplied])
+    setGroupDiscountPercentage(groupDiscountValue)
+    setGroupName(groupNameValue)
+  }, [application, attendeePasses, discountApplied, groups])
 
 
   return (
@@ -42,7 +62,9 @@ const TotalProvider = ({ children }: { children: ReactNode }) => {
         total,
         originalTotal,
         discountAmount,
-        balance
+        balance,
+        groupDiscountPercentage,
+        groupName
       }}
     >
       {children}

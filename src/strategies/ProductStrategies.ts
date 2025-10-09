@@ -224,7 +224,7 @@ class DayProductStrategy implements ProductStrategy {
         ...attendee,
         products: attendee.products.map(p => ({
           ...p,
-          selected: p.id === product.id ? product.quantity && product.quantity > 0 ? true : false : p.selected,
+          selected: p.id === product.id ? product.quantity && (product.quantity - (p.original_quantity ?? 0)) > 0 ? true : false : p.selected,
           quantity: p.id === product.id ? product.quantity : p.quantity
         }))
       };

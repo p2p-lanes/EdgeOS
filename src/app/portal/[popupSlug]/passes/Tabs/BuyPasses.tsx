@@ -41,7 +41,7 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
   const isDayCheckout = searchParams.has("day-passes");
   const mainAttendee = attendees.find(a => a.category === 'main')
   const specialProduct = mainAttendee?.products.find(p => p.category === 'patreon')
-  const someProductSelected = attendees.some(a => a.products.some(p => p.selected && (p.category === 'day' ? (p.quantity ?? 0) >(p.original_quantity ?? 0) : true)))
+  const someProductSelected = attendees.some(a => a.products.some(p => p.selected && (p.category.includes('day') ? (p.quantity ?? 0) > (p.original_quantity ?? 0) : true)))
   const { total } = useTotal()
   const { getCity } = useCityProvider()
   const city = getCity()

@@ -52,5 +52,6 @@ export interface ApplicationProps {
   ticket_category?: TicketCategoryProps;
   discount_assigned?: number;
   submitted_at?: string;
-  credit: number
+  credit: number;
+  group_id?: string;
 }
