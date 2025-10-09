@@ -110,7 +110,7 @@ export default function ProfileContent() {
 
           <HumanForm userData={userData} isEditing={isEditing} setIsEditing={setIsEditing} handleSave={handleSave} handleCancel={handleCancel} editForm={editForm} setEditForm={setEditForm} />
 
-          <ReferralLinks />
+          <ReferralLinks referralCount={userData?.referral_count ?? 0} />
           
           {/* Stats Cards */}
           <StatsCards userData={userData} />
