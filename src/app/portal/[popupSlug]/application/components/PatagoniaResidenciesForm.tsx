@@ -48,7 +48,7 @@ const PatagoniaResidenciesForm = ({ formData, errors, handleChange, fields }: Se
   
   return (
     <>
-    <SectionWrapper title={"Edge Patagonia 2025 residencies"} subtitle={"You can attend Edge City Patagonia solo, join an existing residency, or start your own."}>
+    <SectionWrapper title={"Edge Patagonia 2025 residencies"} subtitle={"You can attend Edge City Patagonia solo, join an existing residency, or start your own."} data-testid="patagonia-residencies-section">
       <div className="grid gap-4 grid-cols-1 sm:items-end">
         {/* <CheckboxForm
           label={'Are you interested in being part of a residency?'}
@@ -75,13 +75,14 @@ const PatagoniaResidenciesForm = ({ formData, errors, handleChange, fields }: Se
                     value={formData.residencies_text ?? ''}
                     handleChange={(value) => handleChange('residencies_text', value)}
                     error={errors.residencies_text}
+                    data-testid="patagonia-residencies-description-textarea"
                   />
                 {/* </motion.div> */}
 
-                <Label className="text-sm text-gray-500">
+                <Label className="text-sm text-gray-500" data-testid="patagonia-residencies-find-link">
                   Find all residencies open for applications <Link href="https://edgecity.notion.site/Edge-City-Patagonia-Residency-Application-updated-regularly-240d45cdfc5980e980f8db7d362c553d" target="_blank" className="text-blue-500">here</Link>.
                 </Label>
-                <Label className="text-sm text-gray-500">
+                <Label className="text-sm text-gray-500" data-testid="patagonia-residencies-submit-link">
                  Submit a proposal for your own residency <Link href="https://guildhall.simplefi.tech/dashboard/#/nc/form/8d445476-f4d6-4dc9-bb0d-7a8f234f6b33" target="_blank" className="text-blue-500">here</Link>.
                 </Label>
               </div>

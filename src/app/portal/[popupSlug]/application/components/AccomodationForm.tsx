@@ -56,6 +56,7 @@ const AccomodationForm = ({formData, errors, handleChange, fields}: SectionProps
       <SectionWrapper
         title={form?.accommodation?.title ?? 'Accomodation'} 
         subtitle={form?.accommodation?.subtitle ?? ''}
+        data-testid="accommodation-section"
       >
         {
           fields.has('is_renter') && (
@@ -66,6 +67,7 @@ const AccomodationForm = ({formData, errors, handleChange, fields}: SectionProps
                 onCheckedChange={(checked: boolean) => {
                 handleChange('is_renter', checked === true)
               }}
+                data-testid="accommodation-is-renter-checkbox"
               />
               <LabelMuted htmlFor="is_renter">
                 Have you booked your accomodation in Hotel Magdalena via <Link href={'https://book.bunkhousehotels.com/?adult=1&arrive=2025-03-02&chain=18474&child=0&currency=USD&depart=2025-03-07&group=EDGECITY&hotel=10094&level=hotel&locale=en-US&productcurrency=USD&rooms=1'} target="_blank" className="text-primary underline">our link</Link>?
@@ -89,6 +91,7 @@ const AccomodationForm = ({formData, errors, handleChange, fields}: SectionProps
                   isRequired={true}
                   loading={loading}
                   subtitle="Please submit your booking confirmation for Hotel Magdalena here. Make sure we can see your name and booking dates."
+                  data-testid="accommodation-booking-confirmation-upload"
                  />
               )}
               </motion.div>

@@ -9,9 +9,10 @@ interface SectionWrapperProps {
   className?: string
   title?: string
   subtitle?: string
+  'data-testid'?: string
 }
 
-const SectionWrapper = ({ children, className = "", title, subtitle }: SectionWrapperProps) => {
+const SectionWrapper = ({ children, className = "", title, subtitle, 'data-testid': testId }: SectionWrapperProps) => {
   const ref = useRef(null)
   const isInView = useInView(ref, { once: true, margin: "-142px" })
 
@@ -25,10 +26,11 @@ const SectionWrapper = ({ children, className = "", title, subtitle }: SectionWr
         ease: "backOut",
       }}
       className={`grid gap-10 xl:grid-cols-[260px,1fr] pb-12 ${className}`}
+      data-testid={testId}
     >
       <div className="space-y-1">
-        <h2 className="text-2xl font-semibold tracking-tight">{title}</h2>
-        <p className="text-muted-foreground">{subtitle}</p>
+        <h2 className="text-2xl font-semibold tracking-tight" data-testid={testId ? `${testId}-title` : undefined}>{title}</h2>
+        <p className="text-muted-foreground" data-testid={testId ? `${testId}-subtitle` : undefined}>{subtitle}</p>
       </div>
       <div className="space-y-6">
         {children}

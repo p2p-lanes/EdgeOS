@@ -22,6 +22,7 @@ interface FileUploadInputProps {
   isRequired?: boolean
   loading?: boolean
   subtitle?: string
+  'data-testid'?: string
 }
 
 export function FileUploadInput({
@@ -36,6 +37,7 @@ export function FileUploadInput({
   isRequired = false,
   subtitle,
   loading = false,
+  'data-testid': testId,
 }: FileUploadInputProps) {
   const [dragActive, setDragActive] = useState(false)
   const [files, setFiles] = useState<File[]>([])
@@ -100,6 +102,7 @@ export function FileUploadInput({
         onDragLeave={handleDrag}
         onDragOver={handleDrag}
         onDrop={handleDrop}
+        data-testid={testId}
       >
         <div className="hidden">
           <Input
@@ -118,7 +121,7 @@ export function FileUploadInput({
             <div className="flex flex-col items-center justify-center space-y-4">
               <Upload className="w-12 h-6 text-gray-400" />
               <p className="text-sm text-gray-600">{placeholder}</p>
-              <Button onClick={openFileDialog} variant="outline" type="button">
+              <Button onClick={openFileDialog} variant="outline" type="button" data-testid={testId ? `${testId}-button` : undefined}>
                 {label}
               </Button>
             </div>

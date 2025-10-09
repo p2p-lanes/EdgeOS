@@ -7,12 +7,14 @@ interface ProgressBarProps {
 
 export function ProgressBar({ progress }: ProgressBarProps) {
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-t">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-sm border-t" data-testid="progress-bar-container">
       <Progress 
         value={progress} 
         className="w-full h-2 rounded-none" 
         aria-label="Form completion progress"
+        data-testid="progress-bar"
       />
+      <span className="sr-only" data-testid="progress-percentage">{progress}%</span>
     </div>
   )
 }

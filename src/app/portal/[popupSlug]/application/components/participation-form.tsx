@@ -46,6 +46,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
       <SectionWrapper 
         title={form?.participation?.title ?? 'Your participation'} 
         subtitle={form?.participation?.subtitle ?? 'We understand that your plans may change. We are collecting the following information just to get a sense of capacity of each day/week.'}
+        data-testid="participation-section"
       >
 
         
@@ -59,6 +60,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
               required={true}
               checked={formData.duration === 'full length' || false}
               onCheckedChange={(checked) => handleChange('duration', checked ? 'full length' : '')}
+              data-testid="participation-duration-checkbox"
             />
           )
         }
@@ -73,6 +75,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
               error={errors.duration}
               isRequired={!isVideoValid}
               options={durationOptions}
+              data-testid="participation-duration-radio-group"
             />
           )
         }
@@ -88,6 +91,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
                   setIsBuilder(checked === true)
                   handleChange('builder_boolean', checked === true)
                 }}
+                data-testid="participation-builder-checkbox"
               />
               <AnimatePresence>
                 {isBuilder && fields.has("builder_description") && (
@@ -99,6 +103,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
                       error={errors.builder_description}
                       handleChange={(value) => handleChange('builder_description', value)}
                       isRequired={!isVideoValid}
+                      data-testid="participation-builder-description-textarea"
                     />
                   </motion.div>
                 )}
@@ -109,10 +114,11 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
         {
           fields.has("hackathon_interest") && (
             <CheckboxForm
-              label={`We will have a hackathon at ${city?.name}. Do you think you’ll want to take part?`}
+              label={`We will have a hackathon at ${city?.name}. Do you think you'll want to take part?`}
               id="hackathon_interest"
               checked={formData.hackathon_interest || false}
               onCheckedChange={(checked) => handleChange('hackathon_interest', checked === true)}
+              data-testid="participation-hackathon-checkbox"
             />
           )
         }
@@ -124,6 +130,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
               id="investor"
               checked={formData.investor || false}
               onCheckedChange={(checked) => handleChange('investor', checked === true)}
+              data-testid="participation-investor-checkbox"
             />
           )
         }
@@ -142,6 +149,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
               value={formData.personal_goals ?? ''}
               error={errors.personal_goals}
               handleChange={(value) => handleChange('personal_goals', value)}
+              data-testid="participation-personal-goals-textarea"
             />
           )
         }
@@ -154,6 +162,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
               value={formData.personal_goals ?? ''}
               error={errors.personal_goals}
               handleChange={(value) => handleChange('personal_goals', value)}
+              data-testid="participation-personal-goals-textarea"
             />
           )
         }
@@ -166,6 +175,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
               value={formData.host_session ?? ''}
               error={errors.host_session}
               handleChange={(value) => handleChange('host_session', value)}
+              data-testid="participation-host-session-textarea"
             />
           )
         }
@@ -180,6 +190,7 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
               value={formData.host_session ?? ''}
               error={errors.host_session}
               handleChange={(value) => handleChange('host_session', value)}
+              data-testid="participation-host-session-textarea"
             />
           )
         }

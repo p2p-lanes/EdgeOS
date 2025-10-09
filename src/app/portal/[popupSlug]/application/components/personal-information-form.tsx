@@ -41,7 +41,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
 
   return (
     <>
-    <SectionWrapper title="Personal Information" subtitle="Your basic information helps us identify and contact you.">
+    <SectionWrapper title="Personal Information" subtitle="Your basic information helps us identify and contact you." data-testid="personal-information-section">
       <div className="grid gap-4 sm:grid-cols-2">
         {fields.has("first_name") && (
           <InputForm
@@ -51,6 +51,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             onChange={(value) => handleChange('first_name', value)}
             error={errors.first_name}
             isRequired={true}
+            data-testid="personal-info-first-name-input"
           />
         )}
         {fields.has("last_name") && (
@@ -61,6 +62,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             onChange={(value) => handleChange('last_name', value)}
             error={errors.last_name}
             isRequired={true}
+            data-testid="personal-info-last-name-input"
           />
         )}
         {fields.has("email") && (
@@ -71,6 +73,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             onChange={(value) => handleChange('email', value)}
             error={errors.email}
             isRequired={true}
+            data-testid="personal-info-email-input"
           />
         )}
         {fields.has("telegram") && (
@@ -84,6 +87,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             subtitle={`The primary form of communication during ${city?.name} will be a Telegram group, so create an account if you don't already have one`}
             addon="@"
             placeholder="username"
+            data-testid="personal-info-telegram-input"
           />
         )}
         {fields.has("residence") && (
@@ -95,6 +99,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             error={errors.residence}
             placeholder={form?.personal_information?.residence_placeholder ?? "Healdsburg, California, USA"}
             subtitle="Please format it like [City, State/Region, Country]. Feel free to put multiple cities if you live in multiple places."
+            data-testid="personal-info-residence-input"
           />
         )}
         
@@ -108,6 +113,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
               error={errors.gender}
               isRequired={true}
               options={GENDER_OPTIONS}
+              data-testid="personal-info-gender-select"
             />
           )}
 
@@ -121,6 +127,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
                   value={formData.gender_specify?.split(' - ')[1] ?? ''}
                   onChange={(e) => handleChange('gender_specify', `SYO - ${e}`)}
                   error={errors.gender_specify}
+                  data-testid="personal-info-gender-specify-input"
                 />
               </motion.div>
             )}
@@ -137,6 +144,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
               error={errors.age}
               isRequired={true}
               options={ageOptions}
+              data-testid="personal-info-age-select"
             />
           </div>
         )}
@@ -150,6 +158,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             error={errors.referral}
             isRequired={false}
             subtitle="List everyone who encouraged you to apply."
+            data-testid="personal-info-referral-input"
           />
         )}
 
@@ -163,6 +172,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
             isRequired={false}
             placeholder="0x..."
             subtitle="For POAPs, NFTs, allowlists."
+            data-testid="personal-info-eth-address-input"
           />
         )}
       </div>
@@ -181,6 +191,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
               { value: "yes", label: "Yes" },
               { value: "no", label: "No" },
             ]}
+            data-testid="personal-info-local-resident-select"
           />  
         </div>
       )}
@@ -194,7 +205,7 @@ export function PersonalInformationForm({ formData, errors, handleChange, fields
               We will make a directory to make it easier for attendees to coordinate
             </p>
           </Label>
-          <div className="space-y-2 ">
+          <div className="space-y-2 " data-testid="personal-info-not-shared-multiselect">
             <MultiSelect options={shareableInfo} onChange={(selected) => handleChange('info_not_shared', selected)} defaultValue={formData.info_not_shared}/>
           </div>
         </FormInputWrapper>

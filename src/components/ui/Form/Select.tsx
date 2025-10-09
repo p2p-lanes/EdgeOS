@@ -11,9 +11,10 @@ interface SelectFormProps {
   isRequired?: boolean
   placeholder?: string
   options: { value: string; label: string }[]
+  'data-testid'?: string
 }
 
-const SelectForm = ({ label, id, value, onChange, error, isRequired = false, placeholder, options }: SelectFormProps) => {
+const SelectForm = ({ label, id, value, onChange, error, isRequired = false, placeholder, options, 'data-testid': testId }: SelectFormProps) => {
   return (
     <FormInputWrapper>
       <div className="space-y-1">
@@ -24,7 +25,7 @@ const SelectForm = ({ label, id, value, onChange, error, isRequired = false, pla
           {label}
         </LabelRequired>
         <Select onValueChange={(value) => onChange(value)} value={value}>
-          <SelectTrigger id={id} className={error ? 'border-red-500' : ''} >
+          <SelectTrigger id={id} className={error ? 'border-red-500' : ''} data-testid={testId}>
             <SelectValue placeholder={placeholder} className="text-sm text-muted-foreground"/>
           </SelectTrigger>
           <SelectContent>
@@ -36,7 +37,7 @@ const SelectForm = ({ label, id, value, onChange, error, isRequired = false, pla
           </SelectContent>
         </Select>
       </div>
-      {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
+      {error && <p className="text-red-500 text-sm mt-1" data-testid={testId ? `field-error-${testId}` : undefined}>{error}</p>}
     </FormInputWrapper>
   )
 }

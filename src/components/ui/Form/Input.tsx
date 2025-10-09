@@ -19,9 +19,10 @@ interface InputFormProps {
   className?: string
   maxLength?: number
   disabled?: boolean
+  'data-testid'?: string
 }
 
-const InputForm = ({ label, id, value, onChange, error, subtitle, isRequired = false, type = 'text', maxLength, ...rest }: InputFormProps) => {
+const InputForm = ({ label, id, value, onChange, error, subtitle, isRequired = false, type = 'text', maxLength, 'data-testid': testId, ...rest }: InputFormProps) => {
   return (
     <FormInputWrapper>
       <div className="flex flex-col gap-2">
@@ -34,15 +35,16 @@ const InputForm = ({ label, id, value, onChange, error, subtitle, isRequired = f
         value={value}
         onChange={(e) => onChange(e.target.value)}
         error={error}
+        data-testid={testId}
         {...rest}
         maxLength={maxLength}
       />
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-red-500 text-sm" data-testid={testId ? `field-error-${testId}` : undefined}>{error}</p>}
     </FormInputWrapper>
   )
 }
 
-export const AddonInputForm = ({ label, id, value, onChange, error, isRequired = false, subtitle, addon, placeholder }: InputFormProps & { addon?: string, placeholder?: string }) => {
+export const AddonInputForm = ({ label, id, value, onChange, error, isRequired = false, subtitle, addon, placeholder, 'data-testid': testId }: InputFormProps & { addon?: string, placeholder?: string }) => {
   return (
     <FormInputWrapper>
       <div className="flex flex-col gap-2">
@@ -56,8 +58,9 @@ export const AddonInputForm = ({ label, id, value, onChange, error, isRequired =
         defaultValue={value} 
         onChange={(e) => onChange(e.target.value)} 
         className={error ? 'border-red-500' : ''} 
+        data-testid={testId}
       />
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-red-500 text-sm" data-testid={testId ? `field-error-${testId}` : undefined}>{error}</p>}
     </FormInputWrapper>
   )
 }

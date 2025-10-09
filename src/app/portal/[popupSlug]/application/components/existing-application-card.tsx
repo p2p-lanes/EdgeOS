@@ -30,20 +30,20 @@ export function ExistingApplicationCard({ onImport, onCancel, data }: ExistingAp
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogContent className="sm:max-w-[425px] bg-white" onPointerDownOutside={(e) => e.preventDefault()}>
+      <DialogContent className="sm:max-w-[425px] bg-white" onPointerDownOutside={(e) => e.preventDefault()} data-testid="existing-application-modal">
         <DialogHeader>
-          <DialogTitle>Existing Application Found</DialogTitle>
-          <DialogDescription>We've found a previous application associated with your email.</DialogDescription>
+          <DialogTitle data-testid="existing-application-title">Existing Application Found</DialogTitle>
+          <DialogDescription data-testid="existing-application-description">We've found a previous application associated with your email.</DialogDescription>
         </DialogHeader>
         <div className="space-y-2">
-          <p><strong>Applicant:</strong> {data.first_name} {data.last_name}</p>
-          <p><strong>Email:</strong> {data.email}</p>
-          <p><strong>Popup City:</strong> {popup?.name}</p>
+          <p data-testid="existing-application-applicant-name"><strong>Applicant:</strong> {data.first_name} {data.last_name}</p>
+          <p data-testid="existing-application-email"><strong>Email:</strong> {data.email}</p>
+          <p data-testid="existing-application-popup-city"><strong>Popup City:</strong> {popup?.name}</p>
         </div>
         <p className="mt-4">Would you like to import your previous application data? This will save you time by pre-filling the form with your existing information.</p>
         <DialogFooter className="flex flex-col gap-4 md:flex-row">
-          <Button variant="outline" onClick={handleCancel}>Cancel</Button>
-          <Button onClick={handleImport}>Import Previous Application</Button>
+          <Button variant="outline" onClick={handleCancel} data-testid="existing-application-cancel-btn">Cancel</Button>
+          <Button onClick={handleImport} data-testid="existing-application-import-btn">Import Previous Application</Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>

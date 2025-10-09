@@ -14,9 +14,10 @@ type CheckboxFormProps = {
   subtitle?: string
   title?: string
   error?: string
+  'data-testid'?: string
 }
 
-const CheckboxForm = ({ label, id, checked, onCheckedChange, disabled, defaultChecked, value, required, subtitle, title, error }: CheckboxFormProps) => {
+const CheckboxForm = ({ label, id, checked, onCheckedChange, disabled, defaultChecked, value, required, subtitle, title, error, 'data-testid': testId }: CheckboxFormProps) => {
   return (
     <FormInputWrapper>
         {title && <LabelRequired isRequired={required}>
@@ -35,10 +36,11 @@ const CheckboxForm = ({ label, id, checked, onCheckedChange, disabled, defaultCh
           defaultChecked={defaultChecked}
           className="bg-white"
           required={required}
+          data-testid={testId}
         />
         {label && <LabelMuted htmlFor={id} className="cursor-pointer">{label}</LabelMuted>}
       </div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-red-500 text-sm" data-testid={testId ? `field-error-${testId}` : undefined}>{error}</p>}
     </FormInputWrapper>
   )
 }

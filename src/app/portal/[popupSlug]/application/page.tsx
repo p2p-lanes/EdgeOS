@@ -85,17 +85,17 @@ export default function FormPage() {
   }
 
   if (isLoadingForm || !city) {
-    return <Loader />
+    return <Loader data-testid="application-loading" />
   }
 
   if(!fields || !fields.size) return null
 
   return (
-    <main className="container py-6 md:py-12 mb-8">
+    <main className="container py-6 md:py-12 mb-8" data-testid="application-page-container">
       {showExistingCard && existingApplication && (
         <ExistingApplicationCard onImport={handleImport} onCancel={handleCancelImport} data={existingApplication} />
       )}
-      <form onSubmit={handleSubmit} className="space-y-8 px-8 md:px-12">
+      <form onSubmit={handleSubmit} className="space-y-8 px-8 md:px-12" data-testid="application-form">
         <FormHeader />
         <SectionSeparator />
 
@@ -113,9 +113,9 @@ export default function FormPage() {
 
         <AccomodationForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
         
-        <div className="flex flex-col w-full gap-6 md:flex-row justify-between items-center pt-6">
-          <ButtonAnimated loading={statusBtn.loadingDraft} disabled={statusBtn.loadingSubmit} variant="outline" type="button" onClick={handleDraft} className="w-full md:w-auto">Save as draft</ButtonAnimated>
-          <ButtonAnimated loading={statusBtn.loadingSubmit} disabled={statusBtn.loadingDraft} type="submit" className="w-full md:w-auto">Submit</ButtonAnimated>
+        <div className="flex flex-col w-full gap-6 md:flex-row justify-between items-center pt-6" data-testid="form-actions-container">
+          <ButtonAnimated loading={statusBtn.loadingDraft} disabled={statusBtn.loadingSubmit} variant="outline" type="button" onClick={handleDraft} className="w-full md:w-auto" data-testid="form-save-draft-btn">Save as draft</ButtonAnimated>
+          <ButtonAnimated loading={statusBtn.loadingSubmit} disabled={statusBtn.loadingDraft} type="submit" className="w-full md:w-auto" data-testid="form-submit-btn">Submit</ButtonAnimated>
         </div>
 
       </form>

@@ -13,7 +13,7 @@ const CardVideo = ({ videoUrl, setVideoUrl }: { videoUrl: string, setVideoUrl: (
   const isBhutan = city?.slug?.includes('bhutan')
 
   return (
-    <Card className="px-6 mt-6 bg-slate-50 border-dashed border-2 border-slate-400">
+    <Card className="px-6 mt-6 bg-slate-50 border-dashed border-2 border-slate-400" data-testid="participation-video-card">
         <div className="grid gap-4 sm:grid-cols-1 my-4">
           <FormInputWrapper>
             <div className="flex flex-col h-full my-1 gap-2">
@@ -67,6 +67,7 @@ const CardVideo = ({ videoUrl, setVideoUrl }: { videoUrl: string, setVideoUrl: (
                 onChange={(e) => setVideoUrl(e.target.value)}
                 className=" text-black border border-slate-400"
                 placeholder="Video URL"
+                data-testid="participation-video-url-input"
                 />
             </div>
           </FormInputWrapper>

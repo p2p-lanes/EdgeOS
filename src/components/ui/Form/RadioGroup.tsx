@@ -12,10 +12,11 @@ interface RadioGroupFormProps {
   error?: string
   isRequired?: boolean
   options: { value: string; label: string }[]
+  'data-testid'?: string
 }
 
 
-const RadioGroupForm = ({ label, subtitle, value, onChange, error, isRequired = false, options }: RadioGroupFormProps) => {
+const RadioGroupForm = ({ label, subtitle, value, onChange, error, isRequired = false, options, 'data-testid': testId }: RadioGroupFormProps) => {
   return (
     <FormInputWrapper>
       <LabelRequired isRequired={isRequired}>
@@ -28,6 +29,7 @@ const RadioGroupForm = ({ label, subtitle, value, onChange, error, isRequired = 
         value={value}
         onValueChange={(value) => onChange(value)}
         className={cn("grid sm:grid-cols-2 gap-2 mt-2", error ? 'border rounded-md border-red-500' : '')}
+        data-testid={testId}
       >
         {options.map((option) => (
           <Label className="flex items-center gap-2 p-2 border rounded-md cursor-pointer [&:has(:checked)]:bg-muted" key={option.value}>
@@ -36,7 +38,7 @@ const RadioGroupForm = ({ label, subtitle, value, onChange, error, isRequired = 
           </Label>
         ))}
       </RadioGroup>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-red-500 text-sm" data-testid={testId ? `field-error-${testId}` : undefined}>{error}</p>}
     </FormInputWrapper>
   )
 }

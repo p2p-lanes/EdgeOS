@@ -19,7 +19,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
 
   return (
     <>
-      <SectionWrapper title={form?.professional_details?.title ?? "Professional Details"} subtitle={form?.professional_details?.subtitle ?? "Tell us about your professional background and current role."}>
+      <SectionWrapper title={form?.professional_details?.title ?? "Professional Details"} subtitle={form?.professional_details?.subtitle ?? "Tell us about your professional background and current role."} data-testid="professional-details-section">
         <div className="grid gap-4 sm:grid-cols-2 sm:items-end">
         {fields.has("organization") && (
           <InputForm
@@ -30,6 +30,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
             error={errors.organization}
             isRequired={true}
             subtitle="If you&apos;re just exploring something independently, note that."
+            data-testid="professional-details-organization-input"
           />
         )}
         {fields.has("role") && (
@@ -41,6 +42,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
             error={errors.role}
             isRequired={false}
             subtitle="Job title or a 1-sentence description."
+            data-testid="professional-details-role-input"
           />
         )}
       </div>
@@ -55,6 +57,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
             error={errors.social_media}
             isRequired={false}
             subtitle="e.g. personal blog, Twitter, Instagram, LinkedIn, Farcaster, Substack. Please provide the full link[s]."
+            data-testid="professional-details-social-media-input"
           />
         </div>
       )}
@@ -67,6 +70,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
             onChange={(value: string) => handleChange('github_profile', value)}
             error={errors.github_profile}
             subtitle="Show us what you are working on!"
+            data-testid="professional-details-github-input"
           />
         )}
 
@@ -79,6 +83,7 @@ export function ProfessionalDetailsForm({ formData, errors, handleChange, fields
             error={errors.area_of_expertise}
             isRequired={false}
             subtitle=" Please list your top professional skills, areas of expertise, and/or spheres of influence (i.e. sustainable energy, AI R&D, neuropsychology and BMIs, cryptocurrency and blockchain development, etc)."
+            data-testid="professional-details-expertise-input"
           />
         )}
       </SectionWrapper>

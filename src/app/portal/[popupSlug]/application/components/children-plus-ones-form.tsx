@@ -105,7 +105,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
 
   return (
     <>
-    <SectionWrapper title="Children and +1s">
+    <SectionWrapper title="Children and +1s" data-testid="children-plus-ones-section">
       <div className="flex flex-col gap-4">
 
         {
@@ -123,6 +123,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                     handleChange('spouse_email', '');
                   }
                 }}
+                data-testid="children-spouse-checkbox"
               />
               <AnimatePresence>
                 {hasSpouse && (
@@ -136,6 +137,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                         error={errors.spouse_info}
                         isRequired={true}
                         subtitle="We will approve your spouse/partner if we approve you. However please have them fill out this form as well so we have their information in our system."
+                        data-testid="children-spouse-info-input"
                       />
                       <InputForm
                         label="Spouse/partner email"
@@ -145,6 +147,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                         error={errors.spouse_email}
                         isRequired={true}
                         subtitle="Please provide your spouse/partner&apos;s email so we can remind them to apply."
+                        data-testid="children-spouse-email-input"
                       />
                     </div>
                   </motion.div>
@@ -158,7 +161,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
           fields.has('brings_kids') && (
             <div>
               <CheckboxForm
-                label="I’m bringing kids"
+                label="I'm bringing kids"
                 id="brings_kids"
                 checked={hasKids}
                 onCheckedChange={(checked) => {
@@ -169,6 +172,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                     setKids([]);
                   }
                 }}
+                data-testid="children-kids-checkbox"
               />
               <AnimatePresence>
                 {hasKids && (
@@ -185,7 +189,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                       {kids.length > 0 && (
                         <div className="mb-4 space-y-2">
                           {kids.map((kid) => (
-                            <div key={kid.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
+                            <div key={kid.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg" data-testid={`children-kid-item-${kid.id}`}>
                               <span className="text-sm">
                                 {kid.name}, {kid.age === "< 1" ? "< 1 year old" : `${kid.age} years old`}
                               </span>
@@ -193,6 +197,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                                 type="button"
                                 onClick={() => removeKid(kid.id)}
                                 className="text-red-500 hover:text-red-700 p-1"
+                                data-testid={`children-kid-remove-btn-${kid.id}`}
                               >
                                 <X size={16} />
                               </button>
@@ -207,6 +212,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                         variant="outline"
                         onClick={() => setShowModal(true)}
                         className="flex items-center gap-2"
+                        data-testid="children-add-kid-btn"
                       >
                         <Plus size={16} />
                         Add Kid
@@ -214,7 +220,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
 
                       {/* Modal */}
                       {showModal && (
-                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" data-testid="children-kid-modal">
                           <div className="bg-white p-6 rounded-lg w-96 max-w-md mx-4">
                             <h3 className="text-lg font-semibold mb-4">Add Child</h3>
                             
@@ -229,6 +235,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                                   onChange={(e) => setKidName(e.target.value)}
                                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                   placeholder="Enter child&apos;s name"
+                                  data-testid="children-kid-modal-name-input"
                                 />
                               </div>
 
@@ -237,7 +244,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                                   Age
                                 </label>
                                 <Select value={kidAge} onValueChange={setKidAge}>
-                                  <SelectTrigger className="w-full">
+                                  <SelectTrigger className="w-full" data-testid="children-kid-modal-age-select">
                                     <SelectValue placeholder="Select age" />
                                   </SelectTrigger>
                                   <SelectContent>
@@ -257,6 +264,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                                 onClick={addKid}
                                 disabled={!kidName.trim() || !kidAge}
                                 className="flex-1"
+                                data-testid="children-kid-modal-add-btn"
                               >
                                 Add Child
                               </Button>
@@ -265,6 +273,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                                 variant="outline"
                                 onClick={resetModal}
                                 className="flex-1"
+                                data-testid="children-kid-modal-cancel-btn"
                               >
                                 Cancel
                               </Button>

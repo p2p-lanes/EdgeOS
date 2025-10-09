@@ -13,7 +13,7 @@ export function FormHeader() {
   const endDate = new Date(city.end_date)?.toLocaleDateString('en-EN', {day: 'numeric', month: 'long', year: 'numeric'})
 
   return (
-    <div className="flex flex-col md:flex-row gap-6">
+    <div className="flex flex-col md:flex-row gap-6" data-testid="form-header-container">
       <div className="flex items-center">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
@@ -21,16 +21,17 @@ export function FormHeader() {
           alt={city.name}
           style={{height: 'auto'}}
           className="w-full md:min-h-[190px] md:w-[20vw] md:max-w-[240px] object-cover dark:invert rounded-2xl"
+          data-testid="form-header-city-image"
         />
       </div>
       <div className="space-y-2">
-        <h1 className="text-3xl font-bold tracking-tight">{city.name}</h1>
-        <p className="text-md text-muted-foreground">
+        <h1 className="text-3xl font-bold tracking-tight" data-testid="form-header-city-name">{city.name}</h1>
+        <p className="text-md text-muted-foreground" data-testid="form-header-tagline">
           {city.tagline}
         </p>
         {
           city.location && (
-            <div className="flex items-center text-sm text-muted-foreground mb-2">
+            <div className="flex items-center text-sm text-muted-foreground mb-2" data-testid="form-header-location">
               <MapPin className="mr-2 h-4 w-4" />
               {city.location}
             </div>
@@ -38,7 +39,7 @@ export function FormHeader() {
         }
         {
           (startDate && endDate) && (
-            <div className="flex items-center text-sm text-muted-foreground mb-4">
+            <div className="flex items-center text-sm text-muted-foreground mb-4" data-testid="form-header-dates">
               <CalendarDays className="mr-2 h-4 w-4" />
               {startDate + ' - ' + endDate}
             </div>
@@ -46,7 +47,7 @@ export function FormHeader() {
         }
 
         {city.slug === 'edge-patagonia' && (
-          <div className=" p-1">
+          <div className=" p-1" data-testid="form-header-instructions">
             <p className="font-semibold text-sm text-muted-foreground mb-1">
               How to join Edge Patagonia:
             </p>

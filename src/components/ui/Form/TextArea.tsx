@@ -11,9 +11,10 @@ type TextAreaProps = {
   isRequired?: boolean
   subtitle?: string
   placeholder?: string
+  'data-testid'?: string
 }
 
-const TextAreaForm = ({ label, id, value, error, handleChange, isRequired, subtitle, placeholder }: TextAreaProps) => {
+const TextAreaForm = ({ label, id, value, error, handleChange, isRequired, subtitle, placeholder, 'data-testid': testId }: TextAreaProps) => {
   return (
     <FormInputWrapper>
       <div className="flex flex-col gap-2">
@@ -28,8 +29,9 @@ const TextAreaForm = ({ label, id, value, error, handleChange, isRequired, subti
         value={value}
         onChange={(e) => handleChange(e.target.value)}
         placeholder={placeholder}
+        data-testid={testId}
       />
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+      {error && <p className="text-red-500 text-sm" data-testid={testId ? `field-error-${testId}` : undefined}>{error}</p>}
     </FormInputWrapper>
   )
 }
