@@ -157,19 +157,27 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                     </CollapsibleTrigger>
                     <CollapsibleContent className="transition-all duration-100 ease-in-out data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown">
                       <div className="flex flex-col gap-2">
-                        {localProducts.map((product) => (
-                          <React.Fragment key={`${product.id}-${attendee.id}`}>
-                            <Product 
-                              product={product} 
-                              defaultDisabled={!toggleProduct} 
-                              hasMonthPurchased={hasMonthPurchased}
-                              onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
-                            />
-                            {(product.category === 'month' || product.category === 'local month') && (
-                              <Separator className="my-1" />
-                            )}
-                          </React.Fragment>
-                        ))}
+                        {localProducts.map((product, index) => {
+                          const hasDayInCommon = localProducts.some(p => p.category.includes('day'))
+                          const firstDayIndexCommon = localProducts.findIndex(p => p.category.includes('day'))
+
+                          return (
+                            <React.Fragment key={`${product.id}-${attendee.id}`}>
+                              {index === firstDayIndexCommon && hasDayInCommon && !isDayCheckout && (
+                                <Separator className="my-1" />
+                              )}
+                              <Product 
+                                product={product} 
+                                defaultDisabled={!toggleProduct} 
+                                hasMonthPurchased={hasMonthPurchased}
+                                onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
+                              />
+                              {(product.category === 'month' || product.category === 'local month') && (
+                                <Separator className="my-1" />
+                              )}
+                            </React.Fragment>
+                          )
+                        })}
                       </div>
                       <p className="text-sm font-medium text-neutral-500 text-right mt-2">ID Required at check-in *</p>
                         
@@ -190,8 +198,8 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
                     <CollapsibleContent className="transition-all duration-100 ease-in-out data-[state=closed]:animate-slideUp data-[state=open]:animate-slideDown">
                       <div className="flex flex-col gap-2">
                         {(() => {
-                          const hasDayInCommon = commonProducts.some(p => p.category === 'day')
-                          const firstDayIndexCommon = commonProducts.findIndex(p => p.category === 'day')
+                          const hasDayInCommon = commonProducts.some(p => p.category.includes('day'))
+                          const firstDayIndexCommon = commonProducts.findIndex(p => p.category.includes('day'))
                           return commonProducts.map((product, index) => (
                             <React.Fragment key={`${product.id}-${attendee.id}`}>
                               {index === firstDayIndexCommon && hasDayInCommon && !isDayCheckout && (

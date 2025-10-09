@@ -50,7 +50,9 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
     >
       <div className="flex justify-between w-full">
         <div className="flex items-center justify-center">
-          <Ticket className="w-4 h-4" />
+          <div className="pl-2">
+            <Ticket className="w-4 h-4" />
+          </div>
           <div className="flex flex-col pl-3 ">
             <p className="font-semibold text-sm text-left">{product.name}</p>
 

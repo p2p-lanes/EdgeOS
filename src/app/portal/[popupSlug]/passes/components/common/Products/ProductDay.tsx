@@ -118,9 +118,9 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
         >
           <div className="flex justify-between w-full flex-wrap">
             <div className="flex md:items-center md:gap-2 flex-col md:flex-row">
-              <div className="flex items-center gap-2 pl-2">
+              <div className="flex items-center pl-2">
                 <Ticket className="w-4 h-4 hidden md:block" />
-                <p className="font-semibold text-sm">{product.name}</p>
+                <p className="font-semibold text-sm md:pl-3">{product.name}</p>
               </div>
 
             </div>
