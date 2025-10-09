@@ -1,21 +1,31 @@
 import { api } from "@/api"
-import { useEffect, useState } from "react"
+import { useGroupsProvider } from "@/providers/groupsProvider"
+import { useCallback, useEffect } from "react"
 
 const useGetGroups = () => {
-  const [isLoading, setIsLoading] = useState(false)
-  const [groups, setGroups] = useState<any[]>([])
+  const { groups, setGroups, loading, setLoading } = useGroupsProvider()
 
-  const getGroups = async () => {
-    setIsLoading(true)
-    const response = await api.get('/groups')
-    setGroups(response.data)
-    setIsLoading(false)
-  }
+  const getGroups = useCallback(async () => {
+    // If groups already exist, return without fetching
+    if (groups.length > 0) {
+      return
+    }
+
+    setLoading(true)
+    try {
+      const response = await api.get('/groups')
+      setGroups(response.data)
+    } catch (error) {
+      console.error('Error fetching groups:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [groups.length, setGroups, setLoading])
 
   useEffect(() => {
     getGroups()
-  }, [])
+  }, [getGroups])
 
-  return { groups, isLoading }
+  return { groups, isLoading: loading, refetch: getGroups }
 }
 export default useGetGroups
