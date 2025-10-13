@@ -53,7 +53,7 @@ test.describe('Buy Passes - Happy Path', () => {
     throw new Error('Could not click Buy Passes tab with any strategy');
   };
 
-  test.beforeEach(async ({ page }) => {
+  test.beforeAll(async ({ page }) => {
     // Authenticate the user before each test
     await authenticateAsPassesUser(page);
     
