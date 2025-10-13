@@ -75,8 +75,10 @@ const PopupsHistory = ({popups}: {popups: CitizenProfilePopup[]}) => {
   
   // Filter applications where ALL attendees have NO products
   const applicationsWithoutProducts = applications?.filter(app => 
-    app.attendees.every(attendee => attendee.products.length === 0)
+    app.attendees.every(attendee => attendee.products.length >= 0)
   ) ?? []
+
+  console.log(applicationsWithoutProducts)
   
   // Map applications to popup data for upcoming popups with application status
   const upcomingPopupsFromApplications = applicationsWithoutProducts
@@ -166,13 +168,18 @@ const PopupsHistory = ({popups}: {popups: CitizenProfilePopup[]}) => {
               <h4 className="text-md font-semibold text-foreground">Past Pop-Ups</h4>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {
+                pastPopups.length === 0 && (
+                  <div className="text-center text-gray-600 p-4 col-span-3">No past events found</div>
+                )
+              }
               {pastPopups.map((popup) => (
                 <Card key={popup.popup_name} className="p-4">
                   <div className="relative mb-3">
                     <Image src={popup.image_url || "/placeholder.svg"} alt={popup.popup_name} width={160} height={160} className="w-full h-auto max-h-[140px] object-cover rounded-lg aspect-auto object-top" />
-                    <div className="absolute top-2 left-2 bg-[#dcfce7] text-[#166534] px-2 py-1 rounded text-xs font-medium">
+                    {/* <div className="absolute top-2 left-2 bg-[#dcfce7] text-[#166534] px-2 py-1 rounded text-xs font-medium">
                       Completed
-                    </div>
+                    </div> */}
                   </div>
                   <div>
                     <h5 className="text-lg font-semibold text-black mb-2">{popup.popup_name}</h5>
@@ -209,15 +216,6 @@ const PopupsHistory = ({popups}: {popups: CitizenProfilePopup[]}) => {
                           }
                           <p className="text-sm font-medium text-slate-700">{buttonText}</p>
                         </div>
-                        // <Button 
-                        //   variant="outline" 
-                        //   size="sm" 
-                        //   className="w-full bg-transparent text-sm"
-                        //   onClick={() => window.open(mainPoap.poap_url, '_blank')}
-                        // >
-                        //   {isClaimed ? <ExternalLink className="w-4 h-4" /> : <PoapIcon />}
-                        //   {buttonText}
-                        // </Button>
                       )
                     })()}
                   </div>

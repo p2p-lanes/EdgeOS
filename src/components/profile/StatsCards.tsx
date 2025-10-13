@@ -3,6 +3,13 @@ import { MapPinned, Speech, Calendar1 } from "lucide-react"
 import { Card } from "../ui/card"
 
 const StatsCards = ({userData}: {userData: CitizenProfile | null}) => {
+  const currentDate = new Date()
+  
+  // Filter only popups that have already ended
+  const completedPopups = userData?.popups?.filter(popup => {
+    const endDate = new Date(popup.end_date)
+    return endDate < currentDate
+  }) ?? []
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
@@ -10,7 +17,7 @@ const StatsCards = ({userData}: {userData: CitizenProfile | null}) => {
         <div className="flex items-center justify-between">
           <div>
             <p className="text-sm text-gray-600 mb-1">Pop-ups attended</p>
-            <p className="text-3xl font-bold text-gray-900">{userData?.popups?.length ?? 0}</p>
+            <p className="text-3xl font-bold text-gray-900">{completedPopups.length}</p>
           </div>
           <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
             <MapPinned className="w-6 h-6 text-green-600" />
