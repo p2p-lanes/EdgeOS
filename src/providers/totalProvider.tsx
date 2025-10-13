@@ -56,7 +56,6 @@ const TotalProvider = ({ children }: { children: ReactNode }) => {
   }, [application, attendeePasses, discountApplied, groups])
 
 
-  console.log({total, originalTotal, discountAmount, balance, groupDiscountPercentage, groupName})
   return (
     <TotalContext.Provider 
       value={{

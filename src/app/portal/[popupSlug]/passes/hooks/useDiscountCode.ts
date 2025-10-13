@@ -25,7 +25,7 @@ const useDiscountCode = () => {
         console.log('newDiscount', newDiscount)
 
         if(newDiscount.is_best){
-          setDiscount({discount_value: newDiscount.discount_value, discount_type: 'percentage', discount_code: res.data.code})
+          setDiscount({discount_value: newDiscount.discount_value, discount_type: 'percentage', discount_code: res.data.code, city_id: city.id})
           setDiscountMsg(res.data.message)
           setValidDiscount(true)
           return;

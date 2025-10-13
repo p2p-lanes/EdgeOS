@@ -50,6 +50,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
+      console.log('discountApplied', discountApplied);
       const initialAttendees = attendees.map(attendee => {
         const hasPatreonPurchased = attendee.products.some(p => p.category === 'patreon');
         const priceStrategy = getPriceStrategy();
@@ -103,6 +104,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if(city?.id && discountApplied.city_id !== city?.id){
+      console.log('aca entro', discountApplied, city?.id);
       setDiscountApplied({discount_value: 0, discount_type: 'percentage'})
     }
   }, [city?.id, discountApplied.city_id])
