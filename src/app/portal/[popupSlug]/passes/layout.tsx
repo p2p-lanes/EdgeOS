@@ -4,6 +4,7 @@ import PassesProvider from "@/providers/passesProvider"
 import { useRouter } from "next/navigation"
 import { ReactNode, useEffect } from "react"
 import TotalProvider from "@/providers/totalProvider"
+import { GroupsProvider } from "@/providers/groupsProvider"
 
 const Layout = ({ children }: { children: ReactNode }) => {
   const { getRelevantApplication } = useApplication()
@@ -20,6 +21,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
   }, [application])
   
   return (
+    <GroupsProvider>
     <PassesProvider>
       <TotalProvider>
         <div className="py-6">
@@ -27,6 +29,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
         </div>
       </TotalProvider>
     </PassesProvider>
+    </GroupsProvider>
   )
 }
 export default Layout

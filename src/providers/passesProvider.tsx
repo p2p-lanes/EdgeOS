@@ -9,6 +9,7 @@ import { getPriceStrategy } from '@/strategies/PriceStrategy';
 import { DiscountProps } from '@/types/discounts';
 import { useCityProvider } from './cityProvider';
 import { getPurchaseStrategy } from '@/strategies/PurchaseStrategy';
+import { useGroupsProvider } from './groupsProvider';
 
 interface PassesContext_interface {
   attendeePasses: AttendeeProps[];
@@ -39,18 +40,17 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   const city = getCity()
   const localResident = application?.local_resident || false
   const attendeePassesRef = useRef<AttendeeProps[]>([])
+  const { groups } = useGroupsProvider()
 
   const toggleProduct = useCallback((attendeeId: number, product: ProductsPass) => {
     if (!product) return;
     const strategy = getProductStrategy(product, isEditing);
     const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product, discountApplied);
-    console.log('updatedAttendees', updatedAttendees);
     setAttendeePasses(updatedAttendees);
   }, [attendeePasses, isEditing, discountApplied])
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
-      console.log('discountApplied', discountApplied);
       const initialAttendees = attendees.map(attendee => {
         const hasPatreonPurchased = attendee.products.some(p => p.category === 'patreon');
         const priceStrategy = getPriceStrategy();
@@ -115,7 +115,21 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [application?.discount_assigned, discountApplied.discount_value])
 
+  useEffect(() => {
+    if (application?.group_id && groups.length > 0) {
+      const group = groups.find(g => g.id === application.group_id);
+      if (group && group.discount_percentage && group.discount_percentage > discountApplied.discount_value) {
+        setDiscountApplied({
+          discount_value: group.discount_percentage,
+          discount_type: 'percentage',
+          discount_code: null
+        });
+      }
+    }
+  }, [application?.group_id, groups, discountApplied.discount_value]);
+
   const setDiscount = useCallback((discount: DiscountProps) => {
+    console.log('setDiscount', discount.discount_value, discountApplied.discount_value)
     if(discount.discount_value <= discountApplied.discount_value) return;
     setDiscountApplied(discount);
   }, [discountApplied.discount_value])
