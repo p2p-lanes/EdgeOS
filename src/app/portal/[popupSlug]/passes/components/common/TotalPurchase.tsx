@@ -78,9 +78,14 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
 
             <DiscountWeekPurchased attendees={attendees} hasMonthSelected={hasMonthSelected}/>
 
-            <DiscountCouponTotal products={productsCart} discountAmount={discountAmount} discountApplied={discountApplied} patreonSelected={patreonSelected} />
+            {
+              groupDiscountPercentage >= discountApplied.discount_value ? (
+                <GroupDiscountDisplay groupDiscountPercentage={groupDiscountPercentage} groupName={groupName} />
+              ) : (
+                <DiscountCouponTotal products={productsCart} discountAmount={discountAmount} discountApplied={discountApplied} patreonSelected={patreonSelected} />
+              )
+            }
 
-            <GroupDiscountDisplay groupDiscountPercentage={groupDiscountPercentage} groupName={groupName} />
 
             {
               application?.credit ? (

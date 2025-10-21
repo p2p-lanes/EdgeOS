@@ -168,14 +168,19 @@ export class TotalCalculator {
       };
     }, { total: 0, originalTotal: 0, discountAmount: 0 });
 
-    // Apply group discount if available
+    // Compare individual discount vs group discount and apply only the greater one
     if (groupDiscountPercentage && groupDiscountPercentage > 0) {
-      const groupDiscountAmount = baseResult.total * (groupDiscountPercentage / 100);
-      return {
-        total: baseResult.total - groupDiscountAmount,
-        originalTotal: baseResult.originalTotal,
-        discountAmount: baseResult.discountAmount + groupDiscountAmount
-      };
+      const groupDiscountAmount = baseResult.originalTotal * (groupDiscountPercentage / 100);
+      const individualDiscountAmount = baseResult.discountAmount;
+      
+      // Use the greater discount
+      if (groupDiscountAmount > individualDiscountAmount) {
+        return {
+          total: baseResult.originalTotal - groupDiscountAmount,
+          originalTotal: baseResult.originalTotal,
+          discountAmount: groupDiscountAmount
+        };
+      }
     }
 
     return baseResult;
