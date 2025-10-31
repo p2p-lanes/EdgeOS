@@ -4,14 +4,77 @@ import { Button } from "../ui/button"
 import { Edit2, Save, X, User, Mail, MessageSquare, Calendar, Building, Upload, Loader2 } from "lucide-react"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import uploadFileToS3 from "@/helpers/upload"
-import { RiTelegram2Line, RiTwitterXFill } from "react-icons/ri";
+import { RiTelegram2Line, RiTwitterXFill } from "react-icons/ri"
+import { api, instance } from "@/api"
 
 const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel, editForm, setEditForm}: {userData: CitizenProfile | null, isEditing: boolean, setIsEditing: (isEditing: boolean) => void, handleSave: () => void, handleCancel: () => void, editForm: any, setEditForm: (editForm: any) => void}) => {
   const [isHovering, setIsHovering] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
+  const [linkedEmails, setLinkedEmails] = useState<string[]>([])
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const token = window.localStorage.getItem("token")
+      if (token) {
+        instance.defaults.headers.common["Authorization"] = `Bearer ${token}`
+      }
+    }
+
+    const fetchLinkedEmails = async () => {
+      try {
+        const response = await api.get("account-clusters/my-cluster")
+        if (response?.status === 200 && response.data) {
+          const cluster = response.data
+          if (cluster.member_count > 1 && cluster.citizen_ids) {
+            const currentCitizenId = userData?.id
+            const otherCitizenIds = cluster.citizen_ids.filter((id: number) => id !== currentCitizenId)
+            
+            const emailPromises = otherCitizenIds.map(async (id: number) => {
+              try {
+                const profileResponse = await api.get(`citizens/${id}`)
+                if (profileResponse?.status === 200 && profileResponse.data?.primary_email) {
+                  return profileResponse.data.primary_email
+                }
+              } catch (err) {
+                return null
+              }
+              return null
+            })
+
+            const emails = (await Promise.all(emailPromises)).filter((email): email is string => email !== null)
+            setLinkedEmails(emails)
+          } else {
+            setLinkedEmails([])
+          }
+        }
+      } catch (err) {
+        setLinkedEmails([])
+      }
+    }
+
+    if (userData?.id) {
+      fetchLinkedEmails()
+    }
+
+    const handleAccountsLinked = () => {
+      if (userData?.id) {
+        fetchLinkedEmails()
+      }
+    }
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("accounts-linked", handleAccountsLinked)
+    }
+
+    return () => {
+      if (typeof window !== "undefined") {
+        window.removeEventListener("accounts-linked", handleAccountsLinked)
+      }
+    }
+  }, [userData?.id])
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -147,9 +210,16 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
           {userData?.primary_email && (
             <div className="flex items-center gap-3">
               <Mail className="w-5 h-5 text-gray-400" />
-              <div>
+              <div className="flex-1">
                 <p className="text-sm text-gray-600">Email</p>
                 <p className="text-gray-900">{userData?.primary_email}</p>
+                {linkedEmails.length > 0 && (
+                  <div className="mt-1 space-y-0.5">
+                    {linkedEmails.map((email, index) => (
+                      <p key={index} className="text-xs text-gray-500">{email}</p>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}

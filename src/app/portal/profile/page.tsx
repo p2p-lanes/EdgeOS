@@ -8,6 +8,7 @@ import PopupsHistory from "@/components/profile/PopupsHistory"
 import HumanForm from "@/components/profile/HumanForm"
 import HeaderProfile from "@/components/profile/HeaderProfile"
 import StatsCards from "@/components/profile/StatsCards"
+import MergeEmails from "@/components/profile/MergeEmails"
 import ReferralLinks from "@/components/profile/ReferralLinks"
 import ProfileStats from "@/components/profile/ProfileStats"
 
@@ -110,10 +111,12 @@ export default function ProfileContent() {
 
           <HumanForm userData={userData} isEditing={isEditing} setIsEditing={setIsEditing} handleSave={handleSave} handleCancel={handleCancel} editForm={editForm} setEditForm={setEditForm} />
 
-          <ReferralLinks referralCount={userData?.referral_count ?? 0} />
-          
           {/* Stats Cards */}
           <StatsCards userData={userData} />
+
+          <MergeEmails />
+
+          <ReferralLinks referralCount={userData?.referral_count ?? 0} />
 
           {/* Events History */}
           <PopupsHistory popups={userData?.popups ?? []} />

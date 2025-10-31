@@ -4,15 +4,18 @@ const Modal = ({open, onClose, title, description, children, className}: {open: 
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className={`bg-neutral-100 ${className} `}>
-        <DialogHeader>
-          <DialogTitle>{title}</DialogTitle>
-          <DialogDescription>
-            {description}
-            
-          </DialogDescription>
+      <DialogContent className={`bg-white rounded-lg ${className}`}>
+        <DialogHeader className="text-left pb-0">
+          <DialogTitle className="text-xl font-bold text-gray-900">{title}</DialogTitle>
+          {description && (
+            <DialogDescription className="text-sm text-gray-600 mt-1">
+              {description}
+            </DialogDescription>
+          )}
         </DialogHeader>
-        {children}
+        <div className="pt-4">
+          {children}
+        </div>
       </DialogContent>
     </Dialog>
   )
