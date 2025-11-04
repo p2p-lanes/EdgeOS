@@ -179,7 +179,13 @@ export default function MergeEmails() {
     }
   }
 
-  const handleClose = () => {
+  const handleClose = async () => {
+    if (step === "success") {
+      await refresh()
+      if (typeof window !== "undefined") {
+        window.dispatchEvent(new CustomEvent("accounts-linked"))
+      }
+    }
     setIsModalOpen(false)
     setStep("email")
     setEmail("")
