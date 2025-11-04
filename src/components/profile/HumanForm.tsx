@@ -1,80 +1,20 @@
 import { CitizenProfile } from "@/types/Profile"
 import { Card } from "../ui/card"
 import { Button } from "../ui/button"
-import { Edit2, Save, X, User, Mail, MessageSquare, Calendar, Building, Upload, Loader2 } from "lucide-react"
+import { Edit2, Save, X, User, Mail, Building, Upload, Loader2, ChevronDown, ChevronUp } from "lucide-react"
 import { Label } from "../ui/label"
 import { Input } from "../ui/input"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef } from "react"
 import uploadFileToS3 from "@/helpers/upload"
 import { RiTelegram2Line, RiTwitterXFill } from "react-icons/ri"
-import { api, instance } from "@/api"
 
 const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel, editForm, setEditForm}: {userData: CitizenProfile | null, isEditing: boolean, setIsEditing: (isEditing: boolean) => void, handleSave: () => void, handleCancel: () => void, editForm: any, setEditForm: (editForm: any) => void}) => {
   const [isHovering, setIsHovering] = useState(false)
   const [isUploading, setIsUploading] = useState(false)
-  const [linkedEmails, setLinkedEmails] = useState<string[]>([])
+  const [showLinkedEmails, setShowLinkedEmails] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const token = window.localStorage.getItem("token")
-      if (token) {
-        instance.defaults.headers.common["Authorization"] = `Bearer ${token}`
-      }
-    }
-
-    const fetchLinkedEmails = async () => {
-      try {
-        const response = await api.get("account-clusters/my-cluster")
-        if (response?.status === 200 && response.data) {
-          const cluster = response.data
-          if (cluster.member_count > 1 && cluster.citizen_ids) {
-            const currentCitizenId = userData?.id
-            const otherCitizenIds = cluster.citizen_ids.filter((id: number) => id !== currentCitizenId)
-            
-            const emailPromises = otherCitizenIds.map(async (id: number) => {
-              try {
-                const profileResponse = await api.get(`citizens/${id}`)
-                if (profileResponse?.status === 200 && profileResponse.data?.primary_email) {
-                  return profileResponse.data.primary_email
-                }
-              } catch (err) {
-                return null
-              }
-              return null
-            })
-
-            const emails = (await Promise.all(emailPromises)).filter((email): email is string => email !== null)
-            setLinkedEmails(emails)
-          } else {
-            setLinkedEmails([])
-          }
-        }
-      } catch (err) {
-        setLinkedEmails([])
-      }
-    }
-
-    if (userData?.id) {
-      fetchLinkedEmails()
-    }
-
-    const handleAccountsLinked = () => {
-      if (userData?.id) {
-        fetchLinkedEmails()
-      }
-    }
-
-    if (typeof window !== "undefined") {
-      window.addEventListener("accounts-linked", handleAccountsLinked)
-    }
-
-    return () => {
-      if (typeof window !== "undefined") {
-        window.removeEventListener("accounts-linked", handleAccountsLinked)
-      }
-    }
-  }, [userData?.id])
+  const filteredLinkedEmails = userData?.linked_emails?.filter(email => email !== userData?.primary_email) || []
 
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
@@ -92,13 +32,11 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
     const file = event.target.files?.[0]
     if (!file) return
 
-    // Validar que sea una imagen
     if (!file.type.startsWith('image/')) {
       alert('Por favor selecciona un archivo de imagen válido')
       return
     }
 
-    // Validar tamaño del archivo (máximo 5MB)
     if (file.size > 5 * 1024 * 1024) {
       alert('El archivo es demasiado grande. Por favor selecciona una imagen menor a 5MB')
       return
@@ -109,16 +47,11 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
       setIsEditing(true)
       const imageUrl = await uploadFileToS3(file)
       
-      // Actualizar el formulario con la nueva imagen
       setEditForm({ ...editForm, picture_url: imageUrl })
-      
-      console.log('Imagen subida exitosamente:', imageUrl)
     } catch (error) {
-      console.error('Error al subir la imagen:', error)
       alert('Error al subir la imagen. Por favor intenta de nuevo.')
     } finally {
       setIsUploading(false)
-      // Limpiar el input para permitir subir el mismo archivo nuevamente
       if (event.target) {
         event.target.value = ''
       }
@@ -146,7 +79,6 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
                 <User className="w-8 h-8 text-blue-600" />
               )}
               
-              {/* Overlay con icono de upload en hover o loader */}
               {(isHovering || isUploading) && (
                 <div className="absolute inset-0 bg-black bg-opacity-50 rounded-full flex items-center justify-center transition-all duration-200">
                   {isUploading ? (
@@ -158,7 +90,6 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
               )}
             </div>
             
-            {/* Input de archivo oculto */}
             <input
               ref={fileInputRef}
               type="file"
@@ -213,11 +144,31 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
               <div className="flex-1">
                 <p className="text-sm text-gray-600">Email</p>
                 <p className="text-gray-900">{userData?.primary_email}</p>
-                {linkedEmails.length > 0 && (
-                  <div className="mt-1 space-y-0.5">
-                    {linkedEmails.map((email, index) => (
-                      <p key={index} className="text-xs text-gray-500">{email}</p>
-                    ))}
+                {filteredLinkedEmails.length > 0 && (
+                  <div className="mt-1">
+                    <button
+                      onClick={() => setShowLinkedEmails(!showLinkedEmails)}
+                      className="flex items-center gap-1 text-xs text-gray-500 hover:text-gray-700 transition-colors"
+                    >
+                      {showLinkedEmails ? (
+                        <>
+                          <ChevronUp className="w-3 h-3" />
+                          Hide linked emails
+                        </>
+                      ) : (
+                        <>
+                          <ChevronDown className="w-3 h-3" />
+                          {filteredLinkedEmails.length} {filteredLinkedEmails.length === 1 ? 'linked email' : 'linked emails'}
+                        </>
+                      )}
+                    </button>
+                    {showLinkedEmails && (
+                      <div className="mt-1 space-y-0.5">
+                        {filteredLinkedEmails.map((email, index) => (
+                          <p key={index} className="text-xs text-gray-500">{email}</p>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

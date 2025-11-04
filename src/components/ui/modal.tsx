@@ -4,16 +4,16 @@ const Modal = ({open, onClose, title, description, children, className}: {open: 
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className={`bg-white rounded-lg ${className}`}>
+      <DialogContent className={`bg-white rounded-lg p-6 max-w-md ${className}`}>
         <DialogHeader className="text-left pb-0">
-          <DialogTitle className="text-xl font-bold text-gray-900">{title}</DialogTitle>
+          <DialogTitle className="text-lg font-semibold text-gray-900 leading-none tracking-tight">{title}</DialogTitle>
           {description && (
-            <DialogDescription className="text-sm text-gray-600 mt-1">
+            <DialogDescription className="text-sm text-gray-600 mt-1.5">
               {description}
             </DialogDescription>
           )}
         </DialogHeader>
-        <div className="pt-4">
+        <div className="py-4">
           {children}
         </div>
       </DialogContent>

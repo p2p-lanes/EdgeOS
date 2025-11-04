@@ -227,8 +227,7 @@ export default function MergeEmails() {
   }
 
   const renderEmailStep = () => (
-    <>
-      <div className="space-y-4">
+    <div className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email" className="text-sm font-semibold text-gray-900">Email Address</Label>
           <Input
@@ -245,42 +244,41 @@ export default function MergeEmails() {
                 handleInitiateLink()
               }
             }}
-            className="w-full border-gray-300 rounded-md"
+            className="w-full border-gray-300 rounded-lg py-3 px-5"
             disabled={isLoading}
           />
         </div>
 
-        {error && (
-          <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">{error}</div>
-        )}
+      {error && (
+        <div className="text-sm text-red-600 bg-red-50 p-3 rounded-md">{error}</div>
+      )}
 
-        <div className="flex flex-col gap-3 pt-4">
-          <Button
-            onClick={handleInitiateLink}
-            className="bg-[hsl(222,47%,11%)] hover:bg-[hsl(222,47%,15%)] text-white rounded-md w-full py-2 h-auto font-normal"
-            disabled={isLoading || !email.trim()}
-          >
-            {isLoading ? "Sending..." : "Send Verification Code"}
-          </Button>
-          <Button 
-            variant="outline" 
-            onClick={handleClose} 
-            disabled={isLoading}
-            className="bg-white border border-gray-300 text-gray-900 hover:bg-gray-50 rounded-md w-full py-2 h-auto font-normal"
-          >
-            Done
-          </Button>
-        </div>
+      <div className="flex flex-col gap-3">
+        <Button
+          onClick={handleInitiateLink}
+          className="bg-[hsl(222,47%,11%)] hover:bg-[hsl(222,47%,15%)] text-white rounded-lg w-full py-2.5 px-4 h-auto font-normal"
+          disabled={isLoading || !email.trim()}
+        >
+          {isLoading ? "Sending..." : "Send Verification Code"}
+        </Button>
+        <Button 
+          variant="outline" 
+          onClick={handleClose} 
+          disabled={isLoading}
+          className="bg-white border border-gray-300 text-gray-900 hover:bg-gray-50 rounded-lg w-full py-2.5 px-4 h-auto font-normal"
+        >
+          Done
+        </Button>
       </div>
-    </>
+    </div>
   )
 
   const renderVerificationStep = () => (
     <>
       <div className="space-y-2">
         <div className="text-sm">
-          <span className="text-gray-600">Enter the code we sent to </span>
-          <span className="font-semibold text-gray-900">{targetEmail}</span>
+          <div className="text-gray-600">Enter the code we sent to</div>
+          <div className="font-semibold text-gray-900 mt-1">{targetEmail}</div>
         </div>
 
         <div className="flex justify-center py-2">
@@ -299,9 +297,9 @@ export default function MergeEmails() {
                   onChange={(e) => handleCodeChange(index, e.target.value)}
                   onKeyDown={(e) => handleCodeKeyDown(index, e)}
                   onPaste={index === 0 ? handlePaste : undefined}
-                  className={`w-10 h-10 text-center text-base font-semibold border-gray-300 border-r-0 ${
-                    isFirst ? "rounded-l-md" : "rounded-none"
-                  } ${isLast ? "rounded-r-md border-r" : "rounded-none"}`}
+                  className={`w-10 h-10 text-center text-base font-semibold border-gray-300 ${
+                    isFirst ? "rounded-l-md border-r-0" : isLast ? "rounded-r-md border-r" : "rounded-none border-r-0"
+                  }`}
                   disabled={isLoading || timeRemaining === 0}
                 />
               )
@@ -337,7 +335,7 @@ export default function MergeEmails() {
         <div className="flex flex-col gap-3 pt-2">
           <Button
             onClick={handleVerifyCode}
-            className="bg-[hsl(222,47%,11%)] hover:bg-[hsl(222,47%,15%)] text-white rounded-md w-full py-2 h-auto font-normal"
+            className="bg-[hsl(222,47%,11%)] hover:bg-[hsl(222,47%,15%)] text-white rounded-lg w-full py-2.5 px-4 h-auto font-normal"
             disabled={isLoading || verificationCode.join("").length !== 6 || timeRemaining === 0}
           >
             {isLoading ? "Verifying..." : "Verify Code"}
@@ -346,7 +344,7 @@ export default function MergeEmails() {
             variant="outline" 
             onClick={handleBack} 
             disabled={isLoading}
-            className="bg-white border border-gray-300 text-gray-900 hover:bg-gray-50 rounded-md w-full py-2 h-auto font-normal"
+            className="bg-white border border-gray-300 text-gray-900 hover:bg-gray-50 rounded-lg w-full py-2.5 px-4 h-auto font-normal"
           >
             Back
           </Button>
@@ -440,7 +438,7 @@ export default function MergeEmails() {
           <div className="flex-shrink-0">
             <Button
               onClick={() => setIsModalOpen(true)}
-              className="bg-[#020817] hover:bg-[#020817]/90 text-white whitespace-nowrap"
+              className="bg-[#020817] hover:bg-[#020817]/90 text-white whitespace-nowrap rounded-lg px-5 py-2.5 h-auto"
             >
               Merge emails
             </Button>
