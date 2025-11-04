@@ -289,7 +289,7 @@ export default function MergeEmails() {
               return (
                 <Input
                   key={index}
-                  ref={(el) => (codeInputRefs.current[index] = el)}
+                  ref={(el) => { codeInputRefs.current[index] = el }}
                   type="text"
                   inputMode="numeric"
                   maxLength={1}
