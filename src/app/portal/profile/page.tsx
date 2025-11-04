@@ -13,7 +13,7 @@ import ReferralLinks from "@/components/profile/ReferralLinks"
 import ProfileStats from "@/components/profile/ProfileStats"
 
 export default function ProfileContent() {
-  const { profile, isLoading, error, updateProfile, isUpdating, updateError } = useGetProfile()
+  const { profile, isLoading, error, updateProfile, isUpdating, updateError, refresh } = useGetProfile()
   const [userData, setUserData] = useState(profile)
   const [isEditing, setIsEditing] = useState(false)
   const [editForm, setEditForm] = useState({
@@ -45,6 +45,19 @@ export default function ProfileContent() {
       picture_url: profile.picture_url,
     })
   }, [profile])
+
+  useEffect(() => {
+    const handleAccountsLinked = async () => {
+      await refresh()
+    }
+
+    if (typeof window !== "undefined") {
+      window.addEventListener("accounts-linked", handleAccountsLinked)
+      return () => {
+        window.removeEventListener("accounts-linked", handleAccountsLinked)
+      }
+    }
+  }, [refresh])
 
   const handleSave = async () => {
     const updated = await updateProfile({
