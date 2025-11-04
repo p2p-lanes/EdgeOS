@@ -11,15 +11,15 @@ const layout = ({children}: {children: React.ReactNode}) => {
   return (
     <CityProvider>
       <ApplicationProvider>
+            <GroupsProvider>
         <PassesDataProvider>
           <PassesProvider>
-            <GroupsProvider>
               <TotalProvider>
               {children}
               </TotalProvider>
-            </GroupsProvider>
           </PassesProvider>
         </PassesDataProvider>
+            </GroupsProvider>
       </ApplicationProvider>
     </CityProvider>
   )
