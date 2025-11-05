@@ -25,6 +25,7 @@ export interface CitizenProfile {
   total_days: number;
   referral_count: number;
   picture_url: string;
+  linked_emails?: string[];
 }
 
 
