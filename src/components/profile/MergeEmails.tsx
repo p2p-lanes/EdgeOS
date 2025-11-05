@@ -12,6 +12,12 @@ import useGetProfile from "@/hooks/useGetProfile"
 
 type ModalStep = "email" | "verification" | "success"
 
+const ALLOWED_EMAILS = [
+  "sophie@edgecity.live",
+  "timour@edgecity.live",
+  "francisco@muvinai.com"
+]
+
 export default function MergeEmails() {
   const { profile, refresh } = useGetProfile()
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -416,6 +422,14 @@ export default function MergeEmails() {
       default:
         return "Add email addresses to combine your statistics across all accounts."
     }
+  }
+
+  const isEmailAllowed = profile?.primary_email 
+    ? ALLOWED_EMAILS.some(email => email.toLowerCase() === profile.primary_email?.toLowerCase())
+    : false
+
+  if (!isEmailAllowed) {
+    return null
   }
 
   return (
