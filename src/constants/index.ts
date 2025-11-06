@@ -11,6 +11,7 @@ export type DynamicForm = {
     title?: string,
     subtitle?: string,
     residence_placeholder?: string,
+    local_resident_title?: string,
     [key: string]: any,
   },
   professional_details?:{

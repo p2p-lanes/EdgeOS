@@ -8,6 +8,8 @@ import SelectForm from "@/components/ui/Form/Select";
 import { GENDER_OPTIONS } from "@/constants/util";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
+import { dynamicForm } from "@/constants";
+import { useCityProvider } from "@/providers/cityProvider";
 
 interface PersonalInfoFormProps {
   formData: {
@@ -33,9 +35,12 @@ const PersonalInfoForm = ({
 }: PersonalInfoFormProps) => {
   const searchParams = useSearchParams();
   const isDayCheckout = searchParams.has("day-passes");
+  const { getCity } = useCityProvider()
+  const city = getCity()
   // Estado para almacenar el valor de género normalizado
   const [customGender, setCustomGender] = useState<string>("");
   const [genderValue, setGenderValue] = useState<string>("");
+  const form = dynamicForm[city?.slug ?? '']
 
   useEffect(() => {
     if(formData.gender) {
@@ -146,7 +151,7 @@ const PersonalInfoForm = ({
       }
 
       <SelectForm
-        label="Are you a LATAM citizen / San Martin resident?"
+        label={form?.personal_information?.local_resident_title || "Are you a LATAM citizen / San Martin resident?"}
         id="local_resident"
         value={formData.local_resident}
         onChange={(value) => {

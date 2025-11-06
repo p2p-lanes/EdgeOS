@@ -2,6 +2,9 @@ import { DynamicForm } from ".."
 
 export const edgePatagonia: DynamicForm = {
   local: 'Sonoma County',
+  personal_information: {
+    local_resident_title: 'Are you a LATAM citizen / San Martin resident?'
+  },
   scholarship: {
     interest_text: 'We have a limited number of scholarships available, offering a 30% discount on tickets.',
     scholarship_video_url: {
