@@ -11,6 +11,7 @@ export type DynamicForm = {
     title?: string,
     subtitle?: string,
     residence_placeholder?: string,
+    local_resident_title?: string,
     [key: string]: any,
   },
   professional_details?:{
@@ -47,5 +48,6 @@ export const dynamicForm: Record<string, DynamicForm | null> = {
   "edge-austin": edgeAustin,
   'edge-sa': edgeSa,
   'edge-bhutan-2025': edgeBhutan2025,
-  'edge-patagonia': edgePatagonia
+  'edge-patagonia': edgePatagonia,
+  'edge-esmeralda-2026': edgeEsmeralda
 }
