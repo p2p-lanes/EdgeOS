@@ -51,7 +51,7 @@ export default function FormPage() {
   const handleImport = async () => {
     if (existingApplication && fields) {
       const filteredData = Object.fromEntries(
-        Object.entries(existingApplication).filter(([key]) => fields.has(key))
+        Object.entries(existingApplication).filter(([key]) => fields.has(key) && key !== 'local_resident')
       );
       setFormData(filteredData as Record<string, any>);
       setShowExistingCard(false);
