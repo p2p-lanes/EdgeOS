@@ -174,7 +174,7 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
               </div>
             </div>
           )}
-           {userData?.gender && (
+           {/* {userData?.gender && (
             <div className="flex items-center gap-3">
               <User className="w-5 h-5 text-gray-400" />
               <div>
@@ -182,7 +182,7 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
                 <p className="text-gray-900">{userData?.gender}</p>
               </div>
             </div>
-          )}
+          )} */}
           {userData?.organization && (
             <div className="flex items-center gap-3">
               <Building className="w-5 h-5 text-gray-400" />
