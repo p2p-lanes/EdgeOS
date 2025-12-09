@@ -30,8 +30,6 @@ const PopupsHistory = ({popups}: {popups: CitizenProfilePopup[]}) => {
     })
   }
 
-  console.log(poapsWithPopup)
-
   const getPopupStatus = (startDate: string, endDate: string) => {
     const now = new Date()
     const start = new Date(startDate)
@@ -100,7 +98,14 @@ const PopupsHistory = ({popups}: {popups: CitizenProfilePopup[]}) => {
     .filter(popup => new Date(popup.end_date) > new Date()) // Only show upcoming events
     .sort((a, b) => new Date(b.start_date).getTime() - new Date(a.start_date).getTime()) // Sort by most recent first
 
-  const pastPopups = popups.filter((popup) => new Date(popup.end_date) < new Date())
+  const pastPopups = popups
+    .filter((popup) => new Date(popup.end_date) < new Date())
+    .filter((popup, index, self) =>
+      index === self.findIndex((t) => (
+        t.popup_name === popup.popup_name
+      ))
+    )
+    .sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime())
 
   return (
     <Card className="p-6">
