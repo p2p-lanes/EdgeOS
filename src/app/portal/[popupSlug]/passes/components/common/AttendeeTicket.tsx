@@ -42,7 +42,7 @@ const sortProductsByPriority = (a: ProductsPass, b: ProductsPass): number => {
   return 0
 }
 
-const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void, isDayCheckout?: boolean  }) => {
+const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout, onSwitchToBuy}: {attendee: AttendeeProps, toggleProduct?: (attendeeId: number, product: ProductsPass) => void, isDayCheckout?: boolean, onSwitchToBuy?: () => void  }) => {
   const standardProducts = attendee.products
     .filter((product) => product.category !== 'patreon' && (isDayCheckout ? product.category === 'day' : true))
     .sort(sortProductsByPriority);
@@ -142,6 +142,19 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout}: {attendee: Att
             {standardProducts.length === 0 ? (
               <div className="flex w-full h-full justify-center items-center">
                 <p className="text-sm font-medium text-neutral-500">Coming soon.</p>
+              </div>
+            ) : (!toggleProduct && !hasPurchased) ? (
+              <div className="flex w-full h-full justify-center items-center p-4">
+                <p className="text-sm font-medium text-neutral-500 text-center">
+                  You do not yet have any passes for {city?.name}, please go to{" "}
+                  <span 
+                    onClick={onSwitchToBuy} 
+                    className="text-primary hover:underline cursor-pointer font-semibold"
+                  >
+                    Buy Passes
+                  </span>{" "}
+                  to purchase
+                </p>
               </div>
             ) : (
               <div className="flex flex-col gap-3">
