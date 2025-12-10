@@ -11,6 +11,7 @@ import StatsCards from "@/components/profile/StatsCards"
 import MergeEmails from "@/components/profile/MergeEmails"
 import ReferralLinks from "@/components/profile/ReferralLinks"
 import ProfileStats from "@/components/profile/ProfileStats"
+import BannerEdgeWrapped from "@/components/profile/BannerEdgeWrapped"
 
 export default function ProfileContent() {
   const { profile, isLoading, error, updateProfile, isUpdating, updateError, refresh } = useGetProfile()
@@ -122,16 +123,17 @@ export default function ProfileContent() {
             <div className="text-red-600 mb-4">{updateError}</div>
           )}
 
+          {/* Banner Edge Wrapped */}
+          <BannerEdgeWrapped />
+
           <HumanForm userData={userData} isEditing={isEditing} setIsEditing={setIsEditing} handleSave={handleSave} handleCancel={handleCancel} editForm={editForm} setEditForm={setEditForm} />
 
-          {/* Stats Cards */}
           <StatsCards userData={userData} />
 
           <MergeEmails />
 
           <ReferralLinks referralCount={userData?.referral_count ?? 0} />
 
-          {/* Events History */}
           <PopupsHistory popups={userData?.popups ?? []} />
           
           <ProfileStats userData={userData} />

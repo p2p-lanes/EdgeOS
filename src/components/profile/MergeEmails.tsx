@@ -459,7 +459,7 @@ export default function MergeEmails() {
               <Mail className='w-6 h-6 text-purple-600 stroke-[1.5]' />
             </div>
             <div className='flex-1'>
-              <div className='flex items-center gap-2 mb-2'>
+              <div className='flex items-center gap-2'>
                 <h3 className='text-lg font-semibold text-[#020817]'>
                   Combine your Edge City metrics from different accounts
                 </h3>

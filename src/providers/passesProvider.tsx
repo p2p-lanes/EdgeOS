@@ -104,7 +104,6 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
 
   useEffect(() => {
     if(city?.id && discountApplied.city_id !== city?.id){
-      console.log('aca entro', discountApplied, city?.id);
       setDiscountApplied({discount_value: 0, discount_type: 'percentage'})
     }
   }, [city?.id, discountApplied.city_id])
