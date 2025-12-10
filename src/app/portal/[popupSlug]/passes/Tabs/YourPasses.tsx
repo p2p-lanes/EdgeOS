@@ -44,7 +44,7 @@ const YourPasses = ({ onSwitchToBuy }: YourPassesProps) => {
           </>
         ) : (
           attendees.map(attendee => (
-            <AttendeeTicket key={attendee.id} attendee={attendee} isDayCheckout={isDayCheckout}/>
+            <AttendeeTicket key={attendee.id} attendee={attendee} isDayCheckout={isDayCheckout} onSwitchToBuy={onSwitchToBuy}/>
           ))
         )}
       </div>

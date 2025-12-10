@@ -33,8 +33,8 @@ const ProfileStats = ({userData}: {userData: CitizenProfile | null}) => {
 
       <Card className="p-6 flex flex-col gap-4">
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-semibold text-gray-900">Event Statistics</h2>
-          <p className="text-sm text-gray-600">Your event participation breakdown</p>
+          <h2 className="text-2xl font-semibold text-gray-900">Event Statitics</h2>
+          <p className="text-sm text-gray-600">Your event participation breakdown (from the Social Layer community calendar).</p>
         </div>
 
         <Card className="p-6">

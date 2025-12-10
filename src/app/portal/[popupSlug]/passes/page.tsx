@@ -12,13 +12,15 @@ export default function HomePasses() {
   usePermission()
 
   const { attendeePasses: attendees, products } = usePassesProvider()
-  const [activeTab, setActiveTab] = useState<string>("your-passes");
+  const [activeTab, setActiveTab] = useState<string | null>(null);
 
   if(!attendees.length || !products.length) return <Loader />
 
   const someProductPurchased = attendees.some(a => a.products.some(p => p.purchased))
 
   const initialTab = activeTab || (someProductPurchased ? "your-passes" : "buy-passes");
+
+  console.log({someProductPurchased, initialTab})
 
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);

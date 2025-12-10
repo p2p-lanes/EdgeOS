@@ -70,7 +70,7 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
       <div className="flex flex-col h-full">
         <div className="mb-4">
           <h2 className="text-2xl font-semibold text-gray-900">Top Connections</h2>
-          <p className="text-sm text-gray-600">Your most frequent event partners</p>
+          <p className="text-sm text-gray-600">People with whom you’ve overlapped the most at specific Social Layer calendar events.</p>
         </div>
         <div className="flex-1 flex flex-col gap-3 mt-2">
           {eventsLoading ? (
