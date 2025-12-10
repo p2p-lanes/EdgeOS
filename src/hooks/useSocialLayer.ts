@@ -23,7 +23,7 @@ export function useSocialLayer() {
     return result.data;
   };
 
-  const getEventsFromEmail = useCallback(async (email: string) => {
+  const getEventsFromEmail = useCallback(async (email: string | string[]) => {
     setEventsLoading(true);
     setEventsError(null);
 
@@ -65,8 +65,10 @@ export function useSocialLayer() {
       }
     `;
 
+    const emails = Array.isArray(email) ? email : [email];
+
     const variables = {
-      where: { participants: { profile: { email: { _eq: email } } } },
+      where: { participants: { profile: { email: { _in: emails } } } },
     };
 
     try {
@@ -80,7 +82,7 @@ export function useSocialLayer() {
     }
   }, []);
 
-  const getProfileFromEmail = useCallback(async (email: string) => {
+  const getProfileFromEmail = useCallback(async (email: string | string[]) => {
     setProfileLoading(true);
     setProfileError(null);
 
@@ -102,7 +104,9 @@ export function useSocialLayer() {
       }
     `;
 
-    const variables = { where: { email: { _eq: email } } };
+    const emails = Array.isArray(email) ? email : [email];
+
+    const variables = { where: { email: { _in: emails } } };
 
     try {
       const data = await fetchGraphQL(query, variables);

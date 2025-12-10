@@ -14,19 +14,29 @@ const ProfileStats = ({userData}: {userData: CitizenProfile | null}) => {
   const [profile, setProfile] = useState<ProfileData | null>(null)
   
   useEffect(() => {
+    if (!userData) return
+
+    const emails = [userData.primary_email, userData.secondary_email].filter((e): e is string => !!e && e !== "")
+    
+    if (emails.length === 0) return
+
     const fetchEvents = async () => {
-      const events = await getEventsFromEmail(userData?.primary_email ?? "")
+      const events = await getEventsFromEmail(emails)
       setEvents(events)
     }
     const fetchProfile = async () => {
-      const profile = await getProfileFromEmail(userData?.primary_email ?? "")
-      setProfile(profile[0])
+      const profiles = await getProfileFromEmail(emails)
+      
+      const allEvents = profiles.reduce((acc: any[], curr: any) => {
+        return [...acc, ...(curr.events || [])]
+      }, [])
+
+      setProfile({ events: allEvents })
     }
-    if(!userData?.primary_email || userData?.primary_email === "") return
 
     fetchEvents()
     fetchProfile()
-  }, [userData?.primary_email])
+  }, [userData, getEventsFromEmail, getProfileFromEmail])
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">

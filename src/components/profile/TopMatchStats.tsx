@@ -21,10 +21,12 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
   const [topMatches, setTopMatches] = useState<MatchedPerson[]>([])
 
   const calculateTopMatches = useCallback(() => {
-    if (!events || events.length === 0 || !userData?.primary_email || !userData) {
+    if (!events || events.length === 0 || !userData) {
       setTopMatches([])
       return
     }
+
+    const userEmails = [userData.primary_email, userData.secondary_email].filter((e): e is string => !!e && e !== "")
 
     // Crear un mapa para contar apariciones de cada participante
     const participantCounts: Record<string, MatchedPerson> = {}
@@ -33,7 +35,7 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
       if (event.participants) {
         event.participants.forEach((participant: EventParticipant) => {
           const profile = participant.profile
-          if (profile && profile.email !== userData.primary_email) {
+          if (profile && !userEmails.includes(profile.email)) {
             const email = profile.email
             
             if (participantCounts[email]) {
@@ -58,12 +60,12 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
       .slice(0, 5)
 
     setTopMatches(sortedMatches)
-  }, [userData?.primary_email, events])
+  }, [userData, events])
 
   useEffect(() => {
-    if(!userData?.primary_email || !events) return
+    if(!userData || !events) return
     calculateTopMatches()
-  }, [userData?.primary_email, events])
+  }, [userData, events])
 
   return (
     <Card className="p-6">
