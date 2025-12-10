@@ -1,12 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { EdgeLand } from "@/components/Icons/EdgeLand"
 import { Download } from "lucide-react"
 import { saveAs } from "file-saver"
+import { useGetEdgeWrapped } from "@/hooks/useGetEdgeWrapped"
 
 const XIcon = ({ className }: { className?: string }) => (
   <svg viewBox="0 0 1200 1227" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
@@ -16,67 +17,128 @@ const XIcon = ({ className }: { className?: string }) => (
 
 const LOADING_MESSAGES = [
   "Initializing world gen...",
+  "Analyzing social patterns...",
+  "Shaping terrain...",
   "Summoning waterfalls...",
   "Planting digital trees...",
-  "Calibrating sunlight...",
   "Constructing villages...",
+  "Paving pathways...",
+  "Calibrating sunlight...",
+  "Rendering details...",
   "Finalizing your island..."
 ]
 
 export default function BannerEdgeWrapped() {
   const [isOpen, setIsOpen] = useState(false)
-  const [step, setStep] = useState<"loading" | "success">("loading")
+  const [step, setStep] = useState<"loading" | "success" | "error">("loading")
   const [messageIndex, setMessageIndex] = useState(0)
   const [progress, setProgress] = useState(0)
+  const [minTimePassed, setMinTimePassed] = useState(false)
+  
+  const { data: imageUrl, isLoading, error, fetchWrapped, reset } = useGetEdgeWrapped()
+  
+  const fetchStartedRef = useRef(false)
 
+  // Reset internal refs when closing
   useEffect(() => {
-    let timer: NodeJS.Timeout
+    if (!isOpen) {
+        fetchStartedRef.current = false
+    }
+  }, [isOpen])
+
+  // Start Fetch and Timers when entering 'loading'
+  useEffect(() => {
     let messageInterval: NodeJS.Timeout
     let progressInterval: NodeJS.Timeout
+    let minTimeTimer: NodeJS.Timeout
 
     if (isOpen && step === "loading") {
-      // Reset state on open
-      setMessageIndex(0)
-      setProgress(0)
+        // Trigger fetch only once
+        if (!fetchStartedRef.current) {
+            fetchStartedRef.current = true
+            fetchWrapped()
+        }
 
-      // Total loading time (simulated)
-      const TOTAL_TIME = 10000
-      const MESSAGE_INTERVAL = TOTAL_TIME / LOADING_MESSAGES.length
-      
-      timer = setTimeout(() => {
-        // Preload image before success
-        const img = new Image()
-        img.src = "https://simplefi.s3.us-east-2.amazonaws.com/generated_image.jpeg"
-        img.onload = () => setStep("success")
-        img.onerror = () => setStep("success") // Fallback
-      }, TOTAL_TIME)
+        // Minimum loading time (12 seconds)
+        const MIN_TOTAL_TIME = 15000 
+        const UPDATE_FREQ = 100 // update every 100ms
+        const MESSAGE_INTERVAL_TIME = MIN_TOTAL_TIME / LOADING_MESSAGES.length // dynamic based on count
 
-      messageInterval = setInterval(() => {
-        setMessageIndex((prev) => (prev + 1) % LOADING_MESSAGES.length)
-      }, MESSAGE_INTERVAL)
+        minTimeTimer = setTimeout(() => {
+            setMinTimePassed(true)
+        }, MIN_TOTAL_TIME)
 
-      progressInterval = setInterval(() => {
-        setProgress((prev) => {
-          if (prev >= 100) return 100
-          return prev + (100 / (TOTAL_TIME / 100))
-        })
-      }, 100)
+        messageInterval = setInterval(() => {
+            setMessageIndex((prev) => {
+                // If we reached the last message, keep it there
+                if (prev >= LOADING_MESSAGES.length - 1) {
+                    return prev
+                }
+                return prev + 1
+            })
+        }, MESSAGE_INTERVAL_TIME)
+
+        // Progress bar logic
+        // progressInterval = setInterval(() => {
+        //     setProgress((prev) => {
+        //         const hasResult = !!imageUrl || !!error
+        //         const target = hasResult ? 99 : 95
+                
+        //         if (prev >= target) {
+        //              return prev + (target - prev) * 0.01 
+        //         }
+
+        //         // Linear-ish increment to reach ~95% within MIN_TOTAL_TIME
+        //         const totalSteps = MIN_TOTAL_TIME / UPDATE_FREQ
+        //         const increment = 95 / totalSteps
+        //         return prev + increment
+        //     })
+        // }, UPDATE_FREQ)
     }
     
     return () => {
-      clearTimeout(timer)
-      clearInterval(messageInterval)
-      clearInterval(progressInterval)
+        clearTimeout(minTimeTimer)
+        clearInterval(messageInterval)
+        // clearInterval(progressInterval)
     }
-  }, [isOpen, step])
+  }, [isOpen, step, fetchWrapped, imageUrl, error]) 
+
+  // Monitor Completion
+  useEffect(() => {
+     if (step === "loading" && minTimePassed && (imageUrl || error)) {
+         if (error) {
+             setStep("error")
+         } else if (imageUrl) {
+             setProgress(100)
+             const img = new Image()
+             img.src = imageUrl
+             img.onload = () => setStep("success")
+             img.onerror = () => setStep("error")
+         }
+     }
+  }, [step, minTimePassed, imageUrl, error])
+
+  const handleClose = () => {
+    setIsOpen(false)
+    // Optional: wait for animation to finish before resetting completely if needed
+  }
 
   const handleOpen = () => {
-    setIsOpen(true)
+    // Reset state before opening to prevent race conditions with previous successful state
     setStep("loading")
+    setMinTimePassed(false)
+    setProgress(0)
+    setMessageIndex(0)
+    fetchStartedRef.current = false
+    reset()
+    
+    setIsOpen(true)
   }
 
   const handleDownload = () => {
-    saveAs("https://simplefi.s3.us-east-2.amazonaws.com/generated_image.jpeg", "edge-city-map.jpg")
+    if (imageUrl) {
+        saveAs(imageUrl, "edge-city-map.jpg")
+    }
   }
 
   const handleShare = () => {
@@ -107,23 +169,23 @@ export default function BannerEdgeWrapped() {
 
         {/* Floating Icons Background Effect */}
         <div className="absolute right-0 top-0 bottom-0 w-1/4 flex items-center justify-center pointer-events-none opacity-20 md:opacity-30">
-          <motion.div
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="relative"
-          >
-            <div className="scale-[3] md:scale-[4] text-white">
-              <EdgeLand />
-            </div>
-          </motion.div>
+           <motion.div
+             animate={{ y: [0, -15, 0] }}
+             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+             className="relative"
+           >
+              <div className="scale-[3] md:scale-[4] text-white">
+                 <EdgeLand />
+              </div>
+           </motion.div>
         </div>
       </div>
 
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent 
-          className="sm:max-w-lg p-8 bg-white shadow-2xl gap-0"
-          onInteractOutside={(e) => e.preventDefault()}
-          onEscapeKeyDown={(e) => e.preventDefault()}
+            className="sm:max-w-lg p-8 bg-white shadow-2xl gap-0"
+            onInteractOutside={(e) => e.preventDefault()}
+            onEscapeKeyDown={(e) => e.preventDefault()}
         >
           <DialogTitle className="sr-only">Edge Mapped Result</DialogTitle>
           <DialogDescription className="sr-only">Your custom Edge City island</DialogDescription>
@@ -154,7 +216,7 @@ export default function BannerEdgeWrapped() {
                           className="absolute inset-0 bg-gradient-to-tr from-purple-200 to-blue-200 rounded-full blur-2xl"
                         />
                         <div className="relative z-10 scale-[2] text-black">
-                          <EdgeLand />
+                            <EdgeLand />
                         </div>
                         {/* Sun/Orbit effect */}
                         <motion.div
@@ -187,29 +249,28 @@ export default function BannerEdgeWrapped() {
                         </div>
 
                         {/* Progress Bar */}
-                        <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden mt-2 relative border border-gray-200">
+                        {/* <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden mt-2 relative border border-gray-200">
                           <motion.div 
                             className="h-full bg-black"
                             initial={{ width: "0%" }}
                             animate={{ width: `${progress}%` }}
                             transition={{ ease: "linear" }}
                           />
-                        </div>
+                        </div> */}
                      </div>
                   </motion.div>
-                ) : (
+                ) : step === "success" && imageUrl ? (
                    <motion.div
                     key="success"
                     className="flex flex-col w-full gap-6"
                    >
                       <div className="relative p-1 my-2 rounded-sm bg-white">
-                         {/* Removed aspect-square to allow image's natural aspect ratio, assuming the image itself has the correct dimensions (like 4:5 or 3:4) */}
                          <div className="relative w-full bg-gray-100 border border-gray-200">
                             <motion.img 
                               initial={{ filter: "blur(12px)", scale: 1.06 }}
                               animate={{ filter: "blur(0px)", scale: 1 }}
                               transition={{ duration: 3, ease: "circInOut" }}
-                              src="https://simplefi.s3.us-east-2.amazonaws.com/generated_image.jpeg" 
+                              src={imageUrl} 
                               alt="Edge Mapped Island"
                               className="w-full h-auto object-contain block" 
                             />
@@ -233,6 +294,19 @@ export default function BannerEdgeWrapped() {
                         </Button>
                       </div>
                    </motion.div>
+                ) : (
+                    <motion.div
+                        key="error"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="flex flex-col items-center justify-center gap-4 text-center absolute inset-0 m-auto"
+                    >
+                        <div className="text-red-500 text-xl font-bold">Something went wrong</div>
+                        <p className="text-gray-500">{error || "Could not generate your map."}</p>
+                        <Button onClick={handleClose} variant="outline">
+                            Close
+                        </Button>
+                    </motion.div>
                 )}
              </AnimatePresence>
           </div>
