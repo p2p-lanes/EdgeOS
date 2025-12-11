@@ -97,6 +97,11 @@ export default function ProfileContent() {
     setIsEditing(false)
   }
 
+  const handleEdgeMappedGenerated = () => {
+    if (!userData) return
+    setUserData({ ...userData, edge_mapped_sent: true })
+  }
+
   if(!isLoading && !profile) {
     return(
       <div className="flex-1 flex flex-col items-center justify-center h-full">
@@ -126,7 +131,10 @@ export default function ProfileContent() {
       <div className="flex-1 p-6 bg-gray-50">
         <div className="max-w-5xl mx-auto space-y-6">
           {/* Banner Edge Wrapped */}
-          <BannerEdgeWrapped />
+          <BannerEdgeWrapped 
+            edgeMappedSent={userData?.edge_mapped_sent}
+            onImageGenerated={handleEdgeMappedGenerated}
+          />
 
           <HumanForm userData={userData} isEditing={isEditing} setIsEditing={setIsEditing} handleSave={handleSave} handleCancel={handleCancel} editForm={editForm} setEditForm={setEditForm} />
 

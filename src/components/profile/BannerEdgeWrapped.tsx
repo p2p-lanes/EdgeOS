@@ -1,167 +1,144 @@
 "use client"
 
 import { useState, useEffect, useRef } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { EdgeLand } from "@/components/Icons/EdgeLand"
-import { Download } from "lucide-react"
-import { saveAs } from "file-saver"
 import { useGetEdgeWrapped } from "@/hooks/useGetEdgeWrapped"
+import { 
+  EdgeWrappedModal, 
+  LOADING_MESSAGES, 
+  MIN_LOADING_TIME_FIRST, 
+  MIN_LOADING_TIME_RETURNING,
+  type ModalStep 
+} from "./EdgeWrapped"
 
-const XIcon = ({ className }: { className?: string }) => (
-  <svg viewBox="0 0 1200 1227" fill="currentColor" className={className} xmlns="http://www.w3.org/2000/svg">
-    <path d="M714.163 519.284L1160.89 0H1055.03L667.137 450.887L357.328 0H0L468.492 681.821L0 1226.37H105.866L515.491 750.218L842.672 1226.37H1200L714.137 519.284H714.163ZM569.165 687.828L521.697 619.934L144.011 79.6944H306.615L611.412 515.685L658.88 583.579L1055.08 1150.3H892.476L569.165 687.854V687.828Z" />
-  </svg>
-)
+interface BannerEdgeWrappedProps {
+  edgeMappedSent?: boolean
+  onImageGenerated?: () => void
+}
 
-const LOADING_MESSAGES = [
-  "Initializing world gen...",
-  "Analyzing social patterns...",
-  "Shaping terrain...",
-  "Summoning waterfalls...",
-  "Planting digital trees...",
-  "Constructing villages...",
-  "Paving pathways...",
-  "Calibrating sunlight...",
-  "Rendering details...",
-  "Finalizing your island..."
-]
-
-export default function BannerEdgeWrapped() {
+export default function BannerEdgeWrapped({ 
+  edgeMappedSent = false, 
+  onImageGenerated 
+}: BannerEdgeWrappedProps) {
   const [isOpen, setIsOpen] = useState(false)
-  const [step, setStep] = useState<"loading" | "success" | "error">("loading")
+  const [step, setStep] = useState<ModalStep>("loading")
   const [messageIndex, setMessageIndex] = useState(0)
-  const [progress, setProgress] = useState(0)
   const [minTimePassed, setMinTimePassed] = useState(false)
   
-  const { data: imageUrl, isLoading, error, fetchWrapped, reset } = useGetEdgeWrapped()
+  const { data: imageUrl, error, fetchWrapped, reset } = useGetEdgeWrapped()
   
   const fetchStartedRef = useRef(false)
+  const hasCalledOnImageGeneratedRef = useRef(false)
+
+  // Determine loading time based on whether user already has edge mapped
+  const minLoadingTime = edgeMappedSent ? MIN_LOADING_TIME_RETURNING : MIN_LOADING_TIME_FIRST
 
   // Reset internal refs when closing
   useEffect(() => {
     if (!isOpen) {
-        fetchStartedRef.current = false
+      fetchStartedRef.current = false
+      hasCalledOnImageGeneratedRef.current = false
     }
   }, [isOpen])
 
   // Start Fetch and Timers when entering 'loading'
   useEffect(() => {
     let messageInterval: NodeJS.Timeout
-    let progressInterval: NodeJS.Timeout
     let minTimeTimer: NodeJS.Timeout
 
     if (isOpen && step === "loading") {
-        // Trigger fetch only once
-        if (!fetchStartedRef.current) {
-            fetchStartedRef.current = true
-            fetchWrapped()
-        }
+      // Trigger fetch only once
+      if (!fetchStartedRef.current) {
+        fetchStartedRef.current = true
+        fetchWrapped()
+      }
 
-        // Minimum loading time (12 seconds)
-        const MIN_TOTAL_TIME = 15000 
-        const UPDATE_FREQ = 100 // update every 100ms
-        const MESSAGE_INTERVAL_TIME = MIN_TOTAL_TIME / LOADING_MESSAGES.length // dynamic based on count
+      const messageIntervalTime = minLoadingTime / LOADING_MESSAGES.length
 
-        minTimeTimer = setTimeout(() => {
-            setMinTimePassed(true)
-        }, MIN_TOTAL_TIME)
+      minTimeTimer = setTimeout(() => {
+        setMinTimePassed(true)
+      }, minLoadingTime)
 
-        messageInterval = setInterval(() => {
-            setMessageIndex((prev) => {
-                // If we reached the last message, keep it there
-                if (prev >= LOADING_MESSAGES.length - 1) {
-                    return prev
-                }
-                return prev + 1
-            })
-        }, MESSAGE_INTERVAL_TIME)
-
-        // Progress bar logic
-        // progressInterval = setInterval(() => {
-        //     setProgress((prev) => {
-        //         const hasResult = !!imageUrl || !!error
-        //         const target = hasResult ? 99 : 95
-                
-        //         if (prev >= target) {
-        //              return prev + (target - prev) * 0.01 
-        //         }
-
-        //         // Linear-ish increment to reach ~95% within MIN_TOTAL_TIME
-        //         const totalSteps = MIN_TOTAL_TIME / UPDATE_FREQ
-        //         const increment = 95 / totalSteps
-        //         return prev + increment
-        //     })
-        // }, UPDATE_FREQ)
+      messageInterval = setInterval(() => {
+        setMessageIndex((prev) => {
+          if (prev >= LOADING_MESSAGES.length - 1) {
+            return prev
+          }
+          return prev + 1
+        })
+      }, messageIntervalTime)
     }
     
     return () => {
-        clearTimeout(minTimeTimer)
-        clearInterval(messageInterval)
-        // clearInterval(progressInterval)
+      clearTimeout(minTimeTimer)
+      clearInterval(messageInterval)
     }
-  }, [isOpen, step, fetchWrapped, imageUrl, error]) 
+  }, [isOpen, step, fetchWrapped, minLoadingTime])
 
   // Monitor Completion
   useEffect(() => {
-     if (step === "loading" && minTimePassed && (imageUrl || error)) {
-         if (error) {
-             setStep("error")
-         } else if (imageUrl) {
-             setProgress(100)
-             const img = new Image()
-             img.src = imageUrl
-             img.onload = () => setStep("success")
-             img.onerror = () => setStep("error")
-         }
-     }
-  }, [step, minTimePassed, imageUrl, error])
+    if (step === "loading" && minTimePassed && (imageUrl || error)) {
+      if (error) {
+        setStep("error")
+      } else if (imageUrl) {
+        const img = new Image()
+        img.src = imageUrl
+        img.onload = () => {
+          setStep("success")
+          // Call onImageGenerated only if this was the first time (edgeMappedSent was false)
+          if (!edgeMappedSent && onImageGenerated && !hasCalledOnImageGeneratedRef.current) {
+            hasCalledOnImageGeneratedRef.current = true
+            onImageGenerated()
+          }
+        }
+        img.onerror = () => setStep("error")
+      }
+    }
+  }, [step, minTimePassed, imageUrl, error, edgeMappedSent, onImageGenerated])
 
   const handleClose = () => {
     setIsOpen(false)
-    // Optional: wait for animation to finish before resetting completely if needed
   }
 
   const handleOpen = () => {
-    // Reset state before opening to prevent race conditions with previous successful state
+    // Reset state before opening
     setStep("loading")
     setMinTimePassed(false)
-    setProgress(0)
     setMessageIndex(0)
     fetchStartedRef.current = false
+    hasCalledOnImageGeneratedRef.current = false
     reset()
     
     setIsOpen(true)
   }
 
-  const handleDownload = () => {
-    if (imageUrl) {
-        saveAs(imageUrl, "edge-city-map.jpg")
-    }
-  }
-
-  const handleShare = () => {
-    const text = encodeURIComponent("I just got my Edge Mapped from @JoinEdgeCity 🔥🏝️")
-    window.open(`https://twitter.com/intent/tweet?text=${text}`, "_blank")
-  }
+  // Dynamic content based on edgeMappedSent
+  const title = edgeMappedSent ? "See My Edge Mapped" : "Get Your Edge Mapped"
+  const subtitle = edgeMappedSent 
+    ? null 
+    : "Discover your lifetime activity at Edge and get your custom island!"
 
   return (
     <>
       <div className="relative w-full overflow-hidden rounded-2xl bg-gradient-to-r from-[#FF7B7B] to-[#E040FB] p-8 md:p-12 shadow-lg border border-gray-200">
         <div className="relative z-10 flex flex-col items-start gap-4 md:gap-6 max-w-2xl">
-          <div className="space-y-2">
+          <div className={subtitle ? "space-y-2" : ""}>
             <h2 className="text-3xl font-bold text-white md:text-4xl">
-              Get My Edge Mapped
+              {title}
             </h2>
-            <p className="text-lg text-white/90">
-              Discover your lifetime activity at Edge and get your custom island!
-            </p>
+            {subtitle && (
+              <p className="text-lg text-white/90">
+                {subtitle}
+              </p>
+            )}
           </div>
           <Button 
             onClick={handleOpen}
             size="lg" 
             className="bg-white text-black hover:bg-white/90 font-semibold text-lg px-8 transition-transform hover:scale-105 active:scale-95"
+            aria-label={title}
           >
             Let&apos;s go!
           </Button>
@@ -169,149 +146,27 @@ export default function BannerEdgeWrapped() {
 
         {/* Floating Icons Background Effect */}
         <div className="absolute right-0 top-0 bottom-0 w-1/4 flex items-center justify-center pointer-events-none opacity-20 md:opacity-30">
-           <motion.div
-             animate={{ y: [0, -15, 0] }}
-             transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-             className="relative"
-           >
-              <div className="scale-[3] md:scale-[4] text-white">
-                 <EdgeLand />
-              </div>
-           </motion.div>
+          <motion.div
+            animate={{ y: [0, -15, 0] }}
+            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            className="relative"
+          >
+            <div className="scale-[3] md:scale-[4] text-white">
+              <EdgeLand />
+            </div>
+          </motion.div>
         </div>
       </div>
 
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
-        <DialogContent 
-            className="sm:max-w-lg p-8 bg-white shadow-2xl gap-0"
-            onInteractOutside={(e) => e.preventDefault()}
-            onEscapeKeyDown={(e) => e.preventDefault()}
-        >
-          <DialogTitle className="sr-only">Edge Mapped Result</DialogTitle>
-          <DialogDescription className="sr-only">Your custom Edge City island</DialogDescription>
-          
-          <div className="relative flex flex-col items-center justify-center min-h-[400px] w-full transition-all duration-300">
-             <AnimatePresence mode="wait">
-                {step === "loading" ? (
-                  <motion.div
-                    key="loading"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    className="flex flex-col items-center gap-8 w-full max-w-sm absolute inset-0 justify-center m-auto"
-                  >
-                     {/* Icon Animation */}
-                     <div className="relative flex items-center justify-center h-32 w-32">
-                        <motion.div
-                          animate={{ 
-                            scale: [1, 1.1, 1],
-                            rotate: [0, 5, -5, 0],
-                            opacity: [0.5, 0.8, 0.5]
-                          }}
-                          transition={{ 
-                            duration: 3,
-                            repeat: Infinity,
-                            ease: "easeInOut" 
-                          }}
-                          className="absolute inset-0 bg-gradient-to-tr from-purple-200 to-blue-200 rounded-full blur-2xl"
-                        />
-                        <div className="relative z-10 scale-[2] text-black">
-                            <EdgeLand />
-                        </div>
-                        {/* Sun/Orbit effect */}
-                        <motion.div
-                          className="absolute w-full h-full border border-dashed border-gray-300 rounded-full"
-                          animate={{ rotate: 360 }}
-                          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-                        >
-                           <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-yellow-400 rounded-full shadow-[0_0_15px_2px_rgba(250,204,21,0.8)] blur-[1.5px]" />
-                        </motion.div>
-                     </div>
-
-                     <div className="flex flex-col items-center gap-4 w-full">
-                        <h3 className="text-xl font-bold text-black tracking-wide uppercase">
-                          Construction in Progress
-                        </h3>
-                        
-                        {/* Message Cycler */}
-                        <div className="h-6 overflow-hidden relative w-full flex justify-center">
-                          <AnimatePresence mode="wait">
-                             <motion.p
-                               key={messageIndex}
-                               initial={{ y: 20, opacity: 0 }}
-                               animate={{ y: 0, opacity: 1 }}
-                               exit={{ y: -20, opacity: 0 }}
-                               className="text-sm font-mono text-gray-500 uppercase tracking-widest absolute"
-                             >
-                               {LOADING_MESSAGES[messageIndex]}
-                             </motion.p>
-                          </AnimatePresence>
-                        </div>
-
-                        {/* Progress Bar */}
-                        {/* <div className="w-full h-1 bg-gray-100 rounded-full overflow-hidden mt-2 relative border border-gray-200">
-                          <motion.div 
-                            className="h-full bg-black"
-                            initial={{ width: "0%" }}
-                            animate={{ width: `${progress}%` }}
-                            transition={{ ease: "linear" }}
-                          />
-                        </div> */}
-                     </div>
-                  </motion.div>
-                ) : step === "success" && imageUrl ? (
-                   <motion.div
-                    key="success"
-                    className="flex flex-col w-full gap-6"
-                   >
-                      <div className="relative p-1 my-2 rounded-sm bg-white">
-                         <div className="relative w-full bg-gray-100 border border-gray-200">
-                            <motion.img 
-                              initial={{ filter: "blur(12px)", scale: 1.06 }}
-                              animate={{ filter: "blur(0px)", scale: 1 }}
-                              transition={{ duration: 3, ease: "circInOut" }}
-                              src={imageUrl} 
-                              alt="Edge Mapped Island"
-                              className="w-full h-auto object-contain block" 
-                            />
-                         </div>
-                      </div>
-                      
-                      <div className="flex gap-3 w-full">
-                        <Button 
-                          onClick={handleDownload} 
-                          className="flex-1 gap-2 h-11 text-sm font-bold bg-[#2563EB] hover:bg-[#1d4ed8] text-white rounded-md border-2 border-[#2563EB] shadow-sm uppercase tracking-wide transition-all active:translate-y-0.5"
-                        >
-                          <Download className="w-4 h-4" />
-                          Download
-                        </Button>
-                        <Button 
-                          onClick={handleShare} 
-                          className="flex-1 gap-2 h-11 text-sm font-bold bg-black hover:bg-gray-800 text-white rounded-md border-2 border-black shadow-sm uppercase tracking-wide transition-all active:translate-y-0.5"
-                        >
-                          <XIcon className="w-4 h-4" />
-                          Share to X
-                        </Button>
-                      </div>
-                   </motion.div>
-                ) : (
-                    <motion.div
-                        key="error"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="flex flex-col items-center justify-center gap-4 text-center absolute inset-0 m-auto"
-                    >
-                        <div className="text-red-500 text-xl font-bold">Something went wrong</div>
-                        <p className="text-gray-500">{error || "Could not generate your map."}</p>
-                        <Button onClick={handleClose} variant="outline">
-                            Close
-                        </Button>
-                    </motion.div>
-                )}
-             </AnimatePresence>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <EdgeWrappedModal
+        isOpen={isOpen}
+        onOpenChange={setIsOpen}
+        step={step}
+        messageIndex={messageIndex}
+        imageUrl={imageUrl}
+        error={error}
+        onClose={handleClose}
+      />
     </>
   )
 }

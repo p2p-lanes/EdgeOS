@@ -6,7 +6,6 @@ import { usePassesProvider } from "@/providers/passesProvider"
 import { TooltipContent } from "@/components/ui/tooltip"
 import { Tooltip, TooltipTrigger } from "@/components/ui/tooltip"
 import ProductDay from "./ProductDay"
-import { Separator } from "@/components/ui/separator"
 
 type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default' | 'week-with-month'
 
@@ -24,8 +23,6 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
   const originalPrice = product.original_price ?? product.price
   const { purchased, selected } = product
   const { isEditing } = usePassesProvider()
-
-  console.log({product})
   
   // Check if this is a week product with month purchased/selected from same attendee
   const isWeekWithMonth = (product.category === 'week' || product.category === 'local week') && hasMonthPurchased && !product.purchased

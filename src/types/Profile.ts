@@ -26,6 +26,7 @@ export interface CitizenProfile {
   referral_count: number;
   picture_url: string;
   linked_emails?: string[];
+  edge_mapped_sent?: boolean;
 }
 
 
