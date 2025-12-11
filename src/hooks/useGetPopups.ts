@@ -31,7 +31,7 @@ const useGetPopups = (): UseGetPopups => {
         const cities = response.data as PopupsProps[]
         setPopups(cities.reverse())
 
-        if(pathname === '/portal/poaps') {
+        if(pathname === '/portal/poaps' || pathname === '/portal/profile') {
           return
         }
 

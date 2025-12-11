@@ -30,7 +30,7 @@ export const useGetEdgeWrapped = (): UseGetEdgeWrappedReturn => {
     }
 
     try {
-      const response = await api.get("citizens/edge-wrapped", {
+      const response = await api.get("citizens/edge-mapped", {
         responseType: 'arraybuffer'
       })
       if (response?.status === 200) {
