@@ -11,6 +11,7 @@ import StatsCards from "@/components/profile/StatsCards"
 import MergeEmails from "@/components/profile/MergeEmails"
 import ReferralLinks from "@/components/profile/ReferralLinks"
 import ProfileStats from "@/components/profile/ProfileStats"
+import { Loader } from "@/components/ui/Loader"
 
 export default function ProfileContent() {
   const { profile, isLoading, error, updateProfile, isUpdating, updateError, refresh } = useGetProfile()
@@ -107,6 +108,14 @@ export default function ProfileContent() {
     )
   } 
 
+  if(isLoading) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center h-full">
+        <Loader />
+      </div>
+    )
+  }
+
   return (
     <div className="flex-1 flex flex-col">
       {/* Header with CTAs */}
@@ -115,13 +124,6 @@ export default function ProfileContent() {
       {/* Profile Content */}
       <div className="flex-1 p-6 bg-gray-50">
         <div className="max-w-5xl mx-auto space-y-6">
-          {isLoading && (
-            <div className="text-gray-600">Loading profile...</div>
-          )}
-          {updateError && (
-            <div className="text-red-600 mb-4">{updateError}</div>
-          )}
-
           <HumanForm userData={userData} isEditing={isEditing} setIsEditing={setIsEditing} handleSave={handleSave} handleCancel={handleCancel} editForm={editForm} setEditForm={setEditForm} />
 
           {/* Stats Cards */}

@@ -13,15 +13,15 @@ const Providers = ({children}: {children: React.ReactNode}) => {
     <CityProvider>
       <ApplicationProvider>
         <PassesDataProvider>
-              <GroupsProvider>
-          <PassesProvider>
-            <PoapsProvider>
-                <SidebarProvider>
-                  {children}
-                </SidebarProvider>
-            </PoapsProvider>
-          </PassesProvider>
-              </GroupsProvider>
+          <GroupsProvider>
+            <PassesProvider>
+              <PoapsProvider>
+                  <SidebarProvider>
+                    {children}
+                  </SidebarProvider>
+              </PoapsProvider>
+            </PassesProvider>
+          </GroupsProvider>
         </PassesDataProvider>
       </ApplicationProvider>
     </CityProvider>

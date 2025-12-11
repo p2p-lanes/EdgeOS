@@ -24,6 +24,8 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
   const originalPrice = product.original_price ?? product.price
   const { purchased, selected } = product
   const { isEditing } = usePassesProvider()
+
+  console.log({product})
   
   // Check if this is a week product with month purchased/selected from same attendee
   const isWeekWithMonth = (product.category === 'week' || product.category === 'local week') && hasMonthPurchased && !product.purchased
@@ -85,13 +87,17 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
             !product.purchased && !isWeekWithMonth && (
               <>
                 {
-                  originalPrice !== product.price && (
+                  originalPrice !== product.price ? (
                     <p className={cn("text-xs text-muted-foreground line-through", disabled && 'text-neutral-300')}>
                       ${originalPrice.toLocaleString()}
                     </p>
+                  ) : (originalPrice !== product.compare_price && product.compare_price) && (
+                      <p className={cn("text-xs text-muted-foreground line-through", disabled && 'text-neutral-300')}>
+                        ${product.compare_price?.toLocaleString()}
+                      </p>
                   )
                 }
-                <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price.toLocaleString()}</p>
+                <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price?.toLocaleString()}</p>
               </>
             )
           }

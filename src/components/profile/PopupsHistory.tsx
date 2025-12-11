@@ -75,8 +75,6 @@ const PopupsHistory = ({popups}: {popups: CitizenProfilePopup[]}) => {
   const applicationsWithoutProducts = applications?.filter(app => 
     app.attendees.every(attendee => attendee.products.length >= 0)
   ) ?? []
-
-  console.log(applicationsWithoutProducts)
   
   // Map applications to popup data for upcoming popups with application status
   const upcomingPopupsFromApplications = applicationsWithoutProducts
