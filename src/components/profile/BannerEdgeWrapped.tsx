@@ -78,8 +78,12 @@ export default function BannerEdgeWrapped({
   }, [isOpen, step, fetchWrapped, minLoadingTime])
 
   // Monitor Completion
+  // If edgeMappedSent is true, show image immediately when API responds
+  // If edgeMappedSent is false, wait for minimum loading time before showing
   useEffect(() => {
-    if (step === "loading" && minTimePassed && (imageUrl || error)) {
+    const canProceed = edgeMappedSent ? true : minTimePassed
+    
+    if (step === "loading" && canProceed && (imageUrl || error)) {
       if (error) {
         setStep("error")
       } else if (imageUrl) {

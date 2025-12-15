@@ -5,7 +5,7 @@ export default function Quote() {
     <div 
       className="hidden md:flex md:w-1/2 relative p-8" 
       style={{ 
-        backgroundImage: 'url(https://simplefi.s3.us-east-2.amazonaws.com/edge-patagonia-background.jpeg)', 
+        backgroundImage: 'url(https://cdn.prod.website-files.com/67475a01312f8d8225a6b46e/6751bf69596d8a1e1a99d291_half-banner-min.jpg)', 
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         backgroundRepeat: 'no-repeat'
