@@ -16,11 +16,13 @@ import {
 interface BannerEdgeWrappedProps {
   edgeMappedSent?: boolean
   onImageGenerated?: () => void
+  showBanner?: boolean
 }
 
 export default function BannerEdgeWrapped({ 
   edgeMappedSent = false, 
-  onImageGenerated 
+  onImageGenerated,
+  showBanner
 }: BannerEdgeWrappedProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [step, setStep] = useState<ModalStep>("loading")
@@ -123,6 +125,8 @@ export default function BannerEdgeWrapped({
   const subtitle = edgeMappedSent 
     ? null 
     : "Discover your lifetime activity at Edge and get your custom island!"
+
+  if(!showBanner) return null
 
   return (
     <>

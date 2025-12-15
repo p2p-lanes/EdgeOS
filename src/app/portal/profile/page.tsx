@@ -134,6 +134,7 @@ export default function ProfileContent() {
           <BannerEdgeWrapped 
             edgeMappedSent={userData?.edge_mapped_sent}
             onImageGenerated={handleEdgeMappedGenerated}
+            showBanner={(userData?.total_days && userData?.total_days > 0) ? true : false}
           />
 
           <HumanForm userData={userData} isEditing={isEditing} setIsEditing={setIsEditing} handleSave={handleSave} handleCancel={handleCancel} editForm={editForm} setEditForm={setEditForm} />
