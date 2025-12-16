@@ -10,12 +10,15 @@ interface PoapsContextType {
   setLoading: (loading: boolean) => void;
   poapsWithPopup: PoapResponse[] | null;
   setPoapsWithPopup: (poapsWithPopup: PoapResponse[] | null) => void;
+  emailsPoaps: string[] | null;
+  setEmailsPoaps: (emailsPoaps: string[] | null) => void;
 }
 
 const PoapsContext = createContext<PoapsContextType | undefined>(undefined);
 
 export const PoapsProvider = ({ children }: { children: ReactNode }) => {
   const [poaps, setPoaps] = useState<PoapProps[] | null>(null);
+  const [emailsPoaps, setEmailsPoaps] = useState<string[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [poapsWithPopup, setPoapsWithPopup] = useState<PoapResponse[] | null>(null);
 
@@ -28,6 +31,8 @@ export const PoapsProvider = ({ children }: { children: ReactNode }) => {
         setLoading,
         poapsWithPopup,
         setPoapsWithPopup,
+        emailsPoaps,
+        setEmailsPoaps,
       }}
     >
       {children}

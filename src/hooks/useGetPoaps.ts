@@ -5,7 +5,7 @@ import { PoapProps } from '@/types/Poaps';
 import { PoapResponse } from '@/types/Poaps';
 
 export const useGetPoaps = () => {
-  const { poaps, setPoaps, loading, setLoading, setPoapsWithPopup } = usePoapsProvider();
+  const { poaps, setPoaps, loading, setLoading, setPoapsWithPopup, setEmailsPoaps } = usePoapsProvider();
 
   useEffect(() => {
     const checkPoaps = async () => {
@@ -36,6 +36,8 @@ export const useGetPoaps = () => {
                 
                 return 0;
               });
+
+            setEmailsPoaps(response.data.emails)
             
             setPoaps(sortedPoaps);
           } else {
