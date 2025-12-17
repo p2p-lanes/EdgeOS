@@ -141,14 +141,14 @@ export default function BannerEdgeWrapped({
           />
         </div>
         
-        <div className="relative z-10 flex flex-row items-center justify-between p-6 md:p-12 gap-4">
+        <div className="relative z-10 flex flex-row items-center justify-between p-6 md:p-8 gap-4">
           <div className="flex flex-col items-start gap-3 md:gap-6 flex-1">
             <div className={subtitle ? "space-y-2" : ""}>
-              <h2 className="text-2xl font-bold text-black md:text-4xl">
+              <h2 className="text-2xl font-bold text-black md:text-4xl font-pp-mono">
                 {title}
               </h2>
               {subtitle && (
-                <p className="text-base md:text-lg text-black/90">
+                <p className="text-base md:text-lg text-black/90 font-pp-mono">
                   {subtitle}
                 </p>
               )}
