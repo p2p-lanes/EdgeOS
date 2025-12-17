@@ -175,7 +175,7 @@ export default function BannerEdgeWrapped({
             <Button 
               onClick={handleOpen}
               size="lg" 
-              className="bg-white text-black hover:bg-white/90 font-semibold text-base md:text-lg px-6 md:px-8 transition-transform hover:scale-105 active:scale-95"
+              className="w-full md:w-auto bg-white text-black hover:bg-white/90 font-semibold text-base md:text-lg px-6 md:px-8 transition-transform hover:scale-105 active:scale-95"
               aria-label={title}
             >
               Let&apos;s go!

@@ -110,7 +110,7 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
               variant="outline"
               size="sm"
               onClick={() => setIsEditing(true)}
-              className="text-gray-700 border-gray-300 hover:bg-gray-50"
+              className="w-full md:w-auto text-gray-700 border-gray-300 hover:bg-gray-50"
             >
               <Edit2 className="w-4 h-4 mr-2" />
               Edit Profile
