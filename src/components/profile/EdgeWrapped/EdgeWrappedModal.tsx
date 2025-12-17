@@ -30,14 +30,14 @@ export const EdgeWrappedModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="sm:max-w-lg p-8 bg-white shadow-2xl gap-0"
+        className="sm:max-w-lg max-h-[95vh] overflow-y-auto p-4 sm:p-8 bg-white shadow-2xl gap-0"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
         <DialogTitle className="sr-only">Edge Mapped Result</DialogTitle>
         <DialogDescription className="sr-only">Your custom Edge City island</DialogDescription>
         
-        <div className="relative flex flex-col items-center justify-center min-h-[400px] w-full transition-all duration-300">
+        <div className="relative flex flex-col items-center justify-center min-h-[300px] sm:min-h-[400px] w-full transition-all duration-300">
           <AnimatePresence mode="wait">
             {step === "loading" && (
               <LoadingState messageIndex={messageIndex} />
