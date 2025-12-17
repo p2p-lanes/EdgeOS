@@ -1,13 +1,8 @@
 export const LOADING_MESSAGES = [
   "Initializing world gen...",
-  "Analyzing social patterns...",
-  "Shaping terrain...",
   "Summoning waterfalls...",
   "Planting digital trees...",
-  "Constructing villages...",
-  "Paving pathways...",
   "Calibrating sunlight...",
-  "Rendering details...",
   "Finalizing your island..."
 ]
 

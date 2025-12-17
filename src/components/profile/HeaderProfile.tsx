@@ -4,6 +4,7 @@ import { useState } from "react"
 import { Medal, Newspaper, LogOut } from "lucide-react"
 import InvoiceModal from "@/app/portal/[popupSlug]/passes/components/common/InvoiceModal"
 import useAuthentication from "@/hooks/useAuthentication"
+import { SidebarTrigger } from "../Sidebar/SidebarComponents"
 
 const HeaderProfile = () => {
   const router = useRouter()
@@ -14,9 +15,12 @@ const HeaderProfile = () => {
   return (
     <div className="p-4 md:p-6 border-b border-gray-200 bg-white">
         <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
-            <p className="text-gray-600">Manage your Edge experience and history</p>
+          <div className="flex items-center gap-2">
+            <SidebarTrigger className="xl:hidden" />
+            <div>
+              <h1 className="text-2xl font-bold text-gray-900">My Profile</h1>
+              <p className="text-gray-600">Manage your Edge experience and history</p>
+            </div>
           </div>
           <div className="flex flex-wrap items-center gap-3">
             <Button variant="outline" className="text-gray-700 border-gray-300 bg-transparent" onClick={ () => router.push('/portal/poaps')}>

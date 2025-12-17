@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card } from '../ui/card';
+import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import Modal from '@/components/ui/modal';
@@ -452,34 +453,30 @@ export default function MergeEmails() {
 
   return (
     <>
-      <Card className='p-4 md:p-6'>
-        <div className='flex flex-col md:flex-row md:items-center justify-between gap-4 md:gap-6'>
-          <div className='flex items-start gap-4 flex-1'>
-            <div className='w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0'>
-              <Mail className='w-6 h-6 text-purple-600 stroke-[1.5]' />
-            </div>
-            <div className='flex-1'>
-              <div className='flex flex-wrap items-center gap-2 mb-1'>
-                <h3 className='text-lg font-semibold text-[#020817] leading-tight'>
-                  Combine your Edge City metrics from different accounts
-                </h3>
-                <span className='px-2 py-0.5 bg-blue-100 text-blue-800 text-xs font-medium rounded-full whitespace-nowrap'>
-                  new
-                </span>
-              </div>
-              <p className='text-sm text-[#64748b]'>
-                Connect multiple emails to see combined stats across all your
-                activities. You can also do this in settings.
-              </p>
-            </div>
+      <Card className='p-6'>
+        <div className='flex flex-col items-center text-center'>
+          <div className='w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center mb-4'>
+            <Mail className='w-5 h-5 text-purple-600' />
           </div>
-          <div className='flex-shrink-0 w-full md:w-auto'>
-            <Button
-              onClick={() => setIsModalOpen(true)}
-              className='bg-[#020817] hover:bg-[#020817]/90 text-white whitespace-nowrap rounded-lg px-5 py-2.5 h-auto w-full md:w-auto'>
-              Merge emails
-            </Button>
+          <div className='flex flex-wrap items-center justify-center gap-2 mb-2'>
+            <h3 className='text-lg font-semibold text-[#020817]'>
+              Combine your Edge City metrics
+            </h3>
+            <Badge
+              variant='secondary'
+              className='px-2 py-0.5 bg-blue-100 text-blue-800 hover:bg-blue-100 border-none'>
+              new
+            </Badge>
           </div>
+          <p className='text-sm text-[#64748b] mb-6 max-w-[400px]'>
+            Connect multiple emails to see combined stats across all your Edge
+            City activity.
+          </p>
+          <Button
+            onClick={() => setIsModalOpen(true)}
+            className='bg-[#020817] hover:bg-[#020817]/90 text-white w-full rounded-lg h-auto py-2.5'>
+            Merge email accounts
+          </Button>
         </div>
       </Card>
 

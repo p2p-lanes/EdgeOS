@@ -143,16 +143,35 @@ export default function BannerEdgeWrapped({
         
         <div className="relative z-10 flex flex-row items-center justify-between p-6 md:p-8 gap-4">
           <div className="flex flex-col items-start gap-3 md:gap-6 flex-1">
-            <div className={subtitle ? "space-y-2" : ""}>
+            <div className={subtitle ? "space-y-2 w-full" : "w-full"}>
               <h2 className="text-2xl font-bold text-black md:text-4xl font-pp-mono">
                 {title}
               </h2>
+              
               {subtitle && (
                 <p className="text-base md:text-lg text-black/90 font-pp-mono">
                   {subtitle}
                 </p>
               )}
             </div>
+
+            <div className="flex md:hidden w-full justify-center py-2 pointer-events-none">
+              <motion.div
+                animate={{ y: [0, -15, 0] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+                className="relative w-full"
+              >
+                <div className="relative w-full h-48">
+                  <NextImage 
+                    src="/images/island.png" 
+                    alt="Edge Land" 
+                    fill 
+                    className="object-contain"
+                  />
+                </div>
+              </motion.div>
+            </div>
+
             <Button 
               onClick={handleOpen}
               size="lg" 
@@ -164,13 +183,13 @@ export default function BannerEdgeWrapped({
           </div>
 
           {/* Floating Icons Background Effect */}
-          <div className="flex-shrink-0 flex items-center justify-center pointer-events-none opacity-100">
+          <div className="hidden md:flex flex-shrink-0 items-center justify-center pointer-events-none opacity-100">
             <motion.div
               animate={{ y: [0, -15, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
               className="relative"
             >
-              <div className="relative w-24 h-24 md:w-48 md:h-48">
+              <div className="relative w-27 h-27 md:w-52 md:h-52">
                 <NextImage 
                   src="/images/island.png" 
                   alt="Edge Land" 
