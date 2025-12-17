@@ -2,8 +2,8 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
+import NextImage from "next/image"
 import { Button } from "@/components/ui/button"
-import { EdgeLand } from "@/components/Icons/EdgeLand"
 import { useGetEdgeWrapped } from "@/hooks/useGetEdgeWrapped"
 import { 
   EdgeWrappedModal, 
@@ -130,39 +130,56 @@ export default function BannerEdgeWrapped({
 
   return (
     <>
-      <div className="relative w-full overflow-hidden rounded-2xl bg-gradient-to-r from-[#FF7B7B] to-[#E040FB] p-8 md:p-12 shadow-lg border border-gray-200">
-        <div className="relative z-10 flex flex-col items-start gap-4 md:gap-6 max-w-2xl">
-          <div className={subtitle ? "space-y-2" : ""}>
-            <h2 className="text-3xl font-bold text-white md:text-4xl">
-              {title}
-            </h2>
-            {subtitle && (
-              <p className="text-lg text-white/90">
-                {subtitle}
-              </p>
-            )}
-          </div>
-          <Button 
-            onClick={handleOpen}
-            size="lg" 
-            className="bg-white text-black hover:bg-white/90 font-semibold text-lg px-8 transition-transform hover:scale-105 active:scale-95"
-            aria-label={title}
-          >
-            Let&apos;s go!
-          </Button>
+      <div className="relative w-full overflow-hidden rounded-2xl shadow-lg border border-gray-200">
+        <div className="absolute inset-0 z-0">
+          <NextImage
+            src="/images/background.jpeg"
+            alt="Background"
+            fill
+            className="object-cover"
+            priority
+          />
         </div>
-
-        {/* Floating Icons Background Effect */}
-        <div className="absolute right-0 top-0 bottom-0 w-1/4 flex items-center justify-center pointer-events-none opacity-20 md:opacity-30">
-          <motion.div
-            animate={{ y: [0, -15, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            className="relative"
-          >
-            <div className="scale-[3] md:scale-[4] text-white">
-              <EdgeLand />
+        
+        <div className="relative z-10 flex flex-row items-center justify-between p-6 md:p-12 gap-4">
+          <div className="flex flex-col items-start gap-3 md:gap-6 flex-1">
+            <div className={subtitle ? "space-y-2" : ""}>
+              <h2 className="text-2xl font-bold text-black md:text-4xl">
+                {title}
+              </h2>
+              {subtitle && (
+                <p className="text-base md:text-lg text-black/90">
+                  {subtitle}
+                </p>
+              )}
             </div>
-          </motion.div>
+            <Button 
+              onClick={handleOpen}
+              size="lg" 
+              className="bg-white text-black hover:bg-white/90 font-semibold text-base md:text-lg px-6 md:px-8 transition-transform hover:scale-105 active:scale-95"
+              aria-label={title}
+            >
+              Let&apos;s go!
+            </Button>
+          </div>
+
+          {/* Floating Icons Background Effect */}
+          <div className="flex-shrink-0 flex items-center justify-center pointer-events-none opacity-100">
+            <motion.div
+              animate={{ y: [0, -15, 0] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="relative"
+            >
+              <div className="relative w-24 h-24 md:w-48 md:h-48">
+                <NextImage 
+                  src="/images/island.png" 
+                  alt="Edge Land" 
+                  fill 
+                  className="object-contain"
+                />
+              </div>
+            </motion.div>
+          </div>
         </div>
       </div>
 
