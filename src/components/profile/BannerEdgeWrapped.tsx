@@ -163,7 +163,7 @@ export default function BannerEdgeWrapped({
               >
                 <div className="relative w-full h-48">
                   <NextImage 
-                    src="/images/island.png" 
+                    src="/images/isla.png" 
                     alt="Edge Land" 
                     fill 
                     className="object-contain"
@@ -191,7 +191,7 @@ export default function BannerEdgeWrapped({
             >
               <div className="relative w-27 h-27 md:w-52 md:h-52">
                 <NextImage 
-                  src="/images/island.png" 
+                  src="/images/isla.png" 
                   alt="Edge Land" 
                   fill 
                   className="object-contain"

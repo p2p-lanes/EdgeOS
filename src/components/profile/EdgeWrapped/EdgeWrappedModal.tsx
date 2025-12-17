@@ -30,7 +30,7 @@ export const EdgeWrappedModal = ({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent 
-        className="sm:max-w-lg max-h-[95vh] overflow-y-auto p-4 sm:p-8 bg-white shadow-2xl gap-0"
+        className="sm:max-w-lg max-h-[95vh] overflow-y-auto pt-12 pb-4 px-4 sm:p-8 bg-white shadow-2xl gap-0"
         onInteractOutside={(e) => e.preventDefault()}
         onEscapeKeyDown={(e) => e.preventDefault()}
       >
