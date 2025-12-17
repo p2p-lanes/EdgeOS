@@ -38,12 +38,9 @@ export const SuccessState = ({ imageUrl }: SuccessStateProps) => {
         </div>
       </div>
       
-      <div className="text-center text-xs sm:text-sm text-gray-700 leading-relaxed px-1 sm:px-2">
+      <div className="text-center text-base sm:text-sm text-gray-700 leading-relaxed px-1 sm:px-2">
         <p className="mb-2">
-          Your Edge Mapped is designed to be shared. We&apos;d love to see you post it on X or Instagram and tag @JoinEdgeCity.
-        </p>
-        <p>
-          Let others discover your journey, and maybe inspire them to start theirs.
+         We’d love to see your island! To share it, copy the image and insert it into your post on X or Instagram, and tag @JoinEdgeCity
         </p>
       </div>
 
@@ -60,11 +57,14 @@ export const SuccessState = ({ imageUrl }: SuccessStateProps) => {
           onClick={handleShare} 
           className="flex-1 gap-1 sm:gap-2 h-10 sm:h-11 text-xs sm:text-sm font-bold bg-black hover:bg-gray-800 text-white rounded-md border-2 border-black shadow-sm uppercase tracking-wide transition-all active:translate-y-0.5"
           aria-label="Share on X (Twitter)"
-        >
+          >
           <XIcon className="w-3 h-3 sm:w-4 sm:h-4" />
           Share on X
         </Button>
       </div>
+      <p className="text-center text-base sm:text-sm text-gray-700 leading-relaxed px-1 sm:px-2">
+        You'll receive an email with your custom island. Thank you for being an amazing supporter!
+      </p>
     </motion.div>
   )
 }

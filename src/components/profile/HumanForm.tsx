@@ -59,8 +59,8 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
   }
 
   return (
-    <Card className="p-6 bg-white mb-8">
-      <div className="flex items-center justify-between mb-6">
+    <Card className="p-4 md:p-6 bg-white mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 md:gap-0">
         <div className="flex items-center gap-4">
           <div className="relative">
             <div 
@@ -99,13 +99,13 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
             />
           </div>
           <div>
-            <h2 className="text-2xl font-bold text-gray-900">
+            <h2 className="text-xl md:text-2xl font-bold text-gray-900">
               {userData?.first_name} {userData?.last_name}
             </h2>
-            <p className="text-gray-600">{userData?.role}</p>
+            <p className="text-sm md:text-base text-gray-600">{userData?.role}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 justify-end md:justify-start w-full md:w-auto">
           {!isEditing ? (
             <Button
               variant="outline"
@@ -137,13 +137,13 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
       </div>
 
       {!isEditing ? (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {userData?.primary_email && (
-            <div className="flex items-center gap-3">
-              <Mail className="w-5 h-5 text-gray-400" />
-              <div className="flex-1">
+            <div className="flex items-start md:items-center gap-3">
+              <Mail className="w-5 h-5 text-gray-400 mt-0.5 md:mt-0" />
+              <div className="flex-1 min-w-0">
                 <p className="text-sm text-gray-600">Email</p>
-                <p className="text-gray-900">{userData?.primary_email}</p>
+                <p className="text-gray-900 break-all">{userData?.primary_email}</p>
                 {filteredLinkedEmails.length > 0 && (
                   <div className="mt-1">
                     <button
@@ -165,7 +165,7 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
                     {showLinkedEmails && (
                       <div className="mt-1 space-y-0.5">
                         {filteredLinkedEmails.map((email, index) => (
-                          <p key={index} className="text-xs text-gray-500">{email}</p>
+                          <p key={index} className="text-xs text-gray-500 break-all">{email}</p>
                         ))}
                       </div>
                     )}
@@ -186,33 +186,33 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
           {userData?.organization && (
             <div className="flex items-center gap-3">
               <Building className="w-5 h-5 text-gray-400" />
-              <div>
+              <div className="min-w-0 flex-1">
                 <p className="text-sm text-gray-600">Organization</p>
-                <p className="text-gray-900">{userData?.organization}</p>
+                <p className="text-gray-900 break-words">{userData?.organization}</p>
               </div>
             </div>
           )}
           {userData?.x_user && (
             <div className="flex items-center gap-3">
               <RiTwitterXFill className="w-5 h-5 text-gray-400" />
-              <div>
+              <div className="min-w-0 flex-1">
                 <p className="text-sm text-gray-600">X (Twitter)</p>
-                <p className="text-gray-900">{userData?.x_user}</p>
+                <p className="text-gray-900 break-words">{userData?.x_user}</p>
               </div>
             </div>
           )}
           {userData?.telegram && (
             <div className="flex items-center gap-3">
               <RiTelegram2Line className="w-5 h-5 text-gray-400" />
-              <div>
+              <div className="min-w-0 flex-1">
                 <p className="text-sm text-gray-600">Telegram</p>
-                <p className="text-gray-900">{userData?.telegram}</p>
+                <p className="text-gray-900 break-words">{userData?.telegram}</p>
               </div>
             </div>
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
           <div className="space-y-4">
             <div>
               <Label htmlFor="first_name" className="text-sm font-medium text-gray-700">
