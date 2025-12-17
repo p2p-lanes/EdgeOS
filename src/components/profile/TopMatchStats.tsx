@@ -92,8 +92,8 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
             // Show top matches
             topMatches.map((match, index) => (
               <div key={match.email} className="flex items-center justify-between gap-3 mt-2 border-b border-gray-100 pb-3">
-                <div className="flex items-center gap-3">
-                  <div className="relative">
+                <div className="flex items-center gap-3 flex-1 min-w-0">
+                  <div className="relative shrink-0">
                     <Avatar className="w-9 h-9">
                       {match.image_url ? (
                         <Image 
@@ -114,15 +114,15 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
                     </div> */}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm font-medium text-gray-900 truncate">
+                    <p className="text-sm font-medium text-gray-900 truncate" title={match.nickname}>
                       {match.nickname}
                     </p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-xs text-gray-500 truncate" title={match.email}>
                       {match.email}
                     </p>
                   </div>
                 </div>
-                <div className="text-sm font-medium text-blue-400 text-right">
+                <div className="text-sm font-medium text-blue-400 text-right shrink-0">
                   {match.eventsCount}
                   <p className="text-xs text-gray-500">events</p>
                 </div>
