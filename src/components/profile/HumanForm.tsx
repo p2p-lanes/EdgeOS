@@ -59,9 +59,8 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
   }
 
   return (
-    <Card className="p-4 md:p-6 bg-white mb-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-6 gap-4 md:gap-0">
-        <div className="flex items-center gap-4">
+    <Card className="p-4 md:p-6 bg-white mb-8 flex flex-col md:flex-row md:flex-wrap md:items-center md:justify-between">
+        <div className="flex items-center gap-4 order-1 md:order-1 mb-6 md:mb-0">
           <div className="relative">
             <div 
               className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center cursor-pointer transition-all duration-200 hover:bg-blue-200 group"
@@ -105,7 +104,7 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
             <p className="text-sm md:text-base text-gray-600">{userData?.role}</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 justify-end md:justify-start w-full md:w-auto">
+        <div className="flex items-center gap-2 justify-end md:justify-start w-full md:w-auto order-3 md:order-2 md:ml-auto">
           {!isEditing ? (
             <Button
               variant="outline"
@@ -134,8 +133,8 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
             </>
           )}
         </div>
-      </div>
 
+      <div className="w-full order-2 md:order-3 md:mt-6 mb-6 md:mb-0">
       {!isEditing ? (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
           {userData?.primary_email && (
@@ -286,6 +285,7 @@ const HumanForm = ({userData, isEditing, setIsEditing, handleSave, handleCancel,
           </div>
         </div>
       )}
+      </div>
     </Card>
   )
 }
