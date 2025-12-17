@@ -453,20 +453,25 @@ export default function MergeEmails() {
 
   return (
     <>
-      <Card className='p-6'>
-        <div className='flex flex-col md:flex-row md:items-center items-center text-center md:text-left justify-between gap-6'>
-          <div className='flex flex-col md:flex-row items-center md:items-start gap-4 flex-1'>
+      <Card className='p-6 relative'>
+        <Badge
+          variant='secondary'
+          className='absolute top-4 right-4 px-2 py-0.5 bg-blue-100 text-blue-800 hover:bg-blue-100 border-none md:hidden'>
+          new
+        </Badge>
+        <div className='flex flex-col md:flex-row md:items-center items-start text-left justify-between gap-6'>
+          <div className='flex flex-col md:flex-row items-start gap-4 flex-1 pr-12 md:pr-0'>
             <div className='w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0'>
               <Mail className='w-5 h-5 text-purple-600' />
             </div>
-            <div className='flex flex-col items-center md:items-start'>
-              <div className='flex flex-wrap items-center justify-center md:justify-start gap-2 mb-1'>
+            <div className='flex flex-col items-start'>
+              <div className='flex flex-wrap items-center gap-2 mb-1'>
                 <h3 className='text-lg font-semibold text-[#020817] leading-tight'>
                   Combine your Edge City metrics
                 </h3>
                 <Badge
                   variant='secondary'
-                  className='px-2 py-0.5 bg-blue-100 text-blue-800 hover:bg-blue-100 border-none'>
+                  className='hidden md:inline-flex px-2 py-0.5 bg-blue-100 text-blue-800 hover:bg-blue-100 border-none'>
                   new
                 </Badge>
               </div>
