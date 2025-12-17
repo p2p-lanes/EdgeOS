@@ -12,7 +12,27 @@ const ProfileStats = ({userData}: {userData: CitizenProfile | null}) => {
   const { getEventsFromEmail, eventsLoading, getProfileFromEmail, profileLoading } = useSocialLayer()
   const [events, setEvents] = useState<any>([])
   const [profile, setProfile] = useState<ProfileData | null>(null)
+
+  const currentDate = new Date()
   
+  // Filter only popups that have already ended
+  const completedPopups = userData?.popups?.filter(popup => {
+    const endDate = new Date(popup.end_date)
+    return endDate < currentDate
+  }) ?? []
+
+  const extraDays = completedPopups.reduce((acc, popup) => {
+    const popupIdentifier = `${popup.popup_name} ${popup.location || ''}`
+    
+    if (popupIdentifier.includes("Austin")) return acc + 8
+    if (popupIdentifier.includes("South Africa")) return acc + 12
+    if (popupIdentifier.includes("Bhutan")) return acc + 10
+    
+    return acc
+  }, 0)
+
+  const totalEvents = events.length + extraDays
+
   useEffect(() => {
     if (!userData) return
 
@@ -88,7 +108,7 @@ const ProfileStats = ({userData}: {userData: CitizenProfile | null}) => {
                 <Skeleton className="w-12 h-12 rounded-lg" />
               ) : (
                 <div className="px-[6px] py-[4px] bg-gray-100 rounded-md">
-                  <p className="text-sm font-bold text-gray-600 leading-none">{events.length ?? 0}</p>
+                  <p className="text-sm font-bold text-gray-600 leading-none">{totalEvents}</p>
                 </div>
               )}
             </div>
