@@ -136,12 +136,13 @@ export default function ProfileContent() {
             onImageGenerated={handleEdgeMappedGenerated}
             showBanner={(userData?.total_days && userData?.total_days > 0) ? true : false}
           />
+          
+          <MergeEmails />
 
           <HumanForm userData={userData} isEditing={isEditing} setIsEditing={setIsEditing} handleSave={handleSave} handleCancel={handleCancel} editForm={editForm} setEditForm={setEditForm} />
 
           <StatsCards userData={userData} />
 
-          <MergeEmails />
 
           <ReferralLinks referralCount={userData?.referral_count ?? 0} />
 
