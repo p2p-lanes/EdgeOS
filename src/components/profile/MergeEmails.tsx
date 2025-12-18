@@ -172,11 +172,6 @@ export default function MergeEmails() {
       if (response?.status === 200) {
         setStep('success');
         setError(null);
-        await refresh();
-
-        if (typeof window !== 'undefined') {
-          window.dispatchEvent(new CustomEvent('accounts-linked'));
-        }
       } else {
         const errorMessage =
           response?.data?.detail || 'Invalid verification code';
