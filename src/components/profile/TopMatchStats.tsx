@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from "react"
 import { Card } from "../ui/card"
 import { Users } from "lucide-react"
-import { Event } from "@/types/StatsSocialLayer"
 import { EventParticipant } from "@/types/StatsSocialLayer"
 import { CitizenProfile } from "@/types/Profile"
 import { Skeleton } from "../ui/skeleton"
@@ -10,7 +9,8 @@ import Image from "next/image"
 
 
 interface MatchedPerson {
-  email: string
+  id: string
+  email: string | null
   nickname: string
   username: string
   image_url: string
@@ -28,25 +28,34 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
 
     const userEmails = [userData.primary_email, userData.secondary_email].filter((e): e is string => !!e && e !== "")
 
-    // Crear un mapa para contar apariciones de cada participante
+    // Create a map to count occurrences of each participant by ID
     const participantCounts: Record<string, MatchedPerson> = {}
 
     events.forEach((event: any) => {
       if (event.participants) {
         event.participants.forEach((participant: EventParticipant) => {
           const profile = participant.profile
-          if (profile && !userEmails.includes(profile.email)) {
-            const email = profile.email
-            
-            if (participantCounts[email]) {
-              participantCounts[email].eventsCount += 1
-            } else {
-              participantCounts[email] = {
-                email: profile.email,
-                nickname: profile.nickname || profile.username || 'Usuario',
-                username: profile.username || profile.email,
-                image_url: profile.image_url || '',
-                eventsCount: 1
+          // If profile exists
+          if (profile) {
+            // Check if it's the current user.
+            // If we have an email, check against userEmails.
+            // If email is null (redacted), it's definitely not the current user (assuming API returns email for requester).
+            const isCurrentUser = profile.email && userEmails.includes(profile.email);
+
+            if (!isCurrentUser) {
+              const id = profile.id
+              
+              if (participantCounts[id]) {
+                participantCounts[id].eventsCount += 1
+              } else {
+                participantCounts[id] = {
+                  id: profile.id,
+                  email: profile.email,
+                  nickname: profile.nickname || profile.username || 'Usuario',
+                  username: profile.username || '',
+                  image_url: profile.image_url || '',
+                  eventsCount: 1
+                }
               }
             }
           }
@@ -54,7 +63,7 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
       }
     })
 
-    // Convertir a array, ordenar por eventsCount y tomar top 3
+    // Convert to array, sort by eventsCount and take top 5
     const sortedMatches = Object.values(participantCounts)
       .sort((a, b) => b.eventsCount - a.eventsCount)
       .slice(0, 5)
@@ -90,8 +99,8 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
             </div>
           ) : topMatches.length > 0 ? (
             // Show top matches
-            topMatches.map((match, index) => (
-              <div key={match.email} className="flex items-center justify-between gap-3 mt-2 border-b border-gray-100 pb-3">
+            topMatches.map((match) => (
+              <div key={match.id} className="flex items-center justify-between gap-3 mt-2 border-b border-gray-100 pb-3">
                 <div className="flex items-center gap-3 flex-1 min-w-0">
                   <div className="relative shrink-0">
                     <Avatar className="w-9 h-9">
@@ -109,17 +118,21 @@ const TopMatchStats = ({userData, eventsLoading, events}: {userData: CitizenProf
                         </div>
                       )}
                     </Avatar>
-                    {/* <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-500 rounded-full flex items-center justify-center text-[10px] text-white font-bold">
-                      {match.eventsCount}
-                    </div> */}
                   </div>
                   <div className="flex-1 min-w-0">
                     <p className="text-sm font-medium text-gray-900 truncate" title={match.nickname}>
                       {match.nickname}
                     </p>
-                    <p className="text-xs text-gray-500 truncate" title={match.email}>
-                      {match.email}
-                    </p>
+                    {match.email && (
+                      <p className="text-xs text-gray-500 truncate" title={match.email}>
+                        {match.email}
+                      </p>
+                    )}
+                     {!match.email && match.username && (
+                      <p className="text-xs text-gray-500 truncate" title={match.username}>
+                        @{match.username}
+                      </p>
+                    )}
                   </div>
                 </div>
                 <div className="text-sm font-medium text-blue-400 text-right shrink-0">

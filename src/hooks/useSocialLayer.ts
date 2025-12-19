@@ -1,6 +1,6 @@
 import { useState, useCallback } from "react";
 
-const HASURA_URL = "https://hasura-graph.fly.dev/v1/graphql";
+const SOCIAL_LAYER_API = "/api/socialLayer";
 
 export function useSocialLayer() {
   const [eventsLoading, setEventsLoading] = useState(false);
@@ -9,73 +9,30 @@ export function useSocialLayer() {
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState<string | null>(null);
 
-  const fetchGraphQL = async (query: string, variables: object) => {
-    const response = await fetch(HASURA_URL, {
+  const fetchSocialLayer = async (queryType: 'events' | 'profiles', email: string | string[]) => {
+    const response = await fetch(SOCIAL_LAYER_API, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query, variables }),
+      body: JSON.stringify({ queryType, email }),
     });
 
     const result = await response.json();
-    if (result.errors) {
-      throw new Error(result.errors[0].message);
+    if (result.error) {
+      throw new Error(result.error);
     }
-    return result.data;
+    return result;
   };
 
   const getEventsFromEmail = useCallback(async (email: string | string[]) => {
     setEventsLoading(true);
     setEventsError(null);
 
-    const query = `
-      query Events($where: events_bool_exp) {
-        events(where: $where) {
-          id
-          owner_id
-          status
-          title
-          category
-          end_time
-          badge_class {
-            name
-            title
-          }
-          display
-          event_type
-          location
-          tags
-          venue {
-            title
-          }
-          participants {
-            id
-            profile_id
-            profile {
-              id
-              telegram
-              twitter
-              status
-              nickname
-              email
-              image_url
-              username
-            }
-          }
-        }
-      }
-    `;
-
-    const emails = Array.isArray(email) ? email : [email];
-
-    const variables = {
-      where: { participants: { profile: { email: { _in: emails } } } },
-    };
-
     try {
-      const data = await fetchGraphQL(query, variables);
+      const data = await fetchSocialLayer('events', email);
       return data.events;
-    } catch (err: any) {
-      setEventsError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setEventsError(errorMessage);
       throw err;
     } finally {
       setEventsLoading(false);
@@ -86,33 +43,12 @@ export function useSocialLayer() {
     setProfileLoading(true);
     setProfileError(null);
 
-    const query = `
-      query Profiles($where: profiles_bool_exp) {
-        profiles(where: $where) {
-          events {
-            id
-            owner_id
-            title
-            participants {
-              id
-              profile {
-                email
-              }
-            }
-          }
-        }
-      }
-    `;
-
-    const emails = Array.isArray(email) ? email : [email];
-
-    const variables = { where: { email: { _in: emails } } };
-
     try {
-      const data = await fetchGraphQL(query, variables);
+      const data = await fetchSocialLayer('profiles', email);
       return data.profiles;
-    } catch (err: any) {
-      setProfileError(err.message);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : String(err);
+      setProfileError(errorMessage);
       throw err;
     } finally {
       setProfileLoading(false);

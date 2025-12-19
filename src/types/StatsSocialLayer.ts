@@ -1,6 +1,6 @@
 export interface EventProfile {
   id: string
-  email: string
+  email: string | null
   nickname?: string
   username?: string
   image_url?: string
