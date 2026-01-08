@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 import "../styles/globals.css";
 import { MiniKitProvider } from '@worldcoin/minikit-js/minikit-provider';
 import { GeistSans } from 'geist/font/sans';
@@ -22,6 +22,13 @@ export const metadata: Metadata = {
       alt: config.metadata.openGraph.images[0].alt,
     }]
   }
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 export default function RootLayout({children }: Readonly<{ children: React.ReactNode }>) {
