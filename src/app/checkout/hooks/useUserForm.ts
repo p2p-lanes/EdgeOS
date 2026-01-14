@@ -79,7 +79,7 @@ export const useUserForm = ({ initialData = {}, applicationData }: UseUserFormPr
 
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
-    if (!formData.local_resident || formData.local_resident === "") newErrors.local_resident = "Local resident is required";
+    // if (!formData.local_resident || formData.local_resident === "") newErrors.local_resident = "Local resident is required";
     if (!formData.first_name) newErrors.first_name = "First name is required";
     if (!formData.last_name) newErrors.last_name = "Last name is required";
 

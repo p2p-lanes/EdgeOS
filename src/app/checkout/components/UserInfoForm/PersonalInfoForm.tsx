@@ -150,7 +150,7 @@ const PersonalInfoForm = ({
         )
       }
 
-      <SelectForm
+      {/* <SelectForm
         label={form?.personal_information?.local_resident_title || "Are you a LATAM citizen / San Martin resident?"}
         id="local_resident"
         value={formData.local_resident}
@@ -165,7 +165,7 @@ const PersonalInfoForm = ({
           { value: "yes", label: "Yes" },
           { value: "no", label: "No" },
         ]}
-      />  
+      />   */}
       
       <RadioGroupForm
         label="Gender"

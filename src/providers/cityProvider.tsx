@@ -9,12 +9,14 @@ interface CityContext_interface {
   getPopups: () => PopupsProps[];
   setPopups: (popups: PopupsProps[]) => void;
   setCityPreselected: (cityId: number) => void;
+  popupsLoaded: boolean;
 }
 
 export const CityContext = createContext<CityContext_interface | null>(null);
 
 const CityProvider = ({ children }: {children: ReactNode}) => {
   const [popups, setPopupsState] = useState<PopupsProps[]>([]);
+  const [popupsLoaded, setPopupsLoaded] = useState<boolean>(false);
   const [cityPreselected, setCityPreselected] = useState<number | null>(null);
   const params = useParams()
 
@@ -49,6 +51,7 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
         return 0;
       });
     setPopupsState(sortedPopups);
+    setPopupsLoaded(true);
   }, [])
 
   return (
@@ -57,7 +60,8 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
         getCity,
         getPopups,
         setPopups,
-        setCityPreselected
+        setCityPreselected,
+        popupsLoaded
       }}
     >
       {children}
