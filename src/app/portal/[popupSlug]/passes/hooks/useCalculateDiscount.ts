@@ -34,8 +34,8 @@ const useCalculateDiscount = (isPatreon: boolean, products: ProductsProps[]) => 
     if(city?.ticketing_banner_description) return {discount: 0.01, label: city.ticketing_banner_description}
     
     const discount = 100 - ((productCompare.price ?? 0) / (productCompare.compare_price ?? 0) * 100)
-    
-    return {discount: Math.round(discount), label: `${Math.round(discount)}% early bird discount`, isEarlyBird: true}
+    return {discount: 0, label: '', isEarlyBird: false}
+    // return {discount: Math.round(discount), label: `${Math.round(discount)}% early bird discount`, isEarlyBird: true}
   }, [isPatreon, application, productCompare, discountApplied, groups])
 
   return {discount, label, isEarlyBird}

@@ -24,6 +24,7 @@ import AccomodationForm from "./components/AccomodationForm"
 import { useApplication } from "@/providers/applicationProvider"
 import useGetFields from "./hooks/useGetFields"
 import PatagoniaResidenciesForm from "./components/PatagoniaResidenciesForm"
+import VolunteerForm from "./components/VolunteerForm"
 
 export default function FormPage() {
   const [statusBtn, setStatusBtn] = useState({loadingDraft: false, loadingSubmit: false})
@@ -110,6 +111,8 @@ export default function FormPage() {
         <ChildrenPlusOnesForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
 
         <ScholarshipForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
+
+        <VolunteerForm />
 
         <AccomodationForm formData={formData} errors={errors} handleChange={handleChange} fields={fields}/>
         
