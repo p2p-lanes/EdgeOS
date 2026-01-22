@@ -36,7 +36,7 @@ const ProfileStats = ({userData}: {userData: CitizenProfile | null}) => {
   useEffect(() => {
     if (!userData) return
 
-    const emails = [userData.primary_email, userData.secondary_email].filter((e): e is string => !!e && e !== "")
+    const emails = userData?.linked_emails || [userData.primary_email, userData.secondary_email].filter((e): e is string => !!e && e !== "")
     
     if (emails.length === 0) return
 
