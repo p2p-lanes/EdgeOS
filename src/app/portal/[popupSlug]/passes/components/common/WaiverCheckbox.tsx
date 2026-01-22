@@ -26,7 +26,7 @@ const WaiverCheckbox = ({ checked, onCheckedChange, className }: WaiverCheckboxP
           >
             I acknowledge the risks involved and{" "}
             <a 
-              href="https://waiver.smartwaiver.com/w/mp89nnv4h2ukzm3fhlkca/web/" 
+              href="https://waiver.smartwaiver.com/w/bgnpvra597aqdukktfwyss/web/" 
               target="_blank" 
               rel="noopener noreferrer"
               className="text-blue-600 hover:underline font-medium"

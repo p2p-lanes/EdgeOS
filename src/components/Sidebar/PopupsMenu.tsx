@@ -43,7 +43,7 @@ const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) 
                           className="relative aspect-square"
                         >
                         <Image
-                          src="https://simplefi.s3.us-east-2.amazonaws.com/edge-patagonia-island-min.png"
+                          src="https://simplefi.s3.us-east-2.amazonaws.com/edge_island.png"
                           alt="EdgeCity illustration"
                           width={48}
                           height={48}
