@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { useCheckout } from '@/providers/checkoutProvider';
 import { useCityProvider } from '@/providers/cityProvider';
-import { CHECKOUT_STEPS, getStepIndex, CheckoutStep } from '@/types/checkout';
+import { CheckoutStep } from '@/types/checkout';
 import PassSelectionSection from './PassSelectionSection';
 import HousingStep from './HousingStep';
 import MerchSection from './MerchSection';
@@ -62,6 +62,7 @@ interface CheckoutFlowProps {
 export default function CheckoutFlow({ onAddAttendee, onPaymentComplete, onBack }: CheckoutFlowProps) {
   const {
     currentStep,
+    availableSteps,
     goToNextStep,
     goToPreviousStep,
     isStepComplete,
@@ -84,7 +85,7 @@ export default function CheckoutFlow({ onAddAttendee, onPaymentComplete, onBack 
   };
 
   const handleBack = () => {
-    const currentIndex = getStepIndex(currentStep);
+    const currentIndex = availableSteps.findIndex(s => s === currentStep);
     if (currentIndex > 0) {
       goToPreviousStep();
     } else if (onBack) {

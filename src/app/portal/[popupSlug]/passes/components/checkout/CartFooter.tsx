@@ -19,8 +19,6 @@ import { useCheckout } from '@/providers/checkoutProvider';
 import {
   formatCurrency,
   INSURANCE_PRICE,
-  CHECKOUT_STEPS,
-  getStepIndex,
 } from '@/types/checkout';
 
 interface CartFooterProps {
@@ -33,10 +31,12 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
     cart,
     summary,
     currentStep,
+    availableSteps,
     attendees,
     goToNextStep,
     goToPreviousStep,
     togglePass,
+    resetDayProduct,
     clearHousing,
     updateMerchQuantity,
     clearPatron,
@@ -49,15 +49,15 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
 
   const isConfirmStep = currentStep === 'confirm';
   const isFirstStep = currentStep === 'passes';
-  const currentIndex = getStepIndex(currentStep);
-  const nextStep = currentIndex < CHECKOUT_STEPS.length - 1
-    ? CHECKOUT_STEPS[currentIndex + 1]
+  const currentIndex = availableSteps.findIndex(s => s === currentStep);
+  const nextStepId = currentIndex < availableSteps.length - 1
+    ? availableSteps[currentIndex + 1]
     : null;
 
   const canContinue = isConfirmStep
     ? cart.passes.length > 0
-    : nextStep
-    ? canProceedToStep(nextStep.id)
+    : nextStepId
+    ? canProceedToStep(nextStepId)
     : false;
 
   const hasItems = summary.itemCount > 0;
@@ -77,12 +77,21 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
   };
 
   const handleRemovePass = (attendeeId: number, productId: number) => {
-    togglePass(attendeeId, productId);
+    const pass = cart.passes.find(p => p.attendeeId === attendeeId && p.productId === productId);
+    const isDayProductWithOriginalQuantity = pass?.product.category.includes('day');
+    
+    if (isDayProductWithOriginalQuantity) {
+      resetDayProduct(attendeeId, productId);
+    } else {
+      togglePass(attendeeId, productId);
+    }
   };
 
   const handleRemoveMerch = (productId: number) => {
     updateMerchQuantity(productId, 0);
   };
+
+  console.log('summary', summary);
 
   return (
     <div className="z-30">

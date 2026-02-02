@@ -223,7 +223,7 @@ class LocalWeekProductStrategy implements ProductStrategy {
 
 class DayProductStrategy implements ProductStrategy {
   handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
-    
+    console.log('DayProductStrategy', {attendees, attendeeId, product});
     return attendees.map(attendee => {
       if (attendee.id !== attendeeId) return attendee;
 

@@ -113,7 +113,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout, onSwitchToBuy}:
             <div className="relative z-10 h-full flex flex-col justify-between">
               <div className="flex justify-between items-start">
                 <div>
-                  <h2 className="text-xl font-bold text-gray-900 lg:whitespace-nowrap">
+                  <h2 className="text-xl font-bold text-gray-900">
                     {city?.name}
                   </h2>
                   <p className="text-gray-500 text-sm mt-1 lg:mt-2">{attendee.name}</p>

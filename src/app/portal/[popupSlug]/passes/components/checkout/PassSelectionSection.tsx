@@ -260,6 +260,7 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
                   product={product}
                   onQuantityChange={(quantity) => {
                     const updatedProduct = { ...product, quantity };
+                    console.log('updatedProduct', quantity, updatedProduct);
                     toggleProduct(attendee.id, updatedProduct);
                   }}
                   disabled={isDisabled}
@@ -490,14 +491,14 @@ function DayPassOption({ product, onQuantityChange, disabled, disabledReason, is
       <div className="text-right flex-shrink-0">
         {hasDiscount && (
           <p className="text-xs text-gray-400 line-through">
-            ${(hasQuantity ? comparePrice * quantity : comparePrice).toLocaleString()}
+            ${comparePrice.toLocaleString()}
           </p>
         )}
         <p className={cn(
           'font-semibold',
           hasQuantity ? 'text-blue-600' : 'text-gray-900'
         )}>
-          ${(hasQuantity ? product.price * quantity : product.price).toLocaleString()}
+          ${product.price.toLocaleString()}
         </p>
       </div>
     </div>

@@ -14,14 +14,12 @@ import {
   CheckoutStep,
   CheckoutCartState,
   CheckoutCartSummary,
-  CHECKOUT_STEPS,
   SelectedPassItem,
   SelectedHousingItem,
   SelectedMerchItem,
   SelectedPatronItem,
   createInitialCartState,
   createInitialSummary,
-  getStepIndex,
   INSURANCE_PRICE,
 } from '@/types/checkout';
 import { ProductsProps, ProductsPass } from '@/types/Products';
@@ -33,6 +31,9 @@ import { toast } from 'sonner';
 interface CheckoutContextValue {
   // Current step
   currentStep: CheckoutStep;
+
+  // Available steps (dynamically filtered)
+  availableSteps: CheckoutStep[];
 
   // Cart state
   cart: CheckoutCartState;
@@ -63,6 +64,7 @@ interface CheckoutContextValue {
 
   // Pass actions (delegates to passesProvider)
   togglePass: (attendeeId: number, productId: number) => void;
+  resetDayProduct: (attendeeId: number, productId: number) => void;
 
   // Housing actions
   selectHousing: (productId: number, checkIn: string, checkOut: string) => void;
@@ -101,7 +103,7 @@ interface CheckoutProviderProps {
 }
 
 export function CheckoutProvider({ children, products }: CheckoutProviderProps) {
-  const { attendeePasses, toggleProduct, discountApplied, setDiscount } = usePassesProvider();
+  const { attendeePasses, toggleProduct, resetDayProduct, discountApplied, setDiscount } = usePassesProvider();
   const { getRelevantApplication } = useApplication();
   const { getCity } = useCityProvider();
   const application = getRelevantApplication();
@@ -139,13 +141,26 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
   const patronProducts = useMemo(() =>
     products.filter(p => p.category === 'patreon' && p.is_active), [products]);
 
+  // Calculate available steps dynamically based on products
+  const availableSteps = useMemo<CheckoutStep[]>(() => {
+    const steps: CheckoutStep[] = ['passes']; // Passes always available
+    
+    if (patronProducts.length > 0) steps.push('patron');
+    if (housingProducts.length > 0) steps.push('housing');
+    if (merchProducts.length > 0) steps.push('merch');
+    
+    steps.push('confirm'); // Confirm always available
+    
+    return steps;
+  }, [patronProducts.length, housingProducts.length, merchProducts.length]);
+
   // Build selected passes from attendeePasses (integrates with existing provider)
   const selectedPasses = useMemo<SelectedPassItem[]>(() => {
     const passes: SelectedPassItem[] = [];
 
     attendeePasses.forEach(attendee => {
       attendee.products.forEach(product => {
-        if (product.selected && !product.purchased) {
+        if (product.selected) {
           const quantity = product.category.includes('day')
             ? (product.quantity ?? 1) - (product.original_quantity ?? 0)
             : 1;
@@ -184,6 +199,7 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
   // Calculate summary
   const summary = useMemo<CheckoutCartSummary>(() => {
     const passesSubtotal = selectedPasses.reduce((sum, p) => sum + p.price, 0);
+    console.log('passesSubtotal', passesSubtotal, selectedPasses);
     // Track original prices to calculate discount when promo code reduces prices
     const passesOriginalSubtotal = selectedPasses.reduce((sum, p) => sum + (p.originalPrice ?? p.price), 0);
     const housingSubtotal = housing?.totalPrice ?? 0;
@@ -223,20 +239,20 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
   }, []);
 
   const goToNextStep = useCallback(() => {
-    const currentIndex = getStepIndex(currentStep);
-    if (currentIndex < CHECKOUT_STEPS.length - 1) {
-      setCurrentStep(CHECKOUT_STEPS[currentIndex + 1].id);
+    const currentIndex = availableSteps.findIndex(s => s === currentStep);
+    if (currentIndex < availableSteps.length - 1) {
+      setCurrentStep(availableSteps[currentIndex + 1]);
       setError(null);
     }
-  }, [currentStep]);
+  }, [currentStep, availableSteps]);
 
   const goToPreviousStep = useCallback(() => {
-    const currentIndex = getStepIndex(currentStep);
+    const currentIndex = availableSteps.findIndex(s => s === currentStep);
     if (currentIndex > 0) {
-      setCurrentStep(CHECKOUT_STEPS[currentIndex - 1].id);
+      setCurrentStep(availableSteps[currentIndex - 1]);
       setError(null);
     }
-  }, [currentStep]);
+  }, [currentStep, availableSteps]);
 
   // Pass actions (delegate to passesProvider)
   const togglePass = useCallback((attendeeId: number, productId: number) => {
@@ -387,7 +403,7 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
 
   // Validation helpers
   const canProceedToStepFn = useCallback((step: CheckoutStep): boolean => {
-    const targetIndex = getStepIndex(step);
+    const targetIndex = availableSteps.findIndex(s => s === step);
 
     // Must have at least one pass to proceed past first step
     if (targetIndex > 0 && selectedPasses.length === 0) {
@@ -395,7 +411,7 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
     }
 
     return true;
-  }, [selectedPasses.length]);
+  }, [selectedPasses.length, availableSteps]);
 
   const isStepCompleteFn = useCallback((step: CheckoutStep): boolean => {
     switch (step) {
@@ -510,6 +526,7 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
 
   const value: CheckoutContextValue = {
     currentStep,
+    availableSteps,
     cart,
     summary,
     passProducts,
@@ -524,6 +541,7 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
     goToNextStep,
     goToPreviousStep,
     togglePass,
+    resetDayProduct,
     selectHousing,
     clearHousing,
     updateMerchQuantity,

@@ -248,7 +248,7 @@ export function formatCurrency(amount: number): string {
     style: 'currency',
     currency: 'USD',
     minimumFractionDigits: 0,
-    maximumFractionDigits: 0,
+    maximumFractionDigits: 1,
   }).format(amount);
 }
 
@@ -262,6 +262,10 @@ export function formatDate(date: string | Date): string {
 
 export function getStepIndex(step: CheckoutStep): number {
   return CHECKOUT_STEPS.findIndex(s => s.id === step);
+}
+
+export function getStepIndexInArray(step: CheckoutStep, steps: CheckoutStep[]): number {
+  return steps.findIndex(s => s === step);
 }
 
 export function isStepComplete(step: CheckoutStep, cart: CheckoutCartState): boolean {

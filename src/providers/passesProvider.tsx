@@ -14,6 +14,7 @@ import { useGroupsProvider } from './groupsProvider';
 interface PassesContext_interface {
   attendeePasses: AttendeeProps[];
   toggleProduct: (attendeeId: number, product: ProductsPass) => void;
+  resetDayProduct: (attendeeId: number, productId: number) => void;
   products: ProductsPass[];
   setDiscount: (discount: DiscountProps) => void;
   discountApplied: DiscountProps;
@@ -46,8 +47,31 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     if (!product) return;
     const strategy = getProductStrategy(product, isEditing);
     const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product, discountApplied);
+    console.log('updatedAttendees', {updatedAttendees, product});
     setAttendeePasses(updatedAttendees);
   }, [attendeePasses, isEditing, discountApplied])
+
+  const resetDayProduct = useCallback((attendeeId: number, productId: number) => {
+    setAttendeePasses(prevAttendees => 
+      prevAttendees.map(attendee => {
+        if (attendee.id !== attendeeId) return attendee;
+        
+        return {
+          ...attendee,
+          products: attendee.products.map(product => {
+            if (product.id === productId && product.category.includes('day')) {
+              return {
+                ...product,
+                quantity: product.original_quantity ?? 0,
+                selected: false
+              };
+            }
+            return product;
+          })
+        };
+      })
+    );
+  }, [])
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
@@ -140,6 +164,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         discountApplied,
         attendeePasses,
         toggleProduct,
+        resetDayProduct,
         products,
         isEditing,
         toggleEditing
