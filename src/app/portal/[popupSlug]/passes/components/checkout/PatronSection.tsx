@@ -17,7 +17,7 @@ export default function PatronSection({ onSkip }: PatronSectionProps) {
   const currentAmount = cart.patron?.amount || 0;
   const currentProductId = cart.patron?.productId || patronProducts[0]?.id;
 
-  const [expanded, setExpanded] = useState(currentAmount > 0);
+  const [expanded, setExpanded] = useState(true);
   const [isCustom, setIsCustom] = useState(
     currentAmount > 0 && !PATRON_PRESETS.includes(currentAmount)
   );
@@ -44,6 +44,13 @@ export default function PatronSection({ onSkip }: PatronSectionProps) {
 
   const handlePresetSelect = (amount: number) => {
     if (!currentProductId) return;
+    const isCurrentlySelected = currentAmount === amount && !isCustom;
+    if (isCurrentlySelected) {
+      setIsCustom(false);
+      setCustomValue('');
+      clearPatron();
+      return;
+    }
     setIsCustom(false);
     setCustomValue('');
     setPatronAmount(currentProductId, amount, false);
@@ -65,7 +72,7 @@ export default function PatronSection({ onSkip }: PatronSectionProps) {
     setIsCustom(false);
     setCustomValue('');
     clearPatron();
-    setExpanded(false);
+    // setExpanded(false);
   };
 
   const handleSkip = () => {
@@ -94,24 +101,22 @@ export default function PatronSection({ onSkip }: PatronSectionProps) {
   return (
     <div className="space-y-4">
       {/* Banner Placeholder */}
-      <div className="border-2 border-dashed border-gray-200 rounded-2xl p-4 bg-white" aria-hidden="true">
+      {/* <div className="border-2 border-dashed border-gray-200 rounded-2xl p-4 bg-white" aria-hidden="true">
         <div className="flex items-center gap-3">
-          {/* Skeleton image */}
           <div className="w-16 h-16 rounded-xl bg-gray-200 animate-pulse flex-shrink-0" />
           <div className="flex-1 space-y-2">
-            {/* Skeleton lines */}
             <div className="h-4 bg-gray-200 rounded animate-pulse w-3/4" />
             <div className="h-3 bg-gray-200 rounded animate-pulse w-1/2" />
           </div>
         </div>
         <p className="text-[10px] text-gray-400 text-center mt-2 uppercase tracking-wide">Banner placeholder</p>
-      </div>
+      </div> */}
 
       {/* Main Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
         {/* Header - Always visible */}
         <button
-          onClick={expanded ? () => setExpanded(false) : handleExpand}
+          // onClick={expanded ? () => setExpanded(false) : handleExpand}
           aria-expanded={expanded}
           className="w-full p-5 flex items-center gap-4 text-left hover:bg-gray-50 transition-colors"
         >
@@ -122,12 +127,12 @@ export default function PatronSection({ onSkip }: PatronSectionProps) {
             <h3 className="font-semibold text-gray-900">Support Edge City</h3>
             <p className="text-sm text-gray-500">Fund scholarships for builders</p>
           </div>
-          <ChevronDown
+          {/* <ChevronDown
             className={cn(
               'w-5 h-5 text-gray-400 transition-transform',
               expanded && 'rotate-180'
             )}
-          />
+          /> */}
         </button>
 
         {/* Expandable Amount Selection */}
@@ -165,7 +170,7 @@ export default function PatronSection({ onSkip }: PatronSectionProps) {
               <div className="relative flex-1">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-sm">$</span>
                 <input
-                  type="text"
+                  type="number"
                   inputMode="numeric"
                   value={customValue}
                   onChange={(e) => handleCustomChange(e.target.value)}

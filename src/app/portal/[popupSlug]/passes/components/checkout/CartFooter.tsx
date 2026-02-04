@@ -18,7 +18,6 @@ import { cn } from '@/lib/utils';
 import { useCheckout } from '@/providers/checkoutProvider';
 import {
   formatCurrency,
-  INSURANCE_PRICE,
 } from '@/types/checkout';
 
 interface CartFooterProps {
@@ -251,7 +250,7 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
           )}
 
           {/* Insurance */}
-          {cart.insurance && (
+          {cart.insurance && summary.insuranceSubtotal > 0 && (
             <div className="mb-4">
               <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">
                 Pass Protection
@@ -264,7 +263,7 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
                   </span>
                 </div>
                 <span className="text-sm font-medium text-gray-900">
-                  {formatCurrency(INSURANCE_PRICE)}
+                  {formatCurrency(summary.insuranceSubtotal)}
                 </span>
               </div>
             </div>

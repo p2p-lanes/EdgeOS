@@ -17,7 +17,6 @@ import { useCheckout } from '@/providers/checkoutProvider';
 import {
   formatCurrency,
   formatDate,
-  INSURANCE_PRICE,
   INSURANCE_BENEFITS,
 } from '@/types/checkout';
 
@@ -84,6 +83,12 @@ export default function ConfirmStep() {
     cart.merch.length > 0 ||
     cart.patron;
 
+  // Check if any selected product has insurance available
+  const hasInsurableProducts =
+    cart.passes.some(p => p.product.insurance_percentage != null) ||
+    (cart.housing?.product.insurance_percentage != null) ||
+    cart.merch.some(m => m.product.insurance_percentage != null);
+
   if (!hasCartItems) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -111,8 +116,8 @@ export default function ConfirmStep() {
         </div>
       )}
 
-      {/* Insurance Card - First */}
-      {cart.passes.length > 0 && (
+      {/* Insurance Card - Only show if any product has insurance available */}
+      {hasInsurableProducts && (
         <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
           <div className="flex items-start gap-3">
             <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
@@ -123,7 +128,7 @@ export default function ConfirmStep() {
                 <div>
                   <h3 className="font-semibold text-gray-900">Insurance</h3>
                   <p className="text-sm text-gray-500 mt-0.5">
-                    {formatCurrency(INSURANCE_PRICE)} · Coverage for change of plans
+                    {formatCurrency(cart.insurancePotentialPrice)} · Coverage for change of plans
                   </p>
                 </div>
                 {/* Toggle */}
@@ -274,7 +279,7 @@ export default function ConfirmStep() {
         )}
 
         {/* Insurance in summary if enabled */}
-        {cart.insurance && (
+        {cart.insurance && summary.insuranceSubtotal > 0 && (
           <>
             <div className="border-t border-gray-100" />
             <div className="px-5 py-4">
@@ -287,7 +292,7 @@ export default function ConfirmStep() {
               <div className="flex items-center justify-between text-sm">
                 <span className="text-gray-600">Change of plans coverage</span>
                 <span className="font-medium text-gray-900">
-                  {formatCurrency(INSURANCE_PRICE)}
+                  {formatCurrency(summary.insuranceSubtotal)}
                 </span>
               </div>
             </div>

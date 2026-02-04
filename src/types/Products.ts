@@ -18,6 +18,7 @@ export interface ProductsProps {
   builder_price: number | null;
   compare_price: number | null;
   exclusive: boolean;
+  insurance_percentage: number | null;
 }
 
 export interface ProductsPass extends ProductsProps {

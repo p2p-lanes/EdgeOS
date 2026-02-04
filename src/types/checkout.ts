@@ -89,6 +89,7 @@ export interface CheckoutCartState {
   // Insurance option
   insurance: boolean;
   insurancePrice: number;
+  insurancePotentialPrice: number; // Always calculated, regardless of insurance toggle state
 }
 
 // --- Cart Summary ---
@@ -177,7 +178,6 @@ export const PATRON_PRESETS = [2500, 5000, 7500];
 export const PATRON_MINIMUM = 1000;
 
 // --- Insurance ---
-export const INSURANCE_PRICE = 150;
 export const INSURANCE_BENEFITS = [
   'Full refund up to 14 days before the event',
   '50% refund up to 7 days before',
@@ -201,6 +201,7 @@ export interface PaymentPreviewRequest {
     quantity: number;
   }>;
   coupon_code?: string;
+  insurance?: boolean;
 }
 
 export interface PaymentPreviewResponse {
@@ -208,6 +209,7 @@ export interface PaymentPreviewResponse {
   discount: number;
   credit: number;
   total: number;
+  insurance_amount: number | null;
   items: Array<{
     product_id: number;
     product_name: string;
@@ -225,6 +227,7 @@ export interface PaymentCreateRequest {
     quantity: number;
   }>;
   coupon_code?: string;
+  insurance?: boolean;
   amount: number;
 }
 
@@ -309,7 +312,8 @@ export function createInitialCartState(): CheckoutCartState {
     promoCodeValid: false,
     promoCodeDiscount: 0,
     insurance: false,
-    insurancePrice: INSURANCE_PRICE,
+    insurancePrice: 0,
+    insurancePotentialPrice: 0,
   };
 }
 

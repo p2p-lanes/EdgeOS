@@ -20,7 +20,6 @@ import {
   SelectedPatronItem,
   createInitialCartState,
   createInitialSummary,
-  INSURANCE_PRICE,
 } from '@/types/checkout';
 import { ProductsProps, ProductsPass } from '@/types/Products';
 import { AttendeeProps } from '@/types/Attendee';
@@ -183,6 +182,51 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
     return passes;
   }, [attendeePasses]);
 
+  // Calculate insurance amount based on product insurance_percentage
+  // Insurance is calculated on the FULL product price (before discounts)
+  const calculateInsuranceAmount = useCallback((
+    passes: SelectedPassItem[],
+    housingItem: SelectedHousingItem | null,
+    merchItems: SelectedMerchItem[]
+  ): number => {
+    let total = 0;
+
+    // Calculate for passes (use original price before discounts)
+    passes.forEach(pass => {
+      const pct = pass.product.insurance_percentage;
+      if (pct != null) {
+        const basePrice = pass.originalPrice ?? pass.price;
+        total += basePrice * pct / 100;
+      }
+    });
+
+    // Calculate for housing
+    if (housingItem?.product.insurance_percentage != null) {
+      total += housingItem.totalPrice * housingItem.product.insurance_percentage / 100;
+    }
+
+    // Calculate for merch
+    merchItems.forEach(item => {
+      const pct = item.product.insurance_percentage;
+      if (pct != null) {
+        total += item.totalPrice * pct / 100;
+      }
+    });
+
+    return total;
+  }, []);
+
+  // Calculate insurance amount always (for UI display regardless of toggle state)
+  const insurancePotentialAmount = useMemo(() => {
+    return calculateInsuranceAmount(selectedPasses, housing, merch);
+  }, [selectedPasses, housing, merch, calculateInsuranceAmount]);
+
+  // Insurance amount only when enabled (for total calculation)
+  const insuranceAmount = useMemo(() => {
+    if (!insurance) return 0;
+    return insurancePotentialAmount;
+  }, [insurance, insurancePotentialAmount]);
+
   // Build cart state
   const cart = useMemo<CheckoutCartState>(() => ({
     passes: selectedPasses,
@@ -193,23 +237,25 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
     promoCodeValid,
     promoCodeDiscount,
     insurance,
-    insurancePrice: INSURANCE_PRICE,
-  }), [selectedPasses, housing, merch, patron, promoCode, promoCodeValid, promoCodeDiscount, insurance]);
+    insurancePrice: insuranceAmount,
+    insurancePotentialPrice: insurancePotentialAmount,
+  }), [selectedPasses, housing, merch, patron, promoCode, promoCodeValid, promoCodeDiscount, insurance, insuranceAmount, insurancePotentialAmount]);
 
   // Calculate summary
+  // Note: Insurance is calculated on original prices (before discounts) and added AFTER discounts
   const summary = useMemo<CheckoutCartSummary>(() => {
     const passesSubtotal = selectedPasses.reduce((sum, p) => sum + p.price, 0);
-    console.log('passesSubtotal', passesSubtotal, selectedPasses);
     // Track original prices to calculate discount when promo code reduces prices
     const passesOriginalSubtotal = selectedPasses.reduce((sum, p) => sum + (p.originalPrice ?? p.price), 0);
     const housingSubtotal = housing?.totalPrice ?? 0;
     const merchSubtotal = merch.reduce((sum, m) => sum + m.totalPrice, 0);
     const patronSubtotal = patron?.amount ?? 0;
-    const insuranceSubtotal = insurance ? INSURANCE_PRICE : 0;
+    // Insurance is calculated on full prices and added after discounts
+    const insuranceSubtotal = insuranceAmount;
 
-    // Subtotal is the discounted amount (what customer pays before credits)
+    // Subtotal is the discounted amount (what customer pays before credits) + insurance
     const subtotal = passesSubtotal + housingSubtotal + merchSubtotal + patronSubtotal + insuranceSubtotal;
-    // Original subtotal is before any promo discounts
+    // Original subtotal is before any promo discounts (but includes insurance since it doesn't get discounted)
     const originalSubtotal = passesOriginalSubtotal + housingSubtotal + merchSubtotal + patronSubtotal + insuranceSubtotal;
     // Discount is the difference between original and discounted prices
     const discount = originalSubtotal - subtotal;
@@ -230,7 +276,7 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
       grandTotal,
       itemCount,
     };
-  }, [selectedPasses, housing, merch, patron, insurance, promoCodeValid, promoCodeDiscount, application?.credit]);
+  }, [selectedPasses, housing, merch, patron, insuranceAmount, promoCodeValid, promoCodeDiscount, application?.credit]);
 
   // Navigation
   const goToStep = useCallback((step: CheckoutStep) => {
@@ -488,6 +534,7 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
         application_id: application.id,
         products: productsToSend,
         coupon_code: promoCodeValid ? promoCode : undefined,
+        insurance: insurance || undefined,
       };
 
       const res = await api.post('payments', requestData);
@@ -522,7 +569,7 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
     } finally {
       setIsSubmitting(false);
     }
-  }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, clearCart]);
+  }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart]);
 
   const value: CheckoutContextValue = {
     currentStep,
