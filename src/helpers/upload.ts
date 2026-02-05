@@ -1,30 +1,27 @@
-import AWS from "aws-sdk";
-
-const S3_BUCKET = "simplefi";
-const REGION = "us-east-2";
-
-AWS.config.update({
-  accessKeyId: process.env.NEXT_PUBLIC_ACCESS_KEY,
-  secretAccessKey: process.env.NEXT_PUBLIC_SECRET_KEY,
-  region: REGION,
-});
-
-const uploadFileToS3 = async (file: File) => {
-  const s3 = new AWS.S3();
-
-  const params = {
-    Bucket: S3_BUCKET,
-    Key: `uploads/${file.name}`, // Ruta dentro del bucket
-    Body: file,
-    ACL: "public-read", // Permite acceso público al archivo
-  };
+/**
+ * Upload a file to S3 via the server-side API route.
+ * This keeps AWS credentials secure on the server.
+ */
+const uploadFileToS3 = async (file: File): Promise<string> => {
+  const formData = new FormData();
+  formData.append("file", file);
 
   try {
-    const data = await s3.upload(params).promise();
-    console.log("Archivo subido con éxito:", data);
-    return data.Location; // Devuelve la URL del archivo
+    const response = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.error || "Failed to upload file");
+    }
+
+    const data = await response.json();
+    console.log("File uploaded successfully:", data.url);
+    return data.url;
   } catch (error) {
-    console.error("Error al subir archivo a S3:", error);
+    console.error("Error uploading file to S3:", error);
     throw error;
   }
 };
