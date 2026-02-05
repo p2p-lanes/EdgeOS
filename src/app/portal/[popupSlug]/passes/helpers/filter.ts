@@ -1,5 +1,13 @@
 import { AttendeeProps } from "@/types/Attendee";
 import { ProductsPass, ProductsProps } from "@/types/Products";
+import { isVariablePrice } from "@/helpers/variablePrice";
+
+interface ProductPurchasePayload {
+  product_id: number;
+  attendee_id: number | undefined;
+  quantity: number;
+  custom_amount?: number;
+}
 
 export const defaultProducts = (products: ProductsProps[], attendees: AttendeeProps[], discount: number): ProductsPass[] => {
   const mainAttendee = attendees.find(a => a.category === 'main') ?? { id: 0, products: [] }
@@ -72,5 +80,18 @@ export const filterProductsToPurchase = (products: ProductsPass[], editableMode:
 
   // console.log('reducedProducts', reducedProducts, {editableMode})
 
-  return reducedProducts.map(p => ({product_id: p.id, attendee_id: p.attendee_id, quantity: p.quantity ?? 1}))
+  return reducedProducts.map(p => {
+    const payload: ProductPurchasePayload = {
+      product_id: p.id,
+      attendee_id: p.attendee_id,
+      quantity: p.quantity ?? 1
+    };
+
+    // Include custom_amount only for variable-price products
+    if (isVariablePrice(p) && p.custom_amount !== undefined) {
+      payload.custom_amount = p.custom_amount;
+    }
+
+    return payload;
+  })
 }

@@ -15,6 +15,7 @@ interface PassesContext_interface {
   attendeePasses: AttendeeProps[];
   toggleProduct: (attendeeId: number, product: ProductsPass) => void;
   resetDayProduct: (attendeeId: number, productId: number) => void;
+  setCustomAmount: (attendeeId: number, productId: number, amount: number | undefined) => void;
   products: ProductsPass[];
   setDiscount: (discount: DiscountProps) => void;
   discountApplied: DiscountProps;
@@ -67,6 +68,27 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
               };
             }
             return product;
+          })
+        };
+      })
+    );
+  }, [])
+
+  const setCustomAmount = useCallback((attendeeId: number, productId: number, amount: number | undefined) => {
+    setAttendeePasses(prevAttendees =>
+      prevAttendees.map(attendee => {
+        if (attendee.id !== attendeeId) return attendee;
+        
+        return {
+          ...attendee,
+          products: attendee.products.map(product => {
+            if (product.id !== productId) return product;
+            
+            return {
+              ...product,
+              custom_amount: amount,
+              selected: amount !== undefined && amount > 0
+            };
           })
         };
       })
@@ -165,6 +187,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         attendeePasses,
         toggleProduct,
         resetDayProduct,
+        setCustomAmount,
         products,
         isEditing,
         toggleEditing
