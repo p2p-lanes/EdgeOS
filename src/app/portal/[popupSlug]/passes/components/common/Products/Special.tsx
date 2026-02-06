@@ -118,11 +118,7 @@ function SpecialBase({
 
   const handleClick = () => {
     if (!hasOnClick) return;
-    
-    // For variable price products without custom_amount, set suggested price on first click
-    if (isVariable && !selected && !product.custom_amount) {
-      onCustomAmountChange?.(product.price);
-    }
+    // toggleProduct in the provider handles injecting custom_amount for variable-price products
     onClick?.();
   };
 

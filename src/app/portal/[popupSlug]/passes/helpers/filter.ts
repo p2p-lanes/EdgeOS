@@ -87,9 +87,9 @@ export const filterProductsToPurchase = (products: ProductsPass[], editableMode:
       quantity: p.quantity ?? 1
     };
 
-    // Include custom_amount only for variable-price products
-    if (isVariablePrice(p) && p.custom_amount !== undefined) {
-      payload.custom_amount = p.custom_amount;
+    // Always include custom_amount for variable-price products, with fallback to suggested price
+    if (isVariablePrice(p)) {
+      payload.custom_amount = p.custom_amount ?? p.original_price ?? p.price;
     }
 
     return payload;

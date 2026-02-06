@@ -86,7 +86,7 @@ const useCheckoutApi = (): CheckoutApiResult => {
     housing: SelectedHousingItem | null,
     patron: SelectedPatronItem | null
   ) => {
-    const products: Array<{ product_id: number; attendee_id: number; quantity: number }> = [];
+    const products: Array<{ product_id: number; attendee_id: number; quantity: number; custom_amount?: number }> = [];
 
     // Add passes
     passes.forEach((pass) => {
@@ -117,13 +117,15 @@ const useCheckoutApi = (): CheckoutApiResult => {
       });
     }
 
-    // Add patron
+    // Add patron — only include custom_amount for variable-price products
     if (patron) {
       const firstAttendeeId = passes[0]?.attendeeId || 0;
+      const isVariable = patron.product.min_price !== null && patron.product.min_price !== undefined;
       products.push({
         product_id: patron.productId,
         attendee_id: firstAttendeeId,
         quantity: 1,
+        ...(isVariable ? { custom_amount: patron.amount } : {}),
       });
     }
 
