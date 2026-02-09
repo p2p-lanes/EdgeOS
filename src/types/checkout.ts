@@ -199,6 +199,7 @@ export interface PaymentPreviewRequest {
     product_id: number;
     attendee_id: number;
     quantity: number;
+    custom_amount?: number;
   }>;
   coupon_code?: string;
   insurance?: boolean;
@@ -225,6 +226,7 @@ export interface PaymentCreateRequest {
     product_id: number;
     attendee_id: number;
     quantity: number;
+    custom_amount?: number;
   }>;
   coupon_code?: string;
   insurance?: boolean;

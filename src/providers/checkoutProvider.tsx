@@ -490,7 +490,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
 
     try {
       // Build products array
-      const productsToSend: Array<{ product_id: number; attendee_id: number; quantity: number }> = [];
+      const productsToSend: Array<{ product_id: number; attendee_id: number; quantity: number; custom_amount?: number }> = [];
 
       // Add passes
       selectedPasses.forEach((pass) => {
@@ -521,13 +521,15 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
         });
       }
 
-      // Add patron
+      // Add patron — only include custom_amount for variable-price products
       if (patron) {
         const firstAttendeeId = selectedPasses[0]?.attendeeId || 0;
+        const isVariable = patron.product.min_price !== null && patron.product.min_price !== undefined;
         productsToSend.push({
           product_id: patron.productId,
           attendee_id: firstAttendeeId,
           quantity: 1,
+          ...(isVariable ? { custom_amount: patron.amount } : {}),
         });
       }
 

@@ -10,11 +10,13 @@ import { DiscountProps } from '@/types/discounts';
 import { useCityProvider } from './cityProvider';
 import { getPurchaseStrategy } from '@/strategies/PurchaseStrategy';
 import { useGroupsProvider } from './groupsProvider';
+import { isVariablePrice } from '@/helpers/variablePrice';
 
 interface PassesContext_interface {
   attendeePasses: AttendeeProps[];
   toggleProduct: (attendeeId: number, product: ProductsPass) => void;
   resetDayProduct: (attendeeId: number, productId: number) => void;
+  setCustomAmount: (attendeeId: number, productId: number, amount: number | undefined) => void;
   products: ProductsPass[];
   setDiscount: (discount: DiscountProps) => void;
   discountApplied: DiscountProps;
@@ -47,7 +49,43 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     if (!product) return;
     const strategy = getProductStrategy(product, isEditing);
     const updatedAttendees = strategy.handleSelection(attendeePasses, attendeeId, product, discountApplied);
-    console.log('updatedAttendees', {updatedAttendees, product});
+
+    // For variable-price products being selected, inject suggested price as custom_amount
+    const willBeSelected = !product.selected;
+    if (isVariablePrice(product) && willBeSelected) {
+      const withCustomAmount = updatedAttendees.map(attendee => {
+        if (attendee.id !== attendeeId) return attendee;
+        return {
+          ...attendee,
+          products: attendee.products.map(p => {
+            if (p.id !== product.id) return p;
+            return {
+              ...p,
+              custom_amount: p.custom_amount ?? product.price
+            };
+          })
+        };
+      });
+      setAttendeePasses(withCustomAmount);
+      return;
+    }
+
+    // When deselecting a variable-price product, clear custom_amount
+    if (isVariablePrice(product) && !willBeSelected) {
+      const withoutCustomAmount = updatedAttendees.map(attendee => {
+        if (attendee.id !== attendeeId) return attendee;
+        return {
+          ...attendee,
+          products: attendee.products.map(p => {
+            if (p.id !== product.id) return p;
+            return { ...p, custom_amount: undefined };
+          })
+        };
+      });
+      setAttendeePasses(withoutCustomAmount);
+      return;
+    }
+
     setAttendeePasses(updatedAttendees);
   }, [attendeePasses, isEditing, discountApplied])
 
@@ -67,6 +105,27 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
               };
             }
             return product;
+          })
+        };
+      })
+    );
+  }, [])
+
+  const setCustomAmount = useCallback((attendeeId: number, productId: number, amount: number | undefined) => {
+    setAttendeePasses(prevAttendees =>
+      prevAttendees.map(attendee => {
+        if (attendee.id !== attendeeId) return attendee;
+        
+        return {
+          ...attendee,
+          products: attendee.products.map(product => {
+            if (product.id !== productId) return product;
+            
+            return {
+              ...product,
+              custom_amount: amount,
+              selected: amount !== undefined && amount > 0
+            };
           })
         };
       })
@@ -92,11 +151,13 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
           )
           .map((product: ProductsPass) => {
             const originalQuantity = product.category.includes('day') ? attendees.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.quantity ?? 0 : 1
+            const prevProduct = attendeePassesRef.current.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)
             return {
               ...product,
               original_quantity: originalQuantity,
               quantity: originalQuantity,
-              selected: attendeePassesRef.current.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.selected || false,
+              selected: prevProduct?.selected || false,
+              custom_amount: prevProduct?.custom_amount,
               attendee_id: attendee.id,
               original_price: product.price,
               disabled: false,
@@ -165,6 +226,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         attendeePasses,
         toggleProduct,
         resetDayProduct,
+        setCustomAmount,
         products,
         isEditing,
         toggleEditing

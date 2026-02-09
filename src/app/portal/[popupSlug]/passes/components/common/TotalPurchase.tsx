@@ -1,6 +1,6 @@
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { cn } from "@/lib/utils"
-import { ChevronRight, Tag } from "lucide-react"
+import { ChevronRight, Tag, Heart } from "lucide-react"
 import { AttendeeProps } from "@/types/Attendee"
 import { DiscountProps } from "@/types/discounts"
 import useDiscountCode from "../../hooks/useDiscountCode"
@@ -11,7 +11,7 @@ import { useApplication } from "@/providers/applicationProvider"
 
 const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: AttendeeProps[], isModal?: boolean, isOpen: boolean, setIsOpen: (prev: boolean) => void}) => {
   const { discountApplied } = useDiscountCode()
-  const { originalTotal, total, discountAmount, groupDiscountPercentage, groupName } = useTotal()
+  const { originalTotal, total, discountAmount, variableAmount, groupDiscountPercentage, groupName } = useTotal()
   const { getRelevantApplication } = useApplication()
   const application = getRelevantApplication()
 
@@ -86,6 +86,7 @@ const TotalPurchase = ({ attendees, isModal, isOpen, setIsOpen }: {attendees: At
               )
             }
 
+            <VariableAmountDisplay variableAmount={variableAmount} />
 
             {
               application?.credit ? (
@@ -236,6 +237,22 @@ const GroupDiscountDisplay = ({ groupDiscountPercentage, groupName }: {
         </span>
       </div>
       <span className="text-green-600 font-medium">Applied</span>
+    </div>
+  )
+}
+
+const VariableAmountDisplay = ({ variableAmount }: { variableAmount: number }) => {
+  if (!variableAmount || variableAmount === 0) return null
+
+  return (
+    <div className="flex justify-between text-sm text-muted-foreground">
+      <div className="flex items-center gap-2">
+        <Heart className="w-4 h-4 text-orange-500" />
+        <span className="text-sm text-muted-foreground">
+          Contribution (no discounts)
+        </span>
+      </div>
+      <span data-variable-amount={variableAmount.toFixed(0)}>${variableAmount.toFixed(0)}</span>
     </div>
   )
 }

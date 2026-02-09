@@ -1,9 +1,12 @@
-
 import { ProductsPass } from "@/types/Products"
 import { badgeName } from "../../../constants/multiuse"
+import { isVariablePrice, getEffectivePrice } from "@/helpers/variablePrice"
 
 const ProductCart = ({ product }: { product: ProductsPass }) => {
-  const price =  product.original_price ? product.original_price : product.price
+  // For variable price products, use custom_amount; otherwise use original_price or price
+  const price = isVariablePrice(product) 
+    ? getEffectivePrice(product) 
+    : (product.original_price ?? product.price)
   
   const quantity = product.category.includes('day') ? (product.quantity ?? 0) - (product.original_quantity ?? 0) : 1
 

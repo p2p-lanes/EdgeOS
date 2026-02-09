@@ -19,6 +19,8 @@ export interface ProductsProps {
   compare_price: number | null;
   exclusive: boolean;
   insurance_percentage: number | null;
+  min_price: number | null;
+  max_price: number | null;
 }
 
 export interface ProductsPass extends ProductsProps {
@@ -30,4 +32,5 @@ export interface ProductsPass extends ProductsProps {
   original_price?: number;
   disabled?: boolean;
   original_quantity?: number;
+  custom_amount?: number;
 }

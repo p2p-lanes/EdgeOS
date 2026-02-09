@@ -2,6 +2,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { ProductsPass } from "@/types/Products";
 import { Check, Crown, Info, Plus } from 'lucide-react'
 import { cn } from "@/lib/utils";
+import { isVariablePrice, getEffectivePrice } from "@/helpers/variablePrice";
+import VariablePriceInput from "./VariablePriceInput";
 
 // HOC para manejar la lógica de presentación
 const withSpecialProductPresentation = (WrappedComponent: React.ComponentType<any>) => {
@@ -48,17 +50,23 @@ interface ProductPriceProps {
   product: ProductsPass;
   selected: boolean;
   disabled: boolean;
+  isVariable: boolean;
 }
 
-const ProductPrice = ({ product, selected, disabled }: ProductPriceProps) => (
-  <span className={cn(
-    "font-medium",
-    selected && "text-[#005F3A]",
-    disabled && "text-neutral-300"
-  )}>
-    ${product.price.toLocaleString()}
-  </span>
-);
+const ProductPrice = ({ product, selected, disabled, isVariable }: ProductPriceProps) => {
+  // For variable price products, show the effective price (custom_amount or suggested)
+  const displayPrice = isVariable ? getEffectivePrice(product) : product.price;
+  
+  return (
+    <span className={cn(
+      "font-medium",
+      selected && "text-[#005F3A]",
+      disabled && "text-neutral-300"
+    )}>
+      ${displayPrice.toLocaleString()}
+    </span>
+  );
+};
 
 const TooltipPatreon = ({ purchased }: { purchased?: boolean }) => (
   <Tooltip>
@@ -79,6 +87,7 @@ const TooltipPatreon = ({ purchased }: { purchased?: boolean }) => (
 interface SpecialProps {
   product: ProductsPass;
   onClick?: () => void;
+  onCustomAmountChange?: (amount: number | undefined) => void;
   disabled?: boolean;
 }
 
@@ -96,42 +105,84 @@ const variants: Record<VariantStyles, string> = {
 function SpecialBase({ 
   product, 
   onClick,
+  onCustomAmountChange,
   getStatusIcon,
   disabled
-}: SpecialProps & { getStatusIcon: () => JSX.Element, disabled: boolean }) {
+}: SpecialProps & { getStatusIcon: () => JSX.Element | null, disabled?: boolean }) {
 
-  const { selected, disabled: productDisabled, purchased } = product
+  const { selected, disabled: productDisabled, purchased } = product;
+  const isVariable = isVariablePrice(product);
 
-  const isDisabled = disabled || productDisabled
-  const hasOnClick = !isDisabled && onClick && !purchased
+  const isDisabled = disabled || productDisabled;
+  const hasOnClick = !isDisabled && onClick && !purchased;
+
+  const handleClick = () => {
+    if (!hasOnClick) return;
+    // toggleProduct in the provider handles injecting custom_amount for variable-price products
+    onClick?.();
+  };
+
+  const handleCustomAmountChange = (amount: number | undefined) => {
+    onCustomAmountChange?.(amount);
+  };
+
+  // Stop propagation to prevent triggering parent click when interacting with input
+  const handleInputContainerClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+  };
+
   return (
-    <button
-      data-category="patreon"
-      onClick={hasOnClick ? onClick : undefined}
-      data-selected={selected}
-      data-price={product.price}
-      className={cn(
-        'w-full py-1 px-4 flex items-center justify-between gap-2 border border-neutral-200 rounded-md',
-        variants[purchased ? 'purchased' : isDisabled || !onClick ? 'disabled' : selected ? 'selected' : 'default']
+    <div className="w-full">
+      <button
+        data-category="patreon"
+        onClick={handleClick}
+        data-selected={selected}
+        data-price={isVariable ? getEffectivePrice(product) : product.price}
+        className={cn(
+          'w-full py-1 px-4 flex items-center justify-between gap-2 border border-neutral-200 rounded-md',
+          variants[purchased ? 'purchased' : isDisabled || !onClick ? 'disabled' : selected ? 'selected' : 'default']
+        )}
+      >
+        <div className="flex items-center gap-2 py-2">
+          {getStatusIcon()}
+          <ProductTitle product={product} disabled={isDisabled || !onClick} selected={selected ?? false} />
+        </div>
+        
+        <div className="flex items-center gap-4">
+          {
+            product.purchased ? (
+              <span className="text-sm font-medium text-[white]">
+                Purchased
+              </span>
+            ) : (
+              <ProductPrice 
+                product={product} 
+                selected={selected ?? false} 
+                disabled={isDisabled || !onClick}
+                isVariable={isVariable}
+              />
+            )
+          }
+        </div>
+      </button>
+
+      {/* Variable Price Input - shown when product is variable price and selected */}
+      {isVariable && selected && !purchased && (
+        <div 
+          className="mt-2 px-4"
+          onClick={handleInputContainerClick}
+          onKeyDown={(e) => e.stopPropagation()}
+          role="presentation"
+        >
+          <VariablePriceInput
+            product={product}
+            value={product.custom_amount}
+            onChange={handleCustomAmountChange}
+            disabled={isDisabled}
+          />
+        </div>
       )}
-    >
-      <div className="flex items-center gap-2 py-2">
-        {getStatusIcon()}
-        <ProductTitle product={product} disabled={isDisabled || !onClick} selected={selected ?? false} />
-      </div>
-      
-      <div className="flex items-center gap-4">
-        {
-          product.purchased ? (
-            <span className="text-sm font-medium text-[white]">
-              Purchased
-            </span>
-          ) : (
-            <ProductPrice product={product} selected={selected ?? false} disabled={isDisabled || !onClick} />
-          )
-        }
-      </div>
-    </button>
+    </div>
   );
 }
 

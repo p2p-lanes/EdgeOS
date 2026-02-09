@@ -34,7 +34,7 @@ const parseMarkdown = (markdown: string) => {
 };
 
 const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, defaultOpenDiscount = false, positionCoupon = 'bottom'}: {floatingBar?: boolean, viewInvoices?: boolean, canEdit?: boolean, defaultOpenDiscount?: boolean, positionCoupon?: 'top' | 'bottom' | 'right'}) => {
-  const { toggleProduct, attendeePasses: attendees, products, isEditing} = usePassesProvider()
+  const { toggleProduct, setCustomAmount, attendeePasses: attendees, products, isEditing} = usePassesProvider()
   const [openCart, setOpenCart] = useState<boolean>(false)
   const [waiverAccepted, setWaiverAccepted] = useState<boolean>(false)
   const searchParams = useSearchParams();
@@ -82,6 +82,7 @@ const BuyPasses = ({floatingBar = true, viewInvoices = true, canEdit = true, def
             disabled={isEditing}
             product={specialProduct}
             onClick={() => toggleProduct(mainAttendee.id, specialProduct)}
+            onCustomAmountChange={(amount) => setCustomAmount(mainAttendee.id, specialProduct.id, amount)}
           />
           <Separator className="my-4"/>
         </div>
