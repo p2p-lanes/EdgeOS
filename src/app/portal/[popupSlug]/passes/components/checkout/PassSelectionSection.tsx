@@ -70,7 +70,7 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
 
       {/* Add Family Member Buttons - Pill Style */}
       <div className="flex flex-wrap items-center gap-3">
-        {!hasSpouse && (
+        {!hasSpouse && city?.allows_spouse && (
           <button
             onClick={handleAddSpouse}
             className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
@@ -79,13 +79,15 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
             Add spouse
           </button>
         )}
-        <button
-          onClick={handleAddChild}
-          className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
-        >
-          <Plus className="w-4 h-4" />
-          Add child
-        </button>
+        {city?.allows_children && (
+          <button
+            onClick={handleAddChild}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
+          >
+            <Plus className="w-4 h-4" />
+            Add child
+          </button>
+        )}
       </div>
 
       {/* Family Member Pass Selection */}
@@ -181,7 +183,7 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
           {/* Weekly Pass Options - Flat List */}
           <div className="divide-y divide-gray-100">
             {weekProducts.map((product) => {
-              const disabled = product.disabled || (hasMonthSelected && !product.purchased);
+              const disabled = product.disabled || (hasMonthSelected);
               const disabledForSpouse = isSpouse && !primaryHasPass(product.id);
               const isDisabled = disabled || disabledForSpouse;
 
@@ -217,7 +219,7 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
           {/* Month Pass Options */}
           <div className="divide-y divide-gray-100">
             {monthProducts.map((product) => {
-              const disabled = product.disabled || (hasWeekSelected && !product.purchased);
+              const disabled = product.disabled;
               const disabledForSpouse = isSpouse && !primaryHasPass(product.id);
               const isDisabled = disabled || disabledForSpouse;
 

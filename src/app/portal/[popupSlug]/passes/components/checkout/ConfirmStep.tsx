@@ -17,8 +17,8 @@ import { useCheckout } from '@/providers/checkoutProvider';
 import {
   formatCurrency,
   formatDate,
-  INSURANCE_BENEFITS,
 } from '@/types/checkout';
+import InsuranceCard from './InsuranceCard';
 
 export default function ConfirmStep() {
   const {
@@ -118,47 +118,11 @@ export default function ConfirmStep() {
 
       {/* Insurance Card - Only show if any product has insurance available */}
       {hasInsurableProducts && (
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
-          <div className="flex items-start gap-3">
-            <div className="w-10 h-10 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
-              <CloudRain className="w-5 h-5 text-gray-600" />
-            </div>
-            <div className="flex-1 min-w-0">
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="font-semibold text-gray-900">Insurance</h3>
-                  <p className="text-sm text-gray-500 mt-0.5">
-                    {formatCurrency(cart.insurancePotentialPrice)} · Coverage for change of plans
-                  </p>
-                </div>
-                {/* Toggle */}
-                <button
-                  onClick={() => toggleInsurance()}
-                  role="switch"
-                  aria-checked={cart.insurance}
-                  aria-label="Toggle insurance"
-                  className={cn(
-                    'relative inline-flex h-6 w-11 items-center rounded-full transition-colors flex-shrink-0',
-                    cart.insurance ? 'bg-green-500' : 'bg-gray-200'
-                  )}
-                >
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      'inline-block h-4 w-4 transform rounded-full bg-white shadow-sm transition-transform',
-                      cart.insurance ? 'translate-x-6' : 'translate-x-1'
-                    )}
-                  />
-                </button>
-              </div>
-              <ul className="text-xs text-gray-400 mt-3 space-y-0.5">
-                {INSURANCE_BENEFITS.map((benefit, i) => (
-                  <li key={i}>• {benefit}</li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        </div>
+        <InsuranceCard
+          insurance={cart.insurance}
+          price={cart.insurancePotentialPrice}
+          onToggle={toggleInsurance}
+        />
       )}
 
       {/* Order Details Card - All items with dividers */}

@@ -3,6 +3,7 @@ export { default as HousingStep } from './HousingStep';
 export { default as MerchSection } from './MerchSection';
 export { default as PatronSection } from './PatronSection';
 export { default as ConfirmStep } from './ConfirmStep';
+export { default as InsuranceCard } from './InsuranceCard';
 export { default as SuccessStep } from './SuccessStep';
 export { default as CartFooter } from './CartFooter';
 export { default as CheckoutFlow } from './CheckoutFlow';

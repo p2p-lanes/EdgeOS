@@ -1,7 +1,7 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter, useParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { Loader } from '@/components/ui/Loader';
 import { CheckoutProvider } from '@/providers/checkoutProvider';
 import { usePassesProvider } from '@/providers/passesProvider';
@@ -10,17 +10,30 @@ import { AttendeeModal } from '../passes/components/AttendeeModal';
 import usePermission from '../passes/hooks/usePermission';
 import useAttendee from '@/hooks/useAttendee';
 import { AttendeeCategory, AttendeeProps, CreateAttendee } from '@/types/Attendee';
+import { CheckoutStep } from '@/types/checkout';
 
 export default function BuyPage() {
   usePermission();
 
   const router = useRouter();
   const params = useParams();
+  const searchParams = useSearchParams();
   const popupSlug = params.popupSlug as string;
   const { attendeePasses: attendees, products } = usePassesProvider();
   const { addAttendee } = useAttendee();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCategory, setModalCategory] = useState<AttendeeCategory>('main');
+
+  // Check if returning from payment provider with success
+  const checkoutSuccess = searchParams.get('checkout') === 'success';
+  const initialStep: CheckoutStep = checkoutSuccess ? 'success' : 'passes';
+
+  // Clean URL parameter after detecting success to prevent showing success on manual reload
+  useEffect(() => {
+    if (checkoutSuccess) {
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }, [checkoutSuccess]);
 
   if (!attendees.length || !products.length) {
     return <Loader />;
@@ -56,7 +69,7 @@ export default function BuyPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <CheckoutProvider products={products}>
+      <CheckoutProvider products={products} initialStep={initialStep}>
         <CheckoutFlow
           onAddAttendee={handleAddAttendee}
           onPaymentComplete={handlePaymentComplete}

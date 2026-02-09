@@ -99,9 +99,10 @@ const CheckoutContext = createContext<CheckoutContextValue | null>(null);
 interface CheckoutProviderProps {
   children: ReactNode;
   products: ProductsProps[];
+  initialStep?: CheckoutStep;
 }
 
-export function CheckoutProvider({ children, products }: CheckoutProviderProps) {
+export function CheckoutProvider({ children, products, initialStep = 'passes' }: CheckoutProviderProps) {
   const { attendeePasses, toggleProduct, resetDayProduct, discountApplied, setDiscount } = usePassesProvider();
   const { getRelevantApplication } = useApplication();
   const { getCity } = useCityProvider();
@@ -109,7 +110,7 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
   const city = getCity();
 
   // Step management
-  const [currentStep, setCurrentStep] = useState<CheckoutStep>('passes');
+  const [currentStep, setCurrentStep] = useState<CheckoutStep>(initialStep);
 
   // Cart state for non-pass items
   const [housing, setHousing] = useState<SelectedHousingItem | null>(null);
@@ -543,9 +544,11 @@ export function CheckoutProvider({ children, products }: CheckoutProviderProps) 
         const data = res.data;
 
         if (data.status === 'pending' && data.checkout_url) {
-          // Redirect to payment provider
-          const redirectUrl = window.location.href;
-          window.location.href = `${data.checkout_url}?redirect_url=${redirectUrl}`;
+          // Redirect to payment provider with success parameter for return
+          const currentUrl = new URL(window.location.href);
+          currentUrl.searchParams.set('checkout', 'success');
+          const redirectUrl = currentUrl.toString();
+          window.location.href = `${data.checkout_url}?redirect_url=${encodeURIComponent(redirectUrl)}`;
           return { success: true };
         } else if (data.status === 'approved') {
           toast.success('Payment completed successfully!');
