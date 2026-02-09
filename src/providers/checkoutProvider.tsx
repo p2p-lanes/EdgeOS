@@ -547,6 +547,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
 
         if (data.status === 'pending' && data.checkout_url) {
           // Redirect to payment provider with success parameter for return
+          // Keep loading state active during redirect
           const currentUrl = new URL(window.location.href);
           currentUrl.searchParams.set('checkout', 'success');
           const redirectUrl = currentUrl.toString();
@@ -556,23 +557,25 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
           toast.success('Payment completed successfully!');
           clearCart();
           setCurrentStep('success');
+          setIsSubmitting(false);
           return { success: true };
         }
 
+        setIsSubmitting(false);
         return { success: true };
       } else {
         const errorMsg = res.data?.message || 'Failed to create payment';
         setError(errorMsg);
         toast.error(errorMsg);
+        setIsSubmitting(false);
         return { success: false, error: errorMsg };
       }
     } catch (err: any) {
       const errorMsg = err?.response?.data?.detail || 'Failed to create payment';
       setError(errorMsg);
       toast.error(errorMsg);
-      return { success: false, error: errorMsg };
-    } finally {
       setIsSubmitting(false);
+      return { success: false, error: errorMsg };
     }
   }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart]);
 
