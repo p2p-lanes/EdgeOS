@@ -365,7 +365,7 @@ export default function ConfirmStep() {
             {summary.grandTotal === 0 ? (
               <div className="flex items-center gap-2">
                 <Sparkles className="w-5 h-5 text-amber-500" />
-                <span className="text-2xl font-bold text-amber-600">Free!</span>
+                <span className="text-2xl font-bold text-amber-600">$0</span>
               </div>
             ) : (
               <span className="text-2xl font-bold text-gray-900">
@@ -375,7 +375,7 @@ export default function ConfirmStep() {
           </div>
           {summary.grandTotal === 0 && (
             <p className="text-sm text-amber-600 mt-2 text-center">
-              Lucky you! Your order is completely covered.
+              You don’t need to pay, your order is covered
             </p>
           )}
         </div>

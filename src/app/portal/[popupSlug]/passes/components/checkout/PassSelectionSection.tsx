@@ -222,39 +222,6 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
         </div>
       </div>
 
-      {/* Weekly Passes Section */}
-      {weekProducts.length > 0 && (
-        <>
-          {/* Section Header with Diagonal Stripes */}
-          <div className="relative px-5 py-2 bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100 overflow-hidden">
-            <div className="absolute inset-0 opacity-100" style={stripedPatternStyle} />
-            <h4 className="relative text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              Weekly Passes
-            </h4>
-          </div>
-
-          {/* Weekly Pass Options - Flat List */}
-          <div className="divide-y divide-gray-100">
-            {weekProducts.map((product) => {
-              const disabled = product.disabled || (hasMonthSelected);
-              const disabledForSpouse = isSpouse && !primaryHasPass(product.id);
-              const isDisabled = disabled || disabledForSpouse;
-
-              return (
-                <PassOption
-                  key={product.id}
-                  product={product}
-                  onClick={() => toggleProduct(attendee.id, product)}
-                  disabled={isDisabled}
-                  disabledReason={disabledForSpouse ? 'Requires primary pass holder' : undefined}
-                  isEditing={isEditing}
-                />
-              );
-            })}
-          </div>
-        </>
-      )}
-
       {/* Month Pass Section - Only for non-children */}
       {monthProducts.length > 0 && !isChild && (
         <>
@@ -273,6 +240,39 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
           <div className="divide-y divide-gray-100">
             {monthProducts.map((product) => {
               const disabled = product.disabled;
+              const disabledForSpouse = isSpouse && !primaryHasPass(product.id);
+              const isDisabled = disabled || disabledForSpouse;
+
+              return (
+                <PassOption
+                  key={product.id}
+                  product={product}
+                  onClick={() => toggleProduct(attendee.id, product)}
+                  disabled={isDisabled}
+                  disabledReason={disabledForSpouse ? 'Requires primary pass holder' : undefined}
+                  isEditing={isEditing}
+                />
+              );
+            })}
+          </div>
+        </>
+      )}
+
+      {/* Weekly Passes Section */}
+      {weekProducts.length > 0 && (
+        <>
+          {/* Section Header with Diagonal Stripes */}
+          <div className="relative px-5 py-2 bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100 overflow-hidden">
+            <div className="absolute inset-0 opacity-100" style={stripedPatternStyle} />
+            <h4 className="relative text-xs font-semibold text-gray-500 uppercase tracking-wide">
+              Weekly Passes
+            </h4>
+          </div>
+
+          {/* Weekly Pass Options - Flat List */}
+          <div className="divide-y divide-gray-100">
+            {weekProducts.map((product) => {
+              const disabled = product.disabled || (hasMonthSelected);
               const disabledForSpouse = isSpouse && !primaryHasPass(product.id);
               const isDisabled = disabled || disabledForSpouse;
 
