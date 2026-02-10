@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, User, Ticket, Check, Sparkles, Minus } from 'lucide-react';
+import { Plus, User, Ticket, Check, Sparkles, Minus, PencilIcon, XIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { usePassesProvider } from '@/providers/passesProvider';
 import { useCityProvider } from '@/providers/cityProvider';
@@ -36,12 +36,13 @@ const stripedPatternStyle = {
 };
 
 export default function PassSelectionSection({ onAddAttendee }: PassSelectionSectionProps) {
-  const { attendeePasses, toggleProduct, isEditing } = usePassesProvider();
+  const { attendeePasses, toggleProduct, isEditing, toggleEditing, editCredit } = usePassesProvider();
   const { getCity } = useCityProvider();
   const city = getCity();
 
   // Check if spouse exists
   const hasSpouse = attendeePasses.some(a => a.category === 'spouse');
+  const somePurchased = attendeePasses.some(a => a.products.some(p => p.purchased));
 
   const handleAddSpouse = () => {
     if (onAddAttendee) {
@@ -55,39 +56,91 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
     }
   };
 
+  const handleToggleEdit = () => {
+    toggleEditing();
+  };
+
   return (
     <div className="space-y-3">
-      {/* Early Bird Banner */}
-      <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-3">
-        <div className="bg-amber-100 p-2 rounded-full">
-          <Sparkles className="w-5 h-5 text-amber-600" />
+      {/* Edit Mode Banner */}
+      {isEditing && (
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-semibold text-blue-900">Edit Mode</p>
+              <p className="text-sm text-blue-700">Click on a purchased pass to get credit, then select a new pass.</p>
+            </div>
+            {editCredit > 0 && (
+              <div className="bg-blue-100 px-3 py-1.5 rounded-lg">
+                <p className="text-sm font-semibold text-blue-800">Credit: ${editCredit.toLocaleString()}</p>
+              </div>
+            )}
+          </div>
         </div>
-        <div>
-          <p className="font-semibold text-amber-900">Early Bird Pricing Active</p>
-          <p className="text-sm text-amber-700">Save up to $200 per pass - limited time offer!</p>
-        </div>
-      </div>
+      )}
 
-      {/* Add Family Member Buttons - Pill Style */}
-      <div className="flex flex-wrap items-center gap-3">
-        {!hasSpouse && city?.allows_spouse && (
+      {/* Early Bird Banner - hidden in edit mode */}
+      {!isEditing && (
+        <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-3">
+          <div className="bg-amber-100 p-2 rounded-full">
+            <Sparkles className="w-5 h-5 text-amber-600" />
+          </div>
+          <div>
+            <p className="font-semibold text-amber-900">Early Bird Pricing Active</p>
+            <p className="text-sm text-amber-700">Save up to $200 per pass - limited time offer!</p>
+          </div>
+        </div>
+      )}
+
+      {/* Toolbar: Edit button + Add Family Members */}
+      <div className="flex flex-wrap items-center gap-3 justify-between">
+        <div className="flex items-center gap-2">
+          {!isEditing && !hasSpouse && city?.allows_spouse && (
+            <button
+              onClick={handleAddSpouse}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Add spouse
+            </button>
+          )}
+          {!isEditing && city?.allows_children && (
+            <button
+              onClick={handleAddChild}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Add child
+            </button>
+          )}
+        </div>
+
+        {somePurchased && (
           <button
-            onClick={handleAddSpouse}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
+            onClick={handleToggleEdit}
+            className={cn(
+              'flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all shadow-sm',
+              isEditing
+                ? 'bg-gray-200 text-gray-800 hover:bg-gray-300'
+                : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300'
+            )}
+            aria-label={isEditing ? 'Cancel pass editing' : 'Edit passes'}
+            tabIndex={0}
           >
-            <Plus className="w-4 h-4" />
-            Add spouse
+            {isEditing ? (
+              <>
+                <XIcon className="w-4 h-4" />
+                Cancel Editing
+              </>
+            ) : (
+              <>
+                <PencilIcon className="w-4 h-4" />
+                Edit Passes
+              </>
+            )}
           </button>
         )}
-        {city?.allows_children && (
-          <button
-            onClick={handleAddChild}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
-          >
-            <Plus className="w-4 h-4" />
-            Add child
-          </button>
-        )}
+
       </div>
 
       {/* Family Member Pass Selection */}
@@ -295,13 +348,14 @@ interface PassOptionProps {
 
 function PassOption({ product, onClick, disabled, disabledReason, isEditing }: PassOptionProps) {
   const { purchased, selected } = product;
+  const isEditedForCredit = purchased && product.edit;
   const comparePrice = product.compare_price ?? product.original_price;
   const hasDiscount = comparePrice && comparePrice > product.price;
 
   const isClickable = !disabled && (!purchased || isEditing);
   const isSelected = selected && !purchased;
 
-  // If purchased (and not in editing mode), render purchased state with horizontal lines pattern
+  // If purchased and NOT in editing mode: show "Owned" state
   if (purchased && !isEditing) {
     return (
       <div
@@ -326,6 +380,70 @@ function PassOption({ product, onClick, disabled, disabledReason, isEditing }: P
           )}
         </div>
       </div>
+    );
+  }
+
+  // Purchased in edit mode: clickable to give up for credit
+  if (purchased && isEditing) {
+    return (
+      <button
+        onClick={onClick}
+        className={cn(
+          'w-full px-5 py-3 flex items-center justify-between gap-4 transition-all',
+          isEditedForCredit
+            ? 'bg-orange-50 border-l-4 border-l-orange-400'
+            : 'bg-gray-50 hover:bg-gray-100'
+        )}
+        aria-label={isEditedForCredit ? `Undo credit for ${product.name}` : `Get credit for ${product.name}`}
+        tabIndex={0}
+      >
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div
+            className={cn(
+              'w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all border-dashed',
+              isEditedForCredit
+                ? 'bg-orange-100 border-orange-400'
+                : 'border-gray-400'
+            )}
+          >
+            {isEditedForCredit && <Check className="w-3 h-3 text-orange-600" />}
+          </div>
+
+          <div className="flex-1 min-w-0 text-left">
+            <div className="flex items-center gap-2">
+              <Ticket className={cn('w-4 h-4', isEditedForCredit ? 'text-orange-400' : 'text-gray-400')} />
+              <span className={cn('font-medium', isEditedForCredit ? 'text-orange-700 line-through' : 'text-gray-700')}>
+                {product.name}
+              </span>
+              <span className={cn(
+                'px-2 py-0.5 text-[10px] font-semibold uppercase rounded tracking-wide border',
+                isEditedForCredit
+                  ? 'bg-orange-100 text-orange-700 border-orange-300'
+                  : 'bg-slate-100 text-slate-500 border-slate-200'
+              )}>
+                {isEditedForCredit ? 'Credit' : 'Owned'}
+              </span>
+            </div>
+            {product.start_date && product.end_date && (
+              <p className={cn('text-sm ml-8', isEditedForCredit ? 'text-orange-500' : 'text-gray-400')}>
+                {formatDate(product.start_date, { day: 'numeric', month: 'short' })} - {formatDate(product.end_date, { day: 'numeric', month: 'short' })}
+              </p>
+            )}
+          </div>
+        </div>
+
+        <div className="text-right flex-shrink-0">
+          <p className={cn(
+            'font-semibold',
+            isEditedForCredit ? 'text-orange-600' : 'text-gray-500'
+          )}>
+            {isEditedForCredit ? `+$${product.price.toLocaleString()}` : `$${product.price.toLocaleString()}`}
+          </p>
+          {isEditedForCredit && (
+            <p className="text-[10px] text-orange-500 font-medium">credit</p>
+          )}
+        </div>
+      </button>
     );
   }
 
@@ -401,6 +519,7 @@ interface DayPassOptionProps {
 
 function DayPassOption({ product, onQuantityChange, disabled, disabledReason, isEditing }: DayPassOptionProps) {
   const { purchased } = product;
+  const isEditedForCredit = purchased && product.edit;
   const quantity = product.quantity ?? 0;
   const originalQuantity = product.original_quantity ?? 0;
   const comparePrice = product.compare_price ?? product.price;
@@ -417,7 +536,7 @@ function DayPassOption({ product, onQuantityChange, disabled, disabledReason, is
 
   const maxQuantity = calculateMaxQuantity();
   const isMaxReached = quantity >= maxQuantity;
-  const isMinReached = purchased && quantity <= originalQuantity;
+  const isMinReached = purchased && quantity <= originalQuantity && !isEditing;
   const hasQuantity = quantity > 0;
 
   const handleIncrement = (e: React.MouseEvent) => {
@@ -433,6 +552,73 @@ function DayPassOption({ product, onQuantityChange, disabled, disabledReason, is
       onQuantityChange(quantity - 1);
     }
   };
+
+  // In edit mode with purchased day pass: show as editable credit option
+  if (purchased && isEditing) {
+    const creditAmount = product.price * (product.quantity ?? 1);
+
+    const handleEditClick = () => {
+      // Use toggleProduct through the parent's onQuantityChange pattern
+      // For day passes in edit mode, toggle the edit flag via the EditProductStrategy
+      onQuantityChange(isEditedForCredit ? originalQuantity : 0);
+    };
+
+    return (
+      <button
+        onClick={handleEditClick}
+        className={cn(
+          'w-full px-5 py-3 flex items-center justify-between gap-4 transition-all',
+          isEditedForCredit
+            ? 'bg-orange-50 border-l-4 border-l-orange-400'
+            : 'bg-gray-50 hover:bg-gray-100'
+        )}
+        aria-label={isEditedForCredit ? `Undo credit for ${product.name}` : `Get credit for ${product.name}`}
+        tabIndex={0}
+      >
+        <div className="flex items-center gap-3 flex-1 min-w-0">
+          <div
+            className={cn(
+              'w-5 h-5 rounded-md border-2 flex items-center justify-center flex-shrink-0 transition-all border-dashed',
+              isEditedForCredit
+                ? 'bg-orange-100 border-orange-400'
+                : 'border-gray-400'
+            )}
+          >
+            {isEditedForCredit && <Check className="w-3 h-3 text-orange-600" />}
+          </div>
+
+          <div className="flex-1 min-w-0 text-left">
+            <div className="flex items-center gap-2">
+              <Ticket className={cn('w-4 h-4', isEditedForCredit ? 'text-orange-400' : 'text-gray-400')} />
+              <span className={cn('font-medium', isEditedForCredit ? 'text-orange-700 line-through' : 'text-gray-700')}>
+                {product.name} ({originalQuantity} {originalQuantity === 1 ? 'day' : 'days'})
+              </span>
+              <span className={cn(
+                'px-2 py-0.5 text-[10px] font-semibold uppercase rounded tracking-wide border',
+                isEditedForCredit
+                  ? 'bg-orange-100 text-orange-700 border-orange-300'
+                  : 'bg-slate-100 text-slate-500 border-slate-200'
+              )}>
+                {isEditedForCredit ? 'Credit' : 'Owned'}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="text-right flex-shrink-0">
+          <p className={cn(
+            'font-semibold',
+            isEditedForCredit ? 'text-orange-600' : 'text-gray-500'
+          )}>
+            {isEditedForCredit ? `+$${creditAmount.toLocaleString()}` : `$${creditAmount.toLocaleString()}`}
+          </p>
+          {isEditedForCredit && (
+            <p className="text-[10px] text-orange-500 font-medium">credit</p>
+          )}
+        </div>
+      </button>
+    );
+  }
 
   return (
     <div

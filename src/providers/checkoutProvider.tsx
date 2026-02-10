@@ -92,6 +92,11 @@ interface CheckoutContextValue {
 
   // Payment
   submitPayment: () => Promise<{ success: boolean; error?: string }>;
+
+  // Edit mode
+  isEditing: boolean;
+  toggleEditing: (editing?: boolean) => void;
+  editCredit: number;
 }
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null);
@@ -103,7 +108,7 @@ interface CheckoutProviderProps {
 }
 
 export function CheckoutProvider({ children, products, initialStep = 'passes' }: CheckoutProviderProps) {
-  const { attendeePasses, toggleProduct, resetDayProduct, discountApplied, setDiscount } = usePassesProvider();
+  const { attendeePasses, toggleProduct, resetDayProduct, discountApplied, setDiscount, isEditing, editCredit, toggleEditing } = usePassesProvider();
   const { getRelevantApplication } = useApplication();
   const { getCity } = useCityProvider();
   const application = getRelevantApplication();
@@ -155,12 +160,14 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
   }, [patronProducts.length, housingProducts.length, merchProducts.length]);
 
   // Build selected passes from attendeePasses (integrates with existing provider)
+  // In edit mode, exclude purchased products marked for credit (edit=true, selected=true)
   const selectedPasses = useMemo<SelectedPassItem[]>(() => {
     const passes: SelectedPassItem[] = [];
 
     attendeePasses.forEach(attendee => {
       attendee.products.forEach(product => {
-        if (product.selected) {
+        // Skip purchased products being edited (they contribute to credit, not cart)
+        if (product.selected && !(isEditing && product.purchased)) {
           const quantity = product.category.includes('day')
             ? (product.quantity ?? 1) - (product.original_quantity ?? 0)
             : 1;
@@ -181,7 +188,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     });
 
     return passes;
-  }, [attendeePasses]);
+  }, [attendeePasses, isEditing]);
 
   // Calculate insurance amount based on product insurance_percentage
   // Insurance is calculated on the FULL product price (before discounts)
@@ -260,7 +267,9 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     const originalSubtotal = passesOriginalSubtotal + housingSubtotal + merchSubtotal + patronSubtotal + insuranceSubtotal;
     // Discount is the difference between original and discounted prices
     const discount = originalSubtotal - subtotal;
-    const credit = application?.credit ?? 0;
+    // In edit mode, sum editCredit (from given-up tickets) + application credit; otherwise use only application credit
+    const accountCredit = application?.credit ?? 0;
+    const credit = isEditing ? editCredit + accountCredit : accountCredit;
     const grandTotal = Math.max(0, subtotal - credit);
 
     const itemCount = selectedPasses.length + (housing ? 1 : 0) + merch.length + (patron ? 1 : 0);
@@ -277,7 +286,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       grandTotal,
       itemCount,
     };
-  }, [selectedPasses, housing, merch, patron, insuranceAmount, promoCodeValid, promoCodeDiscount, application?.credit]);
+  }, [selectedPasses, housing, merch, patron, insuranceAmount, promoCodeValid, promoCodeDiscount, application?.credit, isEditing, editCredit]);
 
   // Navigation
   const goToStep = useCallback((step: CheckoutStep) => {
@@ -452,13 +461,19 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
   const canProceedToStepFn = useCallback((step: CheckoutStep): boolean => {
     const targetIndex = availableSteps.findIndex(s => s === step);
 
+    // In edit mode, can proceed if user has made changes (any product has edit: true)
+    if (isEditing) {
+      const hasEditChanges = attendeePasses.some(a => a.products.some(p => p.edit));
+      return hasEditChanges || selectedPasses.length > 0;
+    }
+
     // Must have at least one pass to proceed past first step
     if (targetIndex > 0 && selectedPasses.length === 0) {
       return false;
     }
 
     return true;
-  }, [selectedPasses.length, availableSteps]);
+  }, [selectedPasses.length, availableSteps, isEditing, attendeePasses]);
 
   const isStepCompleteFn = useCallback((step: CheckoutStep): boolean => {
     switch (step) {
@@ -481,8 +496,13 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       return { success: false, error: 'Application not available' };
     }
 
-    if (selectedPasses.length === 0) {
+    // In edit mode, we need at least one edit action; in normal mode, need at least one pass
+    const hasEditChanges = isEditing && attendeePasses.some(a => a.products.some(p => p.edit));
+    if (!isEditing && selectedPasses.length === 0) {
       return { success: false, error: 'Please select at least one pass' };
+    }
+    if (isEditing && !hasEditChanges && selectedPasses.length === 0) {
+      return { success: false, error: 'Please make changes to your passes' };
     }
 
     setIsSubmitting(true);
@@ -492,52 +512,96 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       // Build products array
       const productsToSend: Array<{ product_id: number; attendee_id: number; quantity: number; custom_amount?: number }> = [];
 
-      // Add passes
-      selectedPasses.forEach((pass) => {
-        productsToSend.push({
-          product_id: pass.productId,
-          attendee_id: pass.attendeeId,
-          quantity: pass.quantity,
+      if (isEditing) {
+        // Edit mode: send only the final products the user wants to keep
+        attendeePasses.forEach(attendee => {
+          attendee.products.forEach(product => {
+            // Kept: purchased and NOT given up for credit
+            if (product.purchased && !product.edit) {
+              productsToSend.push({
+                product_id: product.id,
+                attendee_id: attendee.id,
+                quantity: product.quantity ?? 1,
+              });
+            }
+            // New: selected and not previously purchased
+            if (product.selected && !product.purchased) {
+              productsToSend.push({
+                product_id: product.id,
+                attendee_id: attendee.id,
+                quantity: product.category.includes('day')
+                  ? (product.quantity ?? 1) - (product.original_quantity ?? 0)
+                  : product.quantity ?? 1,
+              });
+            }
+          });
         });
-      });
+      } else {
+        // When using account credit (edit_passes will be true),
+        // include existing purchased products so the backend keeps them
+        const hasAccountCredit = (application?.credit ?? 0) > 0;
+        if (hasAccountCredit) {
+          attendeePasses.forEach(attendee => {
+            attendee.products.forEach(product => {
+              if (product.purchased) {
+                productsToSend.push({
+                  product_id: product.id,
+                  attendee_id: attendee.id,
+                  quantity: product.quantity ?? 1,
+                });
+              }
+            });
+          });
+        }
 
-      // Add merch
-      merch.forEach((item) => {
-        const firstAttendeeId = selectedPasses[0]?.attendeeId || 0;
-        productsToSend.push({
-          product_id: item.productId,
-          attendee_id: firstAttendeeId,
-          quantity: item.quantity,
+        // Normal mode: add selected passes
+        selectedPasses.forEach((pass) => {
+          productsToSend.push({
+            product_id: pass.productId,
+            attendee_id: pass.attendeeId,
+            quantity: pass.quantity,
+          });
         });
-      });
 
-      // Add housing
-      if (housing) {
-        const firstAttendeeId = selectedPasses[0]?.attendeeId || 0;
-        productsToSend.push({
-          product_id: housing.productId,
-          attendee_id: firstAttendeeId,
-          quantity: housing.nights,
+        // Add merch
+        merch.forEach((item) => {
+          const firstAttendeeId = selectedPasses[0]?.attendeeId || 0;
+          productsToSend.push({
+            product_id: item.productId,
+            attendee_id: firstAttendeeId,
+            quantity: item.quantity,
+          });
         });
+
+        // Add housing
+        if (housing) {
+          const firstAttendeeId = selectedPasses[0]?.attendeeId || 0;
+          productsToSend.push({
+            product_id: housing.productId,
+            attendee_id: firstAttendeeId,
+            quantity: housing.nights,
+          });
+        }
+
+        // Add patron — only include custom_amount for variable-price products
+        if (patron) {
+          const firstAttendeeId = selectedPasses[0]?.attendeeId || 0;
+          const isVariable = patron.product.min_price !== null && patron.product.min_price !== undefined;
+          productsToSend.push({
+            product_id: patron.productId,
+            attendee_id: firstAttendeeId,
+            quantity: 1,
+            ...(isVariable ? { custom_amount: patron.amount } : {}),
+          });
+        }
       }
 
-      // Add patron — only include custom_amount for variable-price products
-      if (patron) {
-        const firstAttendeeId = selectedPasses[0]?.attendeeId || 0;
-        const isVariable = patron.product.min_price !== null && patron.product.min_price !== undefined;
-        productsToSend.push({
-          product_id: patron.productId,
-          attendee_id: firstAttendeeId,
-          quantity: 1,
-          ...(isVariable ? { custom_amount: patron.amount } : {}),
-        });
-      }
-
-      const requestData = {
+      const requestData: Record<string, unknown> = {
         application_id: application.id,
         products: productsToSend,
         coupon_code: promoCodeValid ? promoCode : undefined,
         insurance: insurance || undefined,
+        ...((isEditing || (application?.credit ?? 0) > 0) ? { edit_passes: true } : {}),
       };
 
       const res = await api.post('payments', requestData);
@@ -554,7 +618,10 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
           window.location.href = `${data.checkout_url}?redirect_url=${encodeURIComponent(redirectUrl)}`;
           return { success: true };
         } else if (data.status === 'approved') {
-          toast.success('Payment completed successfully!');
+          toast.success(isEditing ? 'Your passes have been updated successfully!' : 'Payment completed successfully!');
+          if (isEditing) {
+            toggleEditing(false);
+          }
           clearCart();
           setCurrentStep('success');
           setIsSubmitting(false);
@@ -577,7 +644,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       setIsSubmitting(false);
       return { success: false, error: errorMsg };
     }
-  }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart]);
+  }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart, isEditing, attendeePasses, editCredit, toggleEditing]);
 
   const value: CheckoutContextValue = {
     currentStep,
@@ -609,6 +676,9 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     canProceedToStep: canProceedToStepFn,
     isStepComplete: isStepCompleteFn,
     submitPayment,
+    isEditing,
+    toggleEditing,
+    editCredit,
   };
 
   return (

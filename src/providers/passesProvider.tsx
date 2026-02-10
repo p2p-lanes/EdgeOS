@@ -22,6 +22,7 @@ interface PassesContext_interface {
   discountApplied: DiscountProps;
   isEditing: boolean;
   toggleEditing: (editing?: boolean) => void;
+  editCredit: number;
 }
 
 export const PassesContext = createContext<PassesContext_interface | null>(null);
@@ -212,6 +213,15 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [application?.group_id, groups, discountApplied.discount_value]);
 
+  const editCredit = useMemo(() => {
+    if (!isEditing) return 0;
+    return attendeePasses.reduce((credit, attendee) =>
+      credit + attendee.products
+        .filter(p => p.purchased && p.edit)
+        .reduce((sum, p) => sum + (p.price * (p.quantity ?? 1)), 0)
+    , 0);
+  }, [attendeePasses, isEditing]);
+
   const setDiscount = useCallback((discount: DiscountProps) => {
     console.log('setDiscount', discount.discount_value, discountApplied.discount_value)
     if(discount.discount_value <= discountApplied.discount_value) return;
@@ -229,7 +239,8 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         setCustomAmount,
         products,
         isEditing,
-        toggleEditing
+        toggleEditing,
+        editCredit
       }}>
       {children}
     </PassesContext.Provider>

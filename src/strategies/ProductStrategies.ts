@@ -239,7 +239,34 @@ class DayProductStrategy implements ProductStrategy {
   }
 }
 
+class EditProductStrategy implements ProductStrategy {
+  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
+    return attendees.map(attendee => {
+      if (attendee.id !== attendeeId) return attendee;
+
+      return {
+        ...attendee,
+        products: attendee.products.map(p => {
+          if (p.id !== product.id) return p;
+
+          if (p.purchased) {
+            // Toggle purchased product for credit: edit + selected
+            return { ...p, edit: !p.edit, selected: !p.selected };
+          }
+
+          // Non-purchased product: normal toggle
+          return { ...p, selected: !p.selected };
+        })
+      };
+    });
+  }
+}
+
 export const getProductStrategy = (product: ProductsPass, isEditing: boolean): ProductStrategy => {
+  // In edit mode, use EditProductStrategy for all non-patreon products
+  if (isEditing && product.category !== 'patreon') {
+    return new EditProductStrategy();
+  }
 
   if (product.exclusive && product.category !== 'month') return new ExclusiveProductStrategy();
   

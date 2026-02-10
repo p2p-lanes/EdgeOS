@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useCheckout } from '@/providers/checkoutProvider';
+import { useApplication } from '@/providers/applicationProvider';
 import {
   formatCurrency,
   formatDate,
@@ -30,7 +31,12 @@ export default function ConfirmStep() {
     toggleInsurance,
     isLoading,
     error: checkoutError,
+    isEditing,
+    editCredit,
   } = useCheckout();
+  const { getRelevantApplication } = useApplication();
+  const application = getRelevantApplication();
+  const accountCredit = application?.credit ?? 0;
 
   const [promoInput, setPromoInput] = useState(cart.promoCode);
   const [promoError, setPromoError] = useState('');
@@ -77,11 +83,13 @@ export default function ConfirmStep() {
     return acc;
   }, {} as Record<number, typeof cart.passes>);
 
+  const hasEditChanges = isEditing && attendees.some(a => a.products.some(p => p.edit));
   const hasCartItems =
     cart.passes.length > 0 ||
     cart.housing ||
     cart.merch.length > 0 ||
-    cart.patron;
+    cart.patron ||
+    hasEditChanges;
 
   // Check if any selected product has insurance available
   const hasInsurableProducts =
@@ -338,10 +346,16 @@ export default function ConfirmStep() {
               <span>-{formatCurrency(summary.discount)}</span>
             </div>
           )}
-          {summary.credit > 0 && (
+          {isEditing && editCredit > 0 && (
+            <div className="flex justify-between text-sm text-orange-600 mb-2">
+              <span>Edit Credit</span>
+              <span>-{formatCurrency(editCredit)}</span>
+            </div>
+          )}
+          {accountCredit > 0 && (
             <div className="flex justify-between text-sm text-blue-600 mb-2">
               <span>Account Credit</span>
-              <span>-{formatCurrency(summary.credit)}</span>
+              <span>-{formatCurrency(accountCredit)}</span>
             </div>
           )}
           <div className="flex justify-between items-center">

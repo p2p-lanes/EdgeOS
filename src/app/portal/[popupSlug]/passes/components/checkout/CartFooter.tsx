@@ -42,6 +42,8 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
     canProceedToStep,
     isStepComplete,
     isSubmitting,
+    isEditing,
+    editCredit,
   } = useCheckout();
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -53,13 +55,16 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
     ? availableSteps[currentIndex + 1]
     : null;
 
-  const canContinue = isConfirmStep
+  const hasEditChanges = isEditing && attendees.some(a => a.products.some(p => p.edit));
+  const canContinue = isEditing
+    ? (hasEditChanges || cart.passes.length > 0)
+    : isConfirmStep
     ? cart.passes.length > 0
     : nextStepId
     ? canProceedToStep(nextStepId)
     : false;
 
-  const hasItems = summary.itemCount > 0;
+  const hasItems = summary.itemCount > 0 || (isEditing && hasEditChanges);
 
   // Get attendee name by ID
   const getAttendeeName = (attendeeId: number): string => {
@@ -299,7 +304,7 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
               <div className="flex flex-col items-start min-w-0 overflow-hidden">
                 <div className="flex items-center gap-1.5">
                   <span className="text-[10px] lg:text-xs text-gray-500 uppercase tracking-wider font-medium">
-                    Total
+                    {isEditing ? 'To Pay' : 'Total'}
                   </span>
                   {hasItems && (
                     isExpanded ? (
@@ -312,6 +317,11 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
                 <span className="text-lg lg:text-2xl font-bold text-white truncate max-w-full">
                   {formatCurrency(summary.grandTotal)}
                 </span>
+                {isEditing && editCredit > 0 && (
+                  <span className="text-[10px] lg:text-xs text-orange-400 font-medium">
+                    Credit: {formatCurrency(editCredit)}
+                  </span>
+                )}
               </div>
             </button>
 
@@ -334,7 +344,13 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
               ) : (
                 <>
                   <span>
-                    {isConfirmStep
+                    {isEditing
+                      ? isConfirmStep
+                        ? summary.grandTotal === 0
+                          ? 'Confirm Edit'
+                          : 'Pay & Confirm Edit'
+                        : 'Continue'
+                      : isConfirmStep
                       ? summary.grandTotal === 0
                         ? 'Claim Pass'
                         : 'Pay'
