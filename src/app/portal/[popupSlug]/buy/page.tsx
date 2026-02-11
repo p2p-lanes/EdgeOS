@@ -5,7 +5,7 @@ import { useRouter, useParams, useSearchParams } from 'next/navigation';
 import { Loader } from '@/components/ui/Loader';
 import { CheckoutProvider } from '@/providers/checkoutProvider';
 import { usePassesProvider } from '@/providers/passesProvider';
-import { CheckoutFlow } from '../passes/components/checkout';
+import { CheckoutFlow } from '@/components/checkout';
 import { AttendeeModal } from '../passes/components/AttendeeModal';
 import usePermission from '../passes/hooks/usePermission';
 import useAttendee from '@/hooks/useAttendee';

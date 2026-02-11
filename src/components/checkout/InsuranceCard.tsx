@@ -268,9 +268,6 @@ function TrustVariant({ insurance, price, onToggle }: InsuranceCardProps) {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="font-semibold text-white">Insurance</h3>
-                <span className="text-[10px] font-bold uppercase tracking-wider bg-white/20 text-white px-2 py-0.5 rounded-full">
-                  Recommended
-                </span>
               </div>
               <p className="text-sm font-semibold text-white/90 mt-0.5">
                 {formatCurrency(price)}

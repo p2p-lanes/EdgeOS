@@ -1,5 +1,5 @@
 import { ProductsPass } from "@/types/Products"
-import { badgeName } from "../../../constants/multiuse"
+import { badgeName } from "../../../../../../../components/utils/multiuse"
 import { isVariablePrice, getEffectivePrice } from "@/helpers/variablePrice"
 
 const ProductCart = ({ product }: { product: ProductsPass }) => {

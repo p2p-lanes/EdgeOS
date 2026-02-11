@@ -8,7 +8,7 @@ import { useApplication } from '@/providers/applicationProvider';
 import { AttendeeProps, AttendeeCategory } from '@/types/Attendee';
 import { ProductsPass } from '@/types/Products';
 import { formatDate } from '@/helpers/dates';
-import { badgeName } from '../../constants/multiuse';
+import { badgeName } from '../utils/multiuse';
 
 interface PassSelectionSectionProps {
   onAddAttendee?: (category: AttendeeCategory) => void;

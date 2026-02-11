@@ -1,7 +1,6 @@
 "use client"
 
 import { motion } from "framer-motion"
-import BuyPasses from "@/app/portal/[popupSlug]/passes/Tabs/BuyPasses"
 import Providers from "./providers/Providers"
 import { ArrowLeft } from "lucide-react"
 
@@ -33,7 +32,6 @@ const PassesCheckout = ({ onBack }: PassesCheckoutProps) => {
           </button>
           
           <div className="pt-8">
-            <BuyPasses floatingBar={false} viewInvoices={false} canEdit={false} defaultOpenDiscount={true} positionCoupon={'right'}/>
           </div>
         </div>
       </Providers>

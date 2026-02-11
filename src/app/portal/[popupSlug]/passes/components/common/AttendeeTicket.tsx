@@ -1,6 +1,6 @@
 import { AttendeeProps } from "@/types/Attendee"
 import { ChevronRight, QrCode, User, Ticket } from "lucide-react"
-import { badgeName } from "../../constants/multiuse"
+import { badgeName } from "@/components/utils/multiuse"
 import { ProductsPass } from "@/types/Products"
 import { useCityProvider } from "@/providers/cityProvider"
 import Product from "./Products/ProductTicket"

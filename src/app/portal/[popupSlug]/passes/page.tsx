@@ -1,6 +1,6 @@
 'use client'
 import usePermission from './hooks/usePermission'
-import YourPasses from "./Tabs/YourPasses"
+import YourPasses from "./components/YourPasses"
 import { usePassesProvider } from "@/providers/passesProvider"
 import { Loader } from "@/components/ui/Loader"
 import { useRouter, useParams } from "next/navigation"

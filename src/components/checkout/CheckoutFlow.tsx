@@ -72,8 +72,6 @@ export default function CheckoutFlow({ onAddAttendee, onPaymentComplete, onBack 
     patronProducts,
     submitPayment,
   } = useCheckout();
-  const { getCity } = useCityProvider();
-  const city = getCity();
 
   // Scroll to top when step changes
   useEffect(() => {
