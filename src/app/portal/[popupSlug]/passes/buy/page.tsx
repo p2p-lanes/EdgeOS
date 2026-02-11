@@ -68,7 +68,7 @@ export default function BuyPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen">
       <CheckoutProvider products={products} initialStep={initialStep}>
         <CheckoutFlow
           onAddAttendee={handleAddAttendee}

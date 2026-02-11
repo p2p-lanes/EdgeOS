@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react"
 import { useSearchParams } from "next/navigation"
-import { Loader } from "@/components/ui/Loader"
 import { CheckoutProvider } from "@/providers/checkoutProvider"
 import { usePassesProvider } from "@/providers/passesProvider"
 import { CheckoutFlow } from "@/components/checkout"
@@ -22,6 +21,7 @@ const PassesCheckout = ({ onBack }: PassesCheckoutProps) => {
   const { addAttendee } = useAttendee();
   const [modalOpen, setModalOpen] = useState(false);
   const [modalCategory, setModalCategory] = useState<AttendeeCategory>("main");
+  const [isLoading, setIsLoading] = useState(true);
 
   // Check if returning from payment provider with success
   const checkoutSuccess = searchParams.get("checkout") === "success";
@@ -34,10 +34,12 @@ const PassesCheckout = ({ onBack }: PassesCheckoutProps) => {
     }
   }, [checkoutSuccess]);
 
-
-  // if (!attendees.length || !products.length) {
-  //   return <Loader />;
-  // }
+  // Detect when attendees and products are loaded
+  useEffect(() => {
+    if (attendees.length > 0 && products.length > 0) {
+      setIsLoading(false);
+    }
+  }, [attendees, products]);
 
   const handleAddAttendee = (category: AttendeeCategory) => {
     setModalCategory(category);
@@ -70,6 +72,7 @@ const PassesCheckout = ({ onBack }: PassesCheckoutProps) => {
           onAddAttendee={handleAddAttendee}
           onPaymentComplete={handlePaymentComplete}
           onBack={onBack}
+          isLoading={isLoading}
         />
       </CheckoutProvider>
 

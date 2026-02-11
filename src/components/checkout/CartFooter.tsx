@@ -95,8 +95,6 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
     updateMerchQuantity(productId, 0);
   };
 
-  console.log('summary', summary);
-
   return (
     <div className="z-30">
       {/* Backdrop to close cart on click outside */}

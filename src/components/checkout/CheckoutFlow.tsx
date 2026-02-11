@@ -1,10 +1,12 @@
 'use client';
 
 import { useEffect } from 'react';
+import { AnimatePresence } from 'framer-motion';
 import { useCheckout } from '@/providers/checkoutProvider';
 import { useCityProvider } from '@/providers/cityProvider';
 import { CheckoutStep } from '@/types/checkout';
 import PassSelectionSection from './PassSelectionSection';
+import CheckoutSkeleton from './CheckoutSkeleton';
 import HousingStep from './HousingStep';
 import MerchSection from './MerchSection';
 import PatronSection from './PatronSection';
@@ -57,9 +59,10 @@ interface CheckoutFlowProps {
   onAddAttendee?: (category: AttendeeCategory) => void;
   onPaymentComplete?: () => void;
   onBack?: () => void;
+  isLoading?: boolean;
 }
 
-export default function CheckoutFlow({ onAddAttendee, onPaymentComplete, onBack }: CheckoutFlowProps) {
+export default function CheckoutFlow({ onAddAttendee, onPaymentComplete, onBack, isLoading = false }: CheckoutFlowProps) {
   const {
     currentStep,
     availableSteps,
@@ -101,7 +104,15 @@ export default function CheckoutFlow({ onAddAttendee, onPaymentComplete, onBack 
   const renderStepContent = () => {
     switch (currentStep) {
       case 'passes':
-        return <PassSelectionSection onAddAttendee={onAddAttendee} />;
+        return (
+          <AnimatePresence mode="wait">
+            {isLoading ? (
+              <CheckoutSkeleton key="skeleton" />
+            ) : (
+              <PassSelectionSection key="passes" onAddAttendee={onAddAttendee} />
+            )}
+          </AnimatePresence>
+        );
       case 'housing':
         return housingProducts.length > 0 ? <HousingStep onSkip={handleSkip} /> : null;
       case 'merch':
