@@ -1,42 +1,87 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
+import { Loader } from "@/components/ui/Loader"
+import { CheckoutProvider } from "@/providers/checkoutProvider"
+import { usePassesProvider } from "@/providers/passesProvider"
+import { CheckoutFlow } from "@/components/checkout"
+import useAttendee from "@/hooks/useAttendee"
+import { AttendeeCategory, AttendeeProps } from "@/types/Attendee"
+import { CheckoutStep } from "@/types/checkout"
+import { AttendeeModal } from "@/app/portal/[popupSlug]/passes/components/AttendeeModal"
 import Providers from "./providers/Providers"
-import { ArrowLeft } from "lucide-react"
 
 interface PassesCheckoutProps {
   onBack: () => void;
 }
 
-// Componente principal que utiliza los providers originales
 const PassesCheckout = ({ onBack }: PassesCheckoutProps) => {
-  
+  const searchParams = useSearchParams();
+  const { attendeePasses: attendees, products } = usePassesProvider();
+  const { addAttendee } = useAttendee();
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalCategory, setModalCategory] = useState<AttendeeCategory>("main");
+
+  // Check if returning from payment provider with success
+  const checkoutSuccess = searchParams.get("checkout") === "success";
+  const initialStep: CheckoutStep = checkoutSuccess ? "success" : "passes";
+
+  // Clean URL parameter after detecting success to prevent showing success on manual reload
+  useEffect(() => {
+    if (checkoutSuccess) {
+      window.history.replaceState({}, "", window.location.pathname);
+    }
+  }, [checkoutSuccess]);
+
+
+  // if (!attendees.length || !products.length) {
+  //   return <Loader />;
+  // }
+
+  const handleAddAttendee = (category: AttendeeCategory) => {
+    setModalCategory(category);
+    setModalOpen(true);
+  };
+
+  const handleModalSubmit = async (data: AttendeeProps) => {
+    try {
+      await addAttendee({
+        name: data.name,
+        email: data.email,
+        category: data.category,
+        gender: data.gender,
+      });
+      setModalOpen(false);
+    } catch (error) {
+      console.error("Failed to add attendee:", error);
+    }
+  };
+
+  const handlePaymentComplete = () => {
+    // Success step handles navigation via auto-redirect
+    // No action needed here - the checkout provider sets currentStep to 'success'
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5 }}
-      className="max-w-3xl mx-auto backdrop-blur bg-[#F5F5F5] rounded-xl border shadow-md"
-    >
-      <Providers>
-        <div className="relative p-6">
-          <button
-            onClick={onBack}
-            onKeyDown={(e) => e.key === 'Enter' && onBack()}
-            className="absolute top-4 left-4 flex items-center text-gray-600 hover:text-gray-800 transition-colors"
-            aria-label="Go back to previous step"
-            tabIndex={0}
-          >
-            <ArrowLeft className="w-5 h-5 mr-1" />
-            <span>Back</span>
-          </button>
-          
-          <div className="pt-8">
-          </div>
-        </div>
-      </Providers>
-    </motion.div>
+    <Providers>
+      <CheckoutProvider products={products} initialStep={initialStep}>
+        <CheckoutFlow
+          onAddAttendee={handleAddAttendee}
+          onPaymentComplete={handlePaymentComplete}
+          onBack={onBack}
+        />
+      </CheckoutProvider>
+
+      <AttendeeModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onSubmit={handleModalSubmit}
+        category={modalCategory}
+        editingAttendee={null}
+      />
+    </Providers>
   )
 }
 
-export default PassesCheckout 
+export default PassesCheckout

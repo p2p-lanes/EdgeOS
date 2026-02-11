@@ -6,11 +6,11 @@ import { Loader } from '@/components/ui/Loader';
 import { CheckoutProvider } from '@/providers/checkoutProvider';
 import { usePassesProvider } from '@/providers/passesProvider';
 import { CheckoutFlow } from '@/components/checkout';
-import { AttendeeModal } from '../passes/components/AttendeeModal';
-import usePermission from '../passes/hooks/usePermission';
 import useAttendee from '@/hooks/useAttendee';
 import { AttendeeCategory, AttendeeProps, CreateAttendee } from '@/types/Attendee';
 import { CheckoutStep } from '@/types/checkout';
+import usePermission from '../hooks/usePermission';
+import { AttendeeModal } from '../components/AttendeeModal';
 
 export default function BuyPage() {
   usePermission();

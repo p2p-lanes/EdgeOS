@@ -122,7 +122,7 @@ export default function CheckoutFlow({ onAddAttendee, onPaymentComplete, onBack 
   const showFooter = currentStep !== 'success';
 
   return (
-    <div className="flex flex-col min-h-[100dvh] bg-[#F5F5F7] font-sans text-gray-900">
+    <div className="flex flex-col bg-[#F5F5F7] font-sans text-gray-900 rounded-lg">
       {/* Main Content */}
       <main className="flex-1 max-w-md lg:max-w-2xl mx-auto px-4 pt-6 pb-4 w-full">
         {/* Step Header - hidden on success step */}

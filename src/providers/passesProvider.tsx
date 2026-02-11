@@ -11,6 +11,7 @@ import { useCityProvider } from './cityProvider';
 import { getPurchaseStrategy } from '@/strategies/PurchaseStrategy';
 import { useGroupsProvider } from './groupsProvider';
 import { isVariablePrice } from '@/helpers/variablePrice';
+import { savePassSelections, loadPassSelections, clearPassSelectionsStorage, PersistedPassSelection } from '@/hooks/useCartStorage';
 
 interface PassesContext_interface {
   attendeePasses: AttendeeProps[];
@@ -45,6 +46,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   const city = getCity()
   const localResident = application?.local_resident || false
   const attendeePassesRef = useRef<AttendeeProps[]>([])
+  const hasRestoredRef = useRef(false)
   const { groups } = useGroupsProvider()
 
   const toggleProduct = useCallback((attendeeId: number, product: ProductsPass) => {
@@ -136,6 +138,11 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
+      // Read saved selections from localStorage reactively (city?.id may not be available on first render)
+      const savedSelections = (!hasRestoredRef.current && city?.id)
+        ? loadPassSelections(city.id)
+        : [];
+
       const initialAttendees = attendees.map(attendee => {
         const hasPatreonPurchased = attendee.products.some(p => p.category === 'patreon');
         const priceStrategy = getPriceStrategy();
@@ -154,12 +161,28 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
           .map((product: ProductsPass) => {
             const originalQuantity = product.category.includes('day') ? attendees.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.quantity ?? 0 : 1
             const prevProduct = attendeePassesRef.current.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)
+
+            // On first load, fallback to localStorage saved selections
+            const savedSelection = !hasRestoredRef.current
+              ? savedSelections.find(
+                  s => s.attendeeId === attendee.id && s.productId === product.id
+                )
+              : undefined;
+
+            const restoredSelected = prevProduct?.selected || !!savedSelection;
+            const restoredQuantity = prevProduct?.quantity ?? savedSelection?.quantity ?? originalQuantity;
+            const restoredCustomAmount = prevProduct?.custom_amount ?? savedSelection?.custom_amount;
+            const restoredEdit = prevProduct?.edit ?? false;
+
             return {
               ...product,
               original_quantity: originalQuantity,
-              quantity: originalQuantity,
-              selected: prevProduct?.selected || false,
-              custom_amount: prevProduct?.custom_amount,
+              quantity: product.category.includes('day') && restoredSelected
+                ? Math.max(restoredQuantity, originalQuantity)
+                : originalQuantity,
+              selected: restoredSelected,
+              custom_amount: restoredCustomAmount,
+              edit: restoredEdit,
               attendee_id: attendee.id,
               original_price: product.price,
               disabled: false,
@@ -173,12 +196,37 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         };
       });
       setAttendeePasses(initialAttendees);
+      // Mark restored only when city.id was available (so localStorage was actually checked)
+      if (city?.id) {
+        hasRestoredRef.current = true;
+      }
     }
-  }, [attendees, products, discountApplied, isEditing, localResident]);
+  }, [attendees, products, discountApplied, isEditing, localResident, city?.id]);
 
   useEffect(() => {
     attendeePassesRef.current = attendeePasses
-  }, [attendeePasses])
+
+    // Only persist after initial restoration to avoid overwriting saved data
+    if (!hasRestoredRef.current) return;
+
+    // Persist selected passes to localStorage
+    if (city?.id && attendeePasses.length > 0) {
+      const selections: PersistedPassSelection[] = [];
+      attendeePasses.forEach(attendee => {
+        attendee.products.forEach(product => {
+          if (product.selected) {
+            selections.push({
+              attendeeId: attendee.id,
+              productId: product.id,
+              quantity: product.quantity,
+              custom_amount: product.custom_amount,
+            });
+          }
+        });
+      });
+      savePassSelections(city.id, selections);
+    }
+  }, [attendeePasses, city?.id])
 
   const toggleEditing = useCallback((editing?: boolean) => {
     setAttendeePasses(attendeePasses.map(attendee => ({

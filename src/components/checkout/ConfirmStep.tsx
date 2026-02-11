@@ -298,7 +298,7 @@ export default function ConfirmStep() {
                 onClick={handleClearPromo}
                 aria-label="Remove promo code"
                 tabIndex={0}
-                className="px-3 py-2 rounded-lg text-sm font-medium bg-red-100 text-red-400 hover:bg-red-100 hover:text-red-600 transition-colors duration-200 flex-shrink-0"
+                className="px-3 py-2 rounded-lg text-sm font-medium bg-slate-100 text-gray-500 hover:bg-red-100 hover:text-red-600 transition-colors duration-200 flex-shrink-0"
               >
                 <X className="w-4 h-4" />
               </button>

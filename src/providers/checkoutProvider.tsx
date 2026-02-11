@@ -7,6 +7,8 @@ import {
   useState,
   useCallback,
   useMemo,
+  useEffect,
+  useRef,
 } from 'react';
 import { usePassesProvider } from './passesProvider';
 import { useApplication } from './applicationProvider';
@@ -26,6 +28,12 @@ import { AttendeeProps } from '@/types/Attendee';
 import { useCityProvider } from './cityProvider';
 import { api } from '@/api';
 import { toast } from 'sonner';
+import {
+  saveCheckoutCart,
+  loadCheckoutCart,
+  clearCartStorage,
+  PersistedCheckoutCart,
+} from '@/hooks/useCartStorage';
 
 interface CheckoutContextValue {
   // Current step
@@ -113,11 +121,15 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
   const { getCity } = useCityProvider();
   const application = getRelevantApplication();
   const city = getCity();
+  const scopeId = city?.id;
+
+  // Flag to prevent save effect from overwriting localStorage before restoration
+  const hasRestoredCheckoutRef = useRef(false);
 
   // Step management
   const [currentStep, setCurrentStep] = useState<CheckoutStep>(initialStep);
 
-  // Cart state for non-pass items
+  // Cart state for non-pass items — starts empty, restored reactively via useEffect
   const [housing, setHousing] = useState<SelectedHousingItem | null>(null);
   const [merch, setMerch] = useState<SelectedMerchItem[]>([]);
   const [patron, setPatron] = useState<SelectedPatronItem | null>(null);
@@ -125,6 +137,77 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
   const [promoCodeValid, setPromoCodeValid] = useState(false);
   const [promoCodeDiscount, setPromoCodeDiscount] = useState(0);
   const [insurance, setInsurance] = useState(false);
+
+  // Restore checkout cart from localStorage once scopeId becomes available
+  // If initialStep is 'success', user is returning from a confirmed payment — clear storage instead
+  useEffect(() => {
+    if (hasRestoredCheckoutRef.current || !scopeId) return;
+
+    hasRestoredCheckoutRef.current = true;
+
+    // Returning from successful payment — clear persisted cart, don't restore
+    if (initialStep === 'success') {
+      clearCartStorage(scopeId);
+      return;
+    }
+
+    const savedCart = loadCheckoutCart(scopeId);
+    if (!savedCart) return;
+
+    // Restore housing
+    if (savedCart.housing) {
+      const product = products.find(p => p.id === savedCart.housing!.productId);
+      if (product) {
+        const start = new Date(savedCart.housing.checkIn);
+        const end = new Date(savedCart.housing.checkOut);
+        const nights = Math.max(1, Math.ceil((end.getTime() - start.getTime()) / (1000 * 60 * 60 * 24)));
+        setHousing({
+          productId: product.id,
+          product,
+          checkIn: savedCart.housing.checkIn,
+          checkOut: savedCart.housing.checkOut,
+          nights,
+          pricePerNight: product.price,
+          totalPrice: product.price * nights,
+        });
+      }
+    }
+
+    // Restore merch
+    if (savedCart.merch?.length) {
+      const restoredMerch = savedCart.merch.reduce<SelectedMerchItem[]>((acc, saved) => {
+        const product = products.find(p => p.id === saved.productId);
+        if (!product || saved.quantity <= 0) return acc;
+        acc.push({
+          productId: product.id,
+          product,
+          quantity: saved.quantity,
+          unitPrice: product.price,
+          totalPrice: product.price * saved.quantity,
+        });
+        return acc;
+      }, []);
+      if (restoredMerch.length > 0) setMerch(restoredMerch);
+    }
+
+    // Restore patron
+    if (savedCart.patron) {
+      const product = products.find(p => p.id === savedCart.patron!.productId);
+      if (product) {
+        setPatron({
+          productId: product.id,
+          product,
+          amount: savedCart.patron.amount,
+          isCustomAmount: savedCart.patron.isCustomAmount,
+        });
+      }
+    }
+
+    // Restore insurance
+    if (savedCart.insurance) {
+      setInsurance(true);
+    }
+  }, [scopeId, products]);
 
   // Loading states
   const [isLoading, setIsLoading] = useState(false);
@@ -248,6 +331,23 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     insurancePrice: insuranceAmount,
     insurancePotentialPrice: insurancePotentialAmount,
   }), [selectedPasses, housing, merch, patron, promoCode, promoCodeValid, promoCodeDiscount, insurance, insuranceAmount, insurancePotentialAmount]);
+
+  // Persist checkout cart to localStorage whenever non-pass items change
+  // Guarded: only save after restoration to avoid overwriting saved data with empty state
+  useEffect(() => {
+    if (!scopeId || !hasRestoredCheckoutRef.current) return;
+    const persistedCart: PersistedCheckoutCart = {
+      housing: housing
+        ? { productId: housing.productId, checkIn: housing.checkIn, checkOut: housing.checkOut }
+        : null,
+      merch: merch.map(m => ({ productId: m.productId, quantity: m.quantity })),
+      patron: patron
+        ? { productId: patron.productId, amount: patron.amount, isCustomAmount: patron.isCustomAmount }
+        : null,
+      insurance,
+    };
+    saveCheckoutCart(scopeId, persistedCart);
+  }, [housing, merch, patron, insurance, scopeId]);
 
   // Calculate summary
   // Note: Insurance is calculated on original prices (before discounts) and added AFTER discounts
@@ -456,16 +556,19 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     setPromoCodeValid(false);
     setPromoCodeDiscount(0);
     setInsurance(false);
-  }, []);
+    // Clear persisted cart from localStorage
+    if (scopeId) {
+      clearCartStorage(scopeId);
+    }
+  }, [scopeId]);
 
   // Validation helpers
   const canProceedToStepFn = useCallback((step: CheckoutStep): boolean => {
     const targetIndex = availableSteps.findIndex(s => s === step);
 
-    // In edit mode, can proceed if user has made changes (any product has edit: true)
+    // In edit mode, can proceed only if a new pass is selected
     if (isEditing) {
-      const hasEditChanges = attendeePasses.some(a => a.products.some(p => p.edit));
-      return hasEditChanges || selectedPasses.length > 0;
+      return selectedPasses.length > 0;
     }
 
     // Must have at least one pass to proceed past first step
@@ -497,13 +600,9 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       return { success: false, error: 'Application not available' };
     }
 
-    // In edit mode, we need at least one edit action; in normal mode, need at least one pass
-    const hasEditChanges = isEditing && attendeePasses.some(a => a.products.some(p => p.edit));
-    if (!isEditing && selectedPasses.length === 0) {
-      return { success: false, error: 'Please select at least one pass' };
-    }
-    if (isEditing && !hasEditChanges && selectedPasses.length === 0) {
-      return { success: false, error: 'Please make changes to your passes' };
+    // Both normal and edit mode require at least one new pass selected
+    if (selectedPasses.length === 0) {
+      return { success: false, error: isEditing ? 'Please select a new pass' : 'Please select at least one pass' };
     }
 
     setIsSubmitting(true);
@@ -611,6 +710,8 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
         const data = res.data;
 
         if (data.status === 'pending' && data.checkout_url) {
+          // Do NOT clear cart here — payment is not confirmed yet.
+          // Cart will be cleared when user returns with ?checkout=success
           // Redirect to payment provider with success parameter for return
           // Keep loading state active during redirect
           const currentUrl = new URL(window.location.href);
@@ -645,7 +746,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       setIsSubmitting(false);
       return { success: false, error: errorMsg };
     }
-  }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart, isEditing, attendeePasses, editCredit, toggleEditing]);
+  }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart, isEditing, attendeePasses, editCredit, toggleEditing, scopeId]);
 
   const value: CheckoutContextValue = {
     currentStep,

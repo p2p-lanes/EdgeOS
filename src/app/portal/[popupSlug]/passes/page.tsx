@@ -16,7 +16,7 @@ export default function HomePasses() {
   if(!attendees.length || !products.length) return <Loader />
 
   const handleBuyPasses = () => {
-    router.push(`/portal/${popupSlug}/buy`)
+    router.push(`/portal/${popupSlug}/passes/buy`)
   }
 
   return (

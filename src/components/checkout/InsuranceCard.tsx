@@ -18,7 +18,7 @@ import { Switch } from '@/components/ui/switch';
 import { formatCurrency, INSURANCE_BENEFITS } from '@/types/checkout';
 
 // ── Dev toggle: set to false (or remove) to hide the variant switcher ──
-const DEV_TOGGLE = true;
+const DEV_TOGGLE = false;
 
 type Variant =
   | 'minimal'
@@ -886,7 +886,7 @@ const VARIANT_MAP: Record<Variant, React.ComponentType<InsuranceCardProps>> = {
 };
 
 export default function InsuranceCard(props: InsuranceCardProps) {
-  const [variant, setVariant] = useState<Variant>('trust');
+  const [variant, setVariant] = useState<Variant>('playful');
   const VariantComponent = VARIANT_MAP[variant];
 
   return (

@@ -57,7 +57,7 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
 
   const hasEditChanges = isEditing && attendees.some(a => a.products.some(p => p.edit));
   const canContinue = isEditing
-    ? (hasEditChanges || cart.passes.length > 0)
+    ? cart.passes.length > 0
     : isConfirmStep
     ? cart.passes.length > 0
     : nextStepId
