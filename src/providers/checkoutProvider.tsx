@@ -108,7 +108,7 @@ interface CheckoutProviderProps {
 }
 
 export function CheckoutProvider({ children, products, initialStep = 'passes' }: CheckoutProviderProps) {
-  const { attendeePasses, toggleProduct, resetDayProduct, discountApplied, setDiscount, isEditing, editCredit, toggleEditing } = usePassesProvider();
+  const { attendeePasses, toggleProduct, resetDayProduct, discountApplied, setDiscount, clearDiscount, isEditing, editCredit, toggleEditing } = usePassesProvider();
   const { getRelevantApplication } = useApplication();
   const { getCity } = useCityProvider();
   const application = getRelevantApplication();
@@ -405,7 +405,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
         const discountValue = res.data.discount_value;
 
         // Check if this discount is better than current
-        if (discountValue > discountApplied.discount_value) {
+        if (discountValue >= discountApplied.discount_value) {
           setPromoCode(code.toUpperCase());
           setPromoCodeValid(true);
           setPromoCodeDiscount(discountValue);
@@ -439,7 +439,8 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     setPromoCode('');
     setPromoCodeValid(false);
     setPromoCodeDiscount(0);
-  }, []);
+    clearDiscount();
+  }, [clearDiscount]);
 
   // Insurance
   const toggleInsurance = useCallback(() => {

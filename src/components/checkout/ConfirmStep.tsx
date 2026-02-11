@@ -6,7 +6,7 @@ import {
   Home,
   ShoppingBag,
   Heart,
-  Check,
+  X,
   AlertCircle,
   CloudRain,
   Loader2,
@@ -285,7 +285,7 @@ export default function ConfirmStep() {
               placeholder="Promo code"
               disabled={cart.promoCodeValid}
               className={cn(
-                'flex-1 px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
+                'flex-1 px-3 py-2 border rounded-lg text-sm transition-all duration-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent',
                 promoError
                   ? 'border-red-300 bg-red-50'
                   : cart.promoCodeValid
@@ -296,9 +296,11 @@ export default function ConfirmStep() {
             {cart.promoCodeValid ? (
               <button
                 onClick={handleClearPromo}
-                className="px-4 py-2 rounded-lg text-sm font-medium bg-green-100 text-green-700 flex-shrink-0"
+                aria-label="Remove promo code"
+                tabIndex={0}
+                className="px-3 py-2 rounded-lg text-sm font-medium bg-red-100 text-red-400 hover:bg-red-100 hover:text-red-600 transition-colors duration-200 flex-shrink-0"
               >
-                <Check className="w-4 h-4" />
+                <X className="w-4 h-4" />
               </button>
             ) : (
               <button
@@ -318,13 +320,15 @@ export default function ConfirmStep() {
             )}
           </div>
           {promoError && (
-            <div className="flex items-center gap-1.5 text-red-600 text-xs mt-2">
+            <div className="flex items-center gap-1.5 text-red-600 text-xs mt-2 animate-in fade-in-0 slide-in-from-bottom-1 duration-300">
               <AlertCircle className="w-3 h-3" />
               <span>{promoError}</span>
             </div>
           )}
           {cart.promoCodeValid && (
-            <p className="text-green-600 text-xs mt-2">Code applied!</p>
+            <p className="text-green-600 text-xs mt-2 animate-in fade-in-0 slide-in-from-bottom-1 duration-300">
+              Code applied!
+            </p>
           )}
         </div>
 
@@ -335,13 +339,13 @@ export default function ConfirmStep() {
         )}>
           {/* Show original subtotal when there's a discount */}
           {summary.discount > 0 && (
-            <div className="flex justify-between text-sm text-gray-500 mb-2">
+            <div className="flex justify-between text-sm text-gray-500 mb-2 animate-in fade-in-0 slide-in-from-bottom-1 duration-300">
               <span>Subtotal</span>
               <span>{formatCurrency(summary.subtotal)}</span>
             </div>
           )}
           {summary.discount > 0 && (
-            <div className="flex justify-between text-sm text-green-600 mb-2">
+            <div className="flex justify-between text-sm text-green-600 mb-2 animate-in fade-in-0 slide-in-from-bottom-2 duration-500">
               <span>Promo Discount</span>
               <span>-{formatCurrency(summary.discount)}</span>
             </div>

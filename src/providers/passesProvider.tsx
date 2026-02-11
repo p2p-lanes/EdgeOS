@@ -19,6 +19,7 @@ interface PassesContext_interface {
   setCustomAmount: (attendeeId: number, productId: number, amount: number | undefined) => void;
   products: ProductsPass[];
   setDiscount: (discount: DiscountProps) => void;
+  clearDiscount: () => void;
   discountApplied: DiscountProps;
   isEditing: boolean;
   toggleEditing: (editing?: boolean) => void;
@@ -228,10 +229,15 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     setDiscountApplied(discount);
   }, [discountApplied.discount_value])
 
+  const clearDiscount = useCallback(() => {
+    setDiscountApplied({ discount_value: 0, discount_type: 'percentage', discount_code: null });
+  }, []);
+
   return (
     <PassesContext.Provider 
       value={{ 
         setDiscount,
+        clearDiscount,
         discountApplied,
         attendeePasses,
         toggleProduct,
