@@ -138,7 +138,13 @@ class WeekProductStrategy implements ProductStrategy {
         products: updatedProducts.map(p => ({
           ...p,
           quantity: p.category.includes('day') && shouldSelectMonth && !p.purchased ? 0 : p.quantity,
-          selected: p.category === 'month' ? shouldSelectMonth : p.category.includes('day') && shouldSelectMonth ? false : p.selected,
+          selected: p.category === 'month'
+            ? shouldSelectMonth
+            : (p.category === 'week' && shouldSelectMonth && !p.purchased)
+              ? false
+              : (p.category.includes('day') && shouldSelectMonth)
+                ? false
+                : p.selected,
           edit: p.category === 'month' ? hasEdited : p.edit
         }))
       };
@@ -213,7 +219,13 @@ class LocalWeekProductStrategy implements ProductStrategy {
         products: updatedProducts.map(p => ({
           ...p,
           quantity: p.category.includes('day') && shouldSelectMonth && !p.purchased ? 0 : p.quantity,
-          selected: p.category === 'local month' ? shouldSelectMonth : p.category.includes('day') && shouldSelectMonth ? false : p.selected,
+          selected: p.category === 'local month'
+            ? shouldSelectMonth
+            : (p.category === 'local week' && shouldSelectMonth && !p.purchased)
+              ? false
+              : (p.category.includes('day') && shouldSelectMonth)
+                ? false
+                : p.selected,
           edit: p.category === 'local month' ? hasEdited : p.edit
         }))
       };
