@@ -1,8 +1,6 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -224,22 +222,6 @@ export default function PatronSection({ onSkip }: PatronSectionProps) {
       <p className="text-xs text-gray-400 text-center">
         47 builders & 12 projects funded in 2025
       </p>
-
-      {/* Floating island icon - desktop only */}
-      <motion.div
-        initial={{ y: 0 }}
-        animate={{ y: [0, 6, 0] }}
-        transition={{ duration: 4, repeat: Infinity, repeatType: 'loop', ease: 'easeIn' }}
-        className="hidden lg:block fixed bottom-24 right-8 z-20 pointer-events-none"
-        aria-hidden="true"
-      >
-        <Image
-          src="https://simplefi.s3.us-east-2.amazonaws.com/edge-patagonia-island-min.png"
-          alt="EdgeCity illustration"
-          width={80}
-          height={80}
-        />
-      </motion.div>
     </div>
   );
 }

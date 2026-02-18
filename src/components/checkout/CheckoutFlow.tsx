@@ -1,7 +1,8 @@
 'use client';
 
 import { useEffect } from 'react';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import Image from 'next/image';
 import { useCheckout } from '@/providers/checkoutProvider';
 import { useCityProvider } from '@/providers/cityProvider';
 import { CheckoutStep } from '@/types/checkout';
@@ -160,6 +161,22 @@ export default function CheckoutFlow({ onAddAttendee, onPaymentComplete, onBack,
           </div>
         </div>
       )}
+
+      {/* Floating island icon - desktop only */}
+      <motion.div
+        initial={{ y: 0 }}
+        animate={{ y: [0, 6, 0] }}
+        transition={{ duration: 4, repeat: Infinity, repeatType: 'loop', ease: 'easeIn' }}
+        className="hidden lg:block fixed bottom-24 right-8 z-20 pointer-events-none"
+        aria-hidden="true"
+      >
+        <Image
+          src="https://simplefi.s3.us-east-2.amazonaws.com/edge-patagonia-island-min.png"
+          alt="EdgeCity illustration"
+          width={80}
+          height={80}
+        />
+      </motion.div>
     </div>
   );
 }
