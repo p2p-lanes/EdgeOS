@@ -122,6 +122,7 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
           )}
         </div>
 
+        {/* Edit Passes button - temporarily disabled
         {somePurchased && (
           <button
             onClick={handleToggleEdit}
@@ -147,6 +148,7 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
             )}
           </button>
         )}
+        */}
 
       </div>
 
