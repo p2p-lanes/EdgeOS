@@ -17,9 +17,10 @@ import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 import { useCheckout } from '@/providers/checkoutProvider';
 import { formatCurrency } from '@/types/checkout';
+import { useCityProvider } from '@/providers/cityProvider';
 
 // ── Dev toggle: set to false (or remove) to hide the variant switcher ──
-const DEV_TOGGLE = true;
+const DEV_TOGGLE = false;
 
 type SuccessVariant =
   | 'minimal'
@@ -60,17 +61,7 @@ const SharedFooter = ({ countdown, onGoToPasses, dark = false }: SharedFooterPro
     <p className={cn('text-sm', dark ? 'text-slate-400' : 'text-gray-500')}>
       Redirecting in {countdown}s...
     </p>
-    <Button
-      onClick={onGoToPasses}
-      aria-label="Go to My Passes"
-      tabIndex={0}
-      className={cn(
-        'px-6 py-2 rounded-xl flex items-center gap-2 transition-colors',
-        dark
-          ? 'bg-emerald-500 hover:bg-emerald-400 text-slate-900 font-semibold'
-          : 'bg-gray-900 hover:bg-gray-800 text-white'
-      )}
-    >
+    <Button onClick={onGoToPasses}>
       Go to My Passes
       <ArrowRight className="w-4 h-4" />
     </Button>
@@ -544,6 +535,8 @@ const TerminalVariant = ({
   grandTotal,
   passCount,
 }: SharedFooterProps & { grandTotal: number; passCount: number }) => {
+  const { getCity } = useCityProvider();
+  const city = getCity();
   const refId = useMemo(() => Math.random().toString(36).slice(2, 10).toUpperCase(), []);
   const lines: TerminalLine[] = useMemo(
     () => [
@@ -554,7 +547,7 @@ const TerminalVariant = ({
       { text: `Generating ${passCount} ${passCount === 1 ? 'pass' : 'passes'}...`, status: 'OK', statusColor: 'text-green-400', delay: 1.8 },
       { text: `Total: ${formatCurrency(grandTotal)}`, status: 'CONFIRMED', statusColor: 'text-amber-400', delay: 2.2 },
       { text: '', delay: 2.5 },
-      { text: 'Payment successful. Redirecting...', delay: 2.6 },
+      { text: `Payment successful. Welcome to ${city?.name}...`, delay: 2.6 },
     ],
     [grandTotal, passCount]
   );
@@ -1344,8 +1337,8 @@ const SplitVariant = ({
 export default function SuccessStep({ onComplete }: SuccessStepProps) {
   const params = useParams();
   const popupSlug = params.popupSlug as string;
-  const [countdown, setCountdown] = useState(DEV_TOGGLE ? 99 : 3);
-  const [variant, setVariant] = useState<SuccessVariant>('minimal');
+  const [countdown, setCountdown] = useState(DEV_TOGGLE ? 99 : 5);
+  const [variant, setVariant] = useState<SuccessVariant>('terminal');
 
   const { cart, summary } = useCheckout();
   const grandTotal = summary.grandTotal;
@@ -1370,7 +1363,7 @@ export default function SuccessStep({ onComplete }: SuccessStepProps) {
     const redirectTimer = setTimeout(() => {
       onComplete?.();
       window.location.href = passesUrl;
-    }, 3000);
+    }, 5000);
 
     return () => {
       clearInterval(countdownInterval);
