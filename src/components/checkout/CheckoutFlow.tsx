@@ -25,7 +25,7 @@ function getStepTitle(step: CheckoutStep): string {
     case 'merch':
       return 'Event Merchandise';
     case 'patron':
-      return 'Support Edge City';
+      return 'Become a Patron';
     case 'confirm':
       return 'Review & Confirm';
     case 'success':
@@ -45,7 +45,7 @@ function getStepSubtitle(step: CheckoutStep): string {
     case 'merch':
       return 'Optional: Pick up exclusive merch at the event';
     case 'patron':
-      return 'Optional: Help fund scholarships for builders';
+      return 'Optional: Support Edge City\u2019s mission with a donation';
     case 'confirm':
       return 'Review your order before payment';
     case 'success':

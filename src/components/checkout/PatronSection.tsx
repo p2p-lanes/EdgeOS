@@ -1,7 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Heart } from 'lucide-react';
+import { motion } from 'framer-motion';
+import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -93,7 +94,6 @@ export default function PatronSection({ onSkip }: PatronSectionProps) {
   if (patronProducts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
-        <Heart className="w-12 h-12 text-gray-300 mb-4" />
         <h3 className="text-lg font-semibold text-gray-900 mb-2">
           Patron Support Not Available
         </h3>
@@ -112,29 +112,43 @@ export default function PatronSection({ onSkip }: PatronSectionProps) {
     <div className="space-y-4">
       {/* Main Card */}
       <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        {/* Header - Always visible */}
-        <div className="w-full p-5 flex items-center gap-4 text-left">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-100 to-orange-100 flex items-center justify-center flex-shrink-0">
-            <Heart className="w-6 h-6 text-amber-600" />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-gray-900">Support Edge City</h3>
-            <p className="text-sm text-gray-500">Fund scholarships for builders</p>
+        {/* Header */}
+        <div className="w-full p-5 text-left">
+          <div className="flex items-center justify-between mb-3">
+            <h3 className="font-semibold text-gray-900 text-lg">Become a Patron</h3>
+
+            {/* Fixed-price: show switch + price */}
+            {!isVariablePrice && (
+              <div className="flex items-center gap-3 flex-shrink-0">
+                <span className="text-sm font-semibold text-gray-700">
+                  {formatCurrency(patronProduct.price)}
+                </span>
+                <Switch
+                  checked={isPatronEnabled}
+                  onCheckedChange={handleFixedToggle}
+                  aria-label="Toggle patron support"
+                />
+              </div>
+            )}
           </div>
 
-          {/* Fixed-price: show switch + price */}
-          {!isVariablePrice && (
-            <div className="flex items-center gap-3 flex-shrink-0">
-              <span className="text-sm font-semibold text-gray-700">
-                {formatCurrency(patronProduct.price)}
-              </span>
-              <Switch
-                checked={isPatronEnabled}
-                onCheckedChange={handleFixedToggle}
-                aria-label="Toggle patron support"
-              />
-            </div>
-          )}
+          <div className="space-y-3 text-sm text-gray-600 leading-relaxed">
+            <p>
+              Add an optional donation to support Edge City&apos;s mission. Every contribution goes
+              toward fellowships for researchers, artists, and builders who&apos;d have difficulty
+              attending otherwise, and toward sustaining the community infrastructure that makes all
+              of this work.
+            </p>
+            <p>
+              Edge Institute is a 501(c)(3) nonprofit. All contributions are tax-deductible and
+              documentation is provided.
+            </p>
+            <p>
+              As a patron, you&apos;ll be featured on our website, invited to a gathering with the
+              core team during the event, and if you&apos;d like, introduced to the fellow you helped
+              bring.
+            </p>
+          </div>
         </div>
 
         {/* Variable-price: Expandable Amount Selection */}
@@ -210,6 +224,22 @@ export default function PatronSection({ onSkip }: PatronSectionProps) {
       <p className="text-xs text-gray-400 text-center">
         47 builders & 12 projects funded in 2025
       </p>
+
+      {/* Floating island icon - desktop only */}
+      <motion.div
+        initial={{ y: 0 }}
+        animate={{ y: [0, 6, 0] }}
+        transition={{ duration: 4, repeat: Infinity, repeatType: 'loop', ease: 'easeIn' }}
+        className="hidden lg:block fixed bottom-24 right-8 z-20 pointer-events-none"
+        aria-hidden="true"
+      >
+        <Image
+          src="https://simplefi.s3.us-east-2.amazonaws.com/edge-patagonia-island-min.png"
+          alt="EdgeCity illustration"
+          width={80}
+          height={80}
+        />
+      </motion.div>
     </div>
   );
 }
