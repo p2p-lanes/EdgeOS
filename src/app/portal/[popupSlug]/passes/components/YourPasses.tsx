@@ -140,14 +140,14 @@ const YourPasses = ({ onSwitchToBuy }: YourPassesProps) => {
                   <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm px-2.5 py-1 rounded-full mb-3">
                     <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
                     <span className="text-xs text-white/90 font-medium">
-                      500+ builders registered
+                      100+ people already registered
                     </span>
                   </div>
                   <h3 className="text-white font-bold text-2xl">
                     Your adventure awaits
                   </h3>
                   <p className="text-gray-300 text-sm mt-1 max-w-md">
-                    Join the most innovative minds for 4 weeks of building, learning, and connecting.
+                   Join the village for people building a brighter future.
                   </p>
                 </div>
                 <div className="flex flex-col gap-1.5 flex-shrink-0">
