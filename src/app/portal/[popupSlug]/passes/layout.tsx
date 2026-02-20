@@ -9,7 +9,7 @@ import { GroupsProvider, useGroupsProvider } from "@/providers/groupsProvider"
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
       <TotalProvider>
-        <div className="py-6">
+        <div>
           {children}
         </div>
       </TotalProvider>
