@@ -1,15 +1,19 @@
 'use client';
 
-import { Plus, User, Ticket, Check, Sparkles, Minus, PencilIcon, XIcon } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { useState } from 'react';
+import { Plus, User, Ticket, Check, Sparkles, Minus, PencilIcon, XIcon, ChevronDown } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { usePassesProvider } from '@/providers/passesProvider';
 import { useCityProvider } from '@/providers/cityProvider';
-import { useApplication } from '@/providers/applicationProvider';
 import { AttendeeProps, AttendeeCategory } from '@/types/Attendee';
 import { ProductsPass } from '@/types/Products';
 import { formatDate } from '@/helpers/dates';
 import { badgeName } from '../utils/multiuse';
+
+const DEV_TOGGLE = true;
+type PassVariant = 'default' | 'compact' | 'accordion';
+const VARIANT_LIST: PassVariant[] = ['default', 'compact', 'accordion'];
 
 interface PassSelectionSectionProps {
   onAddAttendee?: (category: AttendeeCategory) => void;
@@ -36,7 +40,7 @@ const stripedPatternStyle = {
   backgroundImage: 'repeating-linear-gradient(135deg, transparent, transparent 3px, rgba(0,0,0,0.07) 3px, rgba(0,0,0,0.07) 6px)'
 };
 
-export default function PassSelectionSection({ onAddAttendee }: PassSelectionSectionProps) {
+function DefaultVariant({ onAddAttendee }: PassSelectionSectionProps) {
   const { attendeePasses, toggleProduct, isEditing, toggleEditing, editCredit } = usePassesProvider();
   const { getCity } = useCityProvider();
   const city = getCity();
@@ -173,9 +177,10 @@ interface AttendeePassCardProps {
   city: any;
   isEditing: boolean;
   allAttendees: AttendeeProps[];
+  hideHeader?: boolean;
 }
 
-function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttendees }: AttendeePassCardProps) {
+function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttendees, hideHeader = false }: AttendeePassCardProps) {
   const isChild = attendee.category === 'kid' || attendee.category === 'teen' || attendee.category === 'baby';
   const isSpouse = attendee.category === 'spouse';
 
@@ -217,19 +222,20 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-      {/* Member Header */}
-      <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
-        <div className="flex items-center gap-3">
-          <div className="bg-gray-100 p-2 rounded-full">
-            <User className="w-4 h-4 text-gray-600" />
-          </div>
-          <div>
-            <h3 className="font-semibold text-gray-900">{attendee.name}</h3>
-            <p className="text-sm text-gray-500">{getCategoryLabel(attendee.category)}</p>
+    <div className={cn(!hideHeader && 'bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden')}>
+      {!hideHeader && (
+        <div className="px-5 py-4 border-b border-gray-100 bg-gray-50/50">
+          <div className="flex items-center gap-3">
+            <div className="bg-gray-100 p-2 rounded-full">
+              <User className="w-4 h-4 text-gray-600" />
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900">{attendee.name}</h3>
+              <p className="text-sm text-gray-500">{getCategoryLabel(attendee.category)}</p>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Month Pass Section - Only for non-children */}
       {monthProducts.length > 0 && !isChild && (
@@ -698,6 +704,238 @@ function DayPassOption({ product, onQuantityChange, disabled, disabledReason, is
           ${product.price.toLocaleString()}
         </p>
       </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// COMPACT — Table-like layout, attendees stacked, products inline
+// ═══════════════════════════════════════════════════════════════
+
+function CompactVariant({ onAddAttendee }: PassSelectionSectionProps) {
+  const { attendeePasses, toggleProduct, isEditing, toggleEditing, editCredit } = usePassesProvider();
+  const { getCity } = useCityProvider();
+  const city = getCity();
+  const hasSpouse = attendeePasses.some(a => a.category === 'spouse');
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }} className="space-y-3">
+      {isEditing && (
+        <div className="bg-blue-50 border border-blue-200 rounded-xl px-3 py-2 flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <PencilIcon className="w-3.5 h-3.5 text-blue-600" />
+            <span className="text-sm font-medium text-blue-800">Edit Mode</span>
+          </div>
+          {editCredit > 0 && (
+            <span className="text-xs font-semibold text-blue-700 bg-blue-100 px-2 py-0.5 rounded">
+              Credit: ${editCredit.toLocaleString()}
+            </span>
+          )}
+        </div>
+      )}
+
+      <div className="flex items-center gap-2 flex-wrap">
+        {!isEditing && !hasSpouse && city?.allows_spouse && (
+          <button onClick={() => onAddAttendee?.('spouse')} className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 transition-all">
+            <Plus className="w-3 h-3" /> Spouse
+          </button>
+        )}
+        {!isEditing && city?.allows_children && (
+          <button onClick={() => onAddAttendee?.('kid')} className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-gray-200 rounded-lg text-xs font-medium text-gray-600 hover:bg-gray-50 transition-all">
+            <Plus className="w-3 h-3" /> Child
+          </button>
+        )}
+      </div>
+
+      <div className="bg-white rounded-xl border border-gray-100 overflow-hidden divide-y divide-gray-100">
+        {attendeePasses.map((attendee) => {
+          const standardProducts = attendee.products.filter(p => p.category !== 'patreon').sort(sortProductsByPriority);
+          const hasMonthSelected = attendee.products.some(p => p.category.toLowerCase().includes('month') && (p.purchased || p.selected));
+          const isChild = attendee.category === 'kid' || attendee.category === 'teen' || attendee.category === 'baby';
+          const isSpouse = attendee.category === 'spouse';
+
+          const primaryHasPass = (passId: number): boolean => {
+            const primary = attendeePasses.find(a => a.category === 'main');
+            if (!primary) return true;
+            const pp = primary.products.find(p => p.id === passId);
+            if (!pp) return true;
+            const primaryHasMonth = primary.products.some(p => p.category.toLowerCase().includes('month') && (p.purchased || p.selected));
+            return pp.purchased || pp.selected || primaryHasMonth;
+          };
+
+          return (
+            <div key={attendee.id} className="px-4 py-3">
+              <div className="flex items-center gap-2 mb-2">
+                <User className="w-3.5 h-3.5 text-gray-400" />
+                <span className="text-sm font-semibold text-gray-900">{attendee.name}</span>
+                <span className="text-[10px] text-gray-400 uppercase tracking-wide">{getCategoryLabel(attendee.category)}</span>
+              </div>
+              <div className="space-y-1">
+                {standardProducts.map((product) => {
+                  const { purchased, selected } = product;
+                  const isSelected = selected && !purchased;
+                  const disabled = product.disabled || (product.category.toLowerCase().includes('week') && hasMonthSelected) || (product.category.toLowerCase().includes('day') && hasMonthSelected) || (product.category.toLowerCase().includes('month') && isChild);
+                  const disabledForSpouse = isSpouse && !primaryHasPass(product.id);
+                  const isDisabled = disabled || disabledForSpouse;
+                  const isClickable = !isDisabled && (!purchased || isEditing);
+                  const isEditedForCredit = purchased && product.edit;
+
+                  if (purchased && !isEditing) {
+                    return (
+                      <div key={product.id} className="flex items-center justify-between py-1 opacity-50">
+                        <div className="flex items-center gap-2">
+                          <span className="w-2 h-2 rounded-full bg-slate-300" />
+                          <span className="text-xs text-gray-400">{product.name}</span>
+                          <span className="text-[9px] bg-slate-100 text-slate-400 px-1.5 py-0.5 rounded uppercase font-semibold">owned</span>
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  return (
+                    <button key={product.id} onClick={isClickable ? () => toggleProduct(attendee.id, product) : undefined} disabled={!isClickable} aria-label={`Toggle ${product.name}`} tabIndex={0}
+                      className={cn('w-full flex items-center justify-between py-1.5 px-2 rounded-lg text-left transition-all', isDisabled ? 'opacity-30 cursor-not-allowed' : isEditedForCredit ? 'bg-orange-50' : isSelected ? 'bg-blue-50' : 'hover:bg-gray-50')}>
+                      <div className="flex items-center gap-2">
+                        <div className={cn('w-4 h-4 rounded border flex items-center justify-center flex-shrink-0', isEditedForCredit ? 'bg-orange-100 border-orange-400' : isSelected ? 'bg-blue-600 border-blue-600' : 'border-gray-300')}>
+                          {(isSelected || isEditedForCredit) && <Check className="w-2.5 h-2.5 text-white" />}
+                        </div>
+                        <span className={cn('text-xs font-medium', isEditedForCredit ? 'text-orange-700 line-through' : isSelected ? 'text-blue-700' : 'text-gray-700')}>{product.name}</span>
+                      </div>
+                      <span className={cn('text-xs font-semibold tabular-nums', isEditedForCredit ? 'text-orange-600' : isSelected ? 'text-blue-600' : 'text-gray-500')}>${product.price.toLocaleString()}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// ACCORDION — Collapsible attendee sections, one open at a time
+// ═══════════════════════════════════════════════════════════════
+
+function AccordionVariant({ onAddAttendee }: PassSelectionSectionProps) {
+  const { attendeePasses, toggleProduct, isEditing, toggleEditing, editCredit } = usePassesProvider();
+  const { getCity } = useCityProvider();
+  const city = getCity();
+  const hasSpouse = attendeePasses.some(a => a.category === 'spouse');
+  const [openAttendeeId, setOpenAttendeeId] = useState<number | null>(attendeePasses[0]?.id ?? null);
+
+  return (
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.35 }} className="space-y-3">
+      {isEditing && (
+        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 rounded-2xl p-4">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="font-semibold text-blue-900">Edit Mode</p>
+              <p className="text-sm text-blue-700">Click on a purchased pass to get credit.</p>
+            </div>
+            {editCredit > 0 && (
+              <div className="bg-blue-100 px-3 py-1.5 rounded-lg">
+                <p className="text-sm font-semibold text-blue-800">Credit: ${editCredit.toLocaleString()}</p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {!isEditing && (
+        <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-3 flex items-center gap-3">
+          <Sparkles className="w-5 h-5 text-amber-500 flex-shrink-0" />
+          <div>
+            <p className="font-semibold text-amber-900 text-sm">Early Bird Pricing</p>
+            <p className="text-xs text-amber-700">Save up to $200 per pass!</p>
+          </div>
+        </div>
+      )}
+
+      <div className="flex items-center gap-2 flex-wrap">
+        {!isEditing && !hasSpouse && city?.allows_spouse && (
+          <button onClick={() => onAddAttendee?.('spouse')} className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all shadow-sm">
+            <Plus className="w-4 h-4" /> Add spouse
+          </button>
+        )}
+        {!isEditing && city?.allows_children && (
+          <button onClick={() => onAddAttendee?.('kid')} className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 transition-all shadow-sm">
+            <Plus className="w-4 h-4" /> Add child
+          </button>
+        )}
+      </div>
+
+      <div className="space-y-2">
+        {attendeePasses.map((attendee) => {
+          const isOpen = openAttendeeId === attendee.id;
+          const selectedCount = attendee.products.filter(p => p.selected && p.category !== 'patreon').length;
+          const purchasedCount = attendee.products.filter(p => p.purchased && p.category !== 'patreon').length;
+
+          return (
+            <div key={attendee.id} className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+              <button onClick={() => setOpenAttendeeId(prev => prev === attendee.id ? null : attendee.id)} className="w-full px-5 py-4 flex items-center justify-between hover:bg-gray-50/50 transition-colors" aria-expanded={isOpen} aria-label={`Toggle ${attendee.name} passes`} tabIndex={0}>
+                <div className="flex items-center gap-3">
+                  <div className="bg-gray-100 p-2 rounded-full"><User className="w-4 h-4 text-gray-600" /></div>
+                  <div className="text-left">
+                    <h3 className="font-semibold text-gray-900">{attendee.name}</h3>
+                    <p className="text-xs text-gray-500">
+                      {getCategoryLabel(attendee.category)}
+                      {selectedCount > 0 && <span className="text-blue-600 ml-1">· {selectedCount} selected</span>}
+                      {purchasedCount > 0 && <span className="text-slate-400 ml-1">· {purchasedCount} owned</span>}
+                    </p>
+                  </div>
+                </div>
+                <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                  <ChevronDown className="w-5 h-5 text-gray-400" />
+                </motion.div>
+              </button>
+
+              <AnimatePresence initial={false}>
+                {isOpen && (
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }} className="overflow-hidden">
+                    <AttendeePassCard attendee={attendee} toggleProduct={toggleProduct} city={city} isEditing={isEditing} allAttendees={attendeePasses} hideHeader />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
+      </div>
+    </motion.div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DEV TOGGLE & MAIN EXPORT
+// ═══════════════════════════════════════════════════════════════
+
+const PassDevToggleBar = ({ variant, onChange }: { variant: PassVariant; onChange: (v: PassVariant) => void }) => (
+  <div className="flex items-center gap-1 mb-2 font-mono text-[10px]">
+    <span className="text-gray-400 mr-1">Passes:</span>
+    {VARIANT_LIST.map((v) => (
+      <button key={v} onClick={() => onChange(v)} aria-label={`Switch to ${v} pass variant`} tabIndex={0}
+        className={cn('px-2 py-0.5 rounded transition-colors capitalize', variant === v ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200')}>
+        {v}
+      </button>
+    ))}
+  </div>
+);
+
+const PASS_VARIANT_MAP: Record<PassVariant, React.ComponentType<PassSelectionSectionProps>> = {
+  default: DefaultVariant,
+  compact: CompactVariant,
+  accordion: AccordionVariant,
+};
+
+export default function PassSelectionSection(props: PassSelectionSectionProps) {
+  const [variant, setVariant] = useState<PassVariant>('default');
+  const VariantComponent = PASS_VARIANT_MAP[variant];
+
+  return (
+    <div>
+      {DEV_TOGGLE && <PassDevToggleBar variant={variant} onChange={setVariant} />}
+      <VariantComponent {...props} />
     </div>
   );
 }

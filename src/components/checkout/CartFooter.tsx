@@ -23,9 +23,11 @@ import {
 interface CartFooterProps {
   onPay?: () => void;
   onBack?: () => void;
+  onScrollToNext?: () => void;
+  onScrollToPrevious?: () => void;
 }
 
-export default function CartFooter({ onPay, onBack }: CartFooterProps) {
+export default function CartFooter({ onPay, onBack, onScrollToNext, onScrollToPrevious }: CartFooterProps) {
   const {
     cart,
     summary,
@@ -75,6 +77,8 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
   const handleContinue = () => {
     if (isConfirmStep && onPay) {
       onPay();
+    } else if (onScrollToNext) {
+      onScrollToNext();
     } else {
       goToNextStep();
     }
@@ -287,7 +291,7 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
           <div className="flex items-center gap-2 lg:gap-3">
             {/* Back button - always visible */}
             <button
-              onClick={isFirstStep ? onBack : goToPreviousStep}
+              onClick={isFirstStep ? onBack : (onScrollToPrevious ?? goToPreviousStep)}
               className="flex items-center justify-center p-2.5 lg:px-3 lg:py-2 text-gray-400 hover:text-white hover:bg-white/10 rounded-lg transition-colors flex-shrink-0"
             >
               <ArrowLeft className="w-4 h-4" />

@@ -8,6 +8,10 @@ import { useCheckout } from '@/providers/checkoutProvider';
 import { ProductsProps } from '@/types/Products';
 import { formatCurrency } from '@/types/checkout';
 
+const DEV_TOGGLE = true;
+type MerchVariant = 'default' | 'grid' | 'minimal';
+const VARIANT_LIST: MerchVariant[] = ['default', 'grid', 'minimal'];
+
 interface MerchSectionProps {
   onSkip?: () => void;
 }
@@ -24,7 +28,7 @@ function getMerchImage(index: number): string {
   return MERCH_IMAGES[index % MERCH_IMAGES.length];
 }
 
-export default function MerchSection({ onSkip }: MerchSectionProps) {
+function DefaultMerchVariant({ onSkip }: MerchSectionProps) {
   const { merchProducts, cart, updateMerchQuantity } = useCheckout();
 
   const getQuantity = (productId: number): number => {
@@ -344,6 +348,128 @@ function PriceDisplay({ price, comparePrice, quantity }: PriceDisplayProps) {
           Save {formatCurrency(comparePrice - price)}
         </p>
       )}
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// GRID — 2-column e-commerce style grid
+// ═══════════════════════════════════════════════════════════════
+
+function GridMerchVariant({ onSkip }: MerchSectionProps) {
+  const { merchProducts, cart, updateMerchQuantity } = useCheckout();
+  const getQuantity = (productId: number) => cart.merch.find((m) => m.productId === productId)?.quantity || 0;
+
+  if (merchProducts.length === 0) {
+    return (<div className="flex flex-col items-center justify-center py-12 text-center"><ShoppingBag className="w-12 h-12 text-gray-300 mb-4" /><h3 className="text-lg font-semibold text-gray-900 mb-2">No Merchandise</h3><Button variant="outline" onClick={onSkip}>Continue</Button></div>);
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-3">
+        {merchProducts.map((product, index) => {
+          const quantity = getQuantity(product.id);
+          const hasQuantity = quantity > 0;
+          return (
+            <div key={product.id} className={cn('rounded-2xl border overflow-hidden transition-all', hasQuantity ? 'border-blue-200 shadow-md' : 'border-gray-100 shadow-sm')}>
+              <div className="relative h-32">
+                <img src={getMerchImage(index)} alt={product.name} className="w-full h-full object-cover" />
+                {hasQuantity && (
+                  <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-blue-500 text-white flex items-center justify-center text-xs font-bold">{quantity}</div>
+                )}
+              </div>
+              <div className="p-3 bg-white">
+                <h3 className="font-semibold text-gray-900 text-sm truncate">{product.name}</h3>
+                <p className="text-xs text-gray-500 mt-0.5">{formatCurrency(product.price)}</p>
+                <div className="flex items-center justify-between mt-2">
+                  <QuantityControls quantity={quantity} onIncrement={() => updateMerchQuantity(product.id, quantity + 1)} onDecrement={() => updateMerchQuantity(product.id, Math.max(0, quantity - 1))} />
+                  {hasQuantity && quantity > 1 && (
+                    <span className="text-xs font-bold text-blue-600">{formatCurrency(product.price * quantity)}</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="text-center py-2">
+        <button onClick={onSkip} className="text-gray-500 hover:text-gray-700 underline text-sm transition-colors">Skip merchandise</button>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// MINIMAL — Compact list without images
+// ═══════════════════════════════════════════════════════════════
+
+function MinimalMerchVariant({ onSkip }: MerchSectionProps) {
+  const { merchProducts, cart, updateMerchQuantity } = useCheckout();
+  const getQuantity = (productId: number) => cart.merch.find((m) => m.productId === productId)?.quantity || 0;
+
+  if (merchProducts.length === 0) {
+    return (<div className="flex flex-col items-center justify-center py-12 text-center"><ShoppingBag className="w-12 h-12 text-gray-300 mb-4" /><h3 className="text-lg font-semibold text-gray-900 mb-2">No Merchandise</h3><Button variant="outline" onClick={onSkip}>Continue</Button></div>);
+  }
+
+  return (
+    <div className="space-y-3">
+      <div className="bg-white rounded-xl border border-gray-100 divide-y divide-gray-100 overflow-hidden">
+        {merchProducts.map((product) => {
+          const quantity = getQuantity(product.id);
+          const hasQuantity = quantity > 0;
+          return (
+            <div key={product.id} className={cn('flex items-center justify-between px-4 py-3 transition-colors', hasQuantity ? 'bg-blue-50/50' : '')}>
+              <div className="flex items-center gap-3 flex-1 min-w-0">
+                <QuantityControls quantity={quantity} onIncrement={() => updateMerchQuantity(product.id, quantity + 1)} onDecrement={() => updateMerchQuantity(product.id, Math.max(0, quantity - 1))} />
+                <div className="min-w-0">
+                  <h3 className="font-medium text-gray-900 text-sm truncate">{product.name}</h3>
+                  {product.description && <p className="text-xs text-gray-500 truncate">{product.description}</p>}
+                </div>
+              </div>
+              <div className="text-right flex-shrink-0 ml-3">
+                {hasQuantity && quantity > 1 && <p className="text-[10px] text-gray-400">{quantity} × {formatCurrency(product.price)}</p>}
+                <span className={cn('text-sm font-semibold', hasQuantity ? 'text-blue-600' : 'text-gray-500')}>{formatCurrency(hasQuantity ? product.price * quantity : product.price)}</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+      <div className="text-center py-1">
+        <button onClick={onSkip} className="text-gray-500 hover:text-gray-700 underline text-sm transition-colors">Skip merchandise</button>
+      </div>
+    </div>
+  );
+}
+
+// ═══════════════════════════════════════════════════════════════
+// DEV TOGGLE & MAIN EXPORT
+// ═══════════════════════════════════════════════════════════════
+
+const MerchDevToggleBar = ({ variant, onChange }: { variant: MerchVariant; onChange: (v: MerchVariant) => void }) => (
+  <div className="flex items-center gap-1 mb-2 font-mono text-[10px]">
+    <span className="text-gray-400 mr-1">Merch:</span>
+    {VARIANT_LIST.map((v) => (
+      <button key={v} onClick={() => onChange(v)} aria-label={`Switch to ${v} merch variant`} tabIndex={0}
+        className={cn('px-2 py-0.5 rounded transition-colors capitalize', variant === v ? 'bg-gray-900 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200')}>
+        {v}
+      </button>
+    ))}
+  </div>
+);
+
+const MERCH_VARIANT_MAP: Record<MerchVariant, React.ComponentType<MerchSectionProps>> = {
+  default: DefaultMerchVariant,
+  grid: GridMerchVariant,
+  minimal: MinimalMerchVariant,
+};
+
+export default function MerchSection(props: MerchSectionProps) {
+  const [variant, setVariant] = useState<MerchVariant>('default');
+  const VariantComponent = MERCH_VARIANT_MAP[variant];
+  return (
+    <div>
+      {DEV_TOGGLE && <MerchDevToggleBar variant={variant} onChange={setVariant} />}
+      <VariantComponent {...props} />
     </div>
   );
 }
