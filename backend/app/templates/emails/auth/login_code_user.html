@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Your Login Code{% endblock %}
+
+{% block content %}
+<h1>Your Login Code</h1>
+
+<p>Hi{{ ' ' + user_name if user_name else '' }},</p>
+
+<p>
+    You requested to log in to your {{ project_name }} account.
+    Use the code below to complete your login:
+</p>
+
+<div style="text-align: center; margin: 30px 0;">
+    <div style="background-color: #f8f9fa; border: 2px dashed #007bff; border-radius: 8px; padding: 20px; display: inline-block;">
+        <span style="font-size: 36px; font-weight: bold; letter-spacing: 8px; color: #007bff; font-family: 'Courier New', monospace;">
+            {{ auth_code }}
+        </span>
+    </div>
+</div>
+
+<p class="text-muted" style="font-size: 14px; text-align: center;">
+    This code will expire in {{ expiration_minutes | default('15') }} minutes.
+</p>
+
+<div class="spacer"></div>
+
+{% set alert_type = "warning" %}
+{% set alert_message = "If you didn't request this code, you can safely ignore this email. Your account remains secure." %}
+{% include 'components/alert.html' with context %}
+
+<div class="spacer"></div>
+
+<p style="font-size: 14px; color: #666;">
+    <strong>Security tip:</strong> Never share this code with anyone.
+    {{ project_name }} will never ask you for this code via email, phone, or any other channel.
+</p>
+
+<p>
+    Best regards,<br>
+    The {{ project_name }} Team
+</p>
+{% endblock %}

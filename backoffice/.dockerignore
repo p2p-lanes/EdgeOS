@@ -1,0 +1,36 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+build
+
+# Testing
+coverage
+
+# IDE & Editors
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Temp files
+.tanstack/tmp
+
+# Documentation
+*.md
+
+# Misc
+.env.local
+.env.*.local
+*.log
+.DS_Store

@@ -1,0 +1,170 @@
+services:
+  db:
+    image: postgres:17.4
+    restart: "no"
+    volumes:
+      - edgeos-db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  prestart:
+    pull_policy: build
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - POSTGRES_SERVER=db
+
+  backend:
+    pull_policy: build
+    restart: "no"
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+      prestart:
+        condition: service_completed_successfully
+    environment:
+      - POSTGRES_SERVER=db
+      - SMTP_HOST=mailpit
+      - SMTP_PORT=1025
+      - SMTP_USER=
+      - SMTP_PASSWORD=
+      - SMTP_TLS=False
+      - SMTP_SSL=False
+      - REDIS_URL=redis://redis:6379
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    # command: sleep infinity  # Infinite loop to keep container alive doing nothing
+    command:
+      - fastapi
+      - run
+      - --reload
+      - "app/main.py"
+    develop:
+      watch:
+        - path: ./backend
+          action: sync
+          target: /app/backend
+          ignore:
+            - ./backend/.venv
+            - .venv
+        - path: ./backend/pyproject.toml
+          action: rebuild
+    # TODO: remove once coverage is done locally
+    volumes:
+      - ./backend/htmlcov:/app/backend/htmlcov
+
+  adminer:
+    image: adminer
+    restart: "no"
+    ports:
+      - "8080:8080"
+    environment:
+      - ADMINER_DEFAULT_SERVER=db
+      - ADMINER_DESIGN=pepa-linha-dark
+
+  backoffice:
+    pull_policy: build
+    restart: "no"
+    ports:
+      - "5173:80"
+    build:
+      context: .
+      dockerfile: backoffice/Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:8000
+        - NODE_ENV=development
+
+  portal:
+    pull_policy: build
+    restart: "no"
+    ports:
+      - "3000:3000"
+    build:
+      context: .
+      dockerfile: portal/Dockerfile
+      args:
+        - NEXT_PUBLIC_API_URL=http://localhost:8000
+        - NODE_ENV=development
+    develop:
+      watch:
+        - path: ./portal/src
+          action: rebuild
+        - path: ./portal/package.json
+          action: rebuild
+        - path: ./packages
+          action: rebuild
+
+  # MinIO for local S3-compatible storage
+  minio:
+    image: minio/minio:RELEASE.2025-04-22T22-12-26Z
+    command: server /data --console-address ":9001"
+    ports:
+      - "9000:9000" # S3 API
+      - "9001:9001" # Web Console
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # Create default bucket and configure CORS on startup
+  minio-setup:
+    image: minio/mc:latest
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >
+      /bin/sh -c "
+      mc alias set myminio http://minio:9000 minioadmin minioadmin;
+      mc mb myminio/edgeos --ignore-existing;
+      mc anonymous set download myminio/edgeos;
+      exit 0;
+      "
+
+  mailpit:
+    image: axllent/mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+    restart: "no"
+
+  redis:
+    image: redis:alpine
+    restart: "no"
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    restart: "no"
+    ports:
+      - "8081:8081"
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    depends_on:
+      - redis
+
+volumes:
+  edgeos-db-data:
+  minio-data:
+  redis-data:

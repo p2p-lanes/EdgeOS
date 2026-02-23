@@ -1,248 +1,428 @@
-## 🌟 What is this?
+# EdgeOS
 
-The resident portal is an open source project actively developed by SimpleFi (aka p2planes) jointly with the support of EdgeCity and Esmeralda and (hopefully) you!
- 
-## 🚀 Our Story
-
-We build technology to accelerate the experimentation rate of new forms of human cooperation. We do this by leveraging frontier technologies such as cryptocurrencies, ZK and AI as part of the tool stack of orgs doing the groundwork. After working closely with EdgeCity and Crecimiento, we understood that current tools, both closed and open source were not optimized for our desired use case, so we decided to build our own.
-
-We hope that builders and companies within the pop-up city movement will recognize the value of this project and choose to contribute. We openly welcome the likes of Cursive, ZuPass, RaveApp, Sovs/Consensys, SocialLayer, etc. to join us in this effort.
-
----
-
-## How to run locally
-
-1. (Optional) Clone and run the backend locally from [EdgeOS_API](https://github.com/p2p-lanes/EdgeOS_API)
-2. Install dependencies and start the frontend:
-```bash
-npm install
-npm run dev
-```
-3. If running the backend locally, set the following environment variable:
-```bash
-NEXT_PUBLIC_API_URL=http://localhost:8000
-```
-
-## How to run with Docker Compose
-
-1. Create a `.env` file in the root directory with the following variables:
-```bash
-# Development Mode
-NEXT_PUBLIC_DEVELOP = true
-
-# API URL for Portal
-NEXT_PUBLIC_API_URL = http://localhost:8000  # Set this if running backend locally
-
-# API Key for Portal
-NEXT_PUBLIC_X_API_KEY =
-```
-
-2. Build and start the containers:
-```bash
-docker compose up --build
-```
-
-The application will be available at http://localhost:3000
-
-## Looking to contribute?
-
-We'd love to have you!
-Hit us up on Telegram at @tulezao or via email at tule@simplefi.tech
-
----
-
-# Network State Infrastructure
-
-## Table of Contents
-- [Introduction](#introduction)
-- [Infrastructure Overview](#infrastructure-overview)
-  - [User Portal](#user-portal)
-  - [Backoffice (NocoDB)](#backoffice-nocodb)
-  - [Backend API](#backend-api)
-- [Database Tables](#database-tables)
-- [Coupon Codes](#coupon-codes)
-- [Approval Flow](#approval-flow)
-
-
-## Introduction
-This document describes the infrastructure and functionalities of the software developed for managing a Network State with pop-up cities. The system allows users to apply to different temporary cities, manage their participation, and purchase passes and housing with various payment methods, including cryptocurrencies. Additionally, it provides administrative tools for efficient attendee management, application approvals, and automation of key processes.
-
-## Infrastructure Overview
-The system consists of the following main modules:
-
-### User Portal
-The web portal serves as the primary interface for attendees, enabling them to:
-- Register and log in to access their profile.
-- Apply to different pop-up cities and check the status of their application.
-- Purchase individual or group passes, assigning the latter to different attendees within their company or organization.
-- Select housing options and apply discount codes at checkout.
-- Make payments via **Stripe** or **cryptocurrencies**, with automatic ticket issuance.
-- Receive email notifications when their application status changes.
-
-### Backoffice (NocoDB)
-The administrative system, based on **NocoDB**, allows organizers to manage all event aspects, including:
-- Attendee management and assignment of personalized discount codes.
-- Tracking and modifying application statuses based on predefined rules, such as **approval by voting** (requiring "m" out of "n" positive votes, a "strong yes" for immediate approval, or a "strong no" for immediate rejection). See [Approval Flow](#).
-- Control of flags and internal notes to facilitate application management.
-- Automated email notifications based on application and purchase status changes.
-- Management of database tables with the ability for staff users to create filtered views for their convenience.
-
-### Backend API
-The system's backend ([EdgeOS_API](https://github.com/p2p-lanes/EdgeOS_API)) serves as the **core infrastructure**, connecting the user portal with the backoffice. Its main functions include:
-- Business logic management and process validation to ensure data consistency.
-- Integration with **NocoDB** and the **PostgreSQL** database for efficient data handling.
-- Payment processing via **Stripe** and **cryptocurrencies**, ensuring secure transactions and ticket issuance.
-- Automated email notifications when applications or transactions change.
-
----
-
-## Database Tables
-The system's database consists of the following tables:
-- `applications`: Stores user applications to pop-up cities.
-- `attendees`: Contains details of users who submitted an application.
-- `citizens`: Holds information about registered users.
-- `email_logs`: Logs system-generated emails and notifications.
-- `payment_products`: Defines available payment options and products.
-- `payments`: Stores transaction details.
-- `popups`: Manages pop-up city information and settings.
-- `products`: Contains information on purchasable items (e.g., passes, housing).
-- `popup_email_templates`: Stores pre-configured email templates for system communications.
-- `discount_codes`: Allows for the creation of discount codes that affect the final price of products.
-
-For each table, staff users can create **custom views with specific filters** to streamline their workflow and enhance data management efficiency.
-
----
-
-## Coupon Codes
-
-### Overview
-This feature enables Edge City to create and manage promotional coupon codes within the Noco environment, giving customers discounts to complete purchases. It simplifies the application of discounts at checkout and tracking of active codes.
-
-### Objective
-This feature aims to increase customer engagement, boost sales, and provide promotional offers to targeted communities. These discounts will not be applicable to Patron tickets but will be applicable to all other products.
-
-### Scope
-#### Included:
-- Generation of unique coupon codes
-- Percentage-based and fixed-amount discounts
-- Optional Start/Expiry date and usage limitations
-- Code validation at checkout
-- Management through Noco
-
-#### Not Included:
-- Discounts for VIPs / companies / groups, which don't require an application. This will be a separate feature.
-- Fixed-based coupon codes.
-
-### User Stories
-- **As a customer,** I want to enter a coupon code at checkout so that I can receive a price reduction on my purchase.
-- **As an Edge City staff member,** I want to generate coupon codes so that I can attract new and returning organizations, movements, etc.
-
-### Database Schema
-**Table:** `coupon_codes` (Stored in NocoDB)
-
-**Columns:**
-- `code` (Unique identifier for the coupon code)
-- `is_active` (true / false)
-- `discount_value` (number representing discount percentage)
-- `max_uses` (optional - maximum number of times the code can be used)
-- `current_uses` (calculated - number of times the code has been used)
-- `start_date` (optional)
-- `end_date` (optional)
-- `popup_city_id` (popup where coupon code applies)
-
-### UX/UI
-#### UI Components
-- Coupon code entry field in the passes section
-- Validation message display
-- Discount summary in cart reflecting the applied discount
-
-### User Flow
-1. User enters a coupon code
-2. System validates the code
-3. Discount is applied if valid, otherwise an error is shown
-4. Discount is reflected in the final price
-
-### FAQs
-#### Does fixed discounts make sense? Or only percentage-based?
-As it's not a must-have, we won't add the fixed-amount coupons. It usually makes more sense to have percentage-based discounts, and adding the fixed-based logic entails considerably more effort.
-
-#### Should attendees be able to use the coupon code more than once?
-We decided that attendees can use the coupon code more than once within the same application, but it counts as one use per application.  
-For example, I use 'crecimiento10' and buy my ticket with 10% off. A week later, I buy my spouse's ticket, using the same code. This will count as one usage in the discount codes table.
-
-#### What happens if the application has more than one kind of discount?
-Currently, we have three types of discounts: **discount assigned in application, Coupon Codes, and Group Passes**. If one application has more than one discount, we will take into account the highest.  
-For example, if he has been awarded with a 20% off in his application, but then applies a coupon of 50% off, he will have a 50% discount at checkout.
-
----
-
-# Approval Flow
+A multi-tenant SaaS platform for event management with a FastAPI backend and React-based backoffice dashboard.
 
 ## Overview
-This documentation explains how an application's final status is determined. The process involves two key steps:
 
-1. **Calculated Status**: This status is derived from what the approvers have voted. In other words, it reflects the outcome of the review process based solely on the decisions made by the reviewers.
-2. **Final Status**: Beyond the calculated status, additional logic is applied. This extra step takes into account factors such as whether the applicant requested a discount, if the city requires approval, and whether the application has been submitted. This ensures that the final status accurately reflects both the approvers' decision and any supplementary criteria.
+EdgeOS provides a complete solution for managing events (called "popups"), attendees, applications, payments, and more. It features:
 
-The sections below provide a detailed, easy-to-understand explanation of how these statuses are determined.
+- **Multi-Tenant Architecture**: PostgreSQL Row-Level Security (RLS) ensures complete data isolation between tenants
+- **Role-Based Access Control**: SUPERADMIN, ADMIN, and VIEWER roles with granular permissions
+- **Passwordless Authentication**: Secure email-based login with 6-digit codes
+- **RESTful API**: Full-featured API with auto-generated OpenAPI documentation
+- **Modern Frontend**: React 19 dashboard with TanStack Router and Query
 
----
+## Architecture
 
-## Calculated Status
-The calculated status is determined by the votes of reviewers. Each reviewer can vote in one of several ways, such as **"yes", "no", "strong yes", or "strong no"**. Based on these votes, the system decides on a preliminary outcome using these simple rules:
+```
+┌─────────────────────────────────────────────────────────────┐
+│                       Backoffice (React)                    │
+│                    localhost:5173 (dev)                     │
+└─────────────────────────┬───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                    Backend (FastAPI)                        │
+│                    localhost:8000                           │
+├─────────────────────────┬───────────────────────────────────┤
+│   API Routes            │   Core Services                   │
+│   • /v1/auth            │   • JWT Authentication            │
+│   • /v1/tenants         │   • Email Service                 │
+│   • /v1/popups          │   • File Storage (S3)             │
+│   • /v1/applications    │   • Tenant Connection Manager     │
+│   • /v1/payments        │                                   │
+│   • /v1/...             │                                   │
+└─────────────────────────┴───────────────────────────────────┘
+                          │
+                          ▼
+┌─────────────────────────────────────────────────────────────┐
+│                PostgreSQL with RLS                          │
+│                    localhost:5432                           │
+│                                                             │
+│   ┌─────────────┐  ┌─────────────┐  ┌─────────────┐        │
+│   │  Tenant A   │  │  Tenant B   │  │  Tenant C   │        │
+│   │  (isolated) │  │  (isolated) │  │  (isolated) │        │
+│   └─────────────┘  └─────────────┘  └─────────────┘        │
+└─────────────────────────────────────────────────────────────┘
+```
 
-### Accepted
-The application is marked as **accepted** if:
-- Any reviewer votes **"strong yes"**.
-  - *(This decisive vote for acceptance wins over any negative votes.)*
-- Or if there are at least **two "yes" votes** from the reviewers.
-  - *(There are specific combinations that satisfy this, but simply put, enough positive votes lead to acceptance.)*
+## Quick Start (Local Development)
 
-### Rejected
-The application is marked as **rejected** if:
-- Any reviewer votes **"strong no"**.
-- Or if there are at least **two "no" votes** from the reviewers.
+### Prerequisites
 
-### Undecided
-If neither of the above conditions is met, the calculated status remains **empty (no decision).**
+- [Docker](https://www.docker.com/) and Docker Compose
 
-#### Key Point
-The system checks for acceptance first. This means that even if there are negative votes (for example, one "strong no" or "no"), a single "strong yes" vote will cause the application to be marked as **accepted**. For instance:
-- **1 "strong no", 1 "no", and 1 "strong yes" → Accepted** *(because "strong yes" takes precedence).*
+### 1. Clone and Start
 
----
+```bash
+git clone <repository-url>
+cd EdgeOS
 
-## Final Status
+# Copy environment template (works out of the box for local dev)
+cp .env.example .env
 
-### When the City Does Not Require Approval
-The final status of an application is determined by combining the calculated status from the reviewers' votes with additional logic based on discount requests and approval requirements. Here's how it works:
+# Start all services with hot reload
+docker compose watch
+```
 
-#### **Rejection Takes Precedence**
-- If the calculated status is marked as **REJECTED** (meaning the reviewers have strongly voted against the application), then the final status is immediately set to **REJECTED**, regardless of any discount considerations.
+That's it. The default `.env.example` is pre-configured for local development with:
+- PostgreSQL database (via Docker)
+- Mailpit for email testing (view emails at http://localhost:8025)
+- MinIO for S3-compatible file storage
+- Redis for caching
 
-#### **Handling Cities That Do Not Require Approval**
-- In some cities ("pop-up cities"), discount approval isn't needed.
-- If **no discount was requested** in these cases, the application is **automatically set to ACCEPTED**.
+### 2. Access the Application
 
-#### **Handling Discount Requests and Missing Discounts**
-When approval is required:
-- The system checks if the applicant **requested a discount**. This check depends on the type of discount request:
-  - For cities that **require approval**: Only an **explicit scholarship discount request** is considered.
-  - For cities that **do not require approval**: Being a **renter** or requesting a **scholarship discount** qualifies as a discount request.
+| Service | URL | Description |
+|---------|-----|-------------|
+| **Backoffice** | http://localhost:5173 | React dashboard |
+| **API Docs** | http://localhost:8000/docs | Swagger UI |
+| **API ReDoc** | http://localhost:8000/redoc | ReDoc documentation |
+| **Mailpit** | http://localhost:8025 | Email testing inbox |
+| **Adminer** | http://localhost:8080 | Database admin UI |
+| **MinIO Console** | http://localhost:9001 | File storage admin |
+| **Redis Commander** | http://localhost:8081 | Redis admin UI |
 
-#### **Missing Discount Scenario**
-- If a discount was requested but **has not yet been assigned**, it is considered **"missing."**
-- When a discount is missing, even if there's no definitive reviewer outcome yet, the application status is set to:
-  - **IN REVIEW** if the application **has been submitted**.
-  - **DRAFT** if the application **has not been submitted**.
+Login with the default superadmin: `admin@example.com` (check Mailpit for the login code).
 
-#### **Default Outcome**
-If none of the above conditions apply—meaning the review outcome is neither a clear rejection nor the discount conditions are causing a delay—the final status will simply be **the outcome provided by the reviewers (the calculated status).**
+## Database Structure
 
-## Notification to the Applicant
-Once the **final status** is set to **accepted**, an email notification is sent to the applicant. However, to prevent immediate emails in case of accidental clicks or missteps that might affect the final status, the system waits for **2 minutes** before sending out the email. 
+### Core Entities
 
-This delay is **configurable**, allowing adjustments if needed to ensure that notifications are only sent when the decision is truly final.
+| Entity | Description |
+|--------|-------------|
+| **Tenants** | Organizations with isolated data and database credentials |
+| **Users** | Backoffice users (SUPERADMIN, ADMIN, VIEWER roles) |
+| **Humans** | End-users/attendees who apply to events |
+| **Popups** | Events that humans can apply to |
+| **Applications** | Human applications to specific popups |
+| **Attendees** | Approved applications become attendees |
+| **Products** | Items/tickets that can be purchased for popups |
+| **Payments** | Payment records for applications |
+| **Groups** | Group registrations for events |
+| **Coupons** | Discount codes for popups |
+| **FormFields** | Custom form fields per popup |
 
+### Entity Relationships
 
+```
+Tenant
+├── Users (backoffice access)
+├── Humans (end-users)
+├── Popups
+│   ├── Products
+│   ├── Coupons
+│   ├── FormFields
+│   ├── Groups
+│   ├── ApprovalStrategy
+│   └── PopupReviewers
+├── Applications
+│   ├── ApplicationReviews
+│   ├── Attendees
+│   │   └── AttendeeProducts
+│   └── Payments
+│       └── PaymentProducts
+└── Groups
+    ├── GroupLeaders
+    ├── GroupMembers
+    └── GroupProducts
+```
 
+### Row-Level Security (RLS)
+
+All tenant-scoped tables include a `tenant_id` column with RLS policies that ensure:
+- Data is automatically filtered by the current tenant
+- Users cannot access data from other tenants
+- Superadmins can bypass RLS for cross-tenant operations
+
+## Project Structure
+
+```
+edgeos-monorepo/
+├── backend/                 # FastAPI backend
+│   ├── app/
+│   │   ├── api/            # API modules (router, crud, models, schemas)
+│   │   ├── core/           # Configuration, database, security
+│   │   ├── services/       # Email, storage services
+│   │   ├── alembic/        # Database migrations
+│   │   └── templates/      # Email templates
+│   └── tests/              # Backend tests
+├── backoffice/             # React frontend
+│   └── src/
+│       ├── routes/         # TanStack Router pages
+│       ├── components/     # React components
+│       ├── client/         # Auto-generated API client
+│       ├── hooks/          # Custom React hooks
+│       └── contexts/       # React contexts
+├── compose.yaml             # Docker Compose configuration
+└── .env                    # Environment variables
+```
+
+## Development
+
+For most development, using Docker (`docker compose watch`) is recommended as it provides hot reload and all dependencies configured.
+
+### Development Outside Docker
+
+If you prefer running services locally without Docker:
+
+#### Prerequisites
+
+- [uv](https://docs.astral.sh/uv/) (for Python backend)
+- [Bun](https://bun.sh/) (for React frontend)
+- PostgreSQL 15+ (running locally or remotely)
+
+#### Backend Development
+
+```bash
+cd backend
+
+# Install dependencies
+uv sync
+source .venv/bin/activate  # Linux/Mac
+# .venv\Scripts\activate   # Windows
+
+# Run development server
+fastapi dev app/main.py
+
+# Run tests
+bash scripts/test.sh
+
+# Lint and format
+bash scripts/lint.sh
+bash scripts/format.sh
+```
+
+#### Frontend Development
+
+```bash
+cd backoffice
+
+# Install dependencies
+bun install
+
+# Run development server
+bun run dev
+
+# Regenerate API client (after backend changes)
+bun run generate-client
+
+# Lint
+bun run lint
+```
+
+### Database Migrations
+
+```bash
+# Inside backend container
+docker compose exec backend bash
+
+# Create a new migration
+alembic revision --autogenerate -m "Description of changes"
+
+# Apply migrations
+alembic upgrade head
+
+# Rollback one migration
+alembic downgrade -1
+```
+
+## Configuration Reference
+
+### Environment Variables
+
+#### Core Configuration
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `BACKOFFICE_URL` | Yes | `http://localhost:5173` | Backoffice URL (for CORS/emails) |
+| `BACKEND_URL` | Yes | `http://localhost:8000` | Backend URL |
+| `ENVIRONMENT` | No | `dev` | Environment (`dev`, `staging`, `production`) |
+| `PROJECT_NAME` | No | `EdgeOS` | Application name |
+
+#### Security (Required)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `SECRET_KEY` | Yes | `changeme...` | JWT signing key. Generate with: `openssl rand -hex 32` |
+| `SUPERADMIN` | Yes | `admin@example.com` | Initial superadmin email address |
+| `BACKEND_CORS_ORIGINS` | No | `http://localhost,...` | Comma-separated list of allowed CORS origins |
+
+#### Database (Required)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `POSTGRES_SERVER` | Yes | `db` | Database host (`db` for Docker, your host for external) |
+| `POSTGRES_PORT` | No | `5432` | Database port |
+| `POSTGRES_USER` | Yes | `postgres` | Database username |
+| `POSTGRES_PASSWORD` | Yes | `changeme...` | Database password |
+| `POSTGRES_DB` | Yes | `edgeos` | Database name |
+| `POSTGRES_SSL_MODE` | No | `prefer` | SSL mode (`prefer`, `require`, `disable`) |
+
+#### Email (Optional but recommended)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `SMTP_HOST` | No | - | SMTP server (empty = emails disabled) |
+| `SMTP_PORT` | No | `587` | SMTP port |
+| `SMTP_USER` | No | - | SMTP username |
+| `SMTP_PASSWORD` | No | - | SMTP password |
+| `SENDER_EMAIL` | No | `noreply@example.com` | From address for emails |
+| `SMTP_TLS` | No | `True` | Use TLS |
+| `SMTP_SSL` | No | `False` | Use SSL |
+
+#### File Storage (Optional)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `STORAGE_ENDPOINT_URL` | No | `http://localhost:9000` | S3-compatible endpoint |
+| `STORAGE_ACCESS_KEY` | No | `minioadmin` | S3 access key |
+| `STORAGE_SECRET_KEY` | No | `minioadmin` | S3 secret key |
+| `STORAGE_BUCKET` | No | `edgeos` | S3 bucket name |
+| `STORAGE_REGION` | No | `us-east-2` | S3 region |
+| `STORAGE_PUBLIC_URL` | No | `http://localhost:9000/edgeos` | Public URL for file access |
+
+#### Other Services (Optional)
+
+| Variable | Required | Default | Description |
+|----------|----------|---------|-------------|
+| `REDIS_URL` | No | `redis://redis:6379` | Redis connection URL |
+| `SENTRY_DSN` | No | - | Sentry DSN for error tracking |
+
+### Docker Services (Development)
+
+| Service | Port | Description |
+|---------|------|-------------|
+| `backend` | 8000 | FastAPI application (hot reload enabled) |
+| `backoffice` | 5173 | React dashboard |
+| `db` | 5432 | PostgreSQL database |
+| `mailpit` | 8025 (web), 1025 (smtp) | Email testing |
+| `adminer` | 8080 | Database admin UI |
+| `minio` | 9000 (api), 9001 (console) | S3-compatible storage |
+| `redis` | 6379 | Redis cache |
+| `redis-commander` | 8081 | Redis admin UI |
+| `prestart` | - | Runs migrations before backend |
+
+## API Documentation
+
+Once running, the API documentation is available at:
+
+- **Swagger UI**: http://localhost:8000/docs
+- **ReDoc**: http://localhost:8000/redoc
+- **OpenAPI JSON**: http://localhost:8000/api/v1/openapi.json
+
+### Authentication
+
+The API uses JWT tokens. Authenticate via:
+
+1. `POST /v1/auth/login` - Send email to receive login code
+2. `POST /v1/auth/verify` - Verify code and receive JWT token
+3. Include token in requests: `Authorization: Bearer <token>`
+
+### Multi-Tenant Headers
+
+For tenant-scoped endpoints:
+- ADMIN/VIEWER users: Tenant derived from user's `tenant_id`
+- SUPERADMIN users: Must provide `X-Tenant-Id` header
+
+## User Roles
+
+| Role | Permissions |
+|------|-------------|
+| **SUPERADMIN** | Full system access, manage tenants and users across all tenants |
+| **ADMIN** | Full CRUD within their tenant, can create ADMIN/VIEWER users |
+| **VIEWER** | Read-only access within their tenant |
+
+## Additional Notes
+
+### Email in Development
+
+Email is pre-configured with Mailpit when using `docker compose watch`. All emails are captured and viewable at http://localhost:8025 (no actual emails are sent).
+
+### Email in Production
+
+For production, configure a real SMTP provider:
+- [SendGrid](https://sendgrid.com/)
+- [AWS SES](https://aws.amazon.com/ses/)
+- [Mailgun](https://www.mailgun.com/)
+- [Postmark](https://postmarkapp.com/)
+
+### File Storage in Development
+
+MinIO (S3-compatible) is pre-configured when using `docker compose watch`. Access the MinIO console at http://localhost:9001 (login: minioadmin/minioadmin).
+
+### File Storage in Production
+
+For production file uploads, use a managed S3-compatible service:
+- AWS S3
+- DigitalOcean Spaces
+- Cloudflare R2
+- MinIO (self-hosted)
+
+## Production Deployment
+
+For production, you must properly configure the environment variables. The `.env.example` defaults are NOT suitable for production.
+
+### Required Changes for Production
+
+1. **Generate a secure `SECRET_KEY`**:
+   ```bash
+   openssl rand -hex 32
+   ```
+
+2. **Set strong database credentials**:
+   ```bash
+   POSTGRES_PASSWORD=<strong-unique-password>
+   POSTGRES_SSL_MODE=require
+   ```
+
+3. **Configure your URLs**:
+   ```bash
+   BACKOFFICE_URL=https://app.yourdomain.com
+   BACKEND_URL=https://api.yourdomain.com
+   ENVIRONMENT=production
+   ```
+
+4. **Configure email (required for passwordless auth)**:
+   ```bash
+   SMTP_HOST=smtp.yourdomain.com
+   SMTP_USER=noreply@yourdomain.com
+   SMTP_PASSWORD=<smtp-password>
+   SENDER_EMAIL=noreply@yourdomain.com
+   ```
+
+5. **Configure file storage** (use a real S3 service):
+   ```bash
+   STORAGE_ENDPOINT_URL=https://s3.amazonaws.com
+   STORAGE_ACCESS_KEY=<aws-access-key>
+   STORAGE_SECRET_KEY=<aws-secret-key>
+   STORAGE_BUCKET=your-bucket-name
+   STORAGE_PUBLIC_URL=https://your-bucket-name.s3.amazonaws.com
+   ```
+
+6. **Set the superadmin email** to a real address:
+   ```bash
+   SUPERADMIN=admin@yourdomain.com
+   ```
+
+### Production Infrastructure Recommendations
+
+- Use a managed PostgreSQL database (AWS RDS, DigitalOcean, Supabase, etc.)
+- Set up SSL/TLS certificates (Let's Encrypt, Cloudflare, etc.)
+- Configure a reverse proxy (nginx, Traefik, Caddy)
+- Set up monitoring and logging (`SENTRY_DSN` for error tracking)
+- Enable database backups
+- Use managed S3-compatible storage (AWS S3, DigitalOcean Spaces, Cloudflare R2)
+
+### Production Docker Command
+
+```bash
+# Production mode (no hot reload, no dev services)
+docker compose -f compose.yaml up -d
+```
+
+Note: Production compose does NOT include the development services (db, mailpit, minio, redis, adminer). You must provide external services for database, email, and storage.
+
+## License
+
+See [LICENSE](LICENSE) file for details.

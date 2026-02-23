@@ -1,0 +1,51 @@
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info
+*.egg
+.eggs
+
+# Virtual environments
+.venv
+venv
+ENV
+
+# Testing & Coverage
+.coverage
+.coverage.*
+htmlcov
+.pytest_cache
+.tox
+.nox
+
+# Type checking & Linting
+.mypy_cache
+.ruff_cache
+.ty_cache
+
+# IDE & Editors
+.idea
+.vscode
+*.swp
+*.swo
+*~
+
+# Git
+.git
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Documentation
+*.md
+docs
+
+# Misc
+.env.local
+.env.*.local
+*.log

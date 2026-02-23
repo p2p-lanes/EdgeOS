@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}Application Update{% endblock %}
+
+{% block content %}
+<h1>Application Update</h1>
+
+<p>Hi {{ first_name }},</p>
+
+<p>
+    Thank you for your interest in <strong>{{ popup_name }}</strong>.
+    After careful consideration, we regret to inform you that we are unable to
+    accept your application at this time.
+</p>
+
+<div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
+    <h2 style="margin-top: 0;">Application Details</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 8px 0; color: #666;">Event</td>
+            <td style="padding: 8px 0; font-weight: 600;">{{ popup_name }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; color: #666;">Name</td>
+            <td style="padding: 8px 0;">{{ first_name }} {{ last_name }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; color: #666;">Status</td>
+            <td style="padding: 8px 0;">
+                <span style="background-color: #dc3545; color: #ffffff; padding: 4px 12px; border-radius: 4px; font-size: 14px;">
+                    Not Accepted
+                </span>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<p>
+    We receive many applications and unfortunately cannot accommodate everyone.
+    This decision does not reflect on you personally, and we encourage you to
+    apply for future events.
+</p>
+
+<div class="spacer"></div>
+
+<p style="font-size: 14px; color: #666;">
+    If you have any questions, please don't hesitate to reach out.
+</p>
+
+<p>
+    Best regards,<br>
+    The {{ project_name }} Team
+</p>
+{% endblock %}

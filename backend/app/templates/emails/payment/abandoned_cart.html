@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Complete Your Purchase{% endblock %}
+
+{% block content %}
+<h1>Complete Your Purchase</h1>
+
+<p>Hi {{ first_name }},</p>
+
+<p>
+    Your order for <strong>{{ popup_name }}</strong> has been created and is awaiting payment.
+    Please complete your payment to secure your spot.
+</p>
+
+<div style="background-color: #fff3cd; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center; border-left: 4px solid #ffc107;">
+    <span style="font-size: 14px; color: #856404; text-transform: uppercase; letter-spacing: 1px;">Payment Status</span>
+    <div style="font-size: 24px; font-weight: bold; color: #856404; margin-top: 8px;">
+        Pending
+    </div>
+</div>
+
+<div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
+    <h2 style="margin-top: 0;">Order Summary</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 8px 0; color: #666;">Event</td>
+            <td style="padding: 8px 0; font-weight: 600; text-align: right;">{{ popup_name }}</td>
+        </tr>
+        {% if products %}
+        <tr>
+            <td colspan="2" style="padding: 16px 0 8px; font-weight: 600; border-top: 1px solid #dee2e6;">Products</td>
+        </tr>
+        {% for product in products %}
+        <tr>
+            <td style="padding: 4px 0; color: #666;">
+                {{ product.name }}
+                {% if product.quantity > 1 %}x{{ product.quantity }}{% endif %}
+            </td>
+            <td style="padding: 4px 0; text-align: right;">${{ "%.2f"|format(product.price * product.quantity) }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        {% if discount_value %}
+        <tr>
+            <td style="padding: 8px 0; color: #28a745;">Discount ({{ discount_value }}%)</td>
+            <td style="padding: 8px 0; color: #28a745; text-align: right;">
+                -${{ "%.2f"|format(original_amount - amount) }}
+            </td>
+        </tr>
+        {% endif %}
+        <tr style="border-top: 2px solid #dee2e6;">
+            <td style="padding: 12px 0; font-size: 18px; font-weight: 600;">Total Due</td>
+            <td style="padding: 12px 0; font-size: 18px; font-weight: 600; text-align: right;">
+                ${{ "%.2f"|format(amount) }} {{ currency }}
+            </td>
+        </tr>
+    </table>
+</div>
+
+{% if checkout_url %}
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ checkout_url }}" class="button" style="background-color: #28a745;">
+        Complete Payment
+    </a>
+</div>
+{% endif %}
+
+<div class="spacer"></div>
+
+<p style="font-size: 14px; color: #666;">
+    <strong>Note:</strong> This payment link will expire. Please complete your payment soon to secure your spot.
+</p>
+
+<p>
+    Best regards,<br>
+    The {{ project_name }} Team
+</p>
+{% endblock %}

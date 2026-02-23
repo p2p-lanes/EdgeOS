@@ -1,0 +1,876 @@
+{
+  "tenant": {
+    "name": "Demo",
+    "slug": "demo"
+  },
+  "users": {
+    "admin": {
+      "email": "admin@demo.com",
+      "full_name": "Demo Admin",
+      "role": "admin"
+    },
+    "viewer": {
+      "email": "viewer@demo.com",
+      "full_name": "Demo Viewer",
+      "role": "viewer"
+    }
+  },
+  "popups": [
+    {
+      "key": "tech-summit",
+      "name": "Tech Summit 2025",
+      "slug": "tech-summit-2025",
+      "status": "active",
+      "requires_approval": true,
+      "allows_spouse": true,
+      "allows_children": true,
+      "allows_coupons": true,
+      "start_date": "2026-06-15T09:00:00Z",
+      "end_date": "2026-06-20T18:00:00Z"
+    },
+    {
+      "key": "community-meetup",
+      "name": "Community Meetup",
+      "slug": "community-meetup",
+      "status": "active",
+      "requires_approval": false,
+      "allows_spouse": false,
+      "allows_children": false,
+      "allows_coupons": true,
+      "start_date": "2026-04-10T18:00:00Z",
+      "end_date": "2026-04-10T22:00:00Z"
+    },
+    {
+      "key": "retreat",
+      "name": "Annual Retreat 2025",
+      "slug": "annual-retreat-2025",
+      "status": "draft",
+      "requires_approval": true,
+      "allows_spouse": true,
+      "allows_children": true,
+      "allows_coupons": false,
+      "start_date": "2026-09-01T08:00:00Z",
+      "end_date": "2026-09-07T16:00:00Z"
+    }
+  ],
+  "products": [
+    {
+      "popup_key": "tech-summit",
+      "name": "General Admission",
+      "slug": "general-admission",
+      "price": "299.00",
+      "compare_price": "399.00",
+      "description": "Full access to all sessions and workshops",
+      "category": "ticket",
+      "attendee_category": "main",
+      "duration_type": "full",
+      "is_active": true,
+      "exclusive": false
+    },
+    {
+      "popup_key": "tech-summit",
+      "name": "VIP Pass",
+      "slug": "vip-pass",
+      "price": "599.00",
+      "description": "VIP access with priority seating and networking events",
+      "category": "ticket",
+      "attendee_category": "main",
+      "duration_type": "full",
+      "is_active": true,
+      "exclusive": true,
+      "max_quantity": 50
+    },
+    {
+      "popup_key": "tech-summit",
+      "name": "Day Pass",
+      "slug": "day-pass",
+      "price": "99.00",
+      "description": "Single day access",
+      "category": "ticket",
+      "attendee_category": "main",
+      "duration_type": "day",
+      "is_active": true,
+      "exclusive": false
+    },
+    {
+      "popup_key": "tech-summit",
+      "name": "Spouse Ticket",
+      "slug": "spouse-ticket",
+      "price": "149.00",
+      "description": "Companion ticket for spouse/partner",
+      "category": "ticket",
+      "attendee_category": "spouse",
+      "duration_type": "full",
+      "is_active": true,
+      "exclusive": false
+    },
+    {
+      "popup_key": "tech-summit",
+      "name": "Kids Ticket",
+      "slug": "kids-ticket",
+      "price": "49.00",
+      "description": "Children under 12",
+      "category": "ticket",
+      "attendee_category": "kid",
+      "duration_type": "full",
+      "is_active": true,
+      "exclusive": false
+    },
+    {
+      "popup_key": "tech-summit",
+      "name": "On-site Accommodation",
+      "slug": "onsite-accommodation",
+      "price": "150.00",
+      "description": "Shared room accommodation per night",
+      "category": "housing",
+      "is_active": true,
+      "exclusive": false
+    },
+    {
+      "popup_key": "tech-summit",
+      "name": "Conference T-Shirt",
+      "slug": "conference-tshirt",
+      "price": "35.00",
+      "description": "Official Tech Summit 2025 T-Shirt",
+      "category": "merch",
+      "is_active": true,
+      "exclusive": false
+    },
+    {
+      "popup_key": "community-meetup",
+      "name": "Free Entry",
+      "slug": "free-entry",
+      "price": "0.00",
+      "description": "Free community event",
+      "category": "ticket",
+      "attendee_category": "main",
+      "duration_type": "day",
+      "is_active": true,
+      "exclusive": false
+    },
+    {
+      "popup_key": "community-meetup",
+      "name": "Premium Networking",
+      "slug": "premium-networking",
+      "price": "25.00",
+      "description": "Access to premium networking session",
+      "category": "other",
+      "is_active": true,
+      "exclusive": false
+    },
+    {
+      "popup_key": "retreat",
+      "name": "Full Week Pass",
+      "slug": "full-week-pass",
+      "price": "1200.00",
+      "compare_price": "1500.00",
+      "description": "Full retreat experience including accommodation and meals",
+      "category": "ticket",
+      "attendee_category": "main",
+      "duration_type": "week",
+      "is_active": true,
+      "exclusive": false
+    },
+    {
+      "popup_key": "retreat",
+      "name": "Family Package - Spouse",
+      "slug": "family-package-spouse",
+      "price": "800.00",
+      "description": "Spouse/partner ticket for the retreat",
+      "category": "ticket",
+      "attendee_category": "spouse",
+      "duration_type": "week",
+      "is_active": true,
+      "exclusive": false
+    },
+    {
+      "popup_key": "retreat",
+      "name": "Family Package - Child",
+      "slug": "family-package-child",
+      "price": "400.00",
+      "description": "Child ticket for the retreat",
+      "category": "ticket",
+      "attendee_category": "kid",
+      "duration_type": "week",
+      "is_active": true,
+      "exclusive": false
+    }
+  ],
+  "form_fields": [
+    {
+      "popup_key": "tech-summit",
+      "name": "dietary_requirements",
+      "label": "Dietary Requirements",
+      "field_type": "select",
+      "section": "Personal Info",
+      "position": 1,
+      "required": false,
+      "options": [
+        "None",
+        "Vegetarian",
+        "Vegan",
+        "Halal",
+        "Kosher",
+        "Gluten-Free",
+        "Other"
+      ],
+      "placeholder": "Select your dietary requirements"
+    },
+    {
+      "popup_key": "tech-summit",
+      "name": "tshirt_size",
+      "label": "T-Shirt Size",
+      "field_type": "select",
+      "section": "Personal Info",
+      "position": 2,
+      "required": true,
+      "options": ["XS", "S", "M", "L", "XL", "XXL"],
+      "placeholder": "Select your size"
+    },
+    {
+      "popup_key": "tech-summit",
+      "name": "linkedin_profile",
+      "label": "LinkedIn Profile",
+      "field_type": "url",
+      "section": "Professional",
+      "position": 3,
+      "required": false,
+      "placeholder": "https://linkedin.com/in/yourprofile",
+      "help_text": "Share your LinkedIn for networking"
+    },
+    {
+      "popup_key": "tech-summit",
+      "name": "interests",
+      "label": "Topics of Interest",
+      "field_type": "multiselect",
+      "section": "Professional",
+      "position": 4,
+      "required": false,
+      "options": [
+        "AI/ML",
+        "Web3",
+        "Cloud",
+        "Security",
+        "DevOps",
+        "Frontend",
+        "Backend",
+        "Mobile"
+      ]
+    },
+    {
+      "popup_key": "tech-summit",
+      "name": "bio",
+      "label": "Short Bio",
+      "field_type": "textarea",
+      "section": "Professional",
+      "position": 5,
+      "required": false,
+      "placeholder": "Tell us a bit about yourself",
+      "help_text": "This will be shown in the attendee directory"
+    },
+    {
+      "popup_key": "community-meetup",
+      "name": "how_heard",
+      "label": "How did you hear about us?",
+      "field_type": "select",
+      "section": null,
+      "position": 1,
+      "required": false,
+      "options": ["Twitter/X", "LinkedIn", "Friend", "Newsletter", "Other"]
+    },
+    {
+      "popup_key": "retreat",
+      "name": "emergency_contact",
+      "label": "Emergency Contact Name",
+      "field_type": "text",
+      "section": "Safety",
+      "position": 1,
+      "required": true,
+      "placeholder": "Full name"
+    },
+    {
+      "popup_key": "retreat",
+      "name": "emergency_phone",
+      "label": "Emergency Contact Phone",
+      "field_type": "text",
+      "section": "Safety",
+      "position": 2,
+      "required": true,
+      "placeholder": "+1 555 123 4567"
+    },
+    {
+      "popup_key": "retreat",
+      "name": "medical_conditions",
+      "label": "Medical Conditions",
+      "field_type": "textarea",
+      "section": "Safety",
+      "position": 3,
+      "required": false,
+      "placeholder": "Any medical conditions we should be aware of",
+      "help_text": "This information is kept confidential"
+    },
+    {
+      "popup_key": "retreat",
+      "name": "arrival_date",
+      "label": "Expected Arrival Date",
+      "field_type": "date",
+      "section": "Logistics",
+      "position": 4,
+      "required": true
+    }
+  ],
+  "coupons": [
+    {
+      "popup_key": "tech-summit",
+      "code": "EARLYBIRD",
+      "discount_value": 20,
+      "max_uses": 100,
+      "is_active": true,
+      "end_date": "2026-05-01T23:59:59Z"
+    },
+    {
+      "popup_key": "tech-summit",
+      "code": "SPEAKER50",
+      "discount_value": 50,
+      "max_uses": 20,
+      "is_active": true
+    },
+    {
+      "popup_key": "tech-summit",
+      "code": "STUDENT30",
+      "discount_value": 30,
+      "max_uses": 50,
+      "is_active": true
+    },
+    {
+      "popup_key": "community-meetup",
+      "code": "PREMIUM10",
+      "discount_value": 10,
+      "is_active": true
+    }
+  ],
+  "humans": [
+    {
+      "key": "alice",
+      "email": "alice@example.com",
+      "first_name": "Alice",
+      "last_name": "Johnson",
+      "telegram": "@alice_j",
+      "organization": "TechCorp Inc",
+      "role": "Software Engineer",
+      "gender": "female",
+      "age": "25-34",
+      "residence": "San Francisco, CA"
+    },
+    {
+      "key": "bob",
+      "email": "bob@example.com",
+      "first_name": "Bob",
+      "last_name": "Smith",
+      "telegram": "@bob_smith",
+      "organization": "StartupXYZ",
+      "role": "CTO",
+      "gender": "male",
+      "age": "35-44",
+      "residence": "New York, NY"
+    },
+    {
+      "key": "carol",
+      "email": "carol@example.com",
+      "first_name": "Carol",
+      "last_name": "Williams",
+      "organization": "DataDriven LLC",
+      "role": "Data Scientist",
+      "gender": "female",
+      "age": "25-34",
+      "residence": "Austin, TX"
+    },
+    {
+      "key": "david",
+      "email": "david@example.com",
+      "first_name": "David",
+      "last_name": "Brown",
+      "telegram": "@david_b",
+      "organization": "CloudSystems",
+      "role": "DevOps Lead",
+      "gender": "male",
+      "age": "35-44",
+      "residence": "Seattle, WA"
+    },
+    {
+      "key": "emma",
+      "email": "emma@example.com",
+      "first_name": "Emma",
+      "last_name": "Davis",
+      "organization": "DesignStudio",
+      "role": "UX Designer",
+      "gender": "female",
+      "age": "25-34",
+      "residence": "Los Angeles, CA"
+    },
+    {
+      "key": "frank",
+      "email": "frank@example.com",
+      "first_name": "Frank",
+      "last_name": "Miller",
+      "telegram": "@frankmiller",
+      "organization": "SecurityFirst",
+      "role": "Security Analyst",
+      "gender": "male",
+      "age": "45-54",
+      "residence": "Chicago, IL",
+      "red_flag": true
+    },
+    {
+      "key": "grace",
+      "email": "grace@example.com",
+      "first_name": "Grace",
+      "last_name": "Lee",
+      "telegram": "@grace_lee",
+      "organization": "AI Labs",
+      "role": "ML Engineer",
+      "gender": "female",
+      "age": "25-34",
+      "residence": "Boston, MA"
+    },
+    {
+      "key": "henry",
+      "email": "henry@example.com",
+      "first_name": "Henry",
+      "last_name": "Wilson",
+      "organization": "Freelance",
+      "role": "Consultant",
+      "gender": "male",
+      "age": "35-44",
+      "residence": "Denver, CO"
+    }
+  ],
+  "groups": [
+    {
+      "key": "techcorp-team",
+      "popup_key": "tech-summit",
+      "name": "TechCorp Team",
+      "slug": "techcorp-team",
+      "description": "Official TechCorp delegation to Tech Summit 2025",
+      "discount_percentage": "15.00",
+      "max_members": 10,
+      "welcome_message": "Welcome to the TechCorp team! We're excited to have you join us.",
+      "is_ambassador_group": false,
+      "leader_keys": ["alice"],
+      "member_keys": ["bob"]
+    },
+    {
+      "key": "speaker-group",
+      "popup_key": "tech-summit",
+      "name": "Conference Speakers",
+      "slug": "conference-speakers",
+      "description": "Official speakers and presenters",
+      "discount_percentage": "100.00",
+      "max_members": 30,
+      "is_ambassador_group": false,
+      "leader_keys": [],
+      "member_keys": ["grace"]
+    },
+    {
+      "key": "ambassador-david",
+      "popup_key": "tech-summit",
+      "name": "David's Referrals",
+      "slug": "david-referrals",
+      "description": "Friends referred by David",
+      "discount_percentage": "10.00",
+      "is_ambassador_group": true,
+      "ambassador_key": "david",
+      "leader_keys": ["david"],
+      "member_keys": ["henry"]
+    }
+  ],
+  "applications": [
+    {
+      "key": "alice-techsummit",
+      "popup_key": "tech-summit",
+      "human_key": "alice",
+      "group_key": "techcorp-team",
+      "referral": "Company sponsored",
+      "status": "accepted",
+      "custom_fields": {
+        "dietary_requirements": "Vegetarian",
+        "tshirt_size": "M",
+        "linkedin_profile": "https://linkedin.com/in/alicejohnson",
+        "interests": ["AI/ML", "Backend"],
+        "bio": "Passionate software engineer with 5 years of experience in distributed systems."
+      },
+      "attendees": [
+        {
+          "name": "Alice Johnson",
+          "category": "main",
+          "email": "alice@example.com",
+          "gender": "female",
+          "products": [
+            { "product_slug": "general-admission", "quantity": 1 },
+            { "product_slug": "conference-tshirt", "quantity": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "bob-techsummit",
+      "popup_key": "tech-summit",
+      "human_key": "bob",
+      "group_key": "techcorp-team",
+      "referral": "Colleague recommendation",
+      "status": "accepted",
+      "custom_fields": {
+        "dietary_requirements": "None",
+        "tshirt_size": "L",
+        "interests": ["Web3", "Security", "DevOps"],
+        "bio": "CTO at StartupXYZ, building the future of decentralized applications."
+      },
+      "attendees": [
+        {
+          "name": "Bob Smith",
+          "category": "main",
+          "email": "bob@example.com",
+          "gender": "male",
+          "products": [
+            { "product_slug": "vip-pass", "quantity": 1 },
+            { "product_slug": "onsite-accommodation", "quantity": 5 },
+            { "product_slug": "conference-tshirt", "quantity": 2 }
+          ]
+        },
+        {
+          "name": "Sarah Smith",
+          "category": "spouse",
+          "email": "sarah@example.com",
+          "gender": "female",
+          "products": [{ "product_slug": "spouse-ticket", "quantity": 1 }]
+        }
+      ]
+    },
+    {
+      "key": "carol-techsummit",
+      "popup_key": "tech-summit",
+      "human_key": "carol",
+      "referral": "Twitter",
+      "status": "in review",
+      "custom_fields": {
+        "dietary_requirements": "Vegan",
+        "tshirt_size": "S",
+        "linkedin_profile": "https://linkedin.com/in/carolwilliams",
+        "interests": ["AI/ML", "Cloud"],
+        "bio": "Data scientist focused on building ethical AI systems."
+      },
+      "attendees": [
+        {
+          "name": "Carol Williams",
+          "category": "main",
+          "email": "carol@example.com",
+          "gender": "female",
+          "products": [{ "product_slug": "general-admission", "quantity": 1 }]
+        }
+      ]
+    },
+    {
+      "key": "david-techsummit",
+      "popup_key": "tech-summit",
+      "human_key": "david",
+      "group_key": "ambassador-david",
+      "referral": "Past attendee",
+      "status": "accepted",
+      "custom_fields": {
+        "dietary_requirements": "None",
+        "tshirt_size": "XL",
+        "interests": ["DevOps", "Cloud", "Security"]
+      },
+      "attendees": [
+        {
+          "name": "David Brown",
+          "category": "main",
+          "email": "david@example.com",
+          "gender": "male",
+          "products": [
+            { "product_slug": "general-admission", "quantity": 1 },
+            { "product_slug": "onsite-accommodation", "quantity": 5 }
+          ]
+        },
+        {
+          "name": "Maria Brown",
+          "category": "spouse",
+          "email": "maria@example.com",
+          "gender": "female",
+          "products": [{ "product_slug": "spouse-ticket", "quantity": 1 }]
+        },
+        {
+          "name": "Tommy Brown",
+          "category": "kid",
+          "gender": "male",
+          "products": [{ "product_slug": "kids-ticket", "quantity": 1 }]
+        },
+        {
+          "name": "Lisa Brown",
+          "category": "kid",
+          "gender": "female",
+          "products": [{ "product_slug": "kids-ticket", "quantity": 1 }]
+        }
+      ]
+    },
+    {
+      "key": "emma-techsummit",
+      "popup_key": "tech-summit",
+      "human_key": "emma",
+      "referral": "Design conference",
+      "status": "draft",
+      "custom_fields": {
+        "tshirt_size": "S",
+        "interests": ["Frontend", "Mobile"]
+      },
+      "attendees": [
+        {
+          "name": "Emma Davis",
+          "category": "main",
+          "email": "emma@example.com",
+          "gender": "female",
+          "products": []
+        }
+      ]
+    },
+    {
+      "key": "frank-techsummit",
+      "popup_key": "tech-summit",
+      "human_key": "frank",
+      "referral": "Security community",
+      "status": "rejected",
+      "custom_fields": {
+        "dietary_requirements": "Halal",
+        "tshirt_size": "L",
+        "interests": ["Security"]
+      },
+      "attendees": [
+        {
+          "name": "Frank Miller",
+          "category": "main",
+          "email": "frank@example.com",
+          "gender": "male",
+          "products": [{ "product_slug": "general-admission", "quantity": 1 }]
+        }
+      ]
+    },
+    {
+      "key": "grace-techsummit",
+      "popup_key": "tech-summit",
+      "human_key": "grace",
+      "group_key": "speaker-group",
+      "referral": "Invited speaker",
+      "status": "accepted",
+      "custom_fields": {
+        "dietary_requirements": "Gluten-Free",
+        "tshirt_size": "M",
+        "linkedin_profile": "https://linkedin.com/in/gracelee",
+        "interests": ["AI/ML", "Backend"],
+        "bio": "ML Engineer and conference speaker, passionate about democratizing AI."
+      },
+      "attendees": [
+        {
+          "name": "Grace Lee",
+          "category": "main",
+          "email": "grace@example.com",
+          "gender": "female",
+          "products": [
+            { "product_slug": "vip-pass", "quantity": 1 },
+            { "product_slug": "onsite-accommodation", "quantity": 5 },
+            { "product_slug": "conference-tshirt", "quantity": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "alice-meetup",
+      "popup_key": "community-meetup",
+      "human_key": "alice",
+      "referral": "Newsletter",
+      "status": "accepted",
+      "custom_fields": {
+        "how_heard": "Newsletter"
+      },
+      "attendees": [
+        {
+          "name": "Alice Johnson",
+          "category": "main",
+          "email": "alice@example.com",
+          "gender": "female",
+          "products": [
+            { "product_slug": "free-entry", "quantity": 1 },
+            { "product_slug": "premium-networking", "quantity": 1 }
+          ]
+        }
+      ]
+    },
+    {
+      "key": "carol-meetup",
+      "popup_key": "community-meetup",
+      "human_key": "carol",
+      "status": "accepted",
+      "custom_fields": {
+        "how_heard": "Twitter/X"
+      },
+      "attendees": [
+        {
+          "name": "Carol Williams",
+          "category": "main",
+          "email": "carol@example.com",
+          "gender": "female",
+          "products": [{ "product_slug": "free-entry", "quantity": 1 }]
+        }
+      ]
+    },
+    {
+      "key": "henry-techsummit",
+      "popup_key": "tech-summit",
+      "human_key": "henry",
+      "group_key": "ambassador-david",
+      "referral": "David Brown",
+      "status": "in review",
+      "custom_fields": {
+        "dietary_requirements": "None",
+        "tshirt_size": "L",
+        "interests": ["Cloud", "DevOps"],
+        "bio": "Independent consultant specializing in cloud architecture."
+      },
+      "attendees": [
+        {
+          "name": "Henry Wilson",
+          "category": "main",
+          "email": "henry@example.com",
+          "gender": "male",
+          "products": [{ "product_slug": "day-pass", "quantity": 3 }]
+        }
+      ]
+    }
+  ],
+  "payments": [
+    {
+      "application_key": "alice-techsummit",
+      "status": "approved",
+      "amount": "334.00",
+      "currency": "USD",
+      "source": "Stripe",
+      "external_id": "pi_alice_12345",
+      "products": [
+        {
+          "product_slug": "general-admission",
+          "attendee_index": 0,
+          "quantity": 1
+        },
+        {
+          "product_slug": "conference-tshirt",
+          "attendee_index": 0,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "application_key": "bob-techsummit",
+      "status": "approved",
+      "amount": "1498.00",
+      "currency": "USD",
+      "source": "Stripe",
+      "external_id": "pi_bob_12345",
+      "coupon_code": "EARLYBIRD",
+      "discount_value": "20.00",
+      "products": [
+        { "product_slug": "vip-pass", "attendee_index": 0, "quantity": 1 },
+        {
+          "product_slug": "onsite-accommodation",
+          "attendee_index": 0,
+          "quantity": 5
+        },
+        {
+          "product_slug": "conference-tshirt",
+          "attendee_index": 0,
+          "quantity": 2
+        },
+        { "product_slug": "spouse-ticket", "attendee_index": 1, "quantity": 1 }
+      ]
+    },
+    {
+      "application_key": "david-techsummit",
+      "status": "approved",
+      "amount": "1195.00",
+      "currency": "USD",
+      "source": "SimpleFI",
+      "external_id": "sf_david_001",
+      "products": [
+        {
+          "product_slug": "general-admission",
+          "attendee_index": 0,
+          "quantity": 1
+        },
+        {
+          "product_slug": "onsite-accommodation",
+          "attendee_index": 0,
+          "quantity": 5
+        },
+        { "product_slug": "spouse-ticket", "attendee_index": 1, "quantity": 1 },
+        { "product_slug": "kids-ticket", "attendee_index": 2, "quantity": 1 },
+        { "product_slug": "kids-ticket", "attendee_index": 3, "quantity": 1 }
+      ]
+    },
+    {
+      "application_key": "grace-techsummit",
+      "status": "approved",
+      "amount": "0.00",
+      "currency": "USD",
+      "source": "Stripe",
+      "external_id": "pi_grace_free",
+      "products": [
+        { "product_slug": "vip-pass", "attendee_index": 0, "quantity": 1 },
+        {
+          "product_slug": "onsite-accommodation",
+          "attendee_index": 0,
+          "quantity": 5
+        },
+        {
+          "product_slug": "conference-tshirt",
+          "attendee_index": 0,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "application_key": "alice-meetup",
+      "status": "approved",
+      "amount": "25.00",
+      "currency": "USD",
+      "source": "Stripe",
+      "external_id": "pi_alice_meetup_001",
+      "products": [
+        { "product_slug": "free-entry", "attendee_index": 0, "quantity": 1 },
+        {
+          "product_slug": "premium-networking",
+          "attendee_index": 0,
+          "quantity": 1
+        }
+      ]
+    },
+    {
+      "application_key": "carol-meetup",
+      "status": "approved",
+      "amount": "0.00",
+      "currency": "USD",
+      "source": "Stripe",
+      "external_id": "pi_carol_meetup_001",
+      "products": [
+        { "product_slug": "free-entry", "attendee_index": 0, "quantity": 1 }
+      ]
+    },
+    {
+      "application_key": "henry-techsummit",
+      "status": "pending",
+      "amount": "267.30",
+      "currency": "USD",
+      "source": "Stripe",
+      "products": [
+        { "product_slug": "day-pass", "attendee_index": 0, "quantity": 3 }
+      ]
+    }
+  ]
+}

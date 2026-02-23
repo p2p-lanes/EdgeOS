@@ -1,0 +1,65 @@
+# Dependencies — prevents host-platform binaries from polluting container builds.
+# All Dockerfiles use context: . (repo root), so ONLY this root .dockerignore matters.
+# The per-subdirectory .dockerignore files are ignored by Docker.
+**/node_modules
+**/.venv
+**/venv
+
+# Build artifacts
+**/.next
+**/dist
+**/build
+**/__pycache__
+**/*.pyc
+**/*.pyo
+
+# Testing & coverage
+**/coverage
+**/htmlcov
+**/.pytest_cache
+**/.coverage
+**/.coverage.*
+**/playwright-report
+**/test-results
+**/blob-report
+
+# Type checking & linting caches
+**/.ruff_cache
+**/.ty_cache
+**/.mypy_cache
+**/.cache
+
+# Git
+.git
+
+# IDE & editors
+**/.vscode
+**/.idea
+**/*.swp
+**/*.swo
+
+# Docker (prevent recursive inclusion)
+**/Dockerfile
+**/.dockerignore
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# OS files
+**/.DS_Store
+**/Thumbs.db
+
+# Logs
+**/*.log
+
+# Misc
+**/.agents
+**/.cursor
+**/.claude
+**/tasks
+**/AGENTS.md
+**/CLAUDE.md
+**/temp_*
+*.stackdump

@@ -1,0 +1,13 @@
+{
+  "installCommand": "bun install",
+  "buildCommand": "bun run build",
+  "framework": "nextjs",
+  "functions": {
+    "app/**/*.tsx": {
+      "maxDuration": 30
+    }
+  },
+  "env": {
+    "NEXT_SHARP_PATH": "/tmp/node_modules/sharp"
+  }
+}

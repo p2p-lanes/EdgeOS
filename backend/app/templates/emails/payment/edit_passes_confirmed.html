@@ -1,0 +1,112 @@
+{% extends "base.html" %}
+
+{% block title %}Pass Changes Confirmed{% endblock %}
+
+{% block content %}
+<h1>Pass Changes Confirmed!</h1>
+
+<p>Hi {{ first_name }},</p>
+
+<p>
+    Your pass modifications for <strong>{{ popup_name }}</strong> have been processed successfully.
+</p>
+
+<div style="background-color: #d4edda; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center; border-left: 4px solid #28a745;">
+    <span style="font-size: 14px; color: #155724; text-transform: uppercase; letter-spacing: 1px;">Changes Applied</span>
+    <div style="font-size: 24px; font-weight: bold; color: #155724; margin-top: 8px;">
+        Confirmed
+    </div>
+</div>
+
+<div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
+    <h2 style="margin-top: 0;">Order Summary</h2>
+    <table style="width: 100%; border-collapse: collapse;">
+        <tr>
+            <td style="padding: 8px 0; color: #666;">Event</td>
+            <td style="padding: 8px 0; font-weight: 600; text-align: right;">{{ popup_name }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 8px 0; color: #666;">Payment ID</td>
+            <td style="padding: 8px 0; font-family: monospace; text-align: right;">{{ payment_id }}</td>
+        </tr>
+        {% if products %}
+        <tr>
+            <td colspan="2" style="padding: 16px 0 8px; font-weight: 600; border-top: 1px solid #dee2e6;">New Products</td>
+        </tr>
+        {% for product in products %}
+        <tr>
+            <td style="padding: 4px 0; color: #666;">
+                {{ product.name }}
+                {% if product.quantity > 1 %}x{{ product.quantity }}{% endif %}
+            </td>
+            <td style="padding: 4px 0; text-align: right;">${{ "%.2f"|format(product.price * product.quantity) }}</td>
+        </tr>
+        {% endfor %}
+        {% endif %}
+        {% if credit_applied %}
+        <tr>
+            <td style="padding: 8px 0; color: #28a745;">Credit Applied</td>
+            <td style="padding: 8px 0; color: #28a745; text-align: right;">
+                -${{ "%.2f"|format(credit_applied) }}
+            </td>
+        </tr>
+        {% endif %}
+        <tr style="border-top: 2px solid #dee2e6;">
+            <td style="padding: 12px 0; font-size: 18px; font-weight: 600;">
+                {% if amount > 0 %}Additional Amount Paid{% else %}Credit Remaining{% endif %}
+            </td>
+            <td style="padding: 12px 0; font-size: 18px; font-weight: 600; text-align: right;">
+                {% if amount > 0 %}
+                ${{ "%.2f"|format(amount) }} {{ currency }}
+                {% else %}
+                ${{ "%.2f"|format(-amount) }} {{ currency }}
+                {% endif %}
+            </td>
+        </tr>
+    </table>
+</div>
+
+{% if remaining_credit %}
+<div style="background-color: #e7f3ff; border-radius: 8px; padding: 15px; margin: 20px 0; border-left: 4px solid #007bff;">
+    <strong>Credit Balance:</strong> You have ${{ "%.2f"|format(remaining_credit) }} credit remaining for future purchases.
+</div>
+{% endif %}
+
+{% if attendees %}
+<div style="background-color: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
+    <h2 style="margin-top: 0;">Updated Passes</h2>
+    {% for attendee in attendees %}
+    <div style="padding: 10px 0; {% if not loop.last %}border-bottom: 1px solid #dee2e6;{% endif %}">
+        <strong>{{ attendee.name }}</strong>
+        <span style="color: #666; font-size: 14px;">({{ attendee.category }})</span>
+        {% if attendee.products %}
+        <div style="margin-top: 5px; font-size: 14px; color: #666;">
+            {% for product in attendee.products %}
+            <span style="background-color: #e9ecef; padding: 2px 8px; border-radius: 4px; margin-right: 4px;">
+                {{ product.name }}
+            </span>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% if portal_url %}
+<div style="text-align: center; margin: 30px 0;">
+    <a href="{{ portal_url }}" class="button">
+        View My Passes
+    </a>
+</div>
+{% endif %}
+
+<p>
+    Thank you!
+</p>
+
+<p>
+    Best regards,<br>
+    The {{ project_name }} Team
+</p>
+{% endblock %}
