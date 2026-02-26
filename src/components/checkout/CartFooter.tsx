@@ -44,6 +44,7 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
     isSubmitting,
     isEditing,
     editCredit,
+    monthUpgradeCredit,
   } = useCheckout();
 
   const [isExpanded, setIsExpanded] = useState(false);
@@ -320,6 +321,11 @@ export default function CartFooter({ onPay, onBack }: CartFooterProps) {
                     Credit: {formatCurrency(editCredit)}
                   </span>
                 )}
+                {/* {monthUpgradeCredit > 0 && (
+                  <span className="text-[10px] lg:text-xs text-emerald-400 font-medium">
+                    Upgrade credit: {formatCurrency(monthUpgradeCredit)}
+                  </span>
+                )} */}
               </div>
             </button>
 

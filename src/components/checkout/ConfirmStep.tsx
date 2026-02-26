@@ -33,6 +33,7 @@ export default function ConfirmStep() {
     error: checkoutError,
     isEditing,
     editCredit,
+    monthUpgradeCredit,
   } = useCheckout();
   const { getRelevantApplication } = useApplication();
   const application = getRelevantApplication();
@@ -354,6 +355,12 @@ export default function ConfirmStep() {
             <div className="flex justify-between text-sm text-orange-600 mb-2">
               <span>Edit Credit</span>
               <span>-{formatCurrency(editCredit)}</span>
+            </div>
+          )}
+          {monthUpgradeCredit > 0 && (
+            <div className="flex justify-between text-sm text-emerald-600 mb-2">
+              <span>Credit</span>
+              <span>-{formatCurrency(monthUpgradeCredit)}</span>
             </div>
           )}
           {accountCredit > 0 && (

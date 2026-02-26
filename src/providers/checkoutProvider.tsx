@@ -105,6 +105,9 @@ interface CheckoutContextValue {
   isEditing: boolean;
   toggleEditing: (editing?: boolean) => void;
   editCredit: number;
+
+  // Month upgrade credit (purchased week/day value when upgrading to month)
+  monthUpgradeCredit: number;
 }
 
 const CheckoutContext = createContext<CheckoutContextValue | null>(null);
@@ -273,6 +276,36 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     return passes;
   }, [attendeePasses, isEditing]);
 
+  // When a month pass is selected for an attendee who already has purchased week/day passes,
+  // the purchased ticket prices should be credited toward the month upgrade
+  const monthUpgradeCredit = useMemo(() => {
+    if (isEditing) return 0;
+
+    const hasPatreonSelected = attendeePasses.some(a =>
+      a.products.some(p => p.category === 'patreon' && p.selected)
+    );
+    if (hasPatreonSelected) return 0;
+
+    return attendeePasses.reduce((total, attendee) => {
+      const hasMonthSelected = attendee.products.some(p =>
+        (p.category === 'month' || p.category === 'local month') && p.selected && !p.purchased
+      );
+      if (!hasMonthSelected) return total;
+
+      const hasPurchasedWeekOrDay = attendee.products.some(p =>
+        ((p.category === 'week' || p.category === 'local week') && p.purchased) ||
+        (p.category.includes('day') && p.purchased)
+      );
+      if (!hasPurchasedWeekOrDay) return total;
+
+      const purchasedCredit = attendee.products
+        .filter(p => p.category !== 'patreon' && p.category !== 'supporter' && p.purchased)
+        .reduce((sum, p) => sum + (p.price * (p.quantity ?? 1)), 0);
+
+      return total + purchasedCredit;
+    }, 0);
+  }, [attendeePasses, isEditing]);
+
   // Calculate insurance amount based on product insurance_percentage
   // Insurance is calculated on the FULL product price (before discounts)
   const calculateInsuranceAmount = useCallback((
@@ -367,9 +400,10 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     const originalSubtotal = passesOriginalSubtotal + housingSubtotal + merchSubtotal + patronSubtotal + insuranceSubtotal;
     // Discount is the difference between original and discounted prices
     const discount = originalSubtotal - subtotal;
-    // In edit mode, sum editCredit (from given-up tickets) + application credit; otherwise use only application credit
     const accountCredit = application?.credit ?? 0;
-    const credit = isEditing ? editCredit + accountCredit : accountCredit;
+    const credit = isEditing
+      ? editCredit + accountCredit
+      : accountCredit + monthUpgradeCredit;
     const grandTotal = Math.max(0, subtotal - credit);
 
     const itemCount = selectedPasses.length + (housing ? 1 : 0) + merch.length + (patron ? 1 : 0);
@@ -386,7 +420,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       grandTotal,
       itemCount,
     };
-  }, [selectedPasses, housing, merch, patron, insuranceAmount, promoCodeValid, promoCodeDiscount, application?.credit, isEditing, editCredit]);
+  }, [selectedPasses, housing, merch, patron, insuranceAmount, promoCodeValid, promoCodeDiscount, application?.credit, isEditing, editCredit, monthUpgradeCredit]);
 
   // Navigation
   const goToStep = useCallback((step: CheckoutStep) => {
@@ -612,6 +646,16 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       // Build products array
       const productsToSend: Array<{ product_id: number; attendee_id: number; quantity: number; custom_amount?: number }> = [];
 
+      const monthSelectedWithWeekOrDay = attendeePasses.some(a =>
+        a.products.some(p => (p.category === 'month' || p.category === 'local month') && p.selected && !p.purchased) &&
+        (a.products.some(p => (p.category === 'week' || p.category === 'local week') && p.purchased) ||
+         a.products.some(p => p.category.includes('day') && p.purchased))
+      );
+      const hasPatreonSelected = attendeePasses.some(a =>
+        a.products.some(p => p.category === 'patreon' && p.selected)
+      );
+      const isMonthUpgrade = monthSelectedWithWeekOrDay && !hasPatreonSelected;
+
       if (isEditing) {
         // Edit mode: send only the final products the user wants to keep
         attendeePasses.forEach(attendee => {
@@ -637,10 +681,9 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
           });
         });
       } else {
-        // When using account credit (edit_passes will be true),
-        // include existing purchased products so the backend keeps them
         const hasAccountCredit = (application?.credit ?? 0) > 0;
-        if (hasAccountCredit) {
+
+        if (hasAccountCredit || isMonthUpgrade) {
           attendeePasses.forEach(attendee => {
             attendee.products.forEach(product => {
               if (product.purchased) {
@@ -701,7 +744,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
         products: productsToSend,
         coupon_code: promoCodeValid ? promoCode : undefined,
         insurance: insurance || undefined,
-        ...((isEditing || (application?.credit ?? 0) > 0) ? { edit_passes: true } : {}),
+        ...((isEditing || (application?.credit ?? 0) > 0 || isMonthUpgrade) ? { edit_passes: true } : {}),
       };
 
       const res = await api.post('payments', requestData);
@@ -781,6 +824,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     isEditing,
     toggleEditing,
     editCredit,
+    monthUpgradeCredit,
   };
 
   return (
