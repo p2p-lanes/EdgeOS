@@ -28,7 +28,7 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
   const getCity = useCallback((): PopupsProps | null => {
     const city = getValidCity()
     if(cityPreselected) {
-      const selectedCity = popups.find((popup: PopupsProps) => popup.id === cityPreselected)
+      const selectedCity = popups.find((popup: PopupsProps) => popup.id === cityPreselected && popup.clickable_in_portal && popup.visible_in_portal)
       if(selectedCity) return selectedCity
     }
     else if(!city){
