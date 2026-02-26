@@ -27,36 +27,46 @@ const PopupsMenu = ({ handleClickCity }: { handleClickCity: (city: PopupsProps) 
                   {!popups.length || !city ? (
                     <div className="flex items-center gap-3">
                       <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-gray-200 animate-pulse" />
-                      <div className="flex flex-col gap-0.5">
+                      <div className="flex flex-col gap-0.5 group-data-[collapsible=icon]:hidden">
                         <div className="h-4 w-24 bg-gray-200 rounded animate-pulse" />
                       </div>
                     </div>
                   ) : (
-                    <div className="flex items-center gap-1">
-                        {/* <Avatar className="size-8 rounded-lg flex items-center justify-center" >
-                          <AvatarFallback className='rounded-lg bg-slate-400 text-white font-semibold text-center'>{cityName}</AvatarFallback>
-                        </Avatar> */}
+                    <>
+                      {/* Collapsed view: small image only */}
+                      <div className="hidden group-data-[collapsible=icon]:flex items-center justify-center w-full">
+                        <Image
+                          src="https://simplefi.s3.us-east-2.amazonaws.com/edge_island.png"
+                          alt="EdgeCity illustration"
+                          width={28}
+                          height={28}
+                        />
+                      </div>
+
+                      {/* Expanded view: image + text */}
+                      <div className="flex items-center gap-1 group-data-[collapsible=icon]:hidden">
                         <motion.div
                           initial={{ y: 0 }}
                           animate={{ y: [0, 6, 0] }}
                           transition={{ duration: 4, repeat: Infinity, repeatType: 'loop', ease: 'easeIn' }}
                           className="relative aspect-square"
                         >
-                        <Image
-                          src="https://simplefi.s3.us-east-2.amazonaws.com/edge_island.png"
-                          alt="EdgeCity illustration"
-                          width={48}
-                          height={48}
-                        />
-                      </motion.div>
-                      <div className="flex flex-col gap-0.5 text-sm">
-                        <span className="font-semibold">{city.name}</span>
-                        <span className="text-xs text-muted-foreground">{city.location}</span>
-                        <span className="text-xs text-muted-foreground">{cityDate}</span>
+                          <Image
+                            src="https://simplefi.s3.us-east-2.amazonaws.com/edge_island.png"
+                            alt="EdgeCity illustration"
+                            width={48}
+                            height={48}
+                          />
+                        </motion.div>
+                        <div className="flex flex-col gap-0.5 text-sm">
+                          <span className="font-semibold">{city.name}</span>
+                          <span className="text-xs text-muted-foreground">{city.location}</span>
+                          <span className="text-xs text-muted-foreground">{cityDate}</span>
+                        </div>
                       </div>
-                    </div>
+                    </>
                   )}
-                  <ChevronsUpDown className="size-4 opacity-50" />
+                  <ChevronsUpDown className="size-4 opacity-50 group-data-[collapsible=icon]:hidden" />
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="start" className="w-[--radix-dropdown-menu-trigger-width]">

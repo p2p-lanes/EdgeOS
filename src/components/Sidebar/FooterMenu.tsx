@@ -1,7 +1,7 @@
 import { Star, Github, User } from "lucide-react"
 import { useState, useEffect } from "react"
 
-import { SidebarMenu, SidebarMenuItem, SidebarFooter } from "./SidebarComponents"
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, SidebarFooter } from "./SidebarComponents"
 
 import { User as UserType } from "@/types/User"
 import PoapMint from "./Poap/PoapMint"
@@ -55,14 +55,12 @@ const FooterMenu = ({handleLogout, user}: {handleLogout: () => void, user: UserT
             </a>
           )}
           <SidebarMenuItem>
-             <Link href={"/portal/profile"}>
-              <div className="flex items-center gap-4 p-2 px-4 hover:bg-gray-100 hover:text-gray-700 text-muted-foreground rounded-lg transition-colors cursor-pointer mb-4 mt-4">
+            <SidebarMenuButton asChild tooltip="My Profile" className="text-muted-foreground hover:bg-gray-100 hover:text-gray-700 mb-4 mt-4">
+              <Link href={"/portal/profile"}>
                 <User className="w-4 h-4" />
-                <span className="text-sm font-medium">
-                  My Profile
-                </span>
-              </div>
-            </Link>
+                <span className="text-sm font-medium">My Profile</span>
+              </Link>
+            </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
       </SidebarFooter>

@@ -12,6 +12,8 @@ import { getPurchaseStrategy } from '@/strategies/PurchaseStrategy';
 import { useGroupsProvider } from './groupsProvider';
 import { isVariablePrice } from '@/helpers/variablePrice';
 import { savePassSelections, loadPassSelections, clearPassSelectionsStorage, PersistedPassSelection } from '@/hooks/useCartStorage';
+import { jwtDecode } from 'jwt-decode';
+import { User } from '@/types/User';
 
 interface PassesContext_interface {
   attendeePasses: AttendeeProps[];
@@ -48,6 +50,17 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   const attendeePassesRef = useRef<AttendeeProps[]>([])
   const hasRestoredRef = useRef(false)
   const { groups } = useGroupsProvider()
+
+  const citizenId = useMemo(() => {
+    try {
+      const token = typeof window !== 'undefined' ? window.localStorage.getItem('token') : null;
+      if (!token) return null;
+      const decoded = jwtDecode<User>(token);
+      return decoded.citizen_id ?? null;
+    } catch {
+      return null;
+    }
+  }, [])
 
   const toggleProduct = useCallback((attendeeId: number, product: ProductsPass) => {
     if (!product) return;
@@ -138,9 +151,9 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
-      // Read saved selections from localStorage reactively (city?.id may not be available on first render)
-      const savedSelections = (!hasRestoredRef.current && city?.id)
-        ? loadPassSelections(city.id)
+      // Read saved selections from localStorage reactively (city?.id and citizenId may not be available on first render)
+      const savedSelections = (!hasRestoredRef.current && city?.id && citizenId)
+        ? loadPassSelections(citizenId, city.id)
         : [];
 
       const initialAttendees = attendees.map(attendee => {
@@ -196,12 +209,12 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         };
       });
       setAttendeePasses(initialAttendees);
-      // Mark restored only when city.id was available (so localStorage was actually checked)
-      if (city?.id) {
+      // Mark restored only when city.id and citizenId were available (so localStorage was actually checked)
+      if (city?.id && citizenId) {
         hasRestoredRef.current = true;
       }
     }
-  }, [attendees, products, discountApplied, isEditing, localResident, city?.id]);
+  }, [attendees, products, discountApplied, isEditing, localResident, city?.id, citizenId]);
 
   useEffect(() => {
     attendeePassesRef.current = attendeePasses
@@ -210,7 +223,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     if (!hasRestoredRef.current) return;
 
     // Persist selected passes to localStorage
-    if (city?.id && attendeePasses.length > 0) {
+    if (city?.id && citizenId && attendeePasses.length > 0) {
       const selections: PersistedPassSelection[] = [];
       attendeePasses.forEach(attendee => {
         attendee.products.forEach(product => {
@@ -224,9 +237,9 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
           }
         });
       });
-      savePassSelections(city.id, selections);
+      savePassSelections(citizenId, city.id, selections);
     }
-  }, [attendeePasses, city?.id])
+  }, [attendeePasses, city?.id, citizenId])
 
   const toggleEditing = useCallback((editing?: boolean) => {
     setAttendeePasses(attendeePasses.map(attendee => ({

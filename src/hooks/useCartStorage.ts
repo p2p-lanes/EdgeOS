@@ -1,5 +1,5 @@
 // Cart persistence utilities using localStorage
-// Storage keys are scoped by a unique identifier (e.g. city ID) to prevent conflicts between events
+// Storage keys are scoped by userId (citizen_id) + cityId to prevent cross-account conflicts
 
 export interface PersistedPassSelection {
   attendeeId: number;
@@ -18,17 +18,18 @@ export interface PersistedCheckoutCart {
 const PASSES_STORAGE_KEY = 'cart_passes';
 const CHECKOUT_STORAGE_KEY = 'cart_checkout';
 
-const buildKey = (base: string, scopeId: string | number): string =>
-  `${base}_${scopeId}`;
+const buildKey = (base: string, userId: string, cityId: string | number): string =>
+  `${base}_${userId}_${cityId}`;
 
 // --- Pass Selections ---
 
 export const savePassSelections = (
-  scopeId: string | number,
+  userId: string,
+  cityId: string | number,
   selections: PersistedPassSelection[]
 ): void => {
   try {
-    const key = buildKey(PASSES_STORAGE_KEY, scopeId);
+    const key = buildKey(PASSES_STORAGE_KEY, userId, cityId);
     localStorage.setItem(key, JSON.stringify(selections));
   } catch {
     // Silently fail if localStorage is unavailable
@@ -36,10 +37,11 @@ export const savePassSelections = (
 };
 
 export const loadPassSelections = (
-  scopeId: string | number
+  userId: string,
+  cityId: string | number
 ): PersistedPassSelection[] => {
   try {
-    const key = buildKey(PASSES_STORAGE_KEY, scopeId);
+    const key = buildKey(PASSES_STORAGE_KEY, userId, cityId);
     const raw = localStorage.getItem(key);
     if (!raw) return [];
     return JSON.parse(raw) as PersistedPassSelection[];
@@ -51,11 +53,12 @@ export const loadPassSelections = (
 // --- Checkout Cart (housing, merch, patron, insurance) ---
 
 export const saveCheckoutCart = (
-  scopeId: string | number,
+  userId: string,
+  cityId: string | number,
   cart: PersistedCheckoutCart
 ): void => {
   try {
-    const key = buildKey(CHECKOUT_STORAGE_KEY, scopeId);
+    const key = buildKey(CHECKOUT_STORAGE_KEY, userId, cityId);
     localStorage.setItem(key, JSON.stringify(cart));
   } catch {
     // Silently fail if localStorage is unavailable
@@ -63,10 +66,11 @@ export const saveCheckoutCart = (
 };
 
 export const loadCheckoutCart = (
-  scopeId: string | number
+  userId: string,
+  cityId: string | number
 ): PersistedCheckoutCart | null => {
   try {
-    const key = buildKey(CHECKOUT_STORAGE_KEY, scopeId);
+    const key = buildKey(CHECKOUT_STORAGE_KEY, userId, cityId);
     const raw = localStorage.getItem(key);
     if (!raw) return null;
     return JSON.parse(raw) as PersistedCheckoutCart;
@@ -77,27 +81,42 @@ export const loadCheckoutCart = (
 
 // --- Clear All Cart Storage ---
 
-export const clearCartStorage = (scopeId: string | number): void => {
+export const clearCartStorage = (userId: string, cityId: string | number): void => {
   try {
-    localStorage.removeItem(buildKey(PASSES_STORAGE_KEY, scopeId));
-    localStorage.removeItem(buildKey(CHECKOUT_STORAGE_KEY, scopeId));
+    localStorage.removeItem(buildKey(PASSES_STORAGE_KEY, userId, cityId));
+    localStorage.removeItem(buildKey(CHECKOUT_STORAGE_KEY, userId, cityId));
   } catch {
     // Silently fail if localStorage is unavailable
   }
 };
 
-export const clearPassSelectionsStorage = (scopeId: string | number): void => {
+export const clearPassSelectionsStorage = (userId: string, cityId: string | number): void => {
   try {
-    localStorage.removeItem(buildKey(PASSES_STORAGE_KEY, scopeId));
+    localStorage.removeItem(buildKey(PASSES_STORAGE_KEY, userId, cityId));
   } catch {
     // Silently fail
   }
 };
 
-export const clearCheckoutCartStorage = (scopeId: string | number): void => {
+export const clearCheckoutCartStorage = (userId: string, cityId: string | number): void => {
   try {
-    localStorage.removeItem(buildKey(CHECKOUT_STORAGE_KEY, scopeId));
+    localStorage.removeItem(buildKey(CHECKOUT_STORAGE_KEY, userId, cityId));
   } catch {
     // Silently fail
+  }
+};
+
+export const clearAllUserCartStorage = (userId: string): void => {
+  try {
+    const keysToRemove: string[] = [];
+    for (let i = 0; i < localStorage.length; i++) {
+      const key = localStorage.key(i);
+      if (key && (key.startsWith(`${PASSES_STORAGE_KEY}_${userId}_`) || key.startsWith(`${CHECKOUT_STORAGE_KEY}_${userId}_`))) {
+        keysToRemove.push(key);
+      }
+    }
+    keysToRemove.forEach(key => localStorage.removeItem(key));
+  } catch {
+    // Silently fail if localStorage is unavailable
   }
 };

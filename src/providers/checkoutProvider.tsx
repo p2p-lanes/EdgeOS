@@ -34,6 +34,8 @@ import {
   clearCartStorage,
   PersistedCheckoutCart,
 } from '@/hooks/useCartStorage';
+import { jwtDecode } from 'jwt-decode';
+import { User } from '@/types/User';
 
 interface CheckoutContextValue {
   // Current step
@@ -124,7 +126,18 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
   const { getCity } = useCityProvider();
   const application = getRelevantApplication();
   const city = getCity();
-  const scopeId = city?.id;
+  const cityId = city?.id;
+
+  const citizenId = useMemo(() => {
+    try {
+      const token = typeof window !== 'undefined' ? window.localStorage.getItem('token') : null;
+      if (!token) return null;
+      const decoded = jwtDecode<User>(token);
+      return decoded.citizen_id ?? null;
+    } catch {
+      return null;
+    }
+  }, []);
 
   // Flag to prevent save effect from overwriting localStorage before restoration
   const hasRestoredCheckoutRef = useRef(false);
@@ -141,20 +154,20 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
   const [promoCodeDiscount, setPromoCodeDiscount] = useState(0);
   const [insurance, setInsurance] = useState(false);
 
-  // Restore checkout cart from localStorage once scopeId becomes available
+  // Restore checkout cart from localStorage once cityId and citizenId become available
   // If initialStep is 'success', user is returning from a confirmed payment — clear storage instead
   useEffect(() => {
-    if (hasRestoredCheckoutRef.current || !scopeId) return;
+    if (hasRestoredCheckoutRef.current || !cityId || !citizenId) return;
 
     hasRestoredCheckoutRef.current = true;
 
     // Returning from successful payment — clear persisted cart, don't restore
     if (initialStep === 'success') {
-      clearCartStorage(scopeId);
+      clearCartStorage(citizenId, cityId);
       return;
     }
 
-    const savedCart = loadCheckoutCart(scopeId);
+    const savedCart = loadCheckoutCart(citizenId, cityId);
     if (!savedCart) return;
 
     // Restore housing
@@ -210,7 +223,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     if (savedCart.insurance) {
       setInsurance(true);
     }
-  }, [scopeId, products]);
+  }, [cityId, citizenId, products]);
 
   // Loading states
   const [isLoading, setIsLoading] = useState(false);
@@ -368,7 +381,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
   // Persist checkout cart to localStorage whenever non-pass items change
   // Guarded: only save after restoration to avoid overwriting saved data with empty state
   useEffect(() => {
-    if (!scopeId || !hasRestoredCheckoutRef.current) return;
+    if (!cityId || !citizenId || !hasRestoredCheckoutRef.current) return;
     const persistedCart: PersistedCheckoutCart = {
       housing: housing
         ? { productId: housing.productId, checkIn: housing.checkIn, checkOut: housing.checkOut }
@@ -379,8 +392,8 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
         : null,
       insurance,
     };
-    saveCheckoutCart(scopeId, persistedCart);
-  }, [housing, merch, patron, insurance, scopeId]);
+    saveCheckoutCart(citizenId, cityId, persistedCart);
+  }, [housing, merch, patron, insurance, cityId, citizenId]);
 
   // Calculate summary
   // Note: Insurance is calculated on original prices (before discounts) and added AFTER discounts
@@ -591,10 +604,10 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     setPromoCodeDiscount(0);
     setInsurance(false);
     // Clear persisted cart from localStorage
-    if (scopeId) {
-      clearCartStorage(scopeId);
+    if (cityId && citizenId) {
+      clearCartStorage(citizenId, cityId);
     }
-  }, [scopeId]);
+  }, [cityId, citizenId]);
 
   // Validation helpers
   const canProceedToStepFn = useCallback((step: CheckoutStep): boolean => {
@@ -790,7 +803,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       setIsSubmitting(false);
       return { success: false, error: errorMsg };
     }
-  }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart, isEditing, attendeePasses, editCredit, toggleEditing, scopeId]);
+  }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart, isEditing, attendeePasses, editCredit, toggleEditing]);
 
   const value: CheckoutContextValue = {
     currentStep,
