@@ -80,11 +80,6 @@ def _build_application_public(application) -> ApplicationPublic:
     return app_public
 
 
-# ========================
-# BO (Backoffice) Routes
-# ========================
-
-
 @router.get("", response_model=ListModel[ApplicationPublic])
 async def list_applications(
     db: TenantSession,
@@ -260,11 +255,6 @@ async def delete_application(
         )
 
     crud.applications_crud.delete(db, application)
-
-
-# ========================
-# Portal (Human) Routes
-# ========================
 
 
 @router.get("/my/applications", response_model=ListModel[ApplicationPublic])
@@ -486,11 +476,6 @@ async def update_my_application(
     return _build_application_public(application)
 
 
-# ========================
-# Attendees Directory (Portal)
-# ========================
-
-
 def _build_directory_entry(application) -> AttendeesDirectoryEntry:
     """Build a single directory entry from an application."""
     human = application.human
@@ -665,11 +650,6 @@ async def export_attendees_directory_csv(
         media_type="text/csv",
         headers={"Content-Disposition": "attachment; filename=attendees.csv"},
     )
-
-
-# ========================
-# Attendee Management (Portal)
-# ========================
 
 
 @router.post(

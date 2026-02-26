@@ -39,11 +39,6 @@ def _check_leader_permission(group: Groups, human_id: uuid.UUID) -> None:
         )
 
 
-# ========================
-# BO (Backoffice) Routes
-# ========================
-
-
 @router.get("", response_model=ListModel[GroupPublic])
 async def list_groups(
     db: TenantSession,
@@ -213,11 +208,6 @@ async def delete_group(
                 )
 
     crud.groups_crud.delete(db, group)
-
-
-# ========================
-# Portal (Human) Routes
-# ========================
 
 
 @router.get("/my/groups", response_model=ListModel[GroupPublic])

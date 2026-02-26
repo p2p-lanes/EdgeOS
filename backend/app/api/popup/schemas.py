@@ -18,6 +18,8 @@ class PopupStatus(StrEnum):
 
 class PopupBase(SQLModel):
     name: str = Field(index=True)
+    tagline: str | None = None
+    location: str | None = None
     slug: str = Field(unique=True, index=True)
     tenant_id: uuid.UUID = Field(foreign_key="tenants.id", index=True)
     start_date: datetime | None = None
@@ -38,6 +40,8 @@ class PopupBase(SQLModel):
 class PopupCreate(SQLModel):
     tenant_id: uuid.UUID | None = None
     name: str = Field(max_length=255)
+    tagline: str | None = None
+    location: str | None = None
     slug: str = ""
     start_date: datetime | None = None
     end_date: datetime | None = None
@@ -61,6 +65,8 @@ class PopupCreate(SQLModel):
 
 class PopupUpdate(SQLModel):
     name: str | None = None
+    tagline: str | None = None
+    location: str | None = None
     slug: str | None = None
     status: PopupStatus | None = None
     start_date: datetime | None = None

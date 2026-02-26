@@ -104,9 +104,6 @@ def init_db(session: Session) -> None:
             session.commit()
             logger.info(f"Demo {user_key} user created: {user_data['email']}")
 
-    # =========================================================================
-    # Create popups
-    # =========================================================================
     popup_map: dict[str, Popups] = {}
     for popup_data in seed_data.get("popups", []):
         popup_key = popup_data["key"]
@@ -144,9 +141,6 @@ def init_db(session: Session) -> None:
             popup_map[popup_key] = popup
             logger.info(f"Popup created: {popup.name} ({popup_key})")
 
-    # =========================================================================
-    # Create products
-    # =========================================================================
     product_map: dict[str, Products] = {}  # Key: "{popup_key}:{product_slug}"
     for product_data in seed_data.get("products", []):
         popup_key = product_data["popup_key"]
@@ -203,9 +197,6 @@ def init_db(session: Session) -> None:
             product_map[map_key] = product
             logger.info(f"Product created: {product.name} for {popup_key}")
 
-    # =========================================================================
-    # Create form fields
-    # =========================================================================
     for field_data in seed_data.get("form_fields", []):
         popup_key = field_data["popup_key"]
         popup = popup_map.get(popup_key)
@@ -238,9 +229,6 @@ def init_db(session: Session) -> None:
             session.commit()
             logger.info(f"Form field created: {field.name} for {popup_key}")
 
-    # =========================================================================
-    # Create coupons
-    # =========================================================================
     coupon_map: dict[str, Coupons] = {}  # Key: "{popup_key}:{code}"
     for coupon_data in seed_data.get("coupons", []):
         popup_key = coupon_data["popup_key"]
@@ -284,9 +272,6 @@ def init_db(session: Session) -> None:
             coupon_map[map_key] = coupon
             logger.info(f"Coupon created: {coupon.code} for {popup_key}")
 
-    # =========================================================================
-    # Create humans
-    # =========================================================================
     human_map: dict[str, Humans] = {}
     for human_data in seed_data.get("humans", []):
         human_key = human_data["key"]
@@ -319,9 +304,6 @@ def init_db(session: Session) -> None:
             human_map[human_key] = human
             logger.info(f"Human created: {human.email} ({human_key})")
 
-    # =========================================================================
-    # Create groups (without members/leaders first)
-    # =========================================================================
     group_map: dict[str, Groups] = {}
     for group_data in seed_data.get("groups", []):
         group_key = group_data["key"]
@@ -412,9 +394,6 @@ def init_db(session: Session) -> None:
                     session.commit()
                     logger.info(f"Added {member_key} as member to {group_key}")
 
-    # =========================================================================
-    # Create applications with attendees
-    # =========================================================================
     application_map: dict[str, Applications] = {}
     attendee_lists: dict[str, list[Attendees]] = {}  # app_key -> list of attendees
 
@@ -528,9 +507,6 @@ def init_db(session: Session) -> None:
 
         attendee_lists[app_key] = created_attendees
 
-    # =========================================================================
-    # Create payments
-    # =========================================================================
     for payment_data in seed_data.get("payments", []):
         app_key = payment_data["application_key"]
         application = application_map.get(app_key)

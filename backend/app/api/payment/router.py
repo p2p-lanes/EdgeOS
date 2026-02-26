@@ -98,11 +98,6 @@ async def _send_payment_confirmed_email(payment, db_session=None) -> None:
     )
 
 
-# ========================
-# BO (Backoffice) Routes
-# ========================
-
-
 @router.get("", response_model=ListModel[PaymentPublic])
 async def list_payments(
     db: TenantSession,
@@ -202,11 +197,6 @@ async def approve_payment(
     return PaymentPublic.model_validate(payment)
 
 
-# ========================
-# Portal (Human) Routes
-# ========================
-
-
 @router.get("/my/{application_id}", response_model=ListModel[PaymentPublic])
 async def list_my_payments(
     application_id: uuid.UUID,
@@ -297,11 +287,6 @@ async def create_my_payment(
         return preview
 
     return PaymentPublic.model_validate(payment)
-
-
-# ========================
-# Webhook Routes (for payment providers)
-# ========================
 
 
 @router.post("/webhook/simplefi", status_code=status.HTTP_200_OK)

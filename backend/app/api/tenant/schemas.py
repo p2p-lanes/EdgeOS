@@ -15,6 +15,7 @@ class TenantBase(SQLModel):
     sender_name: str | None = Field(default=None, max_length=255)
     image_url: str | None = None
     icon_url: str | None = None
+    logo_url: str | None = None
 
 
 class TenantCreate(SQLModel):
@@ -24,6 +25,7 @@ class TenantCreate(SQLModel):
     sender_name: str | None = None
     image_url: str | None = None
     icon_url: str | None = None
+    logo_url: str | None = None
 
     @model_validator(mode="after")
     def generate_slug(self) -> Self:
@@ -44,6 +46,13 @@ class TenantUpdate(SQLModel):
     sender_name: str | None = None
     image_url: str | None = None
     icon_url: str | None = None
+    logo_url: str | None = None
+
+    @model_validator(mode="after")
+    def regenerate_slug(self) -> Self:
+        if self.name:
+            self.slug = slugify(self.name)
+        return self
 
 
 class TenantPublic(TenantBase):

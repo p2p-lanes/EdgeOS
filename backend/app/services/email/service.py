@@ -327,10 +327,6 @@ class EmailService:
             logger.error(f"Error sending template email to {to}: {e}")
             return False
 
-    # =========================================================================
-    # Typed Template Methods (with IDE autocomplete for context variables)
-    # =========================================================================
-
     async def send_login_code_user(
         self,
         to: str,

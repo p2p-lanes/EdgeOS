@@ -1,14 +1,11 @@
 "use client"
 
 import type { PopupPublic } from "@edgeos/api-client"
-import { CalendarDays } from "lucide-react"
+import { CalendarDays, MapPin } from "lucide-react"
 import { createContext, useContext } from "react"
 import { ButtonAnimated } from "@/components/ui/button"
 import { CardAnimation, CardContent } from "@/components/ui/card"
 import { EventProgressBar, type EventStatus } from "./EventProgressBar"
-
-const FALLBACK_IMAGE =
-  "https://cdn.prod.website-files.com/67475a01312f8d8225a6b46e/6751bf69596d8a1e1a99d291_half-banner-min.jpg"
 
 const CTA_LABELS: Record<EventStatus, string> = {
   not_started: "Apply",
@@ -65,11 +62,19 @@ function Image() {
   const { popup } = useEventCard()
   return (
     <div className="relative sm:h-auto sm:hidden lg:inline-block lg:w-1/3">
-      <img
-        src={popup.image_url ?? FALLBACK_IMAGE}
-        alt={popup.name}
-        className="object-cover w-full h-full"
-      />
+      {popup.image_url ? (
+        <img
+          src={popup.image_url}
+          alt={popup.name}
+          className="object-cover w-full h-full"
+        />
+      ) : (
+        <div className="flex h-full w-full items-center justify-center bg-gradient-to-br from-neutral-200 to-neutral-300">
+          <span className="text-4xl font-bold text-neutral-400">
+            {popup.name?.charAt(0) ?? "?"}
+          </span>
+        </div>
+      )}
     </div>
   )
 }
@@ -85,6 +90,21 @@ function Content({ children }: { children: React.ReactNode }) {
 function Title() {
   const { popup } = useEventCard()
   return <h3 className="text-2xl font-bold mb-2">{popup.name}</h3>
+}
+
+function Tagline() {
+  const { popup } = useEventCard()
+  return <p className="text-sm text-muted-foreground mb-4">{popup.tagline}</p>
+}
+
+function Location() {
+  const { popup } = useEventCard()
+  return (
+    <div className="flex items-center text-sm text-muted-foreground mb-2">
+      <MapPin className="mr-2 h-4 w-4" />
+      {popup.location}
+    </div>
+  )
 }
 
 function DateRange() {
@@ -132,6 +152,8 @@ export const EventCard = Object.assign(Root, {
   Image,
   Content,
   Title,
+  Tagline,
+  Location,
   DateRange,
   Progress,
   ApplyButton,

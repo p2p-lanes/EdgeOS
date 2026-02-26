@@ -4881,6 +4881,28 @@ export const PopupCreateSchema = {
             maxLength: 255,
             title: 'Name'
         },
+        tagline: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tagline'
+        },
+        location: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Location'
+        },
         slug: {
             type: 'string',
             title: 'Slug',
@@ -5038,6 +5060,28 @@ export const PopupPublicSchema = {
         name: {
             type: 'string',
             title: 'Name'
+        },
+        tagline: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tagline'
+        },
+        location: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Location'
         },
         slug: {
             type: 'string',
@@ -5343,6 +5387,28 @@ export const PopupUpdateSchema = {
                 }
             ],
             title: 'Name'
+        },
+        tagline: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Tagline'
+        },
+        location: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Location'
         },
         slug: {
             anyOf: [
@@ -6798,6 +6864,17 @@ export const TenantCreateSchema = {
                 }
             ],
             title: 'Icon Url'
+        },
+        logo_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Logo Url'
         }
     },
     type: 'object',
@@ -6896,6 +6973,17 @@ export const TenantPublicSchema = {
             ],
             title: 'Icon Url'
         },
+        logo_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Logo Url'
+        },
         id: {
             type: 'string',
             format: 'uuid',
@@ -6975,6 +7063,17 @@ export const TenantUpdateSchema = {
                 }
             ],
             title: 'Icon Url'
+        },
+        logo_url: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Logo Url'
         }
     },
     type: 'object',

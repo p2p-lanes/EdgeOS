@@ -1,6 +1,7 @@
 "use client"
 
 import { Suspense } from "react"
+import { useTenant } from "@/providers/tenantProvider"
 import { CheckoutContent } from "./components/CheckoutContent"
 import useGetCheckoutData from "./hooks/useGetCheckoutData"
 
@@ -11,6 +12,7 @@ const LoadingFallback = () => (
 )
 
 const CheckoutPage = () => {
+  const { tenant } = useTenant()
   const {
     data: { group },
     error,
@@ -23,15 +25,18 @@ const CheckoutPage = () => {
 
   return (
     <div
-      className="min-h-screen w-full py-8 flex items-center justify-center"
-      style={{
-        // LEGACY: express_checkout_background removed from GroupPublic
-        backgroundImage: `url(https://simplefi.s3.us-east-2.amazonaws.com/edge-bg.jpg)`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-      }}
+      className={`min-h-screen w-full py-8 flex items-center justify-center ${!tenant?.image_url ? "bg-gradient-to-br from-neutral-100 to-neutral-300" : ""}`}
+      style={
+        tenant?.image_url
+          ? {
+              backgroundImage: `url(${tenant.image_url})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              backgroundAttachment: "fixed",
+            }
+          : undefined
+      }
     >
       <div className="container mx-auto">
         <Suspense fallback={<LoadingFallback />}>

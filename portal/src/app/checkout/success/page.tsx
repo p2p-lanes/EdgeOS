@@ -5,9 +5,11 @@ import { CheckCircle, Home } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { useApplicationsQuery } from "@/hooks/useGetApplications"
+import { useTenant } from "@/providers/tenantProvider"
 
 const SuccessPage = () => {
   const router = useRouter()
+  const { tenant } = useTenant()
   useApplicationsQuery()
 
   const _handleDownloadReceipt = () => {
@@ -22,15 +24,18 @@ const SuccessPage = () => {
 
   return (
     <div
-      className="min-h-screen w-full py-12 flex items-center justify-center"
-      style={{
-        backgroundImage:
-          "url('https://simplefi.s3.us-east-2.amazonaws.com/edge-bg.jpg')",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        backgroundRepeat: "no-repeat",
-        backgroundAttachment: "fixed",
-      }}
+      className={`min-h-screen w-full py-12 flex items-center justify-center ${!tenant?.image_url ? "bg-gradient-to-br from-neutral-100 to-neutral-300" : ""}`}
+      style={
+        tenant?.image_url
+          ? {
+              backgroundImage: `url(${tenant.image_url})`,
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+              backgroundAttachment: "fixed",
+            }
+          : undefined
+      }
     >
       <motion.div
         className="container max-w-xl mx-auto bg-white/90 backdrop-blur-sm rounded-xl shadow-xl overflow-hidden"

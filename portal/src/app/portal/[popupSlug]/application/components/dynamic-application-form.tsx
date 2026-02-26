@@ -10,10 +10,6 @@ import { toast } from "sonner"
 import { ButtonAnimated } from "@/components/ui/button"
 import InputForm, { AddonInputForm } from "@/components/ui/Form/Input"
 import SelectForm from "@/components/ui/Form/Select"
-import { FormInputWrapper } from "@/components/ui/form-input-wrapper"
-import { Label } from "@/components/ui/label"
-import { MultiSelect } from "@/components/ui/MultiSelect"
-import { GENDER_OPTIONS } from "@/constants/util"
 import { splitForCreate, splitForUpdate } from "@/lib/form-data-splitter"
 import { queryKeys } from "@/lib/query-keys"
 import { useApplication } from "@/providers/applicationProvider"
@@ -21,9 +17,9 @@ import type {
   ApplicationFormSchema,
   FormFieldSchema,
 } from "@/types/form-schema"
-import { ageOptions, shareableInfo } from "../constants/forms"
 import { useApplicationForm } from "../hooks/use-application-form"
 import { CompanionsSection, type CompanionWithId } from "./companions-section"
+import { DynamicField } from "./fields/dynamic-field"
 import { FormSection } from "./form-section"
 import { ProgressBar } from "./progress-bar"
 import SectionWrapper from "./SectionWrapper"
@@ -34,6 +30,12 @@ const animationProps = {
   animate: { opacity: 1, height: "auto" },
   exit: { opacity: 0, height: 0 },
   transition: { duration: 0.3, ease: "easeInOut" },
+}
+
+const FULL_WIDTH_TYPES = new Set(["textarea", "multiselect"])
+
+function mapOptions(options?: string[]) {
+  return (options ?? []).map((opt) => ({ value: opt, label: opt }))
 }
 
 interface DynamicApplicationFormProps {
@@ -96,7 +98,7 @@ export function DynamicApplicationForm({
       if (application?.id) {
         return ApplicationsService.updateMyApplication({
           popupId: popup.id,
-          requestBody: splitForUpdate({ values, status }),
+          requestBody: splitForUpdate({ values, status, schema }),
         })
       }
 
@@ -106,6 +108,7 @@ export function DynamicApplicationForm({
           popupId: popup.id,
           companions: companionPayload,
           status,
+          schema,
         }),
       })
     },
@@ -115,7 +118,9 @@ export function DynamicApplicationForm({
     },
   })
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (
+    e: Parameters<NonNullable<React.ComponentProps<"form">["onSubmit"]>>[0],
+  ) => {
     e.preventDefault()
     setStatusBtn({ loadingDraft: false, loadingSubmit: true })
 
@@ -173,9 +178,29 @@ export function DynamicApplicationForm({
   // Resolve display gender for select
   const displayGender = useMemo(() => {
     const g = values.gender as string
-    if (g && !GENDER_OPTIONS.some((opt) => opt.value === g)) return "Specify"
+    const genderField = schema.base_fields.gender
+    if (g && genderField?.options && !genderField.options.includes(g))
+      return "Specify"
     return g ?? ""
-  }, [values.gender])
+  }, [values.gender, schema.base_fields])
+
+  // Group base_fields by section, sorted by position
+  const baseFieldSections = useMemo(() => {
+    const bySection: Record<string, [string, FormFieldSchema][]> = {}
+
+    for (const [name, field] of Object.entries(schema.base_fields)) {
+      const section = field.section || "profile"
+      if (!bySection[section]) bySection[section] = []
+      bySection[section].push([name, field])
+    }
+
+    // Sort fields within each section by position
+    for (const fields of Object.values(bySection)) {
+      fields.sort(([, a], [, b]) => (a.position ?? 0) - (b.position ?? 0))
+    }
+
+    return bySection
+  }, [schema.base_fields])
 
   // Group custom fields by section
   const sectionedFields = useMemo(() => {
@@ -210,139 +235,98 @@ export function DynamicApplicationForm({
     return orderedSections
   }, [schema])
 
-  // Check if base_fields has referral or info_not_shared
-  const hasReferral = "referral" in schema.base_fields
-  const hasInfoNotShared = "info_not_shared" in schema.base_fields
+  /** Render a single base field — special cases inline, rest via DynamicField */
+  const renderBaseField = (name: string, field: FormFieldSchema) => {
+    // --- Telegram: addon input with @ prefix ---
+    if (name === "telegram") {
+      return (
+        <div key={name}>
+          <AddonInputForm
+            label={field.label}
+            id="telegram"
+            value={(values.telegram as string) ?? ""}
+            onChange={(v) => handleChange("telegram", v)}
+            error={errors.telegram}
+            isRequired={field.required}
+            subtitle={field.help_text}
+            addon="@"
+            placeholder={field.placeholder}
+          />
+        </div>
+      )
+    }
+
+    // --- Gender: select with animated "Specify" sub-field ---
+    if (name === "gender") {
+      return (
+        <div key={name} className="flex flex-col gap-4 w-full">
+          <SelectForm
+            label={field.label}
+            id="gender"
+            value={displayGender}
+            onChange={handleGenderChange}
+            error={errors.gender}
+            isRequired={field.required}
+            options={mapOptions(field.options)}
+          />
+          <AnimatePresence>
+            {displayGender === "Specify" && (
+              <motion.div {...animationProps}>
+                <InputForm
+                  isRequired
+                  label="Specify your gender"
+                  id="gender_specify"
+                  value={(values.gender_specify as string) ?? ""}
+                  onChange={(v) => handleChange("gender_specify", v)}
+                  error={errors.gender_specify}
+                />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      )
+    }
+
+    // --- Generic field: rendered via DynamicField ---
+    return (
+      <div
+        key={name}
+        className={FULL_WIDTH_TYPES.has(field.type) ? "md:col-span-2" : ""}
+      >
+        <DynamicField
+          name={name}
+          field={field}
+          value={values[name]}
+          error={errors[name]}
+          onChange={handleChange}
+        />
+      </div>
+    )
+  }
 
   return (
     <>
       <form onSubmit={handleSubmit} className="space-y-8 px-8 md:px-12">
-        {/* Profile Section - hardcoded, these fields live on Human */}
-        <SectionWrapper
-          title="Personal Information"
-          subtitle="Your basic information helps us identify and contact you."
-        >
-          <div className="grid gap-4 sm:grid-cols-2">
-            <InputForm
-              label="First name"
-              id="first_name"
-              value={(values.first_name as string) ?? ""}
-              onChange={(v) => handleChange("first_name", v)}
-              error={errors.first_name}
-              isRequired
-            />
-            <InputForm
-              label="Last name"
-              id="last_name"
-              value={(values.last_name as string) ?? ""}
-              onChange={(v) => handleChange("last_name", v)}
-              error={errors.last_name}
-              isRequired
-            />
-            <AddonInputForm
-              label="Telegram username"
-              id="telegram"
-              value={(values.telegram as string) ?? ""}
-              onChange={(v) => handleChange("telegram", v)}
-              error={errors.telegram}
-              isRequired
-              subtitle={`The primary form of communication during ${popup.name} will be a Telegram group, so create an account if you don't already have one`}
-              addon="@"
-              placeholder="username"
-            />
-            <InputForm
-              label="Usual location of residence"
-              id="residence"
-              value={(values.residence as string) ?? ""}
-              onChange={(v) => handleChange("residence", v)}
-              error={errors.residence}
-              placeholder="Healdsburg, California, USA"
-              subtitle="Please format it like [City, State/Region, Country]."
-            />
-            <div className="flex flex-col gap-4 w-full">
-              <SelectForm
-                label="Gender"
-                id="gender"
-                value={displayGender}
-                onChange={handleGenderChange}
-                error={errors.gender}
-                isRequired
-                options={GENDER_OPTIONS}
-              />
-              <AnimatePresence>
-                {displayGender === "Specify" && (
-                  <motion.div {...animationProps}>
-                    <InputForm
-                      isRequired
-                      label="Specify your gender"
-                      id="gender_specify"
-                      value={(values.gender_specify as string) ?? ""}
-                      onChange={(v) => handleChange("gender_specify", v)}
-                      error={errors.gender_specify}
-                    />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </div>
-            <SelectForm
-              label="Age"
-              id="age"
-              value={(values.age as string) ?? ""}
-              onChange={(v) => handleChange("age", v)}
-              error={errors.age}
-              isRequired
-              options={ageOptions}
-            />
-            <InputForm
-              label="Organization"
-              id="organization"
-              value={(values.organization as string) ?? ""}
-              onChange={(v) => handleChange("organization", v)}
-              error={errors.organization}
-            />
-            <InputForm
-              label="Role"
-              id="role"
-              value={(values.role as string) ?? ""}
-              onChange={(v) => handleChange("role", v)}
-              error={errors.role}
-            />
-
-            {hasReferral && (
-              <InputForm
-                label="Did anyone refer you?"
-                id="referral"
-                value={(values.referral as string) ?? ""}
-                onChange={(v) => handleChange("referral", v)}
-                error={errors.referral}
-                subtitle="List everyone who encouraged you to apply."
-              />
-            )}
+        {/* Base fields grouped by section */}
+        {Object.entries(baseFieldSections).map(([section, fields]) => (
+          <div key={section}>
+            <SectionWrapper
+              title={section === "profile" ? "Personal Information" : section}
+              subtitle={
+                section === "profile"
+                  ? "Your basic information helps us identify and contact you."
+                  : undefined
+              }
+            >
+              <div className="grid gap-4 sm:grid-cols-2">
+                {fields.map(([name, field]) => renderBaseField(name, field))}
+              </div>
+            </SectionWrapper>
+            <SectionSeparator />
           </div>
+        ))}
 
-          {hasInfoNotShared && (
-            <FormInputWrapper>
-              <Label>
-                Info I&apos;m <strong>NOT</strong> willing to share with other
-                attendees
-                <p className="text-sm text-muted-foreground mb-2">
-                  We will make a directory to make it easier for attendees to
-                  coordinate
-                </p>
-              </Label>
-              <MultiSelect
-                options={shareableInfo}
-                onChange={(selected) =>
-                  handleChange("info_not_shared", selected)
-                }
-                defaultValue={(values.info_not_shared as string[]) ?? []}
-              />
-            </FormInputWrapper>
-          )}
-        </SectionWrapper>
-        <SectionSeparator />
-
-        {/* Dynamic sections from schema */}
+        {/* Dynamic sections from custom fields */}
         {sectionedFields.map(({ title, fields }) => (
           <FormSection
             key={title}

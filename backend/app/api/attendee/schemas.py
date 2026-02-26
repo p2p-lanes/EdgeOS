@@ -121,11 +121,6 @@ class AttendeeInternalCreate(AttendeeCreate):
     check_in_code: str
 
 
-# ========================
-# Attendee Products Schemas
-# ========================
-
-
 class AttendeeProductsBase(SQLModel):
     """Base schema for attendee products link table."""
 
@@ -145,11 +140,6 @@ class AttendeeProductPublic(BaseModel):
     quantity: int
 
     model_config = ConfigDict(from_attributes=True)
-
-
-# ========================
-# Ticket Schemas (for ticket retrieval)
-# ========================
 
 
 class TicketProduct(BaseModel):

@@ -54,6 +54,7 @@ interface FormFieldSchema {
   options?: string[]
   placeholder?: string
   help_text?: string
+  target?: "human" | "application"
 }
 
 interface ApplicationSchema {
@@ -70,6 +71,21 @@ interface CompanionWithId extends CompanionCreate {
 interface ApplicationFormProps {
   onSuccess: () => void
 }
+
+/** Fields on the Human model that map to named API fields */
+const HUMAN_FIELD_KEYS = new Set([
+  "first_name",
+  "last_name",
+  "telegram",
+  "organization",
+  "role",
+  "gender",
+  "age",
+  "residence",
+])
+
+/** Fields on the Application model that map to named API fields */
+const APPLICATION_FIELD_KEYS = new Set(["referral", "info_not_shared"])
 
 export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
   const navigate = useNavigate()
@@ -134,20 +150,28 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
     return initial
   }
 
+  // Build initial base field values from schema
+  const getInitialBaseFields = (): Record<string, unknown> => {
+    if (!schema?.base_fields) return {}
+    const initial: Record<string, unknown> = {}
+    for (const [name, field] of Object.entries(schema.base_fields)) {
+      if (field.type === "boolean") {
+        initial[name] = false
+      } else if (field.type === "multiselect") {
+        initial[name] = []
+      } else {
+        initial[name] = ""
+      }
+    }
+    return initial
+  }
+
   const form = useForm({
     defaultValues: {
-      // Base profile fields
-      first_name: "",
-      last_name: "",
+      // Email is backoffice-only (not in base_fields)
       email: "",
-      telegram: "",
-      organization: "",
-      role: "",
-      gender: "",
-      age: "",
-      residence: "",
-      // Application fields
-      referral: "",
+      // Base fields from schema (profile + application)
+      ...getInitialBaseFields(),
       // Custom fields - will be populated dynamically
       custom_fields: getInitialCustomFields(),
     },
@@ -159,7 +183,9 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
 
       // Clean up custom fields - remove empty values
       const cleanedCustomFields: Record<string, unknown> = {}
-      for (const [key, val] of Object.entries(value.custom_fields)) {
+      for (const [key, val] of Object.entries(
+        value.custom_fields as Record<string, unknown>,
+      )) {
         if (val !== "" && val !== null && val !== undefined) {
           if (Array.isArray(val) && val.length === 0) continue
           cleanedCustomFields[key] = val
@@ -169,18 +195,10 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
       // Status is "draft" if saving as draft, otherwise "in review"
       const status = savingAsDraft ? "draft" : "in review"
 
-      createMutation.mutate({
+      // Build the payload dynamically from base_fields target
+      const payload: Record<string, unknown> = {
         popup_id: selectedPopupId,
-        first_name: value.first_name,
-        last_name: value.last_name,
-        email: value.email,
-        telegram: value.telegram || undefined,
-        organization: value.organization || undefined,
-        role: value.role || undefined,
-        gender: value.gender || undefined,
-        age: value.age || undefined,
-        residence: value.residence || undefined,
-        referral: value.referral || undefined,
+        email: (value as Record<string, unknown>).email || undefined,
         status: status as ApplicationStatus,
         custom_fields:
           Object.keys(cleanedCustomFields).length > 0
@@ -190,7 +208,22 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
           companions.length > 0
             ? companions.map(({ _id, ...rest }) => rest)
             : undefined,
-      })
+      }
+
+      // Map base fields to their named API fields
+      if (schema?.base_fields) {
+        for (const name of Object.keys(schema.base_fields)) {
+          const val = (value as Record<string, unknown>)[name]
+          if (HUMAN_FIELD_KEYS.has(name) || APPLICATION_FIELD_KEYS.has(name)) {
+            payload[name] = val || undefined
+          }
+        }
+        // first_name and last_name are required strings
+        payload.first_name = (value as Record<string, unknown>).first_name || ""
+        payload.last_name = (value as Record<string, unknown>).last_name || ""
+      }
+
+      createMutation.mutate(payload as unknown as ApplicationAdminCreate)
     },
   })
 
@@ -204,6 +237,13 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
   if (schemaLoading) {
     return <Skeleton className="h-96 w-full" />
   }
+
+  // Sort base fields by position
+  const sortedBaseFields = schema?.base_fields
+    ? Object.entries(schema.base_fields).sort(
+        ([, a], [, b]) => (a.position ?? 0) - (b.position ?? 0),
+      )
+    : []
 
   // Sort custom fields by position
   const sortedCustomFields = schema?.custom_fields
@@ -252,8 +292,15 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
     return <p className="text-destructive text-sm">{errors.join(", ")}</p>
   }
 
-  const renderCustomField = (name: string, field: FormFieldSchema) => {
-    const fieldPath = `custom_fields.${name}` as const
+  /** Render a field using form.Field with the given path.
+   * fieldPath is cast because base fields are added dynamically via schema
+   * and can't be statically inferred by tanstack/react-form's type system. */
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const renderSchemaField = (
+    name: string,
+    field: FormFieldSchema,
+    fieldPath: any,
+  ) => {
     const validators = getRequiredValidator(field)
 
     switch (field.type) {
@@ -510,6 +557,12 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
     }
   }
 
+  const renderCustomField = (name: string, field: FormFieldSchema) =>
+    renderSchemaField(name, field, `custom_fields.${name}`)
+
+  const renderBaseField = (name: string, field: FormFieldSchema) =>
+    renderSchemaField(name, field, name)
+
   return (
     <div className="space-y-6">
       <form
@@ -519,74 +572,18 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
         }}
         className="space-y-6"
       >
-        <FormErrorSummary
-          form={form}
-          fieldLabels={{
-            first_name: "First Name",
-            last_name: "Last Name",
-            email: "Email",
-            organization: "Organization",
-            role: "Role",
-          }}
-        />
+        <FormErrorSummary form={form} fieldLabels={{}} />
         <div className="grid gap-6 lg:grid-cols-3">
           {/* Left Column - Form Fields */}
           <div className="space-y-6 lg:col-span-2">
-            {/* Profile Information */}
+            {/* Profile Information — driven by schema base_fields */}
             <Card>
               <CardHeader>
                 <CardTitle>Profile Information</CardTitle>
                 <CardDescription>Basic applicant information</CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <form.Field
-                    name="first_name"
-                    validators={{
-                      onBlur: ({ value }) =>
-                        !value ? "First name is required" : undefined,
-                    }}
-                  >
-                    {(field) => (
-                      <div className="space-y-2">
-                        <Label htmlFor="first_name">
-                          First Name <span className="text-destructive">*</span>
-                        </Label>
-                        <Input
-                          id="first_name"
-                          value={field.state.value}
-                          onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                        />
-                        <FieldError errors={field.state.meta.errors} />
-                      </div>
-                    )}
-                  </form.Field>
-
-                  <form.Field
-                    name="last_name"
-                    validators={{
-                      onBlur: ({ value }) =>
-                        !value ? "Last name is required" : undefined,
-                    }}
-                  >
-                    {(field) => (
-                      <div className="space-y-2">
-                        <Label htmlFor="last_name">
-                          Last Name <span className="text-destructive">*</span>
-                        </Label>
-                        <Input
-                          id="last_name"
-                          value={field.state.value}
-                          onBlur={field.handleBlur}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                        />
-                        <FieldError errors={field.state.meta.errors} />
-                      </div>
-                    )}
-                  </form.Field>
-                </div>
-
+                {/* Email is backoffice-only, always rendered first */}
                 <form.Field
                   name="email"
                   validators={{
@@ -611,127 +608,12 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
                   )}
                 </form.Field>
 
+                {/* Base fields from schema */}
                 <div className="grid gap-4 sm:grid-cols-2">
-                  <form.Field name="telegram">
-                    {(field) => (
-                      <div className="space-y-2">
-                        <Label htmlFor="telegram">Telegram</Label>
-                        <Input
-                          id="telegram"
-                          placeholder="@username"
-                          value={field.state.value}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                        />
-                      </div>
-                    )}
-                  </form.Field>
-
-                  <form.Field name="organization">
-                    {(field) => (
-                      <div className="space-y-2">
-                        <Label htmlFor="organization">Organization</Label>
-                        <Input
-                          id="organization"
-                          value={field.state.value}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                        />
-                      </div>
-                    )}
-                  </form.Field>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <form.Field name="role">
-                    {(field) => (
-                      <div className="space-y-2">
-                        <Label htmlFor="role">Role</Label>
-                        <Input
-                          id="role"
-                          value={field.state.value}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                        />
-                      </div>
-                    )}
-                  </form.Field>
-
-                  <form.Field name="gender">
-                    {(field) => (
-                      <div className="space-y-2">
-                        <Label htmlFor="gender">Gender</Label>
-                        <Select
-                          value={field.state.value}
-                          onValueChange={(val) => field.handleChange(val)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="male">Male</SelectItem>
-                            <SelectItem value="female">Female</SelectItem>
-                            <SelectItem value="other">Other</SelectItem>
-                            <SelectItem value="prefer not to say">
-                              Prefer not to say
-                            </SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-                  </form.Field>
-                </div>
-
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <form.Field name="age">
-                    {(field) => (
-                      <div className="space-y-2">
-                        <Label htmlFor="age">Age Range</Label>
-                        <Select
-                          value={field.state.value}
-                          onValueChange={(val) => field.handleChange(val)}
-                        >
-                          <SelectTrigger>
-                            <SelectValue placeholder="Select..." />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="18-24">18-24</SelectItem>
-                            <SelectItem value="25-34">25-34</SelectItem>
-                            <SelectItem value="35-44">35-44</SelectItem>
-                            <SelectItem value="45-54">45-54</SelectItem>
-                            <SelectItem value="55-64">55-64</SelectItem>
-                            <SelectItem value="65+">65+</SelectItem>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    )}
-                  </form.Field>
-
-                  <form.Field name="residence">
-                    {(field) => (
-                      <div className="space-y-2">
-                        <Label htmlFor="residence">Residence</Label>
-                        <Input
-                          id="residence"
-                          value={field.state.value}
-                          onChange={(e) => field.handleChange(e.target.value)}
-                        />
-                      </div>
-                    )}
-                  </form.Field>
-                </div>
-
-                <form.Field name="referral">
-                  {(field) => (
-                    <div className="space-y-2">
-                      <Label htmlFor="referral">
-                        How did you hear about us?
-                      </Label>
-                      <Input
-                        id="referral"
-                        value={field.state.value}
-                        onChange={(e) => field.handleChange(e.target.value)}
-                      />
-                    </div>
+                  {sortedBaseFields.map(([name, field]) =>
+                    renderBaseField(name, field),
                   )}
-                </form.Field>
+                </div>
 
                 {unsectionedFields.length > 0 && (
                   <>
@@ -938,26 +820,45 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
             </div>
           </div>
 
-          {/* Right Column - Preview */}
+          {/* Right Column - Preview (driven by schema) */}
           <div className="space-y-6">
             <form.Subscribe
               selector={(state) => ({
-                first_name: state.values.first_name,
-                last_name: state.values.last_name,
-                email: state.values.email,
-                organization: state.values.organization,
-                role: state.values.role,
-                gender: state.values.gender,
-                age: state.values.age,
-                residence: state.values.residence,
-                referral: state.values.referral,
-                telegram: state.values.telegram,
-                custom_fields: state.values.custom_fields,
+                values: state.values,
               })}
             >
-              {(values) => {
+              {({ values }) => {
+                const vals = values as Record<string, unknown>
                 const fullName =
-                  `${values.first_name} ${values.last_name}`.trim()
+                  `${vals.first_name ?? ""} ${vals.last_name ?? ""}`.trim()
+
+                // Build preview items from base_fields
+                const previewItems: {
+                  label: string
+                  value: string
+                  icon?: boolean
+                }[] = []
+                if (schema?.base_fields) {
+                  for (const [name, field] of sortedBaseFields) {
+                    if (
+                      name === "first_name" ||
+                      name === "last_name"
+                    )
+                      continue
+                    const val = vals[name]
+                    if (!val || (typeof val === "string" && !val.trim()))
+                      continue
+                    if (Array.isArray(val) && val.length === 0) continue
+
+                    const displayValue = Array.isArray(val)
+                      ? val.join(", ")
+                      : String(val)
+                    previewItems.push({
+                      label: field.label,
+                      value: displayValue,
+                    })
+                  }
+                }
 
                 return (
                   <Card>
@@ -977,7 +878,7 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
                             {fullName || "Applicant Name"}
                           </p>
                           <p className="text-sm text-muted-foreground">
-                            {values.organization || "Organization"}
+                            {(vals.organization as string) || "Organization"}
                           </p>
                         </div>
                       </div>
@@ -988,176 +889,144 @@ export function ApplicationForm({ onSuccess }: ApplicationFormProps) {
                         <div className="flex items-center gap-2 text-sm">
                           <Mail className="h-4 w-4 text-muted-foreground" />
                           <span className="text-muted-foreground">
-                            {values.email || "email@example.com"}
+                            {(vals.email as string) || "email@example.com"}
                           </span>
                         </div>
 
-                        {values.role && (
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Role</span>
-                            <span>{values.role}</span>
-                          </div>
-                        )}
-
-                        {values.gender && (
-                          <div className="flex items-center justify-between text-sm">
+                        {previewItems.map((item) => (
+                          <div
+                            key={item.label}
+                            className="flex items-center justify-between text-sm"
+                          >
                             <span className="text-muted-foreground">
-                              Gender
+                              {item.label}
                             </span>
-                            <span className="capitalize">{values.gender}</span>
+                            <span>{item.value}</span>
                           </div>
-                        )}
-
-                        {values.age && (
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">Age</span>
-                            <span>{values.age}</span>
-                          </div>
-                        )}
-
-                        {values.residence && (
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">
-                              Residence
-                            </span>
-                            <span>{values.residence}</span>
-                          </div>
-                        )}
-
-                        {values.telegram && (
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">
-                              Telegram
-                            </span>
-                            <span>{values.telegram}</span>
-                          </div>
-                        )}
-
-                        {values.referral && (
-                          <div className="flex items-center justify-between text-sm">
-                            <span className="text-muted-foreground">
-                              Referral
-                            </span>
-                            <span>{values.referral}</span>
-                          </div>
-                        )}
+                        ))}
                       </div>
 
                       {/* Custom Fields Preview */}
-                      {Object.entries(values.custom_fields).some(
-                        ([, v]) =>
-                          v !== "" &&
-                          v !== false &&
-                          !(Array.isArray(v) && v.length === 0),
-                      ) &&
-                        (() => {
-                          const renderPreviewField = (
-                            key: string,
-                            value: unknown,
-                          ) => {
-                            if (
-                              value === "" ||
-                              value === false ||
-                              (Array.isArray(value) && value.length === 0)
-                            )
-                              return null
+                      {(() => {
+                        const customVals = vals.custom_fields as Record<
+                          string,
+                          unknown
+                        >
+                        if (!customVals) return null
 
-                            const fieldDef = schema?.custom_fields?.[key]
-                            const label =
-                              fieldDef?.label ||
-                              key
-                                .split("_")
-                                .map(
-                                  (w) => w.charAt(0).toUpperCase() + w.slice(1),
-                                )
-                                .join(" ")
+                        const hasAny = Object.entries(customVals).some(
+                          ([, v]) =>
+                            v !== "" &&
+                            v !== false &&
+                            !(Array.isArray(v) && v.length === 0),
+                        )
+                        if (!hasAny) return null
 
-                            let displayValue: string
-                            if (typeof value === "boolean") {
-                              displayValue = value ? "Yes" : "No"
-                            } else if (Array.isArray(value)) {
-                              displayValue = value.join(", ")
-                            } else {
-                              displayValue = String(value)
-                            }
-
-                            return (
-                              <div
-                                key={key}
-                                className="flex items-start justify-between text-sm"
-                              >
-                                <span className="text-muted-foreground">
-                                  {label}
-                                </span>
-                                <span className="text-right max-w-[60%] break-words">
-                                  {displayValue}
-                                </span>
-                              </div>
-                            )
-                          }
-
-                          const previewUnsectioned = Object.entries(
-                            values.custom_fields,
-                          ).filter(
-                            ([key]) => !schema?.custom_fields?.[key]?.section,
+                        const renderPreviewField = (
+                          key: string,
+                          value: unknown,
+                        ) => {
+                          if (
+                            value === "" ||
+                            value === false ||
+                            (Array.isArray(value) && value.length === 0)
                           )
-                          const previewSectioned: Record<
-                            string,
-                            [string, unknown][]
-                          > = {}
-                          for (const [key, value] of Object.entries(
-                            values.custom_fields,
-                          )) {
-                            const section =
-                              schema?.custom_fields?.[key]?.section
-                            if (section) {
-                              if (!previewSectioned[section])
-                                previewSectioned[section] = []
-                              previewSectioned[section].push([key, value])
-                            }
+                            return null
+
+                          const fieldDef = schema?.custom_fields?.[key]
+                          const label =
+                            fieldDef?.label ||
+                            key
+                              .split("_")
+                              .map(
+                                (w) => w.charAt(0).toUpperCase() + w.slice(1),
+                              )
+                              .join(" ")
+
+                          let displayValue: string
+                          if (typeof value === "boolean") {
+                            displayValue = value ? "Yes" : "No"
+                          } else if (Array.isArray(value)) {
+                            displayValue = value.join(", ")
+                          } else {
+                            displayValue = String(value)
                           }
 
                           return (
-                            <>
-                              {previewUnsectioned.some(
-                                ([, v]) =>
-                                  v !== "" &&
-                                  v !== false &&
-                                  !(Array.isArray(v) && v.length === 0),
-                              ) && (
-                                <div className="space-y-2">
-                                  {previewUnsectioned.map(([key, value]) =>
-                                    renderPreviewField(key, value),
-                                  )}
-                                </div>
-                              )}
-                              {Object.entries(previewSectioned).map(
-                                ([section, fields]) => {
-                                  const hasValues = fields.some(
-                                    ([, v]) =>
-                                      v !== "" &&
-                                      v !== false &&
-                                      !(Array.isArray(v) && v.length === 0),
-                                  )
-                                  if (!hasValues) return null
-                                  return (
-                                    <div key={section}>
-                                      <Separator />
-                                      <div className="space-y-2 pt-4">
-                                        <p className="text-sm font-medium text-muted-foreground capitalize">
-                                          {section}
-                                        </p>
-                                        {fields.map(([key, value]) =>
-                                          renderPreviewField(key, value),
-                                        )}
-                                      </div>
-                                    </div>
-                                  )
-                                },
-                              )}
-                            </>
+                            <div
+                              key={key}
+                              className="flex items-start justify-between text-sm"
+                            >
+                              <span className="text-muted-foreground">
+                                {label}
+                              </span>
+                              <span className="text-right max-w-[60%] break-words">
+                                {displayValue}
+                              </span>
+                            </div>
                           )
-                        })()}
+                        }
+
+                        const previewUnsectioned = Object.entries(
+                          customVals,
+                        ).filter(
+                          ([key]) => !schema?.custom_fields?.[key]?.section,
+                        )
+                        const previewSectioned: Record<
+                          string,
+                          [string, unknown][]
+                        > = {}
+                        for (const [key, value] of Object.entries(customVals)) {
+                          const section =
+                            schema?.custom_fields?.[key]?.section
+                          if (section) {
+                            if (!previewSectioned[section])
+                              previewSectioned[section] = []
+                            previewSectioned[section].push([key, value])
+                          }
+                        }
+
+                        return (
+                          <>
+                            {previewUnsectioned.some(
+                              ([, v]) =>
+                                v !== "" &&
+                                v !== false &&
+                                !(Array.isArray(v) && v.length === 0),
+                            ) && (
+                              <div className="space-y-2">
+                                {previewUnsectioned.map(([key, value]) =>
+                                  renderPreviewField(key, value),
+                                )}
+                              </div>
+                            )}
+                            {Object.entries(previewSectioned).map(
+                              ([section, fields]) => {
+                                const hasValues = fields.some(
+                                  ([, v]) =>
+                                    v !== "" &&
+                                    v !== false &&
+                                    !(Array.isArray(v) && v.length === 0),
+                                )
+                                if (!hasValues) return null
+                                return (
+                                  <div key={section}>
+                                    <Separator />
+                                    <div className="space-y-2 pt-4">
+                                      <p className="text-sm font-medium text-muted-foreground capitalize">
+                                        {section}
+                                      </p>
+                                      {fields.map(([key, value]) =>
+                                        renderPreviewField(key, value),
+                                      )}
+                                    </div>
+                                  </div>
+                                )
+                              },
+                            )}
+                          </>
+                        )
+                      })()}
 
                       <Separator />
 

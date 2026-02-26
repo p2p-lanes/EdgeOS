@@ -23,32 +23,17 @@ export function buildFormZodSchema(
 ): z.ZodObject {
   const shape: Record<string, z.ZodType> = {}
 
-  // Profile fields (always part of form, not from schema)
-  shape.first_name = isDraft
-    ? z.string().optional()
-    : z.string().min(1, "First name is required")
-  shape.last_name = isDraft
-    ? z.string().optional()
-    : z.string().min(1, "Last name is required")
-  shape.telegram = z.string().optional()
-  shape.organization = z.string().optional()
-  shape.role = z.string().optional()
-  shape.gender = z.string().optional()
-  shape.age = z.string().optional()
-  shape.residence = z.string().optional()
-
-  // Base fields from schema
+  // Base fields from schema (all profile + application fields)
   for (const [name, field] of Object.entries(schema.base_fields)) {
-    // Skip first_name/last_name/email - handled as profile
-    if (name === "first_name" || name === "last_name" || name === "email")
-      continue
-
     const zodType = fieldToZod(field)
     shape[name] =
       isDraft || !field.required
         ? makeOptional(zodType)
         : makeRequired(zodType, field)
   }
+
+  // gender_specify is a virtual field for the "Specify" sub-field
+  shape.gender_specify = z.string().optional()
 
   // Custom fields from schema
   for (const [name, field] of Object.entries(schema.custom_fields)) {

@@ -18,11 +18,6 @@ from app.core.dependencies.users import CurrentUser, CurrentWriter, TenantSessio
 router = APIRouter(prefix="/email-templates", tags=["email-templates"])
 
 
-# =========================================================================
-# Static routes (MUST be before /{template_id} to avoid path conflicts)
-# =========================================================================
-
-
 class TemplateVariable(BaseModel):
     name: str
     label: str | None = None
@@ -171,11 +166,6 @@ async def send_test_email(
         )
 
     return {"message": f"Test email sent to {body.to_email}"}
-
-
-# =========================================================================
-# CRUD routes
-# =========================================================================
 
 
 @router.get("", response_model=ListModel[EmailTemplatePublic])

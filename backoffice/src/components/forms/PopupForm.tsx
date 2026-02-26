@@ -120,6 +120,8 @@ export function PopupForm({ defaultValues, onSuccess }: PopupFormProps) {
   const form = useForm({
     defaultValues: {
       name: defaultValues?.name ?? "",
+      tagline: defaultValues?.tagline ?? "",
+      location: defaultValues?.location ?? "",
       slug: defaultValues?.slug ?? "",
       status: defaultValues?.status ?? "draft",
       start_date: formatDateForInput(defaultValues?.start_date),
@@ -144,6 +146,8 @@ export function PopupForm({ defaultValues, onSuccess }: PopupFormProps) {
       }
       const payload = {
         name: value.name,
+        tagline: value.tagline || null,
+        location: value.location || null,
         slug: value.slug || undefined,
         status: value.status as PopupCreate["status"],
         start_date: toUTCDate(value.start_date),
@@ -186,6 +190,8 @@ export function PopupForm({ defaultValues, onSuccess }: PopupFormProps) {
           form={form}
           fieldLabels={{
             name: "Popup Name",
+            tagline: "Tagline",
+            location: "Location",
             slug: "Slug",
             start_date: "Start Date",
             end_date: "End Date",
@@ -209,6 +215,44 @@ export function PopupForm({ defaultValues, onSuccess }: PopupFormProps) {
                   onBlur={field.handleBlur}
                   onChange={(e) => field.handleChange(e.target.value)}
                   disabled={readOnly}
+                />
+                <FieldError errors={field.state.meta.errors} />
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field name="tagline">
+            {(field) => (
+              <div className="space-y-2">
+                <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Tagline
+                </Label>
+                <Input
+                  placeholder="Short description or slogan"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  disabled={readOnly}
+                  className="text-sm"
+                />
+                <FieldError errors={field.state.meta.errors} />
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field name="location">
+            {(field) => (
+              <div className="space-y-2">
+                <Label className="text-xs font-medium uppercase tracking-wider text-muted-foreground">
+                  Location
+                </Label>
+                <Input
+                  placeholder="Event location or venue"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  disabled={readOnly}
+                  className="text-sm"
                 />
                 <FieldError errors={field.state.meta.errors} />
               </div>

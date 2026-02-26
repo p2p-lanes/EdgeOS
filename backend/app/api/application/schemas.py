@@ -225,11 +225,6 @@ class ApplicationFilter(BaseModel):
     email: str | None = None
 
 
-# =============================================================================
-# Attendees Directory
-# =============================================================================
-
-
 class DirectoryProduct(BaseModel):
     """Minimal product info for directory participation display."""
 
@@ -280,11 +275,6 @@ class AttendeesDirectoryEntry(BaseModel):
     associated_attendees: list[AssociatedAttendee] = []
 
     model_config = ConfigDict(from_attributes=True)
-
-
-# =============================================================================
-# Application Snapshot
-# =============================================================================
 
 
 class ApplicationSnapshotBase(SQLModel):

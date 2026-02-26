@@ -24,6 +24,7 @@ const useAuth = () => {
   } = useQuery({
     queryKey: queryKeys.profile.current,
     queryFn: async () => HumansService.getCurrentHumanInfo(),
+    enabled: isLoggedIn(),
   })
 
   const logout = useCallback(() => {

@@ -1,6 +1,6 @@
 "use client"
 
-import { CalendarDays } from "lucide-react"
+import { CalendarDays, MapPin } from "lucide-react"
 import { useCityProvider } from "@/providers/cityProvider"
 
 export function FormHeader() {
@@ -24,6 +24,7 @@ export function FormHeader() {
       })
     : null
 
+
   return (
     <div className="flex flex-col md:flex-row gap-6">
       <div className="flex items-center">
@@ -37,28 +38,21 @@ export function FormHeader() {
       </div>
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">{city.name}</h1>
-        {/* LEGACY: tagline, location removed from PopupPublic */}
+        <p className="text-md text-muted-foreground">
+          {city.tagline}
+        </p>
+        {
+          city.location && (
+            <div className="flex items-center text-sm text-muted-foreground mb-2">
+              <MapPin className="mr-2 h-4 w-4" />
+              {city.location}
+            </div>
+          )
+        }
         {startDate && endDate && (
           <div className="flex items-center text-sm text-muted-foreground mb-4">
             <CalendarDays className="mr-2 h-4 w-4" />
             {`${startDate} - ${endDate}`}
-          </div>
-        )}
-
-        {city.slug === "edge-patagonia" && (
-          <div className=" p-1">
-            <p className="font-semibold text-sm text-muted-foreground mb-1">
-              How to join Edge Patagonia:
-            </p>
-            <div className="text-sm text-muted-foreground ml-1">
-              <p> 1. Apply & buy a ticket</p>
-              <p>
-                {" "}
-                2. Decide on coming solo / with a residency, then book
-                accommodation.
-              </p>
-              <p> 3. Buy flights and get excited!</p>
-            </div>
           </div>
         )}
       </div>

@@ -80,11 +80,6 @@ class PaymentBase(SQLModel):
     )
 
 
-# ========================
-# Request/Response Schemas
-# ========================
-
-
 class PaymentProductRequest(BaseModel):
     """Product selection for payment."""
 
@@ -176,11 +171,6 @@ class PaymentFilter(BaseModel):
     application_id: uuid.UUID | None = None
     external_id: str | None = None
     status: PaymentStatus | None = None
-
-
-# ========================
-# SimpleFI Webhook Schemas
-# ========================
 
 
 class SimpleFICardPayment(BaseModel):

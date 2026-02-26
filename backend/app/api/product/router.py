@@ -252,11 +252,6 @@ async def delete_product(
     crud.products_crud.delete(db, product)
 
 
-# ========================
-# Portal (Human) Routes
-# ========================
-
-
 @router.get("/portal/products", response_model=ListModel[ProductPublic])
 async def list_portal_products(
     db: HumanTenantSession,

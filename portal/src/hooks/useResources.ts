@@ -9,8 +9,8 @@ const useResources = () => {
   const application = getRelevantApplication()
   const city = getCity()
 
-  const applicationAccepted = application?.status === "accepted"
-  const canSeeAttendees = applicationAccepted
+  const canSeeAttendees = application?.status === "accepted"
+  console.log(canSeeAttendees)
 
   const resources: Resource[] = [
     {

@@ -16,6 +16,7 @@ export interface FormFieldSchema {
   options?: string[]
   placeholder?: string
   help_text?: string
+  target?: "human" | "application"
 }
 
 export interface ApplicationFormSchema {

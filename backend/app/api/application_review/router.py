@@ -213,11 +213,6 @@ async def submit_review(
     return _review_to_public(review, current_user.email, current_user.full_name)
 
 
-# ========================
-# Reviewer-centric routes
-# ========================
-
-
 @router.get("/pending-review", response_model=ListModel)
 async def list_pending_reviews(
     db: TenantSession,

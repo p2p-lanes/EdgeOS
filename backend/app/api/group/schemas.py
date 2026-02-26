@@ -94,11 +94,6 @@ class GroupWhitelistedEmailPublic(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-# ========================
-# Group Member Schemas
-# ========================
-
-
 class GroupMemberCreate(BaseModel):
     """Schema for adding a member to a group."""
 
@@ -190,11 +185,6 @@ class GroupWithMembers(GroupPublic):
     members: list[GroupMemberPublic] = []
 
 
-# ========================
-# Group Leader Schemas
-# ========================
-
-
 class GroupLeaderBase(SQLModel):
     """Base schema for group leaders link table."""
 
@@ -216,4 +206,6 @@ class GroupProductsBase(SQLModel):
 
     tenant_id: uuid.UUID = Field(foreign_key="tenants.id", index=True)
     group_id: uuid.UUID = Field(foreign_key="groups.id", primary_key=True)
-    product_id: uuid.UUID = Field(foreign_key="products.id", primary_key=True, index=True)
+    product_id: uuid.UUID = Field(
+        foreign_key="products.id", primary_key=True, index=True
+    )

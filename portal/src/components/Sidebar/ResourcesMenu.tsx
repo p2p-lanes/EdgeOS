@@ -30,6 +30,7 @@ const ResourceItem: React.FC<{
   level?: number
   onNavigate: (path: string) => void
 }> = ({ resource, level = 0, onNavigate }) => {
+
   return (
     <SidebarMenuItem>
       <Tooltip>
@@ -82,13 +83,17 @@ const ResourcesMenu = () => {
         <SidebarGroupLabel>Your Participation</SidebarGroupLabel>
         <SidebarGroupContent>
           <SidebarMenu>
-            {resources.map((resource) => (
-              <ResourceItem
-                key={resource.name}
-                resource={resource}
-                onNavigate={handleNavigate}
-              />
-            ))}
+            {
+              resources
+                .filter((resource) => resource.status !== "hidden")
+                .map((resource) => (
+                  <ResourceItem
+                    key={resource.name}
+                    resource={resource}
+                    onNavigate={handleNavigate}
+                  />
+                ))
+            }
             <Separator className="my-4" />
             <GroupsResources onNavigate={handleNavigate} />
           </SidebarMenu>

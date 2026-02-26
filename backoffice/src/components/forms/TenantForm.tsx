@@ -85,14 +85,17 @@ export function TenantForm({ defaultValues, onSuccess }: TenantFormProps) {
       sender_name: defaultValues?.sender_name ?? "",
       image_url: defaultValues?.image_url ?? "",
       icon_url: defaultValues?.icon_url ?? "",
+      logo_url: defaultValues?.logo_url ?? "",
     },
     onSubmit: ({ value }) => {
       if (isEdit) {
         updateMutation.mutate({
+          name: value.name || null,
           sender_email: value.sender_email || null,
           sender_name: value.sender_name || null,
           image_url: value.image_url || null,
           icon_url: value.icon_url || null,
+          logo_url: value.logo_url || null,
         })
       } else {
         createMutation.mutate({
@@ -101,6 +104,7 @@ export function TenantForm({ defaultValues, onSuccess }: TenantFormProps) {
           sender_name: value.sender_name || undefined,
           image_url: value.image_url || undefined,
           icon_url: value.icon_url || undefined,
+          logo_url: value.logo_url || undefined,
         })
       }
     },
@@ -121,29 +125,24 @@ export function TenantForm({ defaultValues, onSuccess }: TenantFormProps) {
       >
         {/* Hero: Name */}
         <div className="space-y-3">
-          {isEdit ? (
-            <h2 className="text-3xl font-semibold">{defaultValues.name}</h2>
-          ) : (
-            <form.Field
-              name="name"
-              validators={{
-                onBlur: ({ value }) =>
-                  !value ? "Name is required" : undefined,
-              }}
-            >
-              {(field) => (
-                <div>
-                  <HeroInput
-                    placeholder="Tenant Name"
-                    value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                  />
-                  <FieldError errors={field.state.meta.errors} />
-                </div>
-              )}
-            </form.Field>
-          )}
+          <form.Field
+            name="name"
+            validators={{
+              onBlur: ({ value }) => (!value ? "Name is required" : undefined),
+            }}
+          >
+            {(field) => (
+              <div>
+                <HeroInput
+                  placeholder="Tenant Name"
+                  value={field.state.value}
+                  onBlur={field.handleBlur}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                />
+                <FieldError errors={field.state.meta.errors} />
+              </div>
+            )}
+          </form.Field>
         </div>
 
         {/* Tenant metadata (edit only) */}
@@ -226,6 +225,28 @@ export function TenantForm({ defaultValues, onSuccess }: TenantFormProps) {
                     <p className="text-sm font-medium">Cover Image</p>
                     <p className="text-xs text-muted-foreground">
                       Main image for tenant branding
+                    </p>
+                  </div>
+                </div>
+                <ImageUpload
+                  value={field.state.value || null}
+                  onChange={(url) => field.handleChange(url ?? "")}
+                />
+              </div>
+            )}
+          </form.Field>
+
+          <form.Field name="logo_url">
+            {(field) => (
+              <div className="space-y-2 py-3">
+                <div className="flex items-center gap-3">
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-muted">
+                    <Image className="h-4 w-4 text-muted-foreground" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-medium">Logo</p>
+                    <p className="text-xs text-muted-foreground">
+                      Main logo for the login page
                     </p>
                   </div>
                 </div>

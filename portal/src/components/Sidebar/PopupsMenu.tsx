@@ -72,18 +72,26 @@ const PopupsMenu = () => {
                       }}
                       className="relative aspect-square shrink-0"
                     >
-                      <Image
-                        src="https://simplefi.s3.us-east-2.amazonaws.com/edge_island.png"
-                        alt="EdgeCity illustration"
-                        width={48}
-                        height={48}
-                      />
+                      {city.icon_url ? (
+                        <Image
+                          src={city.icon_url}
+                          alt={city.name ?? "Popup icon"}
+                          width={48}
+                          height={48}
+                          className="rounded-lg object-cover"
+                        />
+                      ) : (
+                        <div className="flex size-12 items-center justify-center rounded-lg bg-neutral-200 text-lg font-bold text-neutral-500">
+                          {city.name?.charAt(0) ?? "?"}
+                        </div>
+                      )}
                     </motion.div>
                     {!isCollapsed && (
                       <div className="flex flex-col gap-0.5 overflow-hidden text-sm">
                         <span className="truncate font-semibold">
                           {city.name}
                         </span>
+                        <span className="text-xs text-muted-foreground">{city.location}</span>
                         <span className="text-xs text-muted-foreground">
                           {cityDate}
                         </span>

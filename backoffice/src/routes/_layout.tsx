@@ -1,13 +1,13 @@
-import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query"
 import {
   createFileRoute,
   Link,
   Outlet,
   redirect,
   useMatches,
-} from "@tanstack/react-router";
-import { ChevronRight, Home } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
+} from "@tanstack/react-router"
+import { ChevronRight, Home } from "lucide-react"
+import { Fragment, useEffect, useState } from "react"
 import {
   ApplicationsService,
   CouponsService,
@@ -18,20 +18,20 @@ import {
   ProductsService,
   TenantsService,
   UsersService,
-} from "@/client";
-import { CommandPalette } from "@/components/Common/CommandPalette";
-import { ShortcutsDialog } from "@/components/Common/ShortcutsDialog";
-import AppSidebar from "@/components/Sidebar/AppSidebar";
-import { Badge } from "@/components/ui/badge";
-import { Separator } from "@/components/ui/separator";
+} from "@/client"
+import { CommandPalette } from "@/components/Common/CommandPalette"
+import { ShortcutsDialog } from "@/components/Common/ShortcutsDialog"
+import AppSidebar from "@/components/Sidebar/AppSidebar"
+import { Badge } from "@/components/ui/badge"
+import { Separator } from "@/components/ui/separator"
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
-import { useWorkspace, WorkspaceProvider } from "@/contexts/WorkspaceContext";
-import useAuth, { isLoggedIn } from "@/hooks/useAuth";
-import useGlobalShortcuts from "@/hooks/useGlobalShortcuts";
+} from "@/components/ui/sidebar"
+import { useWorkspace, WorkspaceProvider } from "@/contexts/WorkspaceContext"
+import useAuth, { isLoggedIn } from "@/hooks/useAuth"
+import useGlobalShortcuts from "@/hooks/useGlobalShortcuts"
 
 export const Route = createFileRoute("/_layout")({
   component: () => (
@@ -43,10 +43,10 @@ export const Route = createFileRoute("/_layout")({
     if (!isLoggedIn()) {
       throw redirect({
         to: "/login",
-      });
+      })
     }
   },
-});
+})
 
 const routeLabels: Record<string, string> = {
   admin: "Users",
@@ -63,23 +63,23 @@ const routeLabels: Record<string, string> = {
   settings: "Settings",
   new: "New",
   edit: "Edit",
-};
+}
 
 const entityResolvers: Record<
   string,
   {
-    queryKey: string;
+    queryKey: string
     queryFn: (id: string) => Promise<{
-      name?: string;
-      label?: string;
-      code?: string;
-      full_name?: string;
-      first_name?: string;
-      last_name?: string;
-      email?: string;
-      human?: { first_name?: string; last_name?: string; email?: string };
-    }>;
-    getName: (data: Record<string, unknown>) => string;
+      name?: string
+      label?: string
+      code?: string
+      full_name?: string
+      first_name?: string
+      last_name?: string
+      email?: string
+      human?: { first_name?: string; last_name?: string; email?: string }
+    }>
+    getName: (data: Record<string, unknown>) => string
   }
 > = {
   applications: {
@@ -87,12 +87,12 @@ const entityResolvers: Record<
     queryFn: (id) =>
       ApplicationsService.getApplication({ applicationId: id }) as never,
     getName: (d) => {
-      const h = d.human as Record<string, string> | undefined;
+      const h = d.human as Record<string, string> | undefined
       return h
         ? `${h.first_name ?? ""} ${h.last_name ?? ""}`.trim() ||
             h.email ||
             "Application"
-        : "Application";
+        : "Application"
     },
   },
   popups: {
@@ -138,16 +138,16 @@ const entityResolvers: Record<
     queryFn: (id) => UsersService.getUser({ userId: id }) as never,
     getName: (d) => (d.full_name as string) || (d.email as string) || "User",
   },
-};
+}
 
 function EntityBreadcrumbLabel({
   parentSegment,
   uuid,
 }: {
-  parentSegment: string;
-  uuid: string;
+  parentSegment: string
+  uuid: string
 }) {
-  const resolver = entityResolvers[parentSegment];
+  const resolver = entityResolvers[parentSegment]
 
   const { data } = useQuery({
     queryKey: [resolver?.queryKey ?? parentSegment, uuid],
@@ -155,46 +155,46 @@ function EntityBreadcrumbLabel({
     enabled: !!resolver,
     staleTime: 5 * 60 * 1000,
     retry: false,
-  });
+  })
 
-  if (!resolver) return <>Details</>;
-  if (!data) return <>...</>;
-  return <>{resolver.getName(data as unknown as Record<string, unknown>)}</>;
+  if (!resolver) return <>Details</>
+  if (!data) return <>...</>
+  return <>{resolver.getName(data as unknown as Record<string, unknown>)}</>
 }
 
 function Breadcrumbs() {
-  const matches = useMatches();
+  const matches = useMatches()
 
   const breadcrumbs = matches
     .filter((match) => match.pathname !== "/_layout")
     .reduce<
       { path: string; label?: string; entityContent?: React.ReactNode }[]
     >((acc, match) => {
-      const pathname = match.pathname;
-      const segments = pathname.split("/").filter(Boolean);
-      const lastSegment = segments[segments.length - 1];
+      const pathname = match.pathname
+      const segments = pathname.split("/").filter(Boolean)
+      const lastSegment = segments[segments.length - 1]
 
-      if (!lastSegment || pathname === "/") return acc;
-      if (acc.some((c) => c.path === pathname)) return acc;
+      if (!lastSegment || pathname === "/") return acc
+      if (acc.some((c) => c.path === pathname)) return acc
 
       const isUuid =
         /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
           lastSegment,
-        );
+        )
 
-      let label: string | undefined = routeLabels[lastSegment];
-      let entityContent: React.ReactNode | undefined;
+      let label: string | undefined = routeLabels[lastSegment]
+      let entityContent: React.ReactNode | undefined
       if (isUuid) {
-        const parentSegment = segments[segments.length - 2];
+        const parentSegment = segments[segments.length - 2]
         entityContent = (
           <EntityBreadcrumbLabel
             parentSegment={parentSegment}
             uuid={lastSegment}
           />
-        );
+        )
       }
       if (!label && !isUuid) {
-        label = lastSegment;
+        label = lastSegment
       }
 
       acc.push({
@@ -203,12 +203,12 @@ function Breadcrumbs() {
           ? label.charAt(0).toUpperCase() + label.slice(1)
           : undefined,
         entityContent,
-      });
-      return acc;
-    }, []);
+      })
+      return acc
+    }, [])
 
   if (breadcrumbs.length === 0) {
-    return null;
+    return null
   }
 
   return (
@@ -237,33 +237,31 @@ function Breadcrumbs() {
         </Fragment>
       ))}
     </nav>
-  );
+  )
 }
 
 function WorkspaceIndicator() {
-  const { selectedPopupId, selectedTenantId } = useWorkspace();
-  const { isSuperadmin } = useAuth();
+  const { selectedPopupId, selectedTenantId } = useWorkspace()
+  const { isSuperadmin } = useAuth()
 
   const { data: tenants } = useQuery({
     queryKey: ["tenants"],
     queryFn: () => TenantsService.listTenants({ skip: 0, limit: 100 }),
     enabled: isSuperadmin && !!selectedTenantId,
-  });
+  })
 
   const { data: popups } = useQuery({
     queryKey: ["popups", { page: 0, pageSize: 100 }],
     queryFn: () => PopupsService.listPopups({ skip: 0, limit: 100 }),
     enabled: !!selectedPopupId,
-  });
+  })
 
   const tenantName = tenants?.results?.find(
     (t) => t.id === selectedTenantId,
-  )?.name;
-  const popupName = popups?.results?.find(
-    (p) => p.id === selectedPopupId,
-  )?.name;
+  )?.name
+  const popupName = popups?.results?.find((p) => p.id === selectedPopupId)?.name
 
-  if (!popupName && !tenantName) return null;
+  if (!popupName && !tenantName) return null
 
   return (
     <div className="flex items-center gap-1.5">
@@ -278,20 +276,20 @@ function WorkspaceIndicator() {
         </Badge>
       )}
     </div>
-  );
+  )
 }
 
 function ShortcutsHint() {
-  const [modifier, setModifier] = useState("Ctrl");
+  const [modifier, setModifier] = useState("Ctrl")
 
   useEffect(() => {
     if (
       typeof navigator !== "undefined" &&
       /Mac|iPhone|iPad/.test(navigator.userAgent)
     ) {
-      setModifier("⌘");
+      setModifier("⌘")
     }
-  }, []);
+  }, [])
 
   return (
     <div className="hidden items-center gap-3 text-xs text-muted-foreground md:flex">
@@ -308,17 +306,17 @@ function ShortcutsHint() {
         </kbd>
       </div>
     </div>
-  );
+  )
 }
 
 function Layout() {
-  const [shortcutsOpen, setShortcutsOpen] = useState(false);
+  const [shortcutsOpen, setShortcutsOpen] = useState(false)
 
   const toggleShortcutsDialog = () => {
-    setShortcutsOpen((prev) => !prev);
-  };
+    setShortcutsOpen((prev) => !prev)
+  }
 
-  useGlobalShortcuts({ onShortcutsDialogToggle: toggleShortcutsDialog });
+  useGlobalShortcuts({ onShortcutsDialogToggle: toggleShortcutsDialog })
 
   return (
     <SidebarProvider>
@@ -342,7 +340,7 @@ function Layout() {
         </main>
       </SidebarInset>
     </SidebarProvider>
-  );
+  )
 }
 
-export default Layout;
+export default Layout

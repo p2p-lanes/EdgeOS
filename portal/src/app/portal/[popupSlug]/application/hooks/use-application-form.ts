@@ -39,37 +39,31 @@ function formReducer(state: FormState, action: FormAction): FormState {
   }
 }
 
+function getDefaultValue(field: FormFieldSchema): unknown {
+  if (field.type === "boolean") return false
+  if (field.type === "multiselect") return []
+  return ""
+}
+
 function getInitialValues(
   schema: ApplicationFormSchema,
 ): Record<string, unknown> {
-  const values: Record<string, unknown> = {
-    first_name: "",
-    last_name: "",
-    telegram: "",
-    organization: "",
-    role: "",
-    gender: "",
-    age: "",
-    residence: "",
-  }
+  const values: Record<string, unknown> = {}
 
+  // Initialize ALL base fields from schema
   for (const [name, field] of Object.entries(schema.base_fields)) {
-    if (name === "first_name" || name === "last_name" || name === "email")
-      continue
     values[name] = getDefaultValue(field)
   }
 
+  // Virtual field for gender "Specify" sub-field
+  values.gender_specify = ""
+
+  // Custom fields
   for (const [name, field] of Object.entries(schema.custom_fields)) {
     values[`custom_${name}`] = getDefaultValue(field)
   }
 
   return values
-}
-
-function getDefaultValue(field: FormFieldSchema): unknown {
-  if (field.type === "boolean") return false
-  if (field.type === "multiselect") return []
-  return ""
 }
 
 export function useApplicationForm(schema: ApplicationFormSchema) {
@@ -111,36 +105,39 @@ export function useApplicationForm(schema: ApplicationFormSchema) {
     [schema, state.values],
   )
 
-  const populateFromApplication = useCallback((app: ApplicationPublic) => {
-    const values: Record<string, unknown> = {}
+  const populateFromApplication = useCallback(
+    (app: ApplicationPublic) => {
+      const values: Record<string, unknown> = {}
 
-    // Profile fields from human
-    if (app.human) {
-      values.first_name = app.human.first_name ?? ""
-      values.last_name = app.human.last_name ?? ""
-      values.telegram = app.human.telegram ?? ""
-      values.organization = app.human.organization ?? ""
-      values.role = app.human.role ?? ""
-      values.gender = app.human.gender ?? ""
-      values.age = app.human.age ?? ""
-      values.residence = app.human.residence ?? ""
-    }
-
-    // Application-level fields
-    values.referral = app.referral ?? ""
-    if (app.info_not_shared) {
-      values.info_not_shared = app.info_not_shared
-    }
-
-    // Custom fields
-    if (app.custom_fields) {
-      for (const [name, value] of Object.entries(app.custom_fields)) {
-        values[`custom_${name}`] = value
+      // Populate base fields using target to know the source
+      for (const [name, field] of Object.entries(schema.base_fields)) {
+        if (field.target === "human" && app.human) {
+          values[name] =
+            (app.human as Record<string, unknown>)[name] ?? getDefaultValue(field)
+        } else if (field.target === "application") {
+          values[name] =
+            (app as Record<string, unknown>)[name] ?? getDefaultValue(field)
+        }
       }
-    }
 
-    dispatch({ type: "SET_VALUES", values })
-  }, [])
+      // Virtual field: resolve gender_specify from gender value
+      const genderOptions = schema.base_fields.gender?.options ?? []
+      if (values.gender && !genderOptions.includes(values.gender as string)) {
+        values.gender_specify = values.gender
+        values.gender = "Specify"
+      }
+
+      // Custom fields
+      if (app.custom_fields) {
+        for (const [name, value] of Object.entries(app.custom_fields)) {
+          values[`custom_${name}`] = value
+        }
+      }
+
+      dispatch({ type: "SET_VALUES", values })
+    },
+    [schema],
+  )
 
   const progress = useMemo(() => {
     const allFields = { ...schema.base_fields, ...schema.custom_fields }
@@ -149,15 +146,8 @@ export function useApplicationForm(schema: ApplicationFormSchema) {
     )
     if (requiredFields.length === 0) return 100
 
-    // Also count profile required fields (first_name, last_name)
-    const profileRequired = ["first_name", "last_name"]
-    const total = requiredFields.length + profileRequired.length
+    const total = requiredFields.length
     let filled = 0
-
-    for (const key of profileRequired) {
-      const val = state.values[key]
-      if (val && String(val).trim()) filled++
-    }
 
     for (const [name, field] of requiredFields) {
       // Check both base and custom field naming

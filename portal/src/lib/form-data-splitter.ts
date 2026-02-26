@@ -4,25 +4,25 @@ import type {
   CompanionCreate,
   UserSettableStatus,
 } from "@edgeos/api-client"
+import type { ApplicationFormSchema } from "@/types/form-schema"
 
-const PROFILE_FIELDS = new Set([
-  "first_name",
-  "last_name",
-  "telegram",
-  "organization",
-  "role",
-  "gender",
-  "age",
-  "residence",
-])
-
-const APPLICATION_FIELDS = new Set(["referral", "info_not_shared"])
+/** Build a target map from the schema: field name → "human" | "application" */
+function buildTargetMap(
+  schema: ApplicationFormSchema,
+): Record<string, "human" | "application"> {
+  const map: Record<string, "human" | "application"> = {}
+  for (const [name, field] of Object.entries(schema.base_fields)) {
+    map[name] = field.target ?? "application"
+  }
+  return map
+}
 
 interface SplitCreateParams {
   values: Record<string, unknown>
   popupId: string
   companions: CompanionCreate[]
   status: UserSettableStatus
+  schema: ApplicationFormSchema
 }
 
 export function splitForCreate({
@@ -30,21 +30,25 @@ export function splitForCreate({
   popupId,
   companions,
   status,
+  schema,
 }: SplitCreateParams): ApplicationCreate {
+  const targetMap = buildTargetMap(schema)
   const profile: Record<string, unknown> = {}
   const application: Record<string, unknown> = {}
   const customFields: Record<string, unknown> = {}
 
   for (const [key, value] of Object.entries(values)) {
     if (value === "" || value === null || value === undefined) continue
+    // Skip virtual fields (e.g. gender_specify)
+    if (key === "gender_specify") continue
 
     if (key.startsWith("custom_")) {
       const fieldName = key.slice(7) // remove "custom_" prefix
       if (Array.isArray(value) && value.length === 0) continue
       customFields[fieldName] = value
-    } else if (PROFILE_FIELDS.has(key)) {
+    } else if (targetMap[key] === "human") {
       profile[key] = value
-    } else if (APPLICATION_FIELDS.has(key)) {
+    } else if (targetMap[key] === "application") {
       application[key] = value
     }
   }
@@ -71,26 +75,30 @@ export function splitForCreate({
 interface SplitUpdateParams {
   values: Record<string, unknown>
   status: UserSettableStatus
+  schema: ApplicationFormSchema
 }
 
 export function splitForUpdate({
   values,
   status,
+  schema,
 }: SplitUpdateParams): ApplicationUpdate {
+  const targetMap = buildTargetMap(schema)
   const profile: Record<string, unknown> = {}
   const application: Record<string, unknown> = {}
   const customFields: Record<string, unknown> = {}
 
   for (const [key, value] of Object.entries(values)) {
     if (value === "" || value === null || value === undefined) continue
+    if (key === "gender_specify") continue
 
     if (key.startsWith("custom_")) {
       const fieldName = key.slice(7)
       if (Array.isArray(value) && value.length === 0) continue
       customFields[fieldName] = value
-    } else if (PROFILE_FIELDS.has(key)) {
+    } else if (targetMap[key] === "human") {
       profile[key] = value
-    } else if (APPLICATION_FIELDS.has(key)) {
+    } else if (targetMap[key] === "application") {
       application[key] = value
     }
   }

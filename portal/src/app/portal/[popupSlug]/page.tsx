@@ -32,6 +32,8 @@ export default function Home() {
           <EventCard.Image />
           <EventCard.Content>
             <EventCard.Title />
+            <EventCard.Tagline />
+            <EventCard.Location />
             <EventCard.DateRange />
             <EventCard.Progress />
             <EventCard.ApplyButton onClick={onClickApply} />

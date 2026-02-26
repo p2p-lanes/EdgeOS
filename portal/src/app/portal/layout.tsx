@@ -17,8 +17,8 @@ export default function PortalLayout({
   const isProfilePage = pathname === "/portal/profile"
 
   return (
-    <Providers>
-      <Authentication>
+    <Authentication>
+      <Providers>
         <BackofficeSidebar collapsible="icon" />
         <SidebarInset className="max-h-svh overflow-hidden">
           {!isProfilePage && <HeaderBar />}
@@ -26,7 +26,7 @@ export default function PortalLayout({
             {children}
           </main>
         </SidebarInset>
-      </Authentication>
-    </Providers>
+      </Providers>
+    </Authentication>
   )
 }

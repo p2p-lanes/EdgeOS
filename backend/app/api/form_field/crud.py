@@ -6,6 +6,7 @@ from sqlmodel import Session, col, func, select
 
 from app.api.form_field.models import FormFields
 from app.api.form_field.schemas import FormFieldCreate, FormFieldType, FormFieldUpdate
+from app.api.popup.models import Popups
 from app.api.shared.crud import BaseCRUD
 
 
@@ -140,39 +141,117 @@ class FormFieldsCRUD(BaseCRUD[FormFields, FormFieldCreate, FormFieldUpdate]):
         """Build a JSON Schema-like structure for a popup's form fields.
 
         This returns a schema that includes:
-        - Base application fields (human profile fields)
+        - Base fields: human profile + application-level fields (source of truth)
         - Custom form fields defined for the popup
+        Each base field includes a `target` indicating where the data lives:
+        - "human": stored on the Human entity
+        - "application": stored on the Application entity
         """
         fields, _ = self.find_by_popup(session, popup_id, skip=0, limit=1000)
 
-        # Base fields that live on the Application model.
-        # Human profile fields (telegram, organization, role, gender, age,
-        # residence) are NOT included here — they belong to the Human entity
-        # and are imported via /humans/batch.
-        base_fields = {
+        # Load popup for interpolating help_text
+        popup = session.get(Popups, popup_id)
+        popup_name = popup.name if popup else "the event"
+
+        base_fields: dict[str, Any] = {
+            # Human profile fields (target: "human")
             "first_name": {
                 "type": "text",
-                "label": "First Name",
+                "label": "First name",
                 "required": True,
                 "section": "profile",
+                "position": 0,
+                "target": "human",
             },
             "last_name": {
                 "type": "text",
-                "label": "Last Name",
+                "label": "Last name",
                 "required": True,
                 "section": "profile",
+                "position": 1,
+                "target": "human",
             },
-            "email": {
-                "type": "email",
-                "label": "Email",
+            "telegram": {
+                "type": "text",
+                "label": "Telegram username",
+                "required": True,
+                "section": "profile",
+                "position": 2,
+                "target": "human",
+                "placeholder": "username",
+                "help_text": f"The primary form of communication during {popup_name} will be a Telegram group, so create an account if you don't already have one",
+            },
+            "residence": {
+                "type": "text",
+                "label": "Usual location of residence",
                 "required": False,
                 "section": "profile",
+                "position": 3,
+                "target": "human",
+                "placeholder": "City, State/Region, Country",
+                "help_text": "Please format it like [City, State/Region, Country].",
             },
+            "gender": {
+                "type": "select",
+                "label": "Gender",
+                "required": True,
+                "section": "profile",
+                "position": 4,
+                "target": "human",
+                "options": ["Male", "Female", "Non-binary", "Specify"],
+            },
+            "age": {
+                "type": "select",
+                "label": "Age",
+                "required": True,
+                "section": "profile",
+                "position": 5,
+                "target": "human",
+                "options": ["18-24", "25-34", "35-44", "45-54", "55+"],
+            },
+            "organization": {
+                "type": "text",
+                "label": "Organization",
+                "required": False,
+                "section": "profile",
+                "position": 6,
+                "target": "human",
+            },
+            "role": {
+                "type": "text",
+                "label": "Role",
+                "required": False,
+                "section": "profile",
+                "position": 7,
+                "target": "human",
+            },
+            # Application fields (target: "application")
             "referral": {
                 "type": "text",
-                "label": "How did you hear about us?",
+                "label": "Did anyone refer you?",
                 "required": False,
-                "section": "application",
+                "section": "profile",
+                "position": 8,
+                "target": "application",
+                "help_text": "List everyone who encouraged you to apply.",
+            },
+            "info_not_shared": {
+                "type": "multiselect",
+                "label": "Info I'm NOT willing to share with other attendees",
+                "required": False,
+                "section": "profile",
+                "position": 9,
+                "target": "application",
+                "help_text": "We will make a directory to make it easier for attendees to coordinate",
+                "options": [
+                    "Email",
+                    "Telegram",
+                    "Organization",
+                    "Role",
+                    "Gender",
+                    "Age",
+                    "Residence",
+                ],
             },
         }
 
@@ -193,7 +272,7 @@ class FormFieldsCRUD(BaseCRUD[FormFields, FormFieldCreate, FormFieldUpdate]):
             if field.help_text:
                 custom_fields[field.name]["help_text"] = field.help_text
 
-        sections = ["profile", "application"]
+        sections = ["profile"]
         for f in custom_fields.values():
             if f["section"] and f["section"] not in sections:
                 sections.append(f["section"])
