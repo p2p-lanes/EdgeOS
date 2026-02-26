@@ -230,7 +230,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
     products.filter(p => p.category === 'merch' && p.is_active), [products]);
 
   const patronProducts = useMemo(() =>
-    products.filter(p => p.category === 'patreon' && p.is_active), [products]);
+    products.filter(p => (p.category === 'patreon' || p.category === 'donation') && p.is_active), [products]);
 
   // Calculate available steps dynamically based on products
   const availableSteps = useMemo<CheckoutStep[]>(() => {
