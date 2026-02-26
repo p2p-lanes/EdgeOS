@@ -20,8 +20,6 @@ export default function HomePasses() {
 
   const initialTab = activeTab || (someProductPurchased ? "your-passes" : "buy-passes");
 
-  console.log({someProductPurchased, initialTab})
-
   const handleTabChange = (tab: string) => {
     setActiveTab(tab);
   };
