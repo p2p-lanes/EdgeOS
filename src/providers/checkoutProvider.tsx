@@ -309,7 +309,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       if (!hasPurchasedWeekOrDay) return total;
 
       const purchasedCredit = attendee.products
-        .filter(p => p.category !== 'patreon' && p.category !== 'supporter' && p.purchased)
+        .filter(p => p.category !== 'patreon' && p.category !== 'supporter' && p.category !== 'donation' && p.purchased)
         .reduce((sum, p) => sum + (p.price * (p.quantity ?? 1)), 0);
 
       return total + purchasedCredit;
@@ -692,14 +692,26 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
 
         if (hasAccountCredit) {
           attendeePasses.forEach(attendee => {
+            const hasMonth = attendee.products.some(p =>
+              (p.category === 'month' || p.category === 'local month') && (p.purchased || p.selected)
+            );
+
             attendee.products.forEach(product => {
-              if (product.purchased) {
-                productsToSend.push({
-                  product_id: product.id,
-                  attendee_id: attendee.id,
-                  quantity: product.quantity ?? 1,
-                });
+              if (!product.purchased) return;
+
+              if (hasMonth && ['week', 'local week', 'day', 'local day'].includes(product.category)) {
+                return;
               }
+
+              if (patron && (product.category === 'donation' || product.category === 'patreon')) {
+                return;
+              }
+
+              productsToSend.push({
+                product_id: product.id,
+                attendee_id: attendee.id,
+                quantity: product.quantity ?? 1,
+              });
             });
           });
         }
@@ -737,11 +749,23 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
         if (patron) {
           const firstAttendeeId = selectedPasses[0]?.attendeeId || 0;
           const isVariable = patron.product.min_price !== null && patron.product.min_price !== undefined;
+
+          let totalAmount = patron.amount;
+          if (hasAccountCredit) {
+            attendeePasses.forEach(attendee => {
+              attendee.products.forEach(product => {
+                if (product.purchased && (product.category === 'donation' || product.category === 'patreon')) {
+                  totalAmount += product.custom_amount ?? product.price;
+                }
+              });
+            });
+          }
+
           productsToSend.push({
             product_id: patron.productId,
             attendee_id: firstAttendeeId,
             quantity: 1,
-            ...(isVariable ? { custom_amount: patron.amount } : {}),
+            ...(isVariable ? { custom_amount: totalAmount } : {}),
           });
         }
       }
@@ -769,14 +793,14 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
           window.location.href = `${data.checkout_url}?redirect_url=${encodeURIComponent(redirectUrl)}`;
           return { success: true };
         } else if (data.status === 'approved') {
-          toast.success(isEditing ? 'Your passes have been updated successfully!' : 'Payment completed successfully!');
-          if (isEditing) {
-            toggleEditing(false);
-          }
-          clearCart();
-          clearSelections();
-          setCurrentStep('success');
-          setIsSubmitting(false);
+          // toast.success(isEditing ? 'Your passes have been updated successfully!' : 'Payment completed successfully!');
+          // if (isEditing) {
+          //   toggleEditing(false);
+          // }
+          // clearCart();
+          // clearSelections();
+          // setCurrentStep('success');
+          // setIsSubmitting(false);
           return { success: true };
         }
 
