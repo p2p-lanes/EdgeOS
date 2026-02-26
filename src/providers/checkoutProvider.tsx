@@ -121,7 +121,7 @@ interface CheckoutProviderProps {
 }
 
 export function CheckoutProvider({ children, products, initialStep = 'passes' }: CheckoutProviderProps) {
-  const { attendeePasses, toggleProduct, resetDayProduct, discountApplied, setDiscount, clearDiscount, isEditing, editCredit, toggleEditing } = usePassesProvider();
+  const { attendeePasses, toggleProduct, resetDayProduct, discountApplied, setDiscount, clearDiscount, clearSelections, isEditing, editCredit, toggleEditing } = usePassesProvider();
   const { getRelevantApplication } = useApplication();
   const { getCity } = useCityProvider();
   const application = getRelevantApplication();
@@ -161,9 +161,10 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
 
     hasRestoredCheckoutRef.current = true;
 
-    // Returning from successful payment — clear persisted cart, don't restore
+    // Returning from successful payment — clear persisted cart and pass selections, don't restore
     if (initialStep === 'success') {
       clearCartStorage(citizenId, cityId);
+      clearSelections();
       return;
     }
 
@@ -219,16 +220,24 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       }
     }
 
-    // Restore insurance
-    if (savedCart.insurance) {
-      setInsurance(true);
-    }
   }, [cityId, citizenId, products]);
 
   // Loading states
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Reset isSubmitting when page is restored from bfcache (e.g. user presses browser back from payment provider)
+  useEffect(() => {
+    const handlePageShow = (event: PageTransitionEvent) => {
+      if (event.persisted) {
+        setIsSubmitting(false);
+      }
+    };
+
+    window.addEventListener('pageshow', handlePageShow);
+    return () => window.removeEventListener('pageshow', handlePageShow);
+  }, []);
 
   // Filter products by category
   const passProducts = useMemo(() =>
@@ -390,10 +399,9 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       patron: patron
         ? { productId: patron.productId, amount: patron.amount, isCustomAmount: patron.isCustomAmount }
         : null,
-      insurance,
     };
     saveCheckoutCart(citizenId, cityId, persistedCart);
-  }, [housing, merch, patron, insurance, cityId, citizenId]);
+  }, [housing, merch, patron, cityId, citizenId]);
 
   // Calculate summary
   // Note: Insurance is calculated on original prices (before discounts) and added AFTER discounts
@@ -782,6 +790,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
             toggleEditing(false);
           }
           clearCart();
+          clearSelections();
           setCurrentStep('success');
           setIsSubmitting(false);
           return { success: true };
@@ -803,7 +812,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       setIsSubmitting(false);
       return { success: false, error: errorMsg };
     }
-  }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart, isEditing, attendeePasses, editCredit, toggleEditing]);
+  }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart, clearSelections, isEditing, attendeePasses, editCredit, toggleEditing]);
 
   const value: CheckoutContextValue = {
     currentStep,

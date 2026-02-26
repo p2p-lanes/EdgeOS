@@ -23,6 +23,7 @@ interface PassesContext_interface {
   products: ProductsPass[];
   setDiscount: (discount: DiscountProps) => void;
   clearDiscount: () => void;
+  clearSelections: () => void;
   discountApplied: DiscountProps;
   isEditing: boolean;
   toggleEditing: (editing?: boolean) => void;
@@ -294,11 +295,26 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
     setDiscountApplied({ discount_value: 0, discount_type: 'percentage', discount_code: null });
   }, []);
 
+  const clearSelections = useCallback(() => {
+    setAttendeePasses(prev => prev.map(attendee => ({
+      ...attendee,
+      products: attendee.products.map(product => ({
+        ...product,
+        selected: false,
+        custom_amount: undefined,
+      }))
+    })));
+    if (city?.id && citizenId) {
+      clearPassSelectionsStorage(citizenId, city.id);
+    }
+  }, [city?.id, citizenId]);
+
   return (
     <PassesContext.Provider 
       value={{ 
         setDiscount,
         clearDiscount,
+        clearSelections,
         discountApplied,
         attendeePasses,
         toggleProduct,

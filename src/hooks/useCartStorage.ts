@@ -12,7 +12,6 @@ export interface PersistedCheckoutCart {
   housing: { productId: number; checkIn: string; checkOut: string } | null;
   merch: Array<{ productId: number; quantity: number }>;
   patron: { productId: number; amount: number; isCustomAmount: boolean } | null;
-  insurance: boolean;
 }
 
 const PASSES_STORAGE_KEY = 'cart_passes';
@@ -50,7 +49,7 @@ export const loadPassSelections = (
   }
 };
 
-// --- Checkout Cart (housing, merch, patron, insurance) ---
+// --- Checkout Cart (housing, merch, patron) ---
 
 export const saveCheckoutCart = (
   userId: string,
