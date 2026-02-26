@@ -1,45 +1,43 @@
-"use client"
+'use client';
 
-import { useState, useEffect } from "react"
-import { useSearchParams } from "next/navigation"
-import { CheckoutProvider } from "@/providers/checkoutProvider"
-import { usePassesProvider } from "@/providers/passesProvider"
-import { CheckoutFlow } from "@/components/checkout"
-import useAttendee from "@/hooks/useAttendee"
-import { AttendeeCategory, AttendeeProps } from "@/types/Attendee"
-import { CheckoutStep } from "@/types/checkout"
-import { AttendeeModal } from "@/app/portal/[popupSlug]/passes/components/AttendeeModal"
-import Providers from "./providers/Providers"
+import { useState, useEffect } from 'react';
+import { useRouter, useParams, useSearchParams } from 'next/navigation';
+import { Loader } from '@/components/ui/Loader';
+import { CheckoutProvider } from '@/providers/checkoutProvider';
+import { usePassesProvider } from '@/providers/passesProvider';
+import { CheckoutFlow } from '@/components/checkout';
+import useAttendee from '@/hooks/useAttendee';
+import { AttendeeCategory, AttendeeProps, CreateAttendee } from '@/types/Attendee';
+import { CheckoutStep } from '@/types/checkout';
+import usePermission from '../hooks/usePermission';
+import { AttendeeModal } from '../components/AttendeeModal';
 
-interface PassesCheckoutProps {
-  onBack: () => void;
-}
+export default function BuyPage() {
+  usePermission();
 
-const PassesCheckout = ({ onBack }: PassesCheckoutProps) => {
+  const router = useRouter();
+  const params = useParams();
   const searchParams = useSearchParams();
+  const popupSlug = params.popupSlug as string;
   const { attendeePasses: attendees, products } = usePassesProvider();
   const { addAttendee } = useAttendee();
   const [modalOpen, setModalOpen] = useState(false);
-  const [modalCategory, setModalCategory] = useState<AttendeeCategory>("main");
-  const [isLoading, setIsLoading] = useState(true);
+  const [modalCategory, setModalCategory] = useState<AttendeeCategory>('main');
 
   // Check if returning from payment provider with success
-  const checkoutSuccess = searchParams.get("checkout") === "success";
-  const initialStep: CheckoutStep = checkoutSuccess ? "success" : "passes";
+  const checkoutSuccess = searchParams.get('checkout') === 'success';
+  const initialStep: CheckoutStep = checkoutSuccess ? 'success' : 'passes';
 
   // Clean URL parameter after detecting success to prevent showing success on manual reload
   useEffect(() => {
     if (checkoutSuccess) {
-      window.history.replaceState({}, "", window.location.pathname);
+      window.history.replaceState({}, '', window.location.pathname);
     }
   }, [checkoutSuccess]);
 
-  // Detect when attendees and products are loaded
-  useEffect(() => {
-    if (attendees.length > 0 && products.length > 0) {
-      setIsLoading(false);
-    }
-  }, [attendees, products]);
+  if (!attendees.length || !products.length) {
+    return <Loader />;
+  }
 
   const handleAddAttendee = (category: AttendeeCategory) => {
     setModalCategory(category);
@@ -56,7 +54,7 @@ const PassesCheckout = ({ onBack }: PassesCheckoutProps) => {
       });
       setModalOpen(false);
     } catch (error) {
-      console.error("Failed to add attendee:", error);
+      console.error('Failed to add attendee:', error);
     }
   };
 
@@ -65,14 +63,17 @@ const PassesCheckout = ({ onBack }: PassesCheckoutProps) => {
     // No action needed here - the checkout provider sets currentStep to 'success'
   };
 
+  const handleBack = () => {
+    router.push(`/portal/${popupSlug}/passes`);
+  };
+
   return (
-    <Providers>
+    <div className="min-h-screen">
       <CheckoutProvider products={products} initialStep={initialStep}>
         <CheckoutFlow
           onAddAttendee={handleAddAttendee}
           onPaymentComplete={handlePaymentComplete}
-          onBack={onBack}
-          isLoading={isLoading}
+          onBack={handleBack}
         />
       </CheckoutProvider>
 
@@ -83,8 +84,6 @@ const PassesCheckout = ({ onBack }: PassesCheckoutProps) => {
         category={modalCategory}
         editingAttendee={null}
       />
-    </Providers>
-  )
+    </div>
+  );
 }
-
-export default PassesCheckout

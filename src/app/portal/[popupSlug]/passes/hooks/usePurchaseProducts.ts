@@ -29,7 +29,7 @@ const usePurchaseProducts = () => {
     const filteredProducts = filterProductsToPurchase(productsPurchase, editableMode)
 
     try{
-      const isFastCheckout = window.location.href.includes('/checkout')
+      const isFastCheckout = window.location.href.includes('/buy')
 
       const data = {
         application_id: application.id,
@@ -41,7 +41,7 @@ const usePurchaseProducts = () => {
       const response = await api.post('payments', data)
 
       if(response.status === 200){
-        const redirectUrl = isFastCheckout ? `${window.location.origin}/checkout/success` : window.location.href;
+        const redirectUrl = isFastCheckout ? `${window.location.origin}/buy/success` : window.location.href;
         if(response.data.status === 'pending'){
           if(MiniKit.isInstalled()){
             const checkoutUrl = response.data.checkout_url

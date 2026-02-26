@@ -1,11 +1,13 @@
 import { AttendeeProps } from "@/types/Attendee";
 import { DiscountProps } from "@/types/discounts";
 import { ProductsPass } from "@/types/Products";
+import { isVariablePrice, getEffectivePrice } from "@/helpers/variablePrice";
 
 interface TotalResult {
   total: number;
   originalTotal: number;
   discountAmount: number;
+  variableAmount: number;
 }
 interface PriceCalculationStrategy {
   calculate(products: ProductsPass[], discount: DiscountProps): TotalResult;
@@ -27,6 +29,15 @@ abstract class BasePriceStrategy implements PriceCalculationStrategy {
     }, 0);
   }
 
+  protected calculateVariableAmount(products: ProductsPass[]): number {
+    return products
+      .filter(p => p.selected && isVariablePrice(p))
+      .reduce((sum, product) => {
+        const price = getEffectivePrice(product);
+        return sum + (price * (product.quantity ?? 1));
+      }, 0);
+  }
+
   abstract calculate(products: ProductsPass[], discount: DiscountProps): TotalResult;
 }
 
@@ -41,13 +52,15 @@ class MonthlyPriceStrategy extends BasePriceStrategy {
 
     const originalTotal = this.calculateOriginalTotal(products)
     const discountAmount = discount.discount_value ? originalTotal * (discount.discount_value / 100): 0;
+    const variableAmount = this.calculateVariableAmount(products);
 
     console.log('month',{monthPrice, originalTotal, discountAmount, totalProductsPurchased})
 
     return {
       total: monthPrice - (hasPatreon && monthProduct?.attendee_category !== 'main' ? 0 : totalProductsPurchased),
       originalTotal: originalTotal,
-      discountAmount: discountAmount
+      discountAmount: discountAmount,
+      variableAmount
     };
   }
 
@@ -79,11 +92,13 @@ class WeeklyPriceStrategy extends BasePriceStrategy {
     
     const originalTotal = this.calculateOriginalTotal(products)
     const discountAmount = discount.discount_value ? originalTotal * (discount.discount_value / 100): 0;
+    const variableAmount = this.calculateVariableAmount(products);
 
     return {
       total: totalSelected,
       originalTotal: originalTotal,
-      discountAmount: discountAmount
+      discountAmount: discountAmount,
+      variableAmount
     };
   }
 }
@@ -92,14 +107,23 @@ class PatreonPriceStrategy extends BasePriceStrategy {
   calculate(products: ProductsPass[], _discount: DiscountProps): TotalResult {
     const patreonProduct = products.find(p => (p.category === 'patreon' || p.category === 'supporter') && p.selected);
     const productsSelected = products.filter(p => p.selected && !p.purchased && p.category !== 'patreon' && p.category !== 'supporter')
-    const patreonPrice = (patreonProduct?.price ?? 0) * (patreonProduct?.quantity ?? 1);
+    
+    // Use custom_amount for variable price products, fallback to price
+    const patreonPrice = patreonProduct 
+      ? (isVariablePrice(patreonProduct) 
+          ? getEffectivePrice(patreonProduct) 
+          : patreonProduct.price) * (patreonProduct.quantity ?? 1)
+      : 0;
+    
     const originalTotal = this.calculateOriginalTotal(products)
     const discountAmount = productsSelected.reduce((sum, product) => sum + ((product.original_price ?? 0) * (product.quantity ?? 1)), 0)
+    const variableAmount = this.calculateVariableAmount(products);
 
     return {
       total: patreonPrice,
       originalTotal: originalTotal,
-      discountAmount: discountAmount
+      discountAmount: discountAmount,
+      variableAmount
     };
   }
 }
@@ -112,7 +136,8 @@ class MonthlyPurchasedPriceStrategy extends BasePriceStrategy {
       return {
         total: 0,
         originalTotal: 0,
-        discountAmount: 0
+        discountAmount: 0,
+        variableAmount: 0
       };
     }
 
@@ -122,11 +147,13 @@ class MonthlyPurchasedPriceStrategy extends BasePriceStrategy {
     const totalWeekPurchased = weekProductsPurchased.reduce((sum, product) => sum + (product.price * (product.quantity ?? 1)), 0)
 
     const originalTotal = this.calculateOriginalTotal(products)
+    const variableAmount = this.calculateVariableAmount(products);
     
     return {
       total: totalWeekPurchased - ((monthProductPurchased?.price ?? 0) * (monthProductPurchased?.quantity ?? 1)),
       originalTotal: originalTotal,
-      discountAmount: 0
+      discountAmount: 0,
+      variableAmount
     };
   }
 }
@@ -144,11 +171,13 @@ class DayPriceStrategy extends BasePriceStrategy {
     
     const originalTotal = this.calculateOriginalTotal(products)
     const discountAmount = discount.discount_value ? originalTotal * (discount.discount_value / 100): 0;
+    const variableAmount = this.calculateVariableAmount(products);
 
     return {
       total: totalSelected,
       originalTotal: originalTotal,
-      discountAmount: discountAmount
+      discountAmount: discountAmount,
+      variableAmount
     };
   }
 }
@@ -164,9 +193,10 @@ export class TotalCalculator {
       return {
         total: total.total + result.total,
         originalTotal: total.originalTotal + result.originalTotal,
-        discountAmount: total.discountAmount + result.discountAmount
+        discountAmount: total.discountAmount + result.discountAmount,
+        variableAmount: total.variableAmount + result.variableAmount
       };
-    }, { total: 0, originalTotal: 0, discountAmount: 0 });
+    }, { total: 0, originalTotal: 0, discountAmount: 0, variableAmount: 0 });
 
     // Compare individual discount vs group discount and apply only the greater one
     if (groupDiscountPercentage && groupDiscountPercentage > 0) {
@@ -178,7 +208,8 @@ export class TotalCalculator {
         return {
           total: baseResult.originalTotal - groupDiscountAmount,
           originalTotal: baseResult.originalTotal,
-          discountAmount: groupDiscountAmount
+          discountAmount: groupDiscountAmount,
+          variableAmount: baseResult.variableAmount
         };
       }
     }

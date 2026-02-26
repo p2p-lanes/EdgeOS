@@ -122,7 +122,6 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
                 <Ticket className="w-4 h-4 hidden md:block" />
                 <p className="font-semibold text-sm md:pl-3">{product.name}</p>
               </div>
-
             </div>
 
             {/* Right Side: This container will manage Price/Info and QuantityControls layout */}

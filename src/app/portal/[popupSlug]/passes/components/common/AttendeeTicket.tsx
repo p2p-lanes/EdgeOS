@@ -1,9 +1,8 @@
 import { AttendeeProps } from "@/types/Attendee"
-import { ChevronRight, QrCode, User } from "lucide-react"
-import { badgeName } from "../../constants/multiuse"
+import { ChevronRight, QrCode, User, Ticket } from "lucide-react"
+import { badgeName } from "@/components/utils/multiuse"
 import { ProductsPass } from "@/types/Products"
 import { useCityProvider } from "@/providers/cityProvider"
-import { EdgeLand } from "@/components/Icons/EdgeLand"
 import Product from "./Products/ProductTicket"
 import useModal from "../../hooks/useModal"
 import useAttendee from "@/hooks/useAttendee"
@@ -11,7 +10,6 @@ import { AttendeeModal } from "../AttendeeModal"
 import OptionsMenu from "./Buttons/OptionsMenu"
 import { Separator } from "@/components/ui/separator"
 import React, { useState } from "react"
-import { Button } from "@/components/ui/button"
 import QRcode from "./QRcode"
 import { useApplication } from "@/providers/applicationProvider"
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
@@ -62,6 +60,11 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout, onSwitchToBuy}:
   const localProducts = standardProducts.filter(p => p.category.includes('local'))
   const commonProducts = standardProducts.filter(p => p.category === 'week' || p.category === 'month' || p.category === 'day')
 
+  // Get purchased passes for view mode display
+  const purchasedPasses = attendee.products
+    .filter((product) => product.purchased && product.category !== 'patreon')
+    .sort(sortProductsByPriority)
+
   // Collapsible open states
   const defaultLocalOpen = isLocalResident ? localProducts.length > 0 : false
   const defaultCommonOpen = isLocalResident ? localProducts.length === 0 : true
@@ -95,69 +98,112 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout, onSwitchToBuy}:
     setIsQrModalOpen(true)
   }
 
-  const handleCloseQrModal = () => {
-    setIsQrModalOpen(false)
-  }
-
   return (
     <div className="relative h-full w-full">
       <div className="w-full overflow-hidden">
-        <div className="w-full rounded-3xl border border-gray-200 h-full xl:grid xl:grid-cols-[1fr_2px_2fr] bg-white">
+        <div className="w-full rounded-3xl border border-gray-200 h-full lg:grid lg:grid-cols-[1fr_2px_2fr] bg-white">
 
-          <div className="relative flex flex-col p-6 overflow-hidden h-full">
-            <div 
-              className="absolute inset-0 z-0 rounded-3xl"
+          <div className="relative flex flex-col p-6 overflow-hidden h-full min-h-[160px]">
+            <div
+              className="absolute inset-0 z-0 rounded-t-3xl lg:rounded-l-3xl lg:rounded-tr-none"
               style={{
-                background: `linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.8) 20%, #FFFFFF 90%), url(${city?.image_url})`,
-                backgroundSize: 'cover',
-                backgroundPosition: 'top',
+                background: `linear-gradient(0deg, transparent, rgba(255, 255, 255, 0.8) 20%, rgb(255, 255, 255) 90%) center top / cover, url(${city?.image_url}) center top / cover`,
               }}
             />
-            <div className="z-10 h-full flex xl:flex-col justify-between xl:justify-start xl:gap-10">
-              <div className="flex flex-col justify-center xl:order-2">
-                <p className="text-xl font-semibold">{attendee.name}</p>
-                <div className="flex items-center gap-2 mt-1">
-                  <User className="h-4 w-4 text-gray-500"/>
-                  <p className="text-sm text-gray-500">{badgeName[attendee.category] || attendee.category}</p>
+            <div className="relative z-10 h-full flex flex-col justify-between">
+              <div className="flex justify-between items-start">
+                <div>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    {city?.name}
+                  </h2>
+                  <p className="text-gray-500 text-sm mt-1 lg:mt-2">{attendee.name}</p>
+                  <div className="flex items-center gap-2 mt-0.5 lg:mt-1 text-gray-500 text-sm">
+                    <User className="w-3 h-3" />
+                    <span>{badgeName[attendee.category] || attendee.category}</span>
+                  </div>
                 </div>
+                <OptionsMenu onEdit={handleEditAttendee} onDelete={hasPurchased ? undefined : handleRemoveAttendee} className="lg:hidden"/>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-2 xl:order-1">
-                  <EdgeLand/>
-                  <p className="text-sm font-medium">{city?.name}</p>
-                </div>
-              </div>
-
-              <OptionsMenu onEdit={handleEditAttendee} onDelete={hasPurchased ? undefined : handleRemoveAttendee} className="absolute top-1 right-4 xl:hidden"/>
             </div>
 
           </div>
 
-          <div className="border-r-2 border-dashed border-gray-200 self-stretch relative">
-            <div className="absolute -top-[23px] -left-[23px] w-[48px] h-[46px] bg-neutral-100 rounded-3xl border border-gray-200"></div>
-            <div className="absolute max-xl:-top-[23px] max-xl:-right-[23px] xl:-bottom-[23px] xl:-right-auto xl:-left-[23px] w-[48px] h-[46px] bg-neutral-100 rounded-3xl border border-gray-200"></div> 
+          {/* Mobile horizontal divider with hole punches */}
+          <div className="lg:hidden border-b-2 border-dashed border-gray-200 w-full relative">
+            <div className="absolute -top-[23px] -left-[23px] w-[48px] h-[46px] bg-[#F5F5F7] rounded-full"></div>
+            <div className="absolute -top-[23px] -right-[23px] w-[48px] h-[46px] bg-[#F5F5F7] rounded-full"></div>
           </div>
 
-          <div className="flex flex-col p-8 gap-2 xl:pr-10">
+          {/* Desktop vertical divider with hole punches */}
+          <div className="hidden lg:block border-r-2 border-dashed border-gray-200 self-stretch relative">
+            <div className="absolute -top-[23px] -left-[23px] w-[48px] h-[46px] bg-[#F5F5F7] rounded-full"></div>
+            <div className="absolute -bottom-[23px] -left-[23px] w-[48px] h-[46px] bg-[#F5F5F7] rounded-full"></div>
+          </div>
+
+          <div className={cn(
+            "relative flex flex-col gap-2 lg:pr-10 lg:min-h-[200px]",
+            !toggleProduct && !hasPurchased
+              ? "items-center justify-center text-center py-4 px-5 lg:p-8"
+              : "items-start justify-start p-5 lg:p-8"
+          )}>
+            {/* Options menu - desktop only */}
+            {!hasPurchased && (
+              <OptionsMenu onEdit={handleEditAttendee} onDelete={handleRemoveAttendee} className="absolute top-6 right-6 hidden lg:flex"/>
+            )}
+
             {standardProducts.length === 0 ? (
-              <div className="flex w-full h-full justify-center items-center">
-                <p className="text-sm font-medium text-neutral-500">Coming soon.</p>
-              </div>
+              <p className="text-sm font-medium text-neutral-500">Coming soon.</p>
             ) : (!toggleProduct && !hasPurchased) ? (
-              <div className="flex w-full h-full justify-center items-center p-4">
-                <p className="text-sm font-medium text-neutral-500 text-center">
-                  You do not yet have any passes for {city?.name}, please go to{" "}
-                  <span 
-                    onClick={onSwitchToBuy} 
-                    className="text-primary hover:underline cursor-pointer font-semibold"
-                  >
-                    Buy Passes
-                  </span>{" "}
-                  to purchase
-                </p>
-              </div>
+              /* View mode - no purchased passes */
+              <p className="text-gray-500 max-w-xs lg:max-w-sm leading-relaxed">
+                You do not yet have any passes for {city?.name}, please go to{" "}
+                <span
+                  onClick={onSwitchToBuy}
+                  className="font-bold text-gray-900 hover:underline cursor-pointer"
+                >
+                  Buy Passes
+                </span>{" "}
+                to purchase
+              </p>
+            ) : (!toggleProduct && hasPurchased) ? (
+              /* View mode - with purchased passes - simple pass list */
+              <>
+                <div className="w-full">
+                  {purchasedPasses.map((pass, idx) => (
+                    <div
+                      key={`${pass.id}-${attendee.id}`}
+                      className={cn(
+                        "flex items-center gap-2 py-3",
+                        idx !== purchasedPasses.length - 1 && "border-b border-dotted border-gray-300"
+                      )}
+                    >
+                      <Ticket className="w-4 h-4 lg:w-5 lg:h-5 text-gray-700 flex-shrink-0" />
+                      <div className="flex items-baseline gap-1.5 flex-1 min-w-0">
+                        <span className="font-bold text-gray-900 text-sm lg:text-base whitespace-nowrap">
+                          {pass.name}
+                        </span>
+                        {pass.start_date && pass.end_date && (
+                          <span className="text-gray-500 text-xs lg:text-sm truncate">
+                            {new Date(pass.start_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} to{' '}
+                            {new Date(pass.end_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+                {/* Check-in code indicator */}
+                <button
+                  onClick={handleOpenQrModal}
+                  className="flex items-center gap-1.5 mt-3 justify-end lg:absolute lg:bottom-6 lg:right-6 lg:mt-0 text-xs font-medium text-gray-400 uppercase tracking-wider hover:text-gray-600 transition-colors cursor-pointer"
+                >
+                  <span>Check-in code</span>
+                  <QrCode className="w-4 h-4" />
+                </button>
+              </>
             ) : (
-              <div className="flex flex-col gap-3">
+              /* Buy mode - collapsible sections */
+              <div className="flex flex-col gap-3 w-full">
                 {localProducts.length > 0 && (
                   <Collapsible open={localOpen} onOpenChange={setLocalOpen} className="space-y-2">
                     <CollapsibleTrigger className="w-full bg-accent rounded-md" aria-label="Toggle Local Tickets">
@@ -179,9 +225,9 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout, onSwitchToBuy}:
                               {index === firstDayIndexCommon && hasDayInCommon && !isDayCheckout && (
                                 <Separator className="my-1" />
                               )}
-                              <Product 
-                                product={product} 
-                                defaultDisabled={!toggleProduct} 
+                              <Product
+                                product={product}
+                                defaultDisabled={!toggleProduct}
                                 hasMonthPurchased={hasMonthPurchased}
                                 onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
                               />
@@ -193,7 +239,7 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout, onSwitchToBuy}:
                         })}
                       </div>
                       <p className="text-sm font-medium text-neutral-500 text-right mt-2">ID Required at check-in *</p>
-                        
+
                     </CollapsibleContent>
                   </Collapsible>
                 )}
@@ -218,9 +264,9 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout, onSwitchToBuy}:
                               {index === firstDayIndexCommon && hasDayInCommon && !isDayCheckout && (
                                 <Separator className="my-1" />
                               )}
-                              <Product 
-                                product={product} 
-                                defaultDisabled={!toggleProduct} 
+                              <Product
+                                product={product}
+                                defaultDisabled={!toggleProduct}
                                 hasMonthPurchased={hasMonthPurchased}
                                 onClick={toggleProduct ? (attendeeId, product) => toggleProduct(attendeeId ?? 0, product) : () => {}}
                               />
@@ -236,29 +282,6 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout, onSwitchToBuy}:
                 )}
               </div>
             )}
-
-            {
-              !hasPurchased && (
-                <OptionsMenu onEdit={handleEditAttendee} onDelete={handleRemoveAttendee} className="absolute top-2 right-3 hidden xl:flex"/>
-              )
-            }
-
-
-            {
-              hasPurchased && (
-                <div className="flex w-full justify-end">
-                  <Button 
-                    variant="ghost" 
-                    className="flex items-center gap-2 p-2" 
-                    onClick={handleOpenQrModal}
-                    aria-label="Show check-in code"
-                  >
-                    <p className="text-sm font-medium">Check-in Code</p>
-                    <QrCode className="w-5 h-5"/>
-                  </Button>
-                </div>
-              )
-            }
           </div>
         </div>
       </div>

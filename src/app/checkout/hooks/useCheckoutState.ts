@@ -12,7 +12,10 @@ const useCheckoutState = () => {
   const groupParam = searchParams.get("group");
   const { group } = useParams()
   const { setApplications } = useApplication();
-  const [checkoutState, setCheckoutState] = useState<CheckoutState>("form");
+  // If returning from payment provider with success, start in "passes" state
+  // so PassesCheckout renders and detects ?checkout=success for initialStep
+  const checkoutSuccess = searchParams.get("checkout") === "success";
+  const [checkoutState, setCheckoutState] = useState<CheckoutState>(checkoutSuccess ? "passes" : "form");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const { setCookie } = useCookies();

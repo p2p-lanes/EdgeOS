@@ -29,7 +29,7 @@ const CheckoutPage = () => {
         backgroundAttachment: "fixed"
       }}
     >
-      <div className="container mx-auto">
+      <div className="container mx-auto max-w-xl">
         <Suspense fallback={<LoadingFallback />}>
           <CheckoutContent group={group} isLoading={isLoading} error={error}/>
         </Suspense>
