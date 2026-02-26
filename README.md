@@ -1,12 +1,14 @@
 ## 🌟 What is this?
 
-The resident portal is an open source project actively developed by SimpleFi (aka p2planes) jointly with the support of EdgeCity and Esmeralda and (hopefully) you!
- 
+EdgeOS is an open-source portal and event management system for pop-up cities and network states. It handles resident applications, approval workflows, ticketing, housing, and payments (including crypto).
+
+Actively developed by SimpleFi (aka p2planes) in collaboration with EdgeCity, Esmeralda, and (hopefully) you!
+
 ## 🚀 Our Story
 
-We build technology to accelerate the experimentation rate of new forms of human cooperation. We do this by leveraging frontier technologies such as cryptocurrencies, ZK and AI as part of the tool stack of orgs doing the groundwork. After working closely with EdgeCity and Crecimiento, we understood that current tools, both closed and open source were not optimized for our desired use case, so we decided to build our own.
+We build technology to accelerate new forms of human cooperation using frontier technologies like cryptocurrencies, ZK, and AI. After working with EdgeCity and Crecimiento, we realized existing tools weren't optimized for pop-up city operations—so we built our own.
 
-We hope that builders and companies within the pop-up city movement will recognize the value of this project and choose to contribute. We openly welcome the likes of Cursive, ZuPass, RaveApp, Sovs/Consensys, SocialLayer, etc. to join us in this effort.
+We welcome contributions from builders and companies in the pop-up city movement, including Cursive, ZuPass, RaveApp, Sovs/Consensys, SocialLayer, and others.
 
 ---
 
@@ -28,13 +30,13 @@ NEXT_PUBLIC_API_URL=http://localhost:8000
 1. Create a `.env` file in the root directory with the following variables:
 ```bash
 # Development Mode
-NEXT_PUBLIC_DEVELOP = true
+NEXT_PUBLIC_DEVELOP=true
 
 # API URL for Portal
-NEXT_PUBLIC_API_URL = http://localhost:8000  # Set this if running backend locally
+NEXT_PUBLIC_API_URL=http://localhost:8000  # Set this if running backend locally
 
 # API Key for Portal
-NEXT_PUBLIC_X_API_KEY =
+NEXT_PUBLIC_X_API_KEY=
 ```
 
 2. Build and start the containers:
@@ -167,8 +169,7 @@ This feature aims to increase customer engagement, boost sales, and provide prom
 As it's not a must-have, we won't add the fixed-amount coupons. It usually makes more sense to have percentage-based discounts, and adding the fixed-based logic entails considerably more effort.
 
 #### Should attendees be able to use the coupon code more than once?
-We decided that attendees can use the coupon code more than once within the same application, but it counts as one use per application.  
-For example, I use 'crecimiento10' and buy my ticket with 10% off. A week later, I buy my spouse's ticket, using the same code. This will count as one usage in the discount codes table.
+We decided that attendees can use the coupon code more than once within the same application, but it counts as one use per application. For example, I use 'crecimiento10' and buy my ticket with 10% off. A week later, I buy my spouse's ticket, using the same code. This will count as one usage in the discount codes table.
 
 #### What happens if the application has more than one kind of discount?
 Currently, we have three types of discounts: **discount assigned in application, Coupon Codes, and Group Passes**. If one application has more than one discount, we will take into account the highest.  
