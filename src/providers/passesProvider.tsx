@@ -11,7 +11,7 @@ import { useCityProvider } from './cityProvider';
 import { getPurchaseStrategy } from '@/strategies/PurchaseStrategy';
 import { useGroupsProvider } from './groupsProvider';
 import { isVariablePrice } from '@/helpers/variablePrice';
-import { savePassSelections, loadPassSelections, clearPassSelectionsStorage, PersistedPassSelection } from '@/hooks/useCartStorage';
+import { savePassSelections, loadPassSelections, clearPassSelectionsStorage, checkAndClearPurchasePending, PersistedPassSelection } from '@/hooks/useCartStorage';
 import { jwtDecode } from 'jwt-decode';
 import { User } from '@/types/User';
 
@@ -152,8 +152,16 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
   
   useEffect(() => {
     if (attendees.length > 0 && products.length > 0) {
-      // Read saved selections from localStorage reactively (city?.id and citizenId may not be available on first render)
-      const savedSelections = (!hasRestoredRef.current && city?.id && citizenId)
+      // If returning from a successful purchase, consume the flag and skip restoration
+      const isPurchasePending = (!hasRestoredRef.current && city?.id && citizenId)
+        ? checkAndClearPurchasePending()
+        : false;
+
+      if (isPurchasePending) {
+        clearPassSelectionsStorage(citizenId!, city!.id);
+      }
+
+      const savedSelections = (!hasRestoredRef.current && city?.id && citizenId && !isPurchasePending)
         ? loadPassSelections(citizenId, city.id)
         : [];
 
@@ -204,9 +212,12 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
             }
           });
 
+        const productsWithRules = purchaseStrategy.applyPurchaseRules(attendeeProducts, attendee.products || []);
         return {
           ...attendee,
-          products: purchaseStrategy.applyPurchaseRules(attendeeProducts, attendee.products || [])
+          products: isEditing
+            ? productsWithRules
+            : productsWithRules.map(p => p.purchased ? { ...p, selected: false, custom_amount: undefined } : p)
         };
       });
       setAttendeePasses(initialAttendees);
@@ -228,7 +239,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
       const selections: PersistedPassSelection[] = [];
       attendeePasses.forEach(attendee => {
         attendee.products.forEach(product => {
-          if (product.selected) {
+          if (product.selected && product.category !== 'patreon') {
             selections.push({
               attendeeId: attendee.id,
               productId: product.id,

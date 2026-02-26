@@ -32,6 +32,7 @@ import {
   saveCheckoutCart,
   loadCheckoutCart,
   clearCartStorage,
+  markPurchasePending,
   PersistedCheckoutCart,
 } from '@/hooks/useCartStorage';
 import { jwtDecode } from 'jwt-decode';
@@ -205,19 +206,6 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
         return acc;
       }, []);
       if (restoredMerch.length > 0) setMerch(restoredMerch);
-    }
-
-    // Restore patron
-    if (savedCart.patron) {
-      const product = products.find(p => p.id === savedCart.patron!.productId);
-      if (product) {
-        setPatron({
-          productId: product.id,
-          product,
-          amount: savedCart.patron.amount,
-          isCustomAmount: savedCart.patron.isCustomAmount,
-        });
-      }
     }
 
   }, [cityId, citizenId, products]);
@@ -396,12 +384,10 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
         ? { productId: housing.productId, checkIn: housing.checkIn, checkOut: housing.checkOut }
         : null,
       merch: merch.map(m => ({ productId: m.productId, quantity: m.quantity })),
-      patron: patron
-        ? { productId: patron.productId, amount: patron.amount, isCustomAmount: patron.isCustomAmount }
-        : null,
+      patron: null,
     };
     saveCheckoutCart(citizenId, cityId, persistedCart);
-  }, [housing, merch, patron, cityId, citizenId]);
+  }, [housing, merch, cityId, citizenId]);
 
   // Calculate summary
   // Note: Insurance is calculated on original prices (before discounts) and added AFTER discounts
@@ -774,10 +760,8 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
         const data = res.data;
 
         if (data.status === 'pending' && data.checkout_url) {
-          // Do NOT clear cart here — payment is not confirmed yet.
-          // Cart will be cleared when user returns with ?checkout=success
-          // Redirect to payment provider with success parameter for return
-          // Keep loading state active during redirect
+          // Mark purchase pending so PassesProvider skips cart restoration on return
+          markPurchasePending();
           
           const currentUrl = new URL(window.location.href);
           currentUrl.searchParams.set('checkout', 'success');

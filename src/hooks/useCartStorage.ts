@@ -11,7 +11,7 @@ export interface PersistedPassSelection {
 export interface PersistedCheckoutCart {
   housing: { productId: number; checkIn: string; checkOut: string } | null;
   merch: Array<{ productId: number; quantity: number }>;
-  patron: { productId: number; amount: number; isCustomAmount: boolean } | null;
+  patron?: { productId: number; amount: number; isCustomAmount: boolean } | null;
 }
 
 const PASSES_STORAGE_KEY = 'cart_passes';
@@ -103,6 +103,23 @@ export const clearCheckoutCartStorage = (userId: string, cityId: string | number
   } catch {
     // Silently fail
   }
+};
+
+// --- Purchase Pending Flag ---
+// Set before redirect to payment provider; consumed on next page load to skip cart restoration
+
+const PURCHASE_PENDING_KEY = 'cart_purchase_pending';
+
+export const markPurchasePending = (): void => {
+  try { localStorage.setItem(PURCHASE_PENDING_KEY, 'true'); } catch { /* noop */ }
+};
+
+export const checkAndClearPurchasePending = (): boolean => {
+  try {
+    const pending = localStorage.getItem(PURCHASE_PENDING_KEY) === 'true';
+    if (pending) localStorage.removeItem(PURCHASE_PENDING_KEY);
+    return pending;
+  } catch { return false; }
 };
 
 export const clearAllUserCartStorage = (userId: string): void => {
