@@ -683,7 +683,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       } else {
         const hasAccountCredit = (application?.credit ?? 0) > 0;
 
-        if (hasAccountCredit || isMonthUpgrade) {
+        if (hasAccountCredit) {
           attendeePasses.forEach(attendee => {
             attendee.products.forEach(product => {
               if (product.purchased) {
@@ -757,6 +757,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
           // Cart will be cleared when user returns with ?checkout=success
           // Redirect to payment provider with success parameter for return
           // Keep loading state active during redirect
+          
           const currentUrl = new URL(window.location.href);
           currentUrl.searchParams.set('checkout', 'success');
           const redirectUrl = currentUrl.toString();
