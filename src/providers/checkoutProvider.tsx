@@ -663,12 +663,38 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       );
       const isMonthUpgrade = monthSelectedWithWeekOrDay && !hasPatreonSelected;
 
+      console.log('entro', isEditing);
+
       if (isEditing) {
         // Edit mode: send only the final products the user wants to keep
         attendeePasses.forEach(attendee => {
+          const hasNewDonation = attendee.products.some(p =>
+            (p.category === 'donation' || p.category === 'patreon') && p.selected && !p.purchased
+          );
+
+          console.log(hasNewDonation);
+
+          const purchasedDonationAmount = hasNewDonation
+            ? (() => {
+                const originalAttendee = application?.attendees?.find(a => a.id === attendee.id);
+                console.log(originalAttendee);
+                return attendee.products
+                  .filter(p => (p.category === 'donation') && p.purchased)
+                  .reduce((sum, p) => {
+                    const originalProduct = originalAttendee?.products?.find(op => op.id === p.id);
+                    return sum + (originalProduct?.custom_amount ?? originalProduct?.price ?? p.price);
+                  }, 0);
+              })()
+            : 0;
+
+          console.log(purchasedDonationAmount);
+
           attendee.products.forEach(product => {
             // Kept: purchased and NOT given up for credit
             if (product.purchased && !product.edit) {
+              if (hasNewDonation && (product.category === 'donation' || product.category === 'patreon')) {
+                return;
+              }
               productsToSend.push({
                 product_id: product.id,
                 attendee_id: attendee.id,
@@ -677,12 +703,18 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
             }
             // New: selected and not previously purchased
             if (product.selected && !product.purchased) {
+              const isDonation = product.category === 'donation' || product.category === 'patreon';
               productsToSend.push({
                 product_id: product.id,
                 attendee_id: attendee.id,
                 quantity: product.category.includes('day')
                   ? (product.quantity ?? 1) - (product.original_quantity ?? 0)
                   : product.quantity ?? 1,
+                ...(isDonation && purchasedDonationAmount > 0
+                  ? { custom_amount: (product.custom_amount ?? product.price) + purchasedDonationAmount }
+                  : isDonation
+                    ? { custom_amount: product.custom_amount ?? product.price }
+                    : {}),
               });
             }
           });
@@ -751,11 +783,13 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
           const isVariable = patron.product.min_price !== null && patron.product.min_price !== undefined;
 
           let totalAmount = patron.amount;
-          if (hasAccountCredit) {
+          if (hasAccountCredit || isMonthUpgrade) {
             attendeePasses.forEach(attendee => {
+              const originalAttendee = application?.attendees?.find(a => a.id === attendee.id);
               attendee.products.forEach(product => {
                 if (product.purchased && (product.category === 'donation' || product.category === 'patreon')) {
-                  totalAmount += product.custom_amount ?? product.price;
+                  const originalProduct = originalAttendee?.products?.find(op => op.id === product.id);
+                  totalAmount += originalProduct?.custom_amount ?? originalProduct?.price ?? product.price;
                 }
               });
             });
@@ -790,7 +824,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
           const currentUrl = new URL(window.location.href);
           currentUrl.searchParams.set('checkout', 'success');
           const redirectUrl = currentUrl.toString();
-          window.location.href = `${data.checkout_url}?redirect_url=${encodeURIComponent(redirectUrl)}`;
+          // window.location.href = `${data.checkout_url}?redirect_url=${encodeURIComponent(redirectUrl)}`;
           return { success: true };
         } else if (data.status === 'approved') {
           // toast.success(isEditing ? 'Your passes have been updated successfully!' : 'Payment completed successfully!');
@@ -820,7 +854,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       setIsSubmitting(false);
       return { success: false, error: errorMsg };
     }
-  }, [application?.id, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart, clearSelections, isEditing, attendeePasses, editCredit, toggleEditing]);
+  }, [application?.id, application?.attendees, selectedPasses, merch, housing, patron, promoCodeValid, promoCode, insurance, clearCart, clearSelections, isEditing, attendeePasses, editCredit, toggleEditing]);
 
   const value: CheckoutContextValue = {
     currentStep,
