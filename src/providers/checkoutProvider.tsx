@@ -722,7 +722,7 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
       } else {
         const hasAccountCredit = (application?.credit ?? 0) > 0;
 
-        if (hasAccountCredit) {
+        if (hasAccountCredit || isMonthUpgrade) {
           attendeePasses.forEach(attendee => {
             const hasMonth = attendee.products.some(p =>
               (p.category === 'month' || p.category === 'local month') && (p.purchased || p.selected)
@@ -824,17 +824,17 @@ export function CheckoutProvider({ children, products, initialStep = 'passes' }:
           const currentUrl = new URL(window.location.href);
           currentUrl.searchParams.set('checkout', 'success');
           const redirectUrl = currentUrl.toString();
-          // window.location.href = `${data.checkout_url}?redirect_url=${encodeURIComponent(redirectUrl)}`;
+          window.location.href = `${data.checkout_url}?redirect_url=${encodeURIComponent(redirectUrl)}`;
           return { success: true };
         } else if (data.status === 'approved') {
-          // toast.success(isEditing ? 'Your passes have been updated successfully!' : 'Payment completed successfully!');
-          // if (isEditing) {
-          //   toggleEditing(false);
-          // }
-          // clearCart();
-          // clearSelections();
-          // setCurrentStep('success');
-          // setIsSubmitting(false);
+          toast.success(isEditing ? 'Your passes have been updated successfully!' : 'Payment completed successfully!');
+          if (isEditing) {
+            toggleEditing(false);
+          }
+          clearCart();
+          clearSelections();
+          setCurrentStep('success');
+          setIsSubmitting(false);
           return { success: true };
         }
 
