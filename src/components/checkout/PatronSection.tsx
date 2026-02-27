@@ -192,14 +192,26 @@ export default function PatronSection({ onSkip }: PatronSectionProps) {
                     placeholder={PATRON_MINIMUM.toLocaleString()}
                     aria-label="Custom patron amount"
                     className={cn(
-                      'w-full pl-7 pr-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent',
-                      isCustom && customValue
-                        ? 'border-amber-400 bg-amber-50'
-                        : 'border-gray-200'
+                      'w-full pl-7 pr-3 py-2 border rounded-lg text-sm transition-all duration-300 ease-in-out focus:outline-none focus:ring-2 focus:border-transparent',
+                      isCustom && customValue && parseInt(customValue.replace(/,/g, ''), 10) >= PATRON_MINIMUM
+                        ? 'border-green-400 bg-green-50 focus:ring-green-400'
+                        : isCustom && customValue
+                          ? 'border-amber-400 bg-amber-50'
+                          : 'border-gray-200 focus:ring-amber-400'
                     )}
                   />
                 </div>
-                <span className="text-xs text-gray-400">Min {formatCurrency(PATRON_MINIMUM)}</span>
+                <span
+                  className={cn(
+                    'text-xs text-gray-400',
+                    isCustom &&
+                      customValue &&
+                      parseInt(customValue.replace(/,/g, ''), 10) < PATRON_MINIMUM &&
+                      'text-black'
+                  )}
+                >
+                  Min {formatCurrency(PATRON_MINIMUM)}
+                </span>
               </div>
 
               {/* Clear link */}

@@ -283,6 +283,12 @@ export default function ConfirmStep() {
                 setPromoInput(e.target.value.toUpperCase());
                 setPromoError('');
               }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault();
+                  handleApplyPromo();
+                }
+              }}
               placeholder="Promo code"
               disabled={cart.promoCodeValid}
               className={cn(
