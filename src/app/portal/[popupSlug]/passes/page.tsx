@@ -15,19 +15,9 @@ export default function HomePasses() {
 
   if(!attendees.length || !products.length) return <Loader />
 
-<<<<<<< HEAD
-  const someProductPurchased = attendees.some(a => a.products.some(p => p.purchased))
-
-  const initialTab = activeTab || (someProductPurchased ? "your-passes" : "buy-passes");
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-  };
-=======
   const handleBuyPasses = () => {
     router.push(`/portal/${popupSlug}/passes/buy`)
   }
->>>>>>> develop
 
   return (
     <div className="w-full min-h-screen bg-[#F5F5F7]">
