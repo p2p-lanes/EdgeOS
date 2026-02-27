@@ -65,16 +65,19 @@ class MonthProductStrategy implements ProductStrategy {
     const isMonthSelected = product?.selected;
     const willSelectMonth = !isMonthSelected;
 
-
     return attendees.map(attendee => {
       if (attendee.id !== attendeeId) return attendee;
-      
+
       return {
         ...attendee,
         products: attendee.products.map(p => ({
           ...p,
-          selected: p.id === product.id ? !p.selected : 
-            p.category === 'week' && !p.purchased ? willSelectMonth : p.selected
+          // When selecting month: deselect all weeks (set to false)
+          // When deselecting month: leave weeks unchanged
+          selected: p.id === product.id ? !p.selected :
+            p.category === 'week' && !p.purchased && willSelectMonth ? false : p.selected,
+          // Also clear day pass quantities when selecting month
+          quantity: p.category.includes('day') && !p.purchased && willSelectMonth ? 0 : p.quantity
         }))
       };
     });
@@ -135,7 +138,13 @@ class WeekProductStrategy implements ProductStrategy {
         products: updatedProducts.map(p => ({
           ...p,
           quantity: p.category.includes('day') && shouldSelectMonth && !p.purchased ? 0 : p.quantity,
-          selected: p.category === 'month' ? shouldSelectMonth : p.category.includes('day') && shouldSelectMonth ? false : p.selected,
+          selected: p.category === 'month'
+            ? shouldSelectMonth
+            : (p.category === 'week' && shouldSelectMonth && !p.purchased)
+              ? false
+              : (p.category.includes('day') && shouldSelectMonth)
+                ? false
+                : p.selected,
           edit: p.category === 'month' ? hasEdited : p.edit
         }))
       };
@@ -156,8 +165,12 @@ class LocalMonthProductStrategy implements ProductStrategy {
         ...attendee,
         products: attendee.products.map(p => ({
           ...p,
+          // When selecting local month: deselect all local weeks (set to false)
+          // When deselecting local month: leave local weeks unchanged
           selected: p.id === product.id ? !p.selected :
-            p.category === 'local week' && !p.purchased ? willSelectMonth : p.selected
+            p.category === 'local week' && !p.purchased && willSelectMonth ? false : p.selected,
+          // Also clear day pass quantities when selecting month
+          quantity: p.category.includes('day') && !p.purchased && willSelectMonth ? 0 : p.quantity
         }))
       };
     });
@@ -206,7 +219,13 @@ class LocalWeekProductStrategy implements ProductStrategy {
         products: updatedProducts.map(p => ({
           ...p,
           quantity: p.category.includes('day') && shouldSelectMonth && !p.purchased ? 0 : p.quantity,
-          selected: p.category === 'local month' ? shouldSelectMonth : p.category.includes('day') && shouldSelectMonth ? false : p.selected,
+          selected: p.category === 'local month'
+            ? shouldSelectMonth
+            : (p.category === 'local week' && shouldSelectMonth && !p.purchased)
+              ? false
+              : (p.category.includes('day') && shouldSelectMonth)
+                ? false
+                : p.selected,
           edit: p.category === 'local month' ? hasEdited : p.edit
         }))
       };
@@ -216,7 +235,7 @@ class LocalWeekProductStrategy implements ProductStrategy {
 
 class DayProductStrategy implements ProductStrategy {
   handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
-    
+    console.log('DayProductStrategy', {attendees, attendeeId, product});
     return attendees.map(attendee => {
       if (attendee.id !== attendeeId) return attendee;
 
@@ -232,7 +251,34 @@ class DayProductStrategy implements ProductStrategy {
   }
 }
 
+class EditProductStrategy implements ProductStrategy {
+  handleSelection(attendees: AttendeeProps[], attendeeId: number, product: ProductsPass): AttendeeProps[] {
+    return attendees.map(attendee => {
+      if (attendee.id !== attendeeId) return attendee;
+
+      return {
+        ...attendee,
+        products: attendee.products.map(p => {
+          if (p.id !== product.id) return p;
+
+          if (p.purchased) {
+            // Toggle purchased product for credit: edit + selected
+            return { ...p, edit: !p.edit, selected: !p.selected };
+          }
+
+          // Non-purchased product: normal toggle
+          return { ...p, selected: !p.selected };
+        })
+      };
+    });
+  }
+}
+
 export const getProductStrategy = (product: ProductsPass, isEditing: boolean): ProductStrategy => {
+  // In edit mode, use EditProductStrategy for all non-patreon products
+  if (isEditing && product.category !== 'patreon') {
+    return new EditProductStrategy();
+  }
 
   if (product.exclusive && product.category !== 'month') return new ExclusiveProductStrategy();
   

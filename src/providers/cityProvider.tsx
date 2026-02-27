@@ -2,7 +2,7 @@
 
 import { PopupsProps } from '@/types/Popup';
 import { useParams } from 'next/navigation';
-import { createContext, ReactNode, useContext, useState, useCallback } from 'react';
+import { createContext, ReactNode, useContext, useState, useCallback, useEffect } from 'react';
 
 interface CityContext_interface {
   getCity: () => PopupsProps | null;
@@ -25,17 +25,31 @@ const CityProvider = ({ children }: {children: ReactNode}) => {
     return city ?? null;
   }, [popups, params.popupSlug])
 
+  useEffect(() => {
+    if (!params.popupSlug) return;
+    const city = popups.find(
+      (p) => p.slug === params.popupSlug && p.clickable_in_portal && p.visible_in_portal
+    );
+    if (city) {
+      setCityPreselected(city.id);
+    }
+  }, [params.popupSlug, popups]);
+
   const getCity = useCallback((): PopupsProps | null => {
-    const city = getValidCity()
-    if(cityPreselected) {
-      const selectedCity = popups.find((popup: PopupsProps) => popup.id === cityPreselected && popup.clickable_in_portal && popup.visible_in_portal)
-      if(selectedCity) return selectedCity
+    const city = getValidCity();
+    if (city) return city;
+
+    if (cityPreselected) {
+      const selectedCity = popups.find(
+        (p) => p.id === cityPreselected && p.clickable_in_portal && p.visible_in_portal
+      );
+      if (selectedCity) return selectedCity;
     }
-    else if(!city){
-      const selectedCity = popups.find((popup: PopupsProps) => popup.clickable_in_portal && popup.visible_in_portal)
-      if(selectedCity) return selectedCity
-    }
-    return city ?? null;
+
+    const fallback = popups.find(
+      (p) => p.clickable_in_portal && p.visible_in_portal
+    );
+    return fallback ?? null;
   }, [getValidCity, cityPreselected, popups]);
 
   const getPopups = useCallback((): PopupsProps[] => {

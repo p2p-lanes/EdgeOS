@@ -9,6 +9,7 @@ interface TotalContext_interface {
   total: number;
   originalTotal: number;
   discountAmount: number;
+  variableAmount: number;
   balance: number;
   groupDiscountPercentage: number;
   groupName: string | null;
@@ -24,6 +25,7 @@ const TotalProvider = ({ children }: { children: ReactNode }) => {
   const [total, setTotalState] = useState<number>(0)
   const [originalTotal, setOriginalTotalState] = useState<number>(0)
   const [discountAmount, setDiscountAmountState] = useState<number>(0)
+  const [variableAmount, setVariableAmountState] = useState<number>(0)
   const [balance, setBalanceState] = useState<number>(0)
   const [groupDiscountPercentage, setGroupDiscountPercentage] = useState<number>(0)
   const [groupName, setGroupName] = useState<string | null>(null)
@@ -50,6 +52,7 @@ const TotalProvider = ({ children }: { children: ReactNode }) => {
     setTotalState(balance)
     setOriginalTotalState(result.originalTotal)
     setDiscountAmountState(result.discountAmount)
+    setVariableAmountState(result.variableAmount)
     setBalanceState(balance)
     setGroupDiscountPercentage(groupDiscountValue)
     setGroupName(groupNameValue)
@@ -62,6 +65,7 @@ const TotalProvider = ({ children }: { children: ReactNode }) => {
         total,
         originalTotal,
         discountAmount,
+        variableAmount,
         balance,
         groupDiscountPercentage,
         groupName

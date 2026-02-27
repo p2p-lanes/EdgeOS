@@ -20,7 +20,9 @@ export interface ProductsSnapshotProps {
   product_description: string | null,
   product_price: number,
   product_category: string,
-  created_at: string
+  created_at: string,
+  insurance_applied: boolean,
+  insurance_price: number | null,
 }
 
 export interface PaymentsProps {

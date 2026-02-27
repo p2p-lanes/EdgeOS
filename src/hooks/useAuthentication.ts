@@ -6,6 +6,7 @@ import { jwtDecode } from "jwt-decode"
 import { useParams, useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
+import { clearAllUserCartStorage } from "@/hooks/useCartStorage"
 
 interface UseAuthenticationReturn {
   user: User | null
@@ -86,6 +87,19 @@ const useAuthentication = (): UseAuthenticationReturn => {
   }
 
   const logout = () => {
+    // Clear cart storage for the current user before removing token
+    try {
+      const currentToken = window?.localStorage?.getItem('token')
+      if (currentToken) {
+        const decoded = jwtDecode<User>(currentToken)
+        if (decoded.citizen_id) {
+          clearAllUserCartStorage(decoded.citizen_id)
+        }
+      }
+    } catch {
+      // Silently fail — token may already be invalid
+    }
+
     window?.localStorage?.removeItem('token')
     setUser(null)
     setIsAuthenticated(false)

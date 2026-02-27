@@ -1,6 +1,6 @@
 import { AttendeeCategory } from "./Attendee";
 
-export type CategoryProducts = 'week' | 'patreon' | 'month' | 'supporter' | 'exclusive' | 'day' | 'local week' | 'local month' | 'local day'
+export type CategoryProducts = 'week' | 'patreon' | 'month' | 'supporter' | 'exclusive' | 'day' | 'local week' | 'local month' | 'local day' | 'housing' | 'merch' | 'donation'
 
 export interface ProductsProps {
   name: string;
@@ -18,6 +18,9 @@ export interface ProductsProps {
   builder_price: number | null;
   compare_price: number | null;
   exclusive: boolean;
+  insurance_percentage: number | null;
+  min_price: number | null;
+  max_price: number | null;
 }
 
 export interface ProductsPass extends ProductsProps {
@@ -29,4 +32,5 @@ export interface ProductsPass extends ProductsProps {
   original_price?: number;
   disabled?: boolean;
   original_quantity?: number;
+  custom_amount?: number;
 }
