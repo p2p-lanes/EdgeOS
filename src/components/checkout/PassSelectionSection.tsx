@@ -87,7 +87,7 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
       )}
 
       {/* Early Bird Banner - hidden in edit mode */}
-      {!isEditing && (
+      {/* {!isEditing && (
         <div className="bg-gradient-to-r from-amber-50 to-yellow-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-3">
           <div className="bg-amber-100 p-2 rounded-full">
             <Sparkles className="w-5 h-5 text-amber-600" />
@@ -97,7 +97,7 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
             <p className="text-sm text-amber-700">Save up to $200 per pass - limited time offer!</p>
           </div>
         </div>
-      )}
+      )} */}
 
       {/* Toolbar: Edit button + Add Family Members */}
       <div className="flex flex-wrap items-center gap-3 justify-between">
