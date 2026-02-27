@@ -62,7 +62,11 @@ const AttendeeTicket = ({attendee, toggleProduct, isDayCheckout, onSwitchToBuy}:
 
   // Get purchased passes for view mode display
   const purchasedPasses = attendee.products
-    .filter((product) => product.purchased && product.category !== 'patreon')
+    .filter((product) => {
+      if (!product.purchased || product.category === 'patreon') return false;
+      if (hasMonthPurchased && ['week', 'local week', 'day', 'local day'].includes(product.category)) return false;
+      return true;
+    })
     .sort(sortProductsByPriority)
 
   // Collapsible open states
