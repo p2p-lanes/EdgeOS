@@ -32,6 +32,7 @@ export interface ApplicationProps {
   referral?: string | null;
   info_to_share?: string | null;
   investor?: string | null;
+  interested_in_child_led_projects?: boolean;
   success_definition?: string[];
   top_tracks?: string[];
   brings_spouse?: boolean;
