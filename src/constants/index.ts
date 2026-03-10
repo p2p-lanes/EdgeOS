@@ -49,5 +49,8 @@ export const dynamicForm: Record<string, DynamicForm | null> = {
   'edge-sa': edgeSa,
   'edge-bhutan-2025': edgeBhutan2025,
   'edge-patagonia': edgePatagonia,
-  'edge-esmeralda-2026': edgeEsmeralda
+  'edge-esmeralda-2026': {
+    ...edgeEsmeralda,
+    fields: [...edgeEsmeralda.fields, 'interested_in_child_led_projects']
+  }
 }

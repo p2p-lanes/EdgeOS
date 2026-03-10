@@ -12,7 +12,7 @@ import { useCityProvider } from "@/providers/cityProvider"
 import { dynamicForm } from "@/constants"
 import { formatDate} from "@/helpers/dates"
 
-const fieldsParticipation = ["duration", "builder_boolean", "builder_description", "hackathon_interest", "investor", "video_url", "personal_goals", "host_session"]
+const fieldsParticipation = ["duration", "builder_boolean", "builder_description", "hackathon_interest", "investor", "interested_in_child_led_projects", "video_url", "personal_goals", "host_session"]
 
 export function ParticipationForm({ formData, errors, handleChange, fields }: SectionProps) {
   const [isBuilder, setIsBuilder] = useState(formData.builder_boolean || false)
@@ -124,6 +124,17 @@ export function ParticipationForm({ formData, errors, handleChange, fields }: Se
               id="investor"
               checked={formData.investor || false}
               onCheckedChange={(checked) => handleChange('investor', checked === true)}
+            />
+          )
+        }
+
+        {
+          fields.has("interested_in_child_led_projects") && (
+            <CheckboxForm
+              label="Edge Esmeralda is a multi-generational village by design. Would you like to learn about opportunities to participate in or support child-led projects during the pop-up?"
+              id="interested_in_child_led_projects"
+              checked={formData.interested_in_child_led_projects || false}
+              onCheckedChange={(checked) => handleChange('interested_in_child_led_projects', checked === true)}
             />
           )
         }
