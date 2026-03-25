@@ -30,6 +30,11 @@ const getCategoryPriority = (category: string): number => {
   return 4
 }
 
+const getWeekGroup = (p: ProductsPass): string => {
+  const slug = (p as any).slug ?? p.name ?? '';
+  return slug.replace(/week\s*\d+[-\s]*/i, '').toLowerCase();
+}
+
 const sortProductsByPriority = (a: ProductsPass, b: ProductsPass): number => {
   if (a.category === 'day' && b.category !== 'day') return 1
   if (a.category !== 'day' && b.category === 'day') return -1
@@ -37,6 +42,16 @@ const sortProductsByPriority = (a: ProductsPass, b: ProductsPass): number => {
   const priorityA = getCategoryPriority(a.category)
   const priorityB = getCategoryPriority(b.category)
   if (priorityA !== priorityB) return priorityA - priorityB
+
+  // Within weeks, group by product line then sort by date/name
+  if (a.category.includes('week') && b.category.includes('week')) {
+    const groupA = getWeekGroup(a)
+    const groupB = getWeekGroup(b)
+    if (groupA !== groupB) return groupA.localeCompare(groupB)
+    if (a.start_date && b.start_date) return a.start_date.localeCompare(b.start_date)
+    return (a.name ?? '').localeCompare(b.name ?? '')
+  }
+
   return 0
 }
 

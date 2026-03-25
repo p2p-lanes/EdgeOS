@@ -41,8 +41,9 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
   const { getCity } = useCityProvider();
   const city = getCity();
 
-  // Check if spouse exists
+  // Check if spouse/nanny exists
   const hasSpouse = attendeePasses.some(a => a.category === 'spouse');
+  const hasNanny = attendeePasses.some(a => a.category === 'nanny');
   const somePurchased = attendeePasses.some(a => a.products.some(p => p.purchased));
 
   const handleAddSpouse = () => {
@@ -54,6 +55,12 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
   const handleAddChild = () => {
     if (onAddAttendee) {
       onAddAttendee('kid');
+    }
+  };
+
+  const handleAddNanny = () => {
+    if (onAddAttendee) {
+      onAddAttendee('nanny');
     }
   };
 
@@ -118,6 +125,15 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
             >
               <Plus className="w-4 h-4" />
               Add child
+            </button>
+          )}
+          {!isEditing && city?.allows_children && !hasNanny && (
+            <button
+              onClick={handleAddNanny}
+              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
+            >
+              <Plus className="w-4 h-4" />
+              Add nanny/caregiver
             </button>
           )}
         </div>
@@ -190,7 +206,20 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
   );
   const weekProducts = standardProducts.filter(p =>
     p.category.toLowerCase().includes('week')
-  );
+  ).sort((a, b) => {
+    // Group by product line (e.g. "edge tomorrow" vs "no edge tomorrow") using slug or name
+    const getGroup = (p: ProductsPass) => {
+      const slug = (p as any).slug ?? p.name ?? '';
+      // Remove week number and common suffixes to get the group key
+      return slug.replace(/week\s*\d+[-\s]*/i, '').toLowerCase();
+    };
+    const groupA = getGroup(a);
+    const groupB = getGroup(b);
+    if (groupA !== groupB) return groupA.localeCompare(groupB);
+    // Within the same group, sort by start_date or name
+    if (a.start_date && b.start_date) return a.start_date.localeCompare(b.start_date);
+    return (a.name ?? '').localeCompare(b.name ?? '');
+  });
   const dayProducts = standardProducts.filter(p =>
     p.category.toLowerCase().includes('day')
   );
@@ -231,8 +260,8 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
         </div>
       </div>
 
-      {/* Month Pass Section - Only for non-children */}
-      {monthProducts.length > 0 && !isChild && (
+      {/* Month Pass Section */}
+      {monthProducts.length > 0 && (
         <>
           {/* Section Header with Diagonal Stripes */}
           <div className="relative px-5 py-2 bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100 overflow-hidden">
@@ -359,7 +388,7 @@ function PassOption({ product, onClick, disabled, disabledReason, isEditing }: P
   const { purchased, selected } = product;
   const isEditedForCredit = purchased && product.edit;
   const comparePrice = product.compare_price ?? product.original_price;
-  const hasDiscount = comparePrice && comparePrice > product.price;
+  const hasDiscount = comparePrice && comparePrice > 0 && comparePrice > product.price;
 
   const isClickable = !disabled && (!purchased || isEditing);
   const isSelected = selected && !purchased;
@@ -502,16 +531,16 @@ function PassOption({ product, onClick, disabled, disabledReason, isEditing }: P
       </div>
 
       <div className="text-right flex-shrink-0">
-        {hasDiscount && (
+        {hasDiscount ? (
           <p className="text-xs text-gray-400 line-through">
             ${comparePrice?.toLocaleString()}
           </p>
-        )}
+        ) : null}
         <p className={cn(
           'font-semibold',
           isSelected ? 'text-blue-600' : 'text-gray-900'
         )}>
-          ${product.price.toLocaleString()}
+          {product.price === 0 ? 'Free' : `$${product.price.toLocaleString()}`}
         </p>
       </div>
     </button>
@@ -695,7 +724,7 @@ function DayPassOption({ product, onQuantityChange, disabled, disabledReason, is
           'font-semibold',
           hasQuantity ? 'text-blue-600' : 'text-gray-900'
         )}>
-          ${product.price.toLocaleString()}
+          {product.price === 0 ? 'Free' : `$${product.price.toLocaleString()}`}
         </p>
       </div>
     </div>

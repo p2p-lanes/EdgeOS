@@ -26,6 +26,7 @@ const YourPasses = ({ onSwitchToBuy }: YourPassesProps) => {
   const { getAttendees } = useApplication()
   const applicationAttendees = getAttendees()
   const hasSpouse = applicationAttendees.some(a => a.category === 'spouse')
+  const hasNanny = applicationAttendees.some(a => a.category === 'nanny')
   const { handleOpenModal, handleCloseModal, modal } = useModal()
   const { addAttendee } = useAttendee()
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false)
@@ -88,6 +89,29 @@ const YourPasses = ({ onSwitchToBuy }: YourPassesProps) => {
                   <Plus className="w-3 h-3" />
                 </div>
                 <span>Add children</span>
+              </button>
+              <span className="text-gray-300">|</span>
+            </>
+          )}
+          {city?.allows_children && (
+            <>
+              <button
+                className={cn(
+                  "flex items-center gap-1.5 transition-colors whitespace-nowrap group",
+                  hasNanny
+                    ? "text-gray-300 cursor-not-allowed"
+                    : "text-gray-500 hover:text-gray-900"
+                )}
+                onClick={() => !hasNanny && handleOpenModal('nanny')}
+                disabled={!applicationAttendees.length || hasNanny}
+              >
+                <div className={cn(
+                  "p-0.5 rounded-full transition-colors",
+                  hasNanny ? "bg-gray-100" : "bg-gray-100 group-hover:bg-gray-200"
+                )}>
+                  <Plus className="w-3 h-3" />
+                </div>
+                <span>Add nanny/caregiver</span>
               </button>
               <span className="text-gray-300">|</span>
             </>

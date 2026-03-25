@@ -21,6 +21,7 @@ export interface ProductsProps {
   insurance_percentage: number | null;
   min_price: number | null;
   max_price: number | null;
+  slug?: string;
 }
 
 export interface ProductsPass extends ProductsProps {

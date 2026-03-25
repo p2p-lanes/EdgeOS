@@ -94,7 +94,7 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
                       </p>
                   )
                 }
-                <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>$ {product.price?.toLocaleString()}</p>
+                <p className={cn("text-md font-medium", disabled && 'text-neutral-300')}>{product.price === 0 ? 'Free' : `$ ${product.price?.toLocaleString()}`}</p>
               </>
             )
           }

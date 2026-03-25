@@ -35,6 +35,8 @@ export const sortAttendees = (attendees: AttendeeProps[]) => {
       if (b.category === 'main') return 1;
       if (a.category === 'spouse') return -1;
       if (b.category === 'spouse') return 1;
+      if (a.category === 'nanny') return -1;
+      if (b.category === 'nanny') return 1;
       return 0;
     });
 }

@@ -361,5 +361,5 @@ export function filterProductsByAttendeeCategory(
   products: ProductsProps[],
   attendeeCategory: AttendeeCategory
 ): ProductsProps[] {
-  return products.filter(p => p.attendee_category === attendeeCategory && p.is_active);
+  return products.filter(p => p.attendee_category?.toLowerCase() === attendeeCategory?.toLowerCase() && p.is_active);
 }
