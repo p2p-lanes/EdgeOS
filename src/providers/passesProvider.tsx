@@ -171,9 +171,9 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
         const purchaseStrategy = getPurchaseStrategy();
       
         const attendeeProducts = products
-          .filter((product: ProductsPass) => 
-            product.attendee_category === attendee.category && 
-            product.is_active 
+          .filter((product: ProductsPass) =>
+            product.attendee_category?.toLowerCase() === attendee.category?.toLowerCase() &&
+            product.is_active
             // (
             //   localResident 
             //     ? (product.category.includes('local')) 

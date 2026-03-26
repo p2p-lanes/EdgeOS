@@ -61,7 +61,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
       newErrors.name = true
     }
     
-    if (!formData.gender) {
+    if (category !== 'nanny' && !formData.gender) {
       newErrors.gender = true
     }
     
@@ -69,7 +69,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
       newErrors.category = true
     }
     
-    if (category === 'spouse' && !formData.email.trim()) {
+    if ((category === 'spouse' || category === 'nanny') && !formData.email.trim()) {
       newErrors.email = true
     }
     
@@ -89,7 +89,8 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
 
   const isChildCategory = category === 'kid' || (formData.category && ['baby', 'kid', 'teen'].includes(formData.category))
   const title = editingAttendee ? `Edit ${editingAttendee.name}` : `Add ${isChildCategory ? 'child' : badgeName[category]}`
-  const description = `Enter the details of your ${category} here. Click save when you're done.`
+  const categoryLabel = category === 'nanny' ? 'nanny/caregiver' : category
+  const description = `Enter the details of your ${categoryLabel} here. Click save when you're done.`
 
   if(isDelete) {
     return (
@@ -154,7 +155,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
             )
           }
           {
-            category === 'spouse' && (
+            (category === 'spouse' || category === 'nanny') && (
               <div className="grid grid-cols-4 items-center gap-4">
                 <Label htmlFor="email" className="text-right">
                   Email <span className="text-red-500">*</span>
@@ -170,26 +171,28 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
               </div>
             )
           }
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label htmlFor="gender" className="text-right">
-              Gender <span className="text-red-500">*</span>
-            </Label>
-            <Select
-              value={formData.gender}
-              onValueChange={(value) => setFormData(prev => ({...prev, gender: value}))}
-              required
-            >
-              <SelectTrigger className={`col-span-3 ${errors.gender ? 'border-red-500' : ''}`}>
-                <SelectValue placeholder="Select gender" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="male">Male</SelectItem>
-                <SelectItem value="female">Female</SelectItem>
-                <SelectItem value="prefer not to say">Prefer not to say</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {category !== 'nanny' && (
+            <div className="grid grid-cols-4 items-center gap-4">
+              <Label htmlFor="gender" className="text-right">
+                Gender <span className="text-red-500">*</span>
+              </Label>
+              <Select
+                value={formData.gender}
+                onValueChange={(value) => setFormData(prev => ({...prev, gender: value}))}
+                required
+              >
+                <SelectTrigger className={`col-span-3 ${errors.gender ? 'border-red-500' : ''}`}>
+                  <SelectValue placeholder="Select gender" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="prefer not to say">Prefer not to say</SelectItem>
+                  <SelectItem value="other">Other</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
 
           {/* {
             category !== 'spouse' && category !== 'main' && (
