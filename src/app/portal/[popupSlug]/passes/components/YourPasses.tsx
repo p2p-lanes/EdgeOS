@@ -54,67 +54,58 @@ const YourPasses = ({ onSwitchToBuy }: YourPassesProps) => {
         </p>
 
         {/* Inline Text Links */}
-        <div className="flex flex-wrap items-center gap-3 text-sm mt-2">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm mt-2">
           {city?.allows_spouse && (
-            <>
-              <button
-                className={cn(
-                  "flex items-center gap-1.5 transition-colors whitespace-nowrap group",
-                  hasSpouse
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-500 hover:text-gray-900"
-                )}
-                onClick={() => !hasSpouse && handleOpenModal('spouse')}
-                disabled={!applicationAttendees.length || hasSpouse}
-              >
-                <div className={cn(
-                  "p-0.5 rounded-full transition-colors",
-                  hasSpouse ? "bg-gray-100" : "bg-gray-100 group-hover:bg-gray-200"
-                )}>
-                  <Plus className="w-3 h-3" />
-                </div>
-                <span>Add spouse</span>
-              </button>
-              <span className="text-gray-300">|</span>
-            </>
+            <button
+              className={cn(
+                "flex items-center gap-1.5 transition-colors whitespace-nowrap group",
+                hasSpouse
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-500 hover:text-gray-900"
+              )}
+              onClick={() => !hasSpouse && handleOpenModal('spouse')}
+              disabled={!applicationAttendees.length || hasSpouse}
+            >
+              <div className={cn(
+                "p-0.5 rounded-full transition-colors",
+                hasSpouse ? "bg-gray-100" : "bg-gray-100 group-hover:bg-gray-200"
+              )}>
+                <Plus className="w-3 h-3" />
+              </div>
+              <span>Add spouse</span>
+            </button>
           )}
           {city?.allows_children && (
-            <>
-              <button
-                className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap group"
-                onClick={() => handleOpenModal('kid')}
-                disabled={!applicationAttendees.length}
-              >
-                <div className="bg-gray-100 p-0.5 rounded-full group-hover:bg-gray-200 transition-colors">
-                  <Plus className="w-3 h-3" />
-                </div>
-                <span>Add children</span>
-              </button>
-              <span className="text-gray-300">|</span>
-            </>
+            <button
+              className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap group"
+              onClick={() => handleOpenModal('kid')}
+              disabled={!applicationAttendees.length}
+            >
+              <div className="bg-gray-100 p-0.5 rounded-full group-hover:bg-gray-200 transition-colors">
+                <Plus className="w-3 h-3" />
+              </div>
+              <span>Add children</span>
+            </button>
           )}
           {city?.allows_children && (
-            <>
-              <button
-                className={cn(
-                  "flex items-center gap-1.5 transition-colors whitespace-nowrap group",
-                  hasNanny
-                    ? "text-gray-300 cursor-not-allowed"
-                    : "text-gray-500 hover:text-gray-900"
-                )}
-                onClick={() => !hasNanny && handleOpenModal('nanny')}
-                disabled={!applicationAttendees.length || hasNanny}
-              >
-                <div className={cn(
-                  "p-0.5 rounded-full transition-colors",
-                  hasNanny ? "bg-gray-100" : "bg-gray-100 group-hover:bg-gray-200"
-                )}>
-                  <Plus className="w-3 h-3" />
-                </div>
-                <span>Add nanny/caregiver</span>
-              </button>
-              <span className="text-gray-300">|</span>
-            </>
+            <button
+              className={cn(
+                "flex items-center gap-1.5 transition-colors whitespace-nowrap group",
+                hasNanny
+                  ? "text-gray-300 cursor-not-allowed"
+                  : "text-gray-500 hover:text-gray-900"
+              )}
+              onClick={() => !hasNanny && handleOpenModal('nanny')}
+              disabled={!applicationAttendees.length || hasNanny}
+            >
+              <div className={cn(
+                "p-0.5 rounded-full transition-colors",
+                hasNanny ? "bg-gray-100" : "bg-gray-100 group-hover:bg-gray-200"
+              )}>
+                <Plus className="w-3 h-3" />
+              </div>
+              <span>Add nanny/caregiver</span>
+            </button>
           )}
           <button
             className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap"
