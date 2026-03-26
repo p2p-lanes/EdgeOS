@@ -107,33 +107,39 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
       )} */}
 
       {/* Toolbar: Edit button + Add Family Members */}
-      <div className="flex flex-wrap items-center gap-3 justify-between">
-        <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-3 gap-y-2 justify-between">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
           {!isEditing && !hasSpouse && city?.allows_spouse && (
             <button
               onClick={handleAddSpouse}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
+              className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap group"
             >
-              <Plus className="w-4 h-4" />
-              Add spouse
+              <div className="bg-gray-100 p-0.5 rounded-full group-hover:bg-gray-200 transition-colors">
+                <Plus className="w-3 h-3" />
+              </div>
+              <span>Add spouse</span>
             </button>
           )}
           {!isEditing && city?.allows_children && (
             <button
               onClick={handleAddChild}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
+              className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap group"
             >
-              <Plus className="w-4 h-4" />
-              Add child
+              <div className="bg-gray-100 p-0.5 rounded-full group-hover:bg-gray-200 transition-colors">
+                <Plus className="w-3 h-3" />
+              </div>
+              <span>Add child</span>
             </button>
           )}
           {!isEditing && city?.allows_children && !hasNanny && (
             <button
               onClick={handleAddNanny}
-              className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-sm font-medium text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition-all shadow-sm"
+              className="flex items-center gap-1.5 text-gray-500 hover:text-gray-900 transition-colors whitespace-nowrap group"
             >
-              <Plus className="w-4 h-4" />
-              Add nanny/caregiver
+              <div className="bg-gray-100 p-0.5 rounded-full group-hover:bg-gray-200 transition-colors">
+                <Plus className="w-3 h-3" />
+              </div>
+              <span>Add nanny/caregiver</span>
             </button>
           )}
         </div>
