@@ -139,7 +139,7 @@ export default function PassSelectionSection({ onAddAttendee }: PassSelectionSec
               <div className="bg-gray-100 p-0.5 rounded-full group-hover:bg-gray-200 transition-colors">
                 <Plus className="w-3 h-3" />
               </div>
-              <span>Add nanny/caregiver</span>
+              <span>Add Caregiver vs Nanny</span>
             </button>
           )}
         </div>
