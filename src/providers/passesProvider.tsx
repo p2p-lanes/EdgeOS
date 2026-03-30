@@ -199,7 +199,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
             return {
               ...product,
               original_quantity: originalQuantity,
-              quantity: product.category.includes('day') && restoredSelected
+              quantity: product.category?.includes('day') && restoredSelected
                 ? Math.max(restoredQuantity, originalQuantity)
                 : originalQuantity,
               selected: restoredSelected,

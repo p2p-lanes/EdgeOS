@@ -8,7 +8,7 @@ const ProductCart = ({ product }: { product: ProductsPass }) => {
     ? getEffectivePrice(product) 
     : (product.original_price ?? product.price)
   
-  const quantity = product.category.includes('day') ? (product.quantity ?? 0) - (product.original_quantity ?? 0) : 1
+  const quantity = product.category?.includes('day') ? (product.quantity ?? 0) - (product.original_quantity ?? 0) : 1
 
   const totalPrice = (price * quantity).toFixed(0)
 

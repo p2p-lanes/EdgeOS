@@ -208,10 +208,10 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
 
   // Split into categories
   const monthProducts = standardProducts.filter(p =>
-    p.category.toLowerCase().includes('month')
+    p.category?.toLowerCase().includes('month')
   );
   const weekProducts = standardProducts.filter(p =>
-    p.category.toLowerCase().includes('week') && !p.category.toLowerCase().includes('weekend')
+    p.category?.toLowerCase().includes('week') && !p.category.toLowerCase().includes('weekend')
   ).sort((a, b) => {
     // Group by product line (e.g. "edge tomorrow" vs "no edge tomorrow") using slug or name
     const getGroup = (p: ProductsPass) => {
@@ -227,15 +227,15 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
     return (a.name ?? '').localeCompare(b.name ?? '');
   });
   const dayProducts = standardProducts.filter(p =>
-    p.category.toLowerCase().includes('day') || p.category.toLowerCase().includes('weekend')
+    p.category?.toLowerCase().includes('day') || p.category.toLowerCase().includes('weekend')
   );
 
   // Check for mutual exclusivity
   const hasMonthSelected = attendee.products.some(p =>
-    p.category.toLowerCase().includes('month') && (p.purchased || p.selected)
+    p.category?.toLowerCase().includes('month') && (p.purchased || p.selected)
   );
   const hasWeekSelected = attendee.products.some(p =>
-    p.category.toLowerCase().includes('week') && (p.purchased || p.selected)
+    p.category?.toLowerCase().includes('week') && (p.purchased || p.selected)
   );
 
   // Check if primary has a pass (for spouse validation)
@@ -246,7 +246,7 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
     if (!primaryProduct) return true;
     // Check if primary has this pass or month pass selected
     const primaryHasMonth = primary.products.some(p =>
-      p.category.toLowerCase().includes('month') && (p.purchased || p.selected)
+      p.category.toLowerCase()?.includes('month') && (p.purchased || p.selected)
     );
     return primaryProduct.purchased || primaryProduct.selected || primaryHasMonth;
   };
