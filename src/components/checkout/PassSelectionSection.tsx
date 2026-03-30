@@ -1,6 +1,6 @@
 'use client';
 
-import { Plus, User, Ticket, Check, Sparkles, Minus, PencilIcon, XIcon } from 'lucide-react';
+import { Plus, User, Ticket, Check, Sparkles, Minus, PencilIcon, XIcon, Info } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 import { usePassesProvider } from '@/providers/passesProvider';
@@ -10,6 +10,9 @@ import { AttendeeProps, AttendeeCategory } from '@/types/Attendee';
 import { ProductsPass } from '@/types/Products';
 import { formatDate } from '@/helpers/dates';
 import { badgeName } from '../utils/multiuse';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
+
+const KID_PROGRAM_TOOLTIP = "A program ticket gives your 7-12 year old child access to Edge Tomorrow, our child-centered creative intergenerational residency where they will be engaged in designing and creating multi-day projects related to the village with other kids and adult collaborators. You may drop your child off Monday-Friday and they may stay at the residency between 9-4pm. You are welcome to participate and encouraged to join for showcases Friday afternoons. Edge Tomorrow is for children who are comfortable in group settings, enjoy creating with others, and can manage their personal needs independently (e.g., bathroom, eating, self-care.)"
 
 interface PassSelectionSectionProps {
   onAddAttendee?: (category: AttendeeCategory) => void;
@@ -199,6 +202,7 @@ interface AttendeePassCardProps {
 
 function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttendees }: AttendeePassCardProps) {
   const isChild = attendee.category === 'kid' || attendee.category === 'teen' || attendee.category === 'baby';
+  const isKidAttendee = attendee.category === 'kid';
   const isSpouse = attendee.category === 'spouse';
 
   // Filter and sort products
@@ -295,6 +299,7 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
                   disabled={isDisabled}
                   disabledReason={disabledForSpouse ? 'Requires primary pass holder' : undefined}
                   isEditing={isEditing}
+                  isKidAttendee={isKidAttendee}
                 />
               );
             })}
@@ -328,6 +333,7 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
                   disabled={isDisabled}
                   disabledReason={disabledForSpouse ? 'Requires primary pass holder' : undefined}
                   isEditing={isEditing}
+                  isKidAttendee={isKidAttendee}
                 />
               );
             })}
@@ -387,10 +393,11 @@ interface PassOptionProps {
   disabled?: boolean;
   disabledReason?: string;
   isEditing?: boolean;
+  isKidAttendee?: boolean;
 }
 
 
-function PassOption({ product, onClick, disabled, disabledReason, isEditing }: PassOptionProps) {
+function PassOption({ product, onClick, disabled, disabledReason, isEditing, isKidAttendee }: PassOptionProps) {
   const { purchased, selected } = product;
   const isEditedForCredit = purchased && product.edit;
   const comparePrice = product.compare_price ?? product.original_price;
@@ -524,6 +531,26 @@ function PassOption({ product, onClick, disabled, disabledReason, isEditing }: P
           <div className="flex items-center gap-2">
             <Ticket className="w-4 h-4 text-gray-400" />
             <span className="font-medium text-gray-900">{product.name}</span>
+            {isKidAttendee && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={(e) => e.stopPropagation()}
+                    className="flex items-center justify-center text-slate-400 hover:text-slate-600 focus:outline-none"
+                  >
+                    <Info className="w-4 h-4" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  side="top"
+                  className="bg-white text-black shadow-md border border-gray-200 max-w-xs text-sm leading-relaxed z-50"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {KID_PROGRAM_TOOLTIP}
+                </PopoverContent>
+              </Popover>
+            )}
           </div>
           {product.start_date && product.end_date && (
             <p className="text-sm text-gray-500">

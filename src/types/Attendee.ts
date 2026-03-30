@@ -1,6 +1,6 @@
 import { ProductsPass, ProductsProps } from "./Products";
 
-export type AttendeeCategory = "main" | "spouse" | 'nanny' | 'kid' | 'baby' | 'teen'
+export type AttendeeCategory = "main" | "spouse" | 'nanny' | 'kid' | 'younger kid' | 'baby' | 'teen'
 
 export interface AttendeeProps {
   id: number;

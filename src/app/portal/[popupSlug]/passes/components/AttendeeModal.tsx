@@ -34,7 +34,16 @@ type FormDataProps = {
   gender?: string
 }
 
-const kidsAgeOptions = [{label: 'Baby (<2)', value: 'baby'}, {label: 'Kid (2-12)', value: 'kid'}, {label: 'Teen (13-18)', value: 'teen'}]
+
+const ageOptions = ["< 1", ...Array.from({ length: 18 }, (_, i) => (i + 1).toString())];
+
+const ageToCategory = (age: string): AttendeeCategory => {
+  if (age === "< 1" || age === "1" || age === "2") return "baby"
+  const num = parseInt(age)
+  if (num >= 3 && num <= 6) return "younger kid"
+  if (num >= 7 && num <= 12) return "kid"
+  return "teen"
+}
 
 export function AttendeeModal({ onSubmit, open, onClose, category, editingAttendee, isDelete }: AttendeeModalProps) {
   const [loading, setLoading] = useState(false)
@@ -81,13 +90,16 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
     setErrors({})
     setLoading(true)
     try {
-      await onSubmit({...formData, category: formData.category ?? category, id: editingAttendee?.id, gender: formData.gender } as AttendeeProps)
+      const resolvedCategory = isChildCategory && formData.category
+        ? ageToCategory(formData.category)
+        : (formData.category ?? category) as AttendeeCategory
+      await onSubmit({...formData, category: resolvedCategory, id: editingAttendee?.id, gender: formData.gender } as AttendeeProps)
     } finally {
       setLoading(false)
     }
   }
 
-  const isChildCategory = category === 'kid' || (formData.category && ['baby', 'kid', 'teen'].includes(formData.category))
+  const isChildCategory = category === 'kid' || (formData.category && ['baby', 'younger kid', 'kid', 'teen'].includes(formData.category))
   const title = editingAttendee ? `Edit ${editingAttendee.name}` : `Add ${isChildCategory ? 'child' : badgeName[category]}`
   const categoryLabel = category === 'nanny' ? 'Caregiver vs Nanny' : category
   const description = `Enter the details of your ${categoryLabel} here. Click save when you're done.`
@@ -145,9 +157,11 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
                   <SelectTrigger className={`col-span-3 ${errors.category ? 'border-red-500' : ''}`}>
                     <SelectValue placeholder="Select age" />
                   </SelectTrigger>
-                  <SelectContent>
-                    {kidsAgeOptions.map((option) => (
-                      <SelectItem key={option.value} value={option.value}>{option.label}</SelectItem>
+                  <SelectContent position="popper" className="max-h-[200px] overflow-y-auto">
+                    {ageOptions.map((age) => (
+                      <SelectItem key={age} value={age}>
+                        {age === "< 1" ? "< 1 year old" : `${age} years old`}
+                      </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>

@@ -7,4 +7,5 @@ export const badgeName: Record<AttendeeCategory, string> = {
   kid: 'Kid',
   baby: 'Baby',
   teen: 'Teen',
+  "younger kid": "Younger kid"
 }

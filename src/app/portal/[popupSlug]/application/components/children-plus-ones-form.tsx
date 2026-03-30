@@ -18,6 +18,7 @@ interface Kid {
   id: string;
   name: string;
   age: string;
+  gender: string;
 }
 
 export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }: SectionProps) {
@@ -27,6 +28,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
   const [showModal, setShowModal] = useState(false);
   const [kidName, setKidName] = useState("");
   const [kidAge, setKidAge] = useState("");
+  const [kidGender, setKidGender] = useState("");
 
   // Age options for the select
   const ageOptions = ["< 1", ...Array.from({ length: 18 }, (_, i) => (i + 1).toString())];
@@ -42,51 +44,47 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
   useEffect(() => {
     if (formData.kids_info && kids.length === 0) {
       const parsedKids: Kid[] = [];
-      // Split by periods and filter out empty strings
       const kidEntries = formData.kids_info.split('.').filter((entry: string) => entry.trim());
-      
+
       kidEntries.forEach((entry: string, index: number) => {
         const trimmedEntry = entry.trim();
         if (trimmedEntry) {
-          // Split by last comma to separate name and age
-          const lastCommaIndex = trimmedEntry.lastIndexOf(',');
-          if (lastCommaIndex > 0) {
-            const name = trimmedEntry.substring(0, lastCommaIndex).trim();
-            const age = trimmedEntry.substring(lastCommaIndex + 1).trim();
-            
+          const parts = trimmedEntry.split(',').map((p: string) => p.trim());
+          if (parts.length >= 2) {
+            const name = parts[0];
+            const age = parts[1];
+            const gender = parts[2] || '';
             if (name && age) {
-              parsedKids.push({
-                id: `existing-${index}`,
-                name,
-                age
-              });
+              parsedKids.push({ id: `existing-${index}`, name, age, gender });
             }
           }
         }
       });
-      
+
       if (parsedKids.length > 0) {
         setKids(parsedKids);
       }
     }
-  }, [formData.kids_info]); // Only run when kids_info changes from outside
+  }, [formData.kids_info]);
 
   // Update kids_info when kids array changes
   useEffect(() => {
-    const formattedKids = kids.map(kid => `${kid.name}, ${kid.age}.`).join(' ');
+    const formattedKids = kids.map(kid => `${kid.name}, ${kid.age}, ${kid.gender}.`).join(' ');
     handleChange('kids_info', formattedKids);
-  }, [kids]); // Removed handleChange from dependencies to prevent infinite loop
+  }, [kids]);
 
   const addKid = () => {
-    if (kidName.trim() && kidAge) {
+    if (kidName.trim() && kidAge && kidGender) {
       const newKid: Kid = {
         id: Date.now().toString(),
         name: kidName.trim(),
-        age: kidAge
+        age: kidAge,
+        gender: kidGender,
       };
       setKids([...kids, newKid]);
       setKidName("");
       setKidAge("");
+      setKidGender("");
       setShowModal(false);
     }
   };
@@ -98,6 +96,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
   const resetModal = () => {
     setKidName("");
     setKidAge("");
+    setKidGender("");
     setShowModal(false);
   };
 
@@ -187,7 +186,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                           {kids.map((kid) => (
                             <div key={kid.id} className="flex items-center justify-between bg-gray-50 p-3 rounded-lg">
                               <span className="text-sm">
-                                {kid.name}, {kid.age === "< 1" ? "< 1 year old" : `${kid.age} years old`}
+                                {kid.name}, {kid.age === "< 1" ? "< 1 year old" : `${kid.age} years old`}{kid.gender ? `, ${kid.gender}` : ''}
                               </span>
                               <button
                                 type="button"
@@ -240,12 +239,29 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                                   <SelectTrigger className="w-full">
                                     <SelectValue placeholder="Select age" />
                                   </SelectTrigger>
-                                  <SelectContent>
+                                  <SelectContent position="popper" className="max-h-[200px] overflow-y-auto">
                                     {ageOptions.map((age) => (
                                       <SelectItem key={age} value={age}>
                                         {age === "< 1" ? "< 1 year old" : `${age} years old`}
                                       </SelectItem>
                                     ))}
+                                  </SelectContent>
+                                </Select>
+                              </div>
+
+                              <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">
+                                  Gender
+                                </label>
+                                <Select value={kidGender} onValueChange={setKidGender}>
+                                  <SelectTrigger className="w-full">
+                                    <SelectValue placeholder="Select gender" />
+                                  </SelectTrigger>
+                                  <SelectContent>
+                                    <SelectItem value="male">Male</SelectItem>
+                                    <SelectItem value="female">Female</SelectItem>
+                                    <SelectItem value="prefer not say">Prefer not to say</SelectItem>
+                                    <SelectItem value="other">Other</SelectItem>
                                   </SelectContent>
                                 </Select>
                               </div>
@@ -255,7 +271,7 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                               <Button
                                 type="button"
                                 onClick={addKid}
-                                disabled={!kidName.trim() || !kidAge}
+                                disabled={!kidName.trim() || !kidAge || !kidGender}
                                 className="flex-1"
                               >
                                 Add Child
