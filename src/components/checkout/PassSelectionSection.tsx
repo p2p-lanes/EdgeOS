@@ -211,7 +211,7 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
     p.category.toLowerCase().includes('month')
   );
   const weekProducts = standardProducts.filter(p =>
-    p.category.toLowerCase().includes('week')
+    p.category.toLowerCase().includes('week') && !p.category.toLowerCase().includes('weekend')
   ).sort((a, b) => {
     // Group by product line (e.g. "edge tomorrow" vs "no edge tomorrow") using slug or name
     const getGroup = (p: ProductsPass) => {
@@ -227,7 +227,7 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
     return (a.name ?? '').localeCompare(b.name ?? '');
   });
   const dayProducts = standardProducts.filter(p =>
-    p.category.toLowerCase().includes('day')
+    p.category.toLowerCase().includes('day') || p.category.toLowerCase().includes('weekend')
   );
 
   // Check for mutual exclusivity
@@ -342,7 +342,7 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
           <div className="relative px-5 py-2 bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100 overflow-hidden">
             <div className="absolute inset-0 opacity-100" style={stripedPatternStyle} />
             <h4 className="relative text-xs font-semibold text-gray-500 uppercase tracking-wide">
-              Day Passes
+              Short Stay Passes
             </h4>
           </div>
 

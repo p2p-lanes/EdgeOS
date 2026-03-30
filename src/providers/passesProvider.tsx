@@ -181,7 +181,7 @@ const PassesProvider = ({ children }: { children: ReactNode }) => {
             // )
           )
           .map((product: ProductsPass) => {
-            const originalQuantity = product.category.includes('day') ? attendees.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.quantity ?? 0 : 1
+            const originalQuantity = product.category?.includes('day') ? attendees.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)?.quantity ?? 0 : 1
             const prevProduct = attendeePassesRef.current.find(a => a.id === attendee.id)?.products.find(p => p.id === product.id)
 
             // On first load, fallback to localStorage saved selections
