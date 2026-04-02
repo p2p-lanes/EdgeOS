@@ -101,7 +101,7 @@ export function AttendeeModal({ onSubmit, open, onClose, category, editingAttend
 
   const isChildCategory = category === 'kid' || (formData.category && ['baby', 'younger kid', 'kid', 'teen'].includes(formData.category))
   const title = editingAttendee ? `Edit ${editingAttendee.name}` : `Add ${isChildCategory ? 'child' : badgeName[category]}`
-  const categoryLabel = category === 'nanny' ? 'Caregiver vs Nanny' : category
+  const categoryLabel = category === 'nanny' ? 'Caregiver/Nanny' : category
   const description = `Enter the details of your ${categoryLabel} here. Click save when you're done.`
 
   if(isDelete) {
