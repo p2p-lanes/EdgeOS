@@ -59,6 +59,11 @@ const useProgress = (formData: FormData) => {
         required: formData.brings_kids
       },
       {
+        name: 'nanny',
+        fields: ['nanny_name', 'nanny_email'].filter(f => fields.has(f)),
+        required: formData.brings_nanny && formData.brings_kids
+      },
+      {
         name: 'scholarship',
         fields: ['scholarship_video_url'].filter(f => fields.has(f)),
         required: formData.scholarship_request

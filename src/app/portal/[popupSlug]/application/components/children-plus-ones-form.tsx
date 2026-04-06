@@ -12,7 +12,7 @@ import { LabelMuted, LabelRequired } from "@/components/ui/label"
 import { Input } from "@/components/ui/input"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 
-const fieldsChildrenPlusOnes = ["brings_spouse", "brings_kids"]
+const fieldsChildrenPlusOnes = ["brings_spouse", "brings_kids", "brings_nanny"]
 
 interface Kid {
   id: string;
@@ -24,6 +24,7 @@ interface Kid {
 export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }: SectionProps) {
   const [hasSpouse, setHasSpouse] = useState(formData.brings_spouse || false);
   const [hasKids, setHasKids] = useState(formData.brings_kids || false);
+  const [hasNanny, setHasNanny] = useState(formData.brings_nanny || false);
   const [kids, setKids] = useState<Kid[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [kidName, setKidName] = useState("");
@@ -166,6 +167,10 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
                   if (checked === false) {
                     handleChange('kids_info', '');
                     setKids([]);
+                    setHasNanny(false);
+                    handleChange('brings_nanny', false);
+                    handleChange('nanny_name', '');
+                    handleChange('nanny_email', '');
                   }
                 }}
               />
@@ -291,6 +296,49 @@ export function ChildrenPlusOnesForm({ formData, errors, handleChange, fields }:
 
                       {errors.kids_info && (
                         <p className="text-red-500 text-sm mt-2">{errors.kids_info}</p>
+                      )}
+
+                      {fields.has('brings_nanny') && (
+                        <div className="mt-6">
+                          <CheckboxForm
+                            label="I'm bringing a Caregiver or Nanny"
+                            id="brings_nanny"
+                            checked={hasNanny}
+                            onCheckedChange={(checked) => {
+                              setHasNanny(checked === true);
+                              handleChange('brings_nanny', checked === true);
+                              if (checked === false) {
+                                handleChange('nanny_name', '');
+                                handleChange('nanny_email', '');
+                              }
+                            }}
+                          />
+                          <AnimatePresence>
+                            {hasNanny && (
+                              <motion.div {...animationProps}>
+                                <div className="flex flex-col gap-6 mt-6">
+                                  <InputForm
+                                    label="Caregiver or Nanny full name"
+                                    id="nanny_name"
+                                    value={formData.nanny_name}
+                                    onChange={(value) => handleChange('nanny_name', value)}
+                                    error={errors.nanny_name}
+                                    isRequired={true}
+                                  />
+                                  <InputForm
+                                    label="Caregiver or Nanny email"
+                                    id="nanny_email"
+                                    value={formData.nanny_email}
+                                    onChange={(value) => handleChange('nanny_email', value)}
+                                    error={errors.nanny_email}
+                                    isRequired={true}
+                                    subtitle="We'll use this to set up their pass."
+                                  />
+                                </div>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
+                        </div>
                       )}
                     </div>
                   </motion.div>

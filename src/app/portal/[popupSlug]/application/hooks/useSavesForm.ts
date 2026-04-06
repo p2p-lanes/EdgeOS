@@ -51,6 +51,34 @@ const createKidAttendees = async (applicationId: number, kidsInfo: string, exist
   return lastApplication;
 };
 
+const saveNannyAttendee = async (
+  applicationId: number,
+  nannyName: string,
+  nannyEmail: string,
+  existingAttendees: any[]
+): Promise<ApplicationProps | null> => {
+  const existingNanny = existingAttendees.find(a => a.category === 'nanny');
+
+  if (existingNanny) {
+    if (existingNanny.name === nannyName && existingNanny.email === nannyEmail) return null;
+    const response = await api.put(`applications/${applicationId}/attendees/${existingNanny.id}`, {
+      name: nannyName,
+      email: nannyEmail,
+      category: 'nanny',
+      gender: existingNanny.gender || '',
+    });
+    return response.status === 200 ? response.data : null;
+  }
+
+  const response = await api.post(`applications/${applicationId}/attendees`, {
+    name: nannyName,
+    email: nannyEmail,
+    category: 'nanny',
+    gender: '',
+  });
+  return response.status === 200 ? response.data : null;
+};
+
 const useSavesForm = () => {
   const { user } = useGetTokenAuth()
   const { getCity} = useCityProvider()
@@ -92,6 +120,9 @@ const useSavesForm = () => {
     }
     
     delete processedData.interested_in_residency
+    delete processedData.brings_nanny
+    delete processedData.nanny_name
+    delete processedData.nanny_email
 
     return {
       ...processedData,
@@ -138,14 +169,29 @@ const useSavesForm = () => {
 
       updateApplicationsList(response.data);
 
+      let latestAttendees = response.data.attendees || [];
+
       if (status === 'in review' && formData.brings_kids && formData.kids_info) {
         const updatedApplication = await createKidAttendees(
           response.data.id,
           formData.kids_info as string,
-          response.data.attendees || []
+          latestAttendees
         );
         if (updatedApplication) {
           updateApplicationsList(updatedApplication);
+          latestAttendees = updatedApplication.attendees || latestAttendees;
+        }
+      }
+
+      if (formData.brings_nanny && formData.nanny_name) {
+        const nannyResult = await saveNannyAttendee(
+          response.data.id,
+          formData.nanny_name as string,
+          (formData.nanny_email as string) || '',
+          latestAttendees
+        );
+        if (nannyResult) {
+          updateApplicationsList(nannyResult);
         }
       }
 

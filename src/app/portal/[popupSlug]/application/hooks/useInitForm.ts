@@ -26,9 +26,15 @@ const useInitForm = (setFormData: any) => {
         }
 
         if (status === 'draft') {
+          const nannyAttendee = application.attendees?.find((a: any) => a.category === 'nanny');
           setFormData((prevData: any) => ({
             ...prevData,
-            ...application
+            ...application,
+            ...(nannyAttendee ? {
+              brings_nanny: true,
+              nanny_name: nannyAttendee.name || '',
+              nanny_email: nannyAttendee.email || '',
+            } : {}),
           }));
         }
       } catch (error) {

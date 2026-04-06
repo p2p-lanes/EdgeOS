@@ -40,6 +40,9 @@ export interface ApplicationProps {
   spouse_email?: string;
   brings_kids?: boolean;
   kids_info?: string;
+  brings_nanny?: boolean;
+  nanny_name?: string;
+  nanny_email?: string;
   scholarship_request?: boolean;
   scholarship_details?: string;
   status?: ApplicationStatusProps;

@@ -104,7 +104,7 @@ const YourPasses = ({ onSwitchToBuy }: YourPassesProps) => {
               )}>
                 <Plus className="w-3 h-3" />
               </div>
-              <span>Add Caregiver/Nanny</span>
+              <span>Add Caregiver or Nanny</span>
             </button>
           )}
           <button

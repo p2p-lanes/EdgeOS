@@ -10,6 +10,8 @@ import ProductDay from "./ProductDay"
 
 const KID_PROGRAM_TOOLTIP = "A program ticket gives your 7-12 year old child access to Edge Tomorrow, our child-centered creative intergenerational residency where they will be engaged in designing and creating multi-day projects related to the village with other kids and adult collaborators. You may drop your child off Monday-Friday and they may stay at the residency between 9-4pm. You are welcome to participate and encouraged to join for showcases Friday afternoons. Edge Tomorrow is for children who are comfortable in group settings, enjoy creating with others, and can manage their personal needs independently (e.g., bathroom, eating, self-care.)"
 
+const YOUNGER_KID_TOOLTIP = "For kids 2.5-6 we are partnering with Sonoma Arts School. We will connect you directly with SAS's director to arrange registration. Younger children are also welcome and we can provide you with a list of vetted local nannies and babysitters, should you wish to hire someone in Healdsburg. You are also welcome to bring your own nanny or caregiver, free of charge; simply click \"Add Caregiver or Nanny\" above, and fill out their details to register."
+
 type VariantStyles = 'selected' | 'purchased' | 'edit' | 'disabled' | 'default' | 'week-with-month'
 
 const variants: Record<VariantStyles, string> = {
@@ -104,6 +106,31 @@ const Product = ({product, onClick, defaultDisabled, hasMonthPurchased}: {produc
                   onClick={(e) => e.stopPropagation()}
                 >
                   {KID_PROGRAM_TOOLTIP}
+                </PopoverContent>
+              </Popover>
+            )
+          }
+          {
+            (product.attendee_category === 'younger kid' || product.attendee_category === 'baby') && (
+              <Popover>
+                <PopoverTrigger asChild>
+                  <button
+                    type="button"
+                    onClick={(e) => e.stopPropagation()}
+                    className={cn(
+                      "flex items-center justify-center rounded-full focus:outline-none",
+                      product.purchased ? "text-white/70 hover:text-white" : "text-slate-500 hover:text-slate-700"
+                    )}
+                  >
+                    <Info className="w-4 h-4" />
+                  </button>
+                </PopoverTrigger>
+                <PopoverContent
+                  side="top"
+                  className="bg-white text-black shadow-md border border-gray-200 max-w-xs text-sm leading-relaxed z-50"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {YOUNGER_KID_TOOLTIP}
                 </PopoverContent>
               </Popover>
             )

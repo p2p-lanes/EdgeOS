@@ -4,6 +4,7 @@ export const initial_data = {
     organization: '', gender: '', age: '', social_media: '',
     duration: '', builder_boolean: false, builder_description: '',
     brings_spouse: false, spouse_info: '', spouse_email: '', brings_kids: false, kids_info: '',
+    brings_nanny: false, nanny_name: '', nanny_email: '',
     scholarship_request: false,
     interested_in_child_led_projects: false,
     video_url: '', local_resident: null
