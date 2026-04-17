@@ -213,29 +213,38 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
     .filter((product) => product.category !== 'patreon')
     .sort(sortProductsByPriority);
 
-  // Split into categories
-  const monthProducts = standardProducts.filter(p =>
-    p.category?.toLowerCase().includes('month')
-  );
-  const weekProducts = standardProducts.filter(p =>
-    p.category?.toLowerCase().includes('week') && !p.category.toLowerCase().includes('weekend')
-  ).sort((a, b) => {
-    // Group by product line (e.g. "edge tomorrow" vs "no edge tomorrow") using slug or name
+  // Split into non-local (standard) and local groups
+  const nonLocalProducts = standardProducts.filter(p => !p.category.toLowerCase().includes('local'));
+  const localProducts = standardProducts.filter(p => p.category.toLowerCase().includes('local'));
+
+  // Week sort comparator
+  const sortWeeks = (a: ProductsPass, b: ProductsPass) => {
     const getGroup = (p: ProductsPass) => {
       const slug = (p as any).slug ?? p.name ?? '';
-      // Remove week number and common suffixes to get the group key
       return slug.replace(/week\s*\d+[-\s]*/i, '').toLowerCase();
     };
     const groupA = getGroup(a);
     const groupB = getGroup(b);
     if (groupA !== groupB) return groupA.localeCompare(groupB);
-    // Within the same group, sort by start_date or name
     if (a.start_date && b.start_date) return a.start_date.localeCompare(b.start_date);
     return (a.name ?? '').localeCompare(b.name ?? '');
-  });
-  const dayProducts = standardProducts.filter(p =>
-    p.category?.toLowerCase().includes('day') || p.category.toLowerCase().includes('weekend')
-  );
+  };
+
+  // Split each group into month/week/day
+  const filterMonth = (p: ProductsPass) => p.category?.toLowerCase().includes('month');
+  const filterWeek = (p: ProductsPass) => p.category?.toLowerCase().includes('week') && !p.category.toLowerCase().includes('weekend');
+  const filterDay = (p: ProductsPass) => p.category?.toLowerCase().includes('day') || p.category.toLowerCase().includes('weekend');
+
+  const nonLocalMonth = nonLocalProducts.filter(filterMonth);
+  const nonLocalWeek = nonLocalProducts.filter(filterWeek).sort(sortWeeks);
+  const nonLocalDay = nonLocalProducts.filter(filterDay);
+
+  const localMonth = localProducts.filter(filterMonth);
+  const localWeek = localProducts.filter(filterWeek).sort(sortWeeks);
+  const localDay = localProducts.filter(filterDay);
+
+  const hasNonLocal = nonLocalMonth.length + nonLocalWeek.length + nonLocalDay.length > 0;
+  const hasLocal = localMonth.length + localWeek.length + localDay.length > 0;
 
   // Check for mutual exclusivity
   const hasMonthSelected = attendee.products.some(p =>
@@ -258,6 +267,11 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
     return primaryProduct.purchased || primaryProduct.selected || primaryHasMonth;
   };
 
+  // Combine standard first, then local within each category
+  const monthProducts = [...nonLocalMonth, ...localMonth];
+  const weekProducts = [...nonLocalWeek, ...localWeek];
+  const dayProducts = [...nonLocalDay, ...localDay];
+
   return (
     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
       {/* Member Header */}
@@ -276,7 +290,6 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
       {/* Month Pass Section */}
       {monthProducts.length > 0 && (
         <>
-          {/* Section Header with Diagonal Stripes */}
           <div className="relative px-5 py-2 bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100 overflow-hidden">
             <div className="absolute inset-0 opacity-100" style={stripedPatternStyle} />
             <div className="relative flex items-center gap-2">
@@ -286,14 +299,11 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
               <Sparkles className="w-3.5 h-3.5 text-amber-500" />
             </div>
           </div>
-
-          {/* Month Pass Options */}
           <div className="divide-y divide-gray-100">
             {monthProducts.map((product) => {
               const disabled = product.disabled;
               const disabledForSpouse = isSpouse && !primaryHasPass(product.id);
               const isDisabled = disabled || disabledForSpouse;
-
               return (
                 <PassOption
                   key={product.id}
@@ -314,21 +324,17 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
       {/* Weekly Passes Section */}
       {weekProducts.length > 0 && (
         <>
-          {/* Section Header with Diagonal Stripes */}
           <div className="relative px-5 py-2 bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100 overflow-hidden">
             <div className="absolute inset-0 opacity-100" style={stripedPatternStyle} />
             <h4 className="relative text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Weekly Passes
             </h4>
           </div>
-
-          {/* Weekly Pass Options - Flat List */}
           <div className="divide-y divide-gray-100">
             {weekProducts.map((product) => {
-              const disabled = product.disabled || (hasMonthSelected);
+              const disabled = product.disabled || hasMonthSelected;
               const disabledForSpouse = isSpouse && !primaryHasPass(product.id);
               const isDisabled = disabled || disabledForSpouse;
-
               return (
                 <PassOption
                   key={product.id}
@@ -349,21 +355,17 @@ function AttendeePassCard({ attendee, toggleProduct, city, isEditing, allAttende
       {/* Day Passes Section */}
       {dayProducts.length > 0 && (
         <>
-          {/* Section Header with Diagonal Stripes */}
           <div className="relative px-5 py-2 bg-gradient-to-r from-gray-100 via-gray-50 to-gray-100 overflow-hidden">
             <div className="absolute inset-0 opacity-100" style={stripedPatternStyle} />
             <h4 className="relative text-xs font-semibold text-gray-500 uppercase tracking-wide">
               Short Stay Passes
             </h4>
           </div>
-
-          {/* Day Pass Controls */}
           <div className="divide-y divide-gray-100">
             {dayProducts.map((product) => {
               const disabled = product.disabled || hasMonthSelected;
               const disabledForSpouse = isSpouse && !primaryHasPass(product.id);
               const isDisabled = disabled || disabledForSpouse;
-
               return (
                 <DayPassOption
                   key={product.id}
